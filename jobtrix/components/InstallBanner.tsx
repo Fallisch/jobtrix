@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -9,6 +10,7 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 export default function InstallBanner() {
+  const t = useTranslations("installBanner");
   const [promptEvent, setPromptEvent] = useState<BeforeInstallPromptEvent | null>(null);
 
   useEffect(() => {
@@ -26,26 +28,24 @@ export default function InstallBanner() {
     <AnimatePresence>
       <motion.div
         role="region"
-        aria-label="App installieren"
+        aria-label={t("message")}
         initial={{ y: 80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 80, opacity: 0 }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
         className="fixed bottom-0 left-0 right-0 bg-primary text-white p-4 flex items-center justify-between shadow-lg z-50"
       >
-        <span className="text-sm font-medium">
-          JobTRIX auf dem Startbildschirm installieren
-        </span>
+        <span className="text-sm font-medium">{t("message")}</span>
         <div className="flex gap-2">
           <button
-            aria-label="Installieren"
+            aria-label={t("install")}
             onClick={() => promptEvent.prompt()}
             className="bg-accent text-white px-4 py-2 rounded-md text-sm font-semibold hover:brightness-110 transition"
           >
-            Installieren
+            {t("install")}
           </button>
           <button
-            aria-label="Schließen"
+            aria-label={t("close")}
             onClick={() => setPromptEvent(null)}
             className="text-white/70 hover:text-white text-sm px-2"
           >

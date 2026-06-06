@@ -1,6 +1,23 @@
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import InstallBanner from "@/components/InstallBanner";
 
+jest.mock("next-intl", () => ({
+  useTranslations: (ns: string) => {
+    const t: Record<string, Record<string, string>> = {
+      installBanner: {
+        message: "JobTRIX auf dem Startbildschirm installieren",
+        install: "Installieren",
+        close: "Schließen",
+      },
+    };
+    return (key: string) => t[ns]?.[key] ?? key;
+  },
+}));
+
+function renderWithIntl(ui: React.ReactElement) {
+  return render(ui);
+}
+
 const mockBeforeInstallPromptEvent = () => {
   const event = new Event("beforeinstallprompt") as BeforeInstallPromptEvent;
   event.prompt = jest.fn().mockResolvedValue(undefined);
@@ -15,12 +32,12 @@ interface BeforeInstallPromptEvent extends Event {
 
 describe("InstallBanner", () => {
   it("ist initial nicht sichtbar", () => {
-    render(<InstallBanner />);
+    renderWithIntl(<InstallBanner />);
     expect(screen.queryByRole("region", { name: /install/i })).not.toBeInTheDocument();
   });
 
   it("erscheint wenn das beforeinstallprompt-Event ausgelöst wird", async () => {
-    render(<InstallBanner />);
+    renderWithIntl(<InstallBanner />);
 
     await act(async () => {
       const event = mockBeforeInstallPromptEvent();
@@ -32,7 +49,7 @@ describe("InstallBanner", () => {
   });
 
   it("verschwindet wenn der Nutzer es schließt", async () => {
-    render(<InstallBanner />);
+    renderWithIntl(<InstallBanner />);
 
     await act(async () => {
       const event = mockBeforeInstallPromptEvent();

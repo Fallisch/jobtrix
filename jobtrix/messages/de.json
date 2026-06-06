@@ -1,0 +1,21 @@
+{
+  "installBanner": {
+    "message": "JobTRIX auf dem Startbildschirm installieren",
+    "install": "Installieren",
+    "close": "Schließen"
+  },
+  "home": {
+    "headline": "Bewerbungen in Minuten",
+    "subline": "Profil anlegen, Stellenanzeige einfügen – JobTRIX generiert dein Anschreiben und deinen Lebenslauf automatisch.",
+    "cta": "Jetzt starten"
+  },
+  "nav": {
+    "profile": "Profil"
+  },
+  "profile": {
+    "title": "Profil",
+    "save": "Speichern",
+    "addEducation": "Ausbildung hinzufügen",
+    "remove": "Entfernen"
+  }
+}

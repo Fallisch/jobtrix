@@ -1,0 +1,21 @@
+{
+  "installBanner": {
+    "message": "Install JobTRIX on your home screen",
+    "install": "Install",
+    "close": "Close"
+  },
+  "home": {
+    "headline": "Applications in minutes",
+    "subline": "Create your profile, paste a job listing – JobTRIX automatically generates your cover letter and CV.",
+    "cta": "Get started"
+  },
+  "nav": {
+    "profile": "Profile"
+  },
+  "profile": {
+    "title": "Profile",
+    "save": "Save",
+    "addEducation": "Add education",
+    "remove": "Remove"
+  }
+}
