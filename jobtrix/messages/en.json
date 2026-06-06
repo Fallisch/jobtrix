@@ -12,6 +12,18 @@
   "nav": {
     "profile": "Profile"
   },
+  "generate": {
+    "title": "Create application",
+    "jobPostingLabel": "Job posting",
+    "jobPostingPlaceholder": "Paste job posting here…",
+    "companyNameLabel": "Company name",
+    "contactPersonLabel": "Contact person",
+    "optional": "Optional",
+    "generateButton": "Generate application",
+    "coverLetterTitle": "Cover letter",
+    "cvTitle": "CV",
+    "errorGeneric": "Generation failed. Please try again."
+  },
   "profile": {
     "title": "Profile",
     "save": "Save",

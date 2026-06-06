@@ -27,7 +27,7 @@ export default function Home() {
         {t("subline")}
       </p>
       <Link
-        href={`/${locale}/profile`}
+        href={`/${locale}/generate`}
         className="bg-accent text-white px-8 py-3 rounded-full font-semibold text-base hover:brightness-110 transition"
       >
         {t("cta")}

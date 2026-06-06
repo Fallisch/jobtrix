@@ -12,6 +12,18 @@
   "nav": {
     "profile": "Profil"
   },
+  "generate": {
+    "title": "Bewerbung erstellen",
+    "jobPostingLabel": "Stellenanzeige",
+    "jobPostingPlaceholder": "Stellenanzeige hier einfügen…",
+    "companyNameLabel": "Firmenname",
+    "contactPersonLabel": "Ansprechpartner",
+    "optional": "Optional",
+    "generateButton": "Bewerbung generieren",
+    "coverLetterTitle": "Anschreiben",
+    "cvTitle": "Lebenslauf",
+    "errorGeneric": "Generierung fehlgeschlagen. Bitte versuche es erneut."
+  },
   "profile": {
     "title": "Profil",
     "save": "Speichern",
