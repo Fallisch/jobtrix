@@ -23,7 +23,7 @@ const empty: ProfileData = {
   photo: null,
   education: [makeEduEntry()],
   qualifications: [],
-  strengths: [],
+  interests: [],
 };
 
 export default function ProfileForm() {
@@ -32,7 +32,7 @@ export default function ProfileForm() {
   const [data, setData] = useState<ProfileData>(empty);
   const [errors, setErrors] = useState<ProfileErrors>({});
   const [qualInput, setQualInput] = useState("");
-  const [strengthInput, setStrengthInput] = useState("");
+  const [interestInput, setInterestInput] = useState("");
 
   useEffect(() => {
     const saved = loadProfile();
@@ -70,16 +70,16 @@ export default function ProfileForm() {
     setData((d) => ({ ...d, qualifications: d.qualifications.filter((x) => x !== q) }));
   }
 
-  function addStrength(value: string) {
+  function addInterest(value: string) {
     const trimmed = value.trim();
-    if (trimmed && !data.strengths.includes(trimmed)) {
-      setData((d) => ({ ...d, strengths: [...d.strengths, trimmed] }));
+    if (trimmed && !data.interests.includes(trimmed)) {
+      setData((d) => ({ ...d, interests: [...d.interests, trimmed] }));
     }
-    setStrengthInput("");
+    setInterestInput("");
   }
 
-  function removeStrength(s: string) {
-    setData((d) => ({ ...d, strengths: d.strengths.filter((x) => x !== s) }));
+  function removeInterest(s: string) {
+    setData((d) => ({ ...d, interests: d.interests.filter((x) => x !== s) }));
   }
 
   function handlePhoto(e: React.ChangeEvent<HTMLInputElement>) {
@@ -266,33 +266,33 @@ export default function ProfileForm() {
         </div>
       </div>
 
-      {/* Persönliche Stärken */}
+      {/* Persönliche Interessen */}
       <div>
-        <h2 className="text-lg font-semibold text-primary mb-2">Persönliche Stärken</h2>
+        <h2 className="text-lg font-semibold text-primary mb-2">Persönliche Interessen</h2>
         <div className="flex gap-2 mb-2">
           <input
             type="text"
-            placeholder="z. B. Teamfähigkeit"
-            value={strengthInput}
-            onChange={(e) => setStrengthInput(e.target.value)}
+            placeholder="z. B. Fotografie"
+            value={interestInput}
+            onChange={(e) => setInterestInput(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 e.preventDefault();
-                addStrength(strengthInput);
+                addInterest(interestInput);
               }
             }}
             className="flex-1 border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
           />
           <button
             type="button"
-            onClick={() => addStrength(strengthInput)}
+            onClick={() => addInterest(interestInput)}
             className="px-3 py-2 bg-surface border border-gray-300 rounded-md text-sm hover:bg-gray-100"
           >
-            Stärke hinzufügen
+            Interesse hinzufügen
           </button>
         </div>
         <div className="flex flex-wrap gap-2">
-          {data.strengths.map((s) => (
+          {data.interests.map((s) => (
             <span
               key={s}
               className="inline-flex items-center gap-1 bg-accent/10 text-accent text-sm px-3 py-1 rounded-full"
@@ -300,7 +300,7 @@ export default function ProfileForm() {
               {s}
               <button
                 type="button"
-                onClick={() => removeStrength(s)}
+                onClick={() => removeInterest(s)}
                 className="text-accent/60 hover:text-accent ml-1"
                 aria-label={`${s} entfernen`}
               >

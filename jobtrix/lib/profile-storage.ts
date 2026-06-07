@@ -14,7 +14,7 @@ export interface ProfileData {
   photo: string | null;
   education: EducationEntry[];
   qualifications: string[];
-  strengths: string[];
+  interests: string[];
 }
 
 export type ProfileErrors = Partial<Record<keyof ProfileData, string>>;
