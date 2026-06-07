@@ -39,6 +39,11 @@ ${contactPerson ? `Ansprechpartner: ${contactPerson}` : ""}
 Stellenanzeige:
 ${jobPosting}
 
+Wichtig: Schreibe Anschreiben und Lebenslauf in reinem Klartext ohne Markdown-Formatierung –
+also ohne Sternchen (**fett**), ohne Raute-Überschriften (#, ##), ohne Tabellen (| ... |) und
+ohne Trennlinien (---). Verwende stattdessen normale Absätze, Zeilenumbrüche und ggf. einfache
+Aufzählungen mit "-" am Zeilenanfang.
+
 Antworte im folgenden Format – nutze exakt diese Trennstruktur:
 
 ANSCHREIBEN: [vollständiges Anschreiben hier]

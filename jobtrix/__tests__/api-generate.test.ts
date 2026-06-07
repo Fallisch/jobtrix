@@ -63,6 +63,17 @@ describe("POST /api/generate", () => {
     expect(promptText).toContain("Max Mustermann");
   });
 
+  it("weist Claude an, reinen Klartext ohne Markdown-Formatierung zu liefern", async () => {
+    mockCreate.mockResolvedValue({
+      content: [{ type: "text", text: "ANSCHREIBEN: text\n\nLEBENSLAUF: text" }],
+    });
+
+    await POST(makeRequest({ jobPosting: "Stelle als Entwickler", profile }));
+
+    const promptText = JSON.stringify(mockCreate.mock.calls[0][0]);
+    expect(promptText).toMatch(/ohne Markdown|kein Markdown|reinem Klartext|reinen Klartext/i);
+  });
+
   it("übergibt optionale Felder Firmenname und Ansprechpartner an Claude API", async () => {
     mockCreate.mockResolvedValue({
       content: [{ type: "text", text: "ANSCHREIBEN: text\n\nLEBENSLAUF: text" }],
