@@ -79,6 +79,24 @@ describe("POST /api/generate", () => {
     expect(promptText).toContain("Frau Schmidt");
   });
 
+  it("parst Markdown-formatierte Antworten korrekt (Sternchen-Marker, Präambel-Überschrift, Label-Echo)", async () => {
+    mockCreate.mockResolvedValue({
+      content: [{
+        type: "text",
+        text: "# Bewerbungsunterlagen für Max Mustermann\n\n---\n\n**ANSCHREIBEN:**\n\nSehr geehrte Damen und Herren\n\nMit freundlichen Grüßen\n\n---\n\n**LEBENSLAUF: Lebenslauf**\n\n---\n\n**Max Mustermann**\nWerdegang und Qualifikationen",
+      }],
+    });
+
+    const res = await POST(makeRequest({ jobPosting: "Wir suchen einen Entwickler", profile }));
+    const data = await res.json();
+
+    expect(data.coverLetter).toBe("Sehr geehrte Damen und Herren\n\nMit freundlichen Grüßen");
+    expect(data.cv).toBe("**Max Mustermann**\nWerdegang und Qualifikationen");
+    expect(data.coverLetter).not.toContain("**");
+    expect(data.coverLetter).not.toContain("Bewerbungsunterlagen");
+    expect(data.cv).not.toMatch(/^[\s#*]*Lebenslauf/i);
+  });
+
   it("gibt Fehler 500 zurück wenn Claude API fehlschlägt", async () => {
     mockCreate.mockRejectedValue(new Error("API nicht erreichbar"));
 

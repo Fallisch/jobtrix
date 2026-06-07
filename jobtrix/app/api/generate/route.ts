@@ -44,17 +44,38 @@ ANSCHREIBEN: [vollständiges Anschreiben hier]
 LEBENSLAUF: [vollständiger Lebenslauf hier]`;
 }
 
+const SECTION_MARKER = /\*{0,2}\s*(ANSCHREIBEN|LEBENSLAUF)\s*:\s*\*{0,2}/gi;
+
+function isNoiseLine(line: string, label: string): boolean {
+  const trimmed = line.trim();
+  if (trimmed === "") return true;
+  if (/^[#*\-_=:\s]*[#*\-_=][#*\-_=:\s]*$/.test(trimmed)) return true;
+  if (new RegExp(`^[#*\\s]*${label}[#*:\\s]*$`, "i").test(trimmed)) return true;
+  return false;
+}
+
+function cleanSection(section: string, label: string): string {
+  const lines = section.split("\n");
+  let start = 0;
+  while (start < lines.length && isNoiseLine(lines[start], label)) start++;
+  let end = lines.length;
+  while (end > start && isNoiseLine(lines[end - 1], label)) end--;
+  return lines.slice(start, end).join("\n").trim();
+}
+
 function parseResponse(text: string): { coverLetter: string; cv: string } {
-  const cvIndex = text.indexOf("\n\nLEBENSLAUF:");
-  if (cvIndex === -1) {
-    const parts = text.split("LEBENSLAUF:");
-    const coverLetter = parts[0].replace(/^ANSCHREIBEN:\s*/, "").trim();
-    const cv = (parts[1] ?? "").trim();
-    return { coverLetter, cv };
-  }
-  const coverLetter = text.slice(0, cvIndex).replace(/^ANSCHREIBEN:\s*/, "").trim();
-  const cv = text.slice(cvIndex + "\n\nLEBENSLAUF:".length).trim();
-  return { coverLetter, cv };
+  const markers = [...text.matchAll(SECTION_MARKER)];
+  const anschreiben = markers.find((m) => m[1].toUpperCase() === "ANSCHREIBEN");
+  const lebenslauf = markers.find((m) => m[1].toUpperCase() === "LEBENSLAUF");
+
+  const coverStart = anschreiben ? anschreiben.index + anschreiben[0].length : 0;
+  const coverEnd = lebenslauf ? lebenslauf.index : text.length;
+  const cvStart = lebenslauf ? lebenslauf.index + lebenslauf[0].length : text.length;
+
+  return {
+    coverLetter: cleanSection(text.slice(coverStart, coverEnd), "Anschreiben"),
+    cv: cleanSection(text.slice(cvStart), "Lebenslauf"),
+  };
 }
 
 export async function POST(request: NextRequest) {
@@ -75,7 +96,8 @@ export async function POST(request: NextRequest) {
 
     const { coverLetter, cv } = parseResponse(text);
     return NextResponse.json({ coverLetter, cv });
-  } catch {
+  } catch (err) {
+    console.error("[/api/generate] Fehler:", err);
     return NextResponse.json({ error: "Generierung fehlgeschlagen. Bitte versuche es erneut." }, { status: 500 });
   }
 }
