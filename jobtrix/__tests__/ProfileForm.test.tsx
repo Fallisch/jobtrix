@@ -66,6 +66,37 @@ describe("ProfileForm", () => {
     expect(screen.getAllByPlaceholderText(/institution/i).length).toBe(before + 1);
   });
 
+  it("fügt eine persönliche Stärke hinzu und entfernt sie wieder", async () => {
+    const user = userEvent.setup();
+    render(<ProfileForm />);
+
+    const input = screen.getByPlaceholderText(/teamfähigkeit/i);
+    await user.type(input, "Kommunikationsstärke");
+    await user.click(screen.getByRole("button", { name: /^stärke hinzufügen$/i }));
+
+    expect(screen.getByText("Kommunikationsstärke")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /kommunikationsstärke entfernen/i }));
+    expect(screen.queryByText("Kommunikationsstärke")).not.toBeInTheDocument();
+  });
+
+  it("speichert persönliche Stärken in localStorage", async () => {
+    const user = userEvent.setup();
+    render(<ProfileForm />);
+
+    await user.type(screen.getByLabelText(/name/i), "Max Mustermann");
+    await user.type(screen.getByPlaceholderText(/institution/i), "TU Berlin");
+    await user.type(screen.getByPlaceholderText(/teamfähigkeit/i), "Eigeninitiative");
+    await user.click(screen.getByRole("button", { name: /^stärke hinzufügen$/i }));
+
+    fireEvent.click(screen.getByRole("button", { name: /speichern/i }));
+
+    await waitFor(() => {
+      const profile = loadProfile();
+      expect(profile?.strengths).toEqual(["Eigeninitiative"]);
+    });
+  });
+
   it("lädt vorhandenes Profil aus localStorage", () => {
     localStorage.setItem(
       "jobtrix_profile",
@@ -76,6 +107,7 @@ describe("ProfileForm", () => {
         photo: null,
         education: [{ id: "1", institution: "HU Berlin", degree: "M.A.", year: "2020" }],
         qualifications: [],
+        strengths: [],
       })
     );
     render(<ProfileForm />);

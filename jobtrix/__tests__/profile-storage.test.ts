@@ -7,6 +7,7 @@ const baseProfile: ProfileData = {
   photo: null,
   education: [{ id: "1", institution: "TU Berlin", degree: "B.Sc.", year: "2015" }],
   qualifications: ["TypeScript", "React"],
+  strengths: ["Teamfähigkeit"],
 };
 
 beforeEach(() => localStorage.clear());

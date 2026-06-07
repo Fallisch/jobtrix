@@ -16,6 +16,7 @@ function buildPrompt(req: GenerateRequest): string {
     .map((e) => `${e.degree} – ${e.institution} (${e.year})`)
     .join("\n");
   const qualText = profile.qualifications.join(", ");
+  const strengthsText = profile.strengths.join(", ");
 
   return `Du bist ein Karriereberater und erstellst professionelle deutsche Bewerbungsunterlagen.
 
@@ -30,6 +31,7 @@ Geburtsdatum: ${profile.birthdate}
 Ausbildung:
 ${eduText}
 Qualifikationen: ${qualText}
+${profile.strengths.length > 0 ? `Persönliche Stärken: ${strengthsText}` : ""}
 
 ${companyName ? `Unternehmen: ${companyName}` : ""}
 ${contactPerson ? `Ansprechpartner: ${contactPerson}` : ""}

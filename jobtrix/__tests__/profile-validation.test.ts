@@ -7,6 +7,7 @@ const valid: ProfileData = {
   photo: null,
   education: [{ id: "1", institution: "TU Berlin", degree: "B.Sc.", year: "2015" }],
   qualifications: [],
+  strengths: [],
 };
 
 describe("validateProfile", () => {

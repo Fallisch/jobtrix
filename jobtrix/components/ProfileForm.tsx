@@ -23,6 +23,7 @@ const empty: ProfileData = {
   photo: null,
   education: [makeEduEntry()],
   qualifications: [],
+  strengths: [],
 };
 
 export default function ProfileForm() {
@@ -31,6 +32,7 @@ export default function ProfileForm() {
   const [data, setData] = useState<ProfileData>(empty);
   const [errors, setErrors] = useState<ProfileErrors>({});
   const [qualInput, setQualInput] = useState("");
+  const [strengthInput, setStrengthInput] = useState("");
 
   useEffect(() => {
     const saved = loadProfile();
@@ -66,6 +68,18 @@ export default function ProfileForm() {
 
   function removeQualification(q: string) {
     setData((d) => ({ ...d, qualifications: d.qualifications.filter((x) => x !== q) }));
+  }
+
+  function addStrength(value: string) {
+    const trimmed = value.trim();
+    if (trimmed && !data.strengths.includes(trimmed)) {
+      setData((d) => ({ ...d, strengths: [...d.strengths, trimmed] }));
+    }
+    setStrengthInput("");
+  }
+
+  function removeStrength(s: string) {
+    setData((d) => ({ ...d, strengths: d.strengths.filter((x) => x !== s) }));
   }
 
   function handlePhoto(e: React.ChangeEvent<HTMLInputElement>) {
@@ -244,6 +258,51 @@ export default function ProfileForm() {
                 onClick={() => removeQualification(q)}
                 className="text-accent/60 hover:text-accent ml-1"
                 aria-label={`${q} entfernen`}
+              >
+                ×
+              </button>
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Persönliche Stärken */}
+      <div>
+        <h2 className="text-lg font-semibold text-primary mb-2">Persönliche Stärken</h2>
+        <div className="flex gap-2 mb-2">
+          <input
+            type="text"
+            placeholder="z. B. Teamfähigkeit"
+            value={strengthInput}
+            onChange={(e) => setStrengthInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                addStrength(strengthInput);
+              }
+            }}
+            className="flex-1 border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+          />
+          <button
+            type="button"
+            onClick={() => addStrength(strengthInput)}
+            className="px-3 py-2 bg-surface border border-gray-300 rounded-md text-sm hover:bg-gray-100"
+          >
+            Stärke hinzufügen
+          </button>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {data.strengths.map((s) => (
+            <span
+              key={s}
+              className="inline-flex items-center gap-1 bg-accent/10 text-accent text-sm px-3 py-1 rounded-full"
+            >
+              {s}
+              <button
+                type="button"
+                onClick={() => removeStrength(s)}
+                className="text-accent/60 hover:text-accent ml-1"
+                aria-label={`${s} entfernen`}
               >
                 ×
               </button>
