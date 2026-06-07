@@ -20,6 +20,7 @@
     "contactPersonLabel": "Contact person",
     "optional": "Optional",
     "generateButton": "Generate application",
+    "loading": "Your application is being created …",
     "coverLetterTitle": "Cover letter",
     "cvTitle": "CV",
     "errorGeneric": "Generation failed. Please try again."

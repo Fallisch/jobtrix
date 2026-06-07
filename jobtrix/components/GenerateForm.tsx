@@ -115,10 +115,14 @@ export default function GenerateForm() {
       </div>
 
       {loading && (
-        <div data-testid="loading-animation" className="rounded-2xl bg-gray-100 p-8 animate-pulse space-y-3">
-          <div className="h-4 bg-gray-300 rounded w-3/4" />
-          <div className="h-4 bg-gray-300 rounded w-1/2" />
-          <div className="h-4 bg-gray-300 rounded w-2/3" />
+        <div data-testid="loading-animation" className="rounded-2xl bg-gray-100 p-8 flex flex-col items-center gap-4">
+          <div
+            data-testid="loading-spinner"
+            className="animate-spin h-14 w-14 rounded-full border-4 border-accent/20 border-t-accent flex items-center justify-center"
+          >
+            <span className="text-xs font-bold text-primary">J</span>
+          </div>
+          <p className="text-sm text-text/60">{t("loading")}</p>
         </div>
       )}
 

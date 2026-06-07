@@ -99,6 +99,8 @@ describe("GenerateForm", () => {
       await waitFor(() => {
         expect(screen.getByTestId("loading-animation")).toBeInTheDocument();
       });
+      expect(screen.getByTestId("loading-spinner")).toHaveClass("animate-spin");
+      expect(screen.getByText("loading")).toBeInTheDocument();
     });
 
     it("zeigt Anschreiben und Lebenslauf getrennt nach erfolgreicher Generierung", async () => {

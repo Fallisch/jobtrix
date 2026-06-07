@@ -20,6 +20,7 @@
     "contactPersonLabel": "Ansprechpartner",
     "optional": "Optional",
     "generateButton": "Bewerbung generieren",
+    "loading": "Deine Bewerbung wird erstellt …",
     "coverLetterTitle": "Anschreiben",
     "cvTitle": "Lebenslauf",
     "errorGeneric": "Generierung fehlgeschlagen. Bitte versuche es erneut."
