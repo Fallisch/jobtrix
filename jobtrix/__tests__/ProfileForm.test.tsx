@@ -97,6 +97,24 @@ describe("ProfileForm", () => {
     });
   });
 
+  it("rendert ein Legacy-Profil mit `strengths` statt `interests` ohne Crash und zeigt migrierte Interessen", () => {
+    localStorage.setItem(
+      "jobtrix_profile",
+      JSON.stringify({
+        name: "Lisa Altmann",
+        address: "",
+        birthdate: "",
+        photo: null,
+        education: [{ id: "1", institution: "HU Berlin", degree: "M.A.", year: "2012" }],
+        qualifications: [],
+        strengths: ["Reisen"],
+      })
+    );
+
+    expect(() => render(<ProfileForm />)).not.toThrow();
+    expect(screen.getByText("Reisen")).toBeInTheDocument();
+  });
+
   it("lädt vorhandenes Profil aus localStorage", () => {
     localStorage.setItem(
       "jobtrix_profile",
