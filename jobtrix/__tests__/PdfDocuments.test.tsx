@@ -6,6 +6,8 @@ import { ProfileData } from "@/lib/profile-storage";
 const profile: ProfileData = {
   name: "Anna Beispiel",
   address: "Hauptstraße 5, 10115 Berlin",
+  email: "anna@example.de",
+  phone: "0151 12345678",
   birthdate: "1992-03-15",
   photo: null,
   education: [{ id: "1", institution: "HU Berlin", degree: "M.Sc.", year: "2018" }],
@@ -85,11 +87,15 @@ describe("CoverLetterDocument – Modern-Layout Profilfoto", () => {
 });
 
 describe("CvDocument – Modern-Layout (Beispiel-Layout-Stil)", () => {
-  it("rendert Name in der Kopfzeile", () => {
+  it("rendert Foto-Banner in der Kopfzeile", () => {
     render(<CvDocument cv="Lebenslauf-Inhalt" profile={profile} template="modern" />);
     const header = screen.getByTestId("modern-cv-header");
     expect(header).toBeInTheDocument();
-    expect(header).toHaveTextContent("Anna Beispiel");
+  });
+
+  it("rendert Name im Lebenslauf", () => {
+    render(<CvDocument cv="Lebenslauf-Inhalt" profile={profile} template="modern" />);
+    expect(screen.getByText("Anna Beispiel")).toBeInTheDocument();
   });
 
   it("rendert den Lebenslauf-Text im linken Hauptbereich", () => {

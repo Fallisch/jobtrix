@@ -125,9 +125,24 @@ const styles = StyleSheet.create({
     color: "#1a1a1a",
     lineHeight: 1.5,
   },
-  cvHeader: {
+  // Photo banner: full-width, centered
+  cvPhotoBanner: {
+    width: "100%",
+    height: 180,
     backgroundColor: SIDEBAR_BG,
-    paddingVertical: 18,
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+  },
+  cvBannerPhoto: {
+    width: "100%",
+    height: 180,
+    objectFit: "cover",
+  },
+  // Dark name bar below photo
+  cvNameBar: {
+    backgroundColor: SIDEBAR_BG,
+    paddingVertical: 10,
     paddingHorizontal: 40,
     alignItems: "center",
   },
@@ -135,33 +150,47 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontFamily: "Helvetica-Bold",
     color: "#ffffff",
-    letterSpacing: 2,
+    letterSpacing: 4,
     textTransform: "uppercase",
   },
-  cvHeaderMeta: {
+  // Info row: birthdate | address | email+phone
+  cvInfoBar: {
+    flexDirection: "row",
+    borderBottomWidth: 1,
+    borderBottomColor: "#e5e7eb",
+    paddingVertical: 8,
+    paddingHorizontal: 40,
+    backgroundColor: "#f8f9fa",
+  },
+  cvInfoCell: {
+    flex: 1,
+    alignItems: "center",
+  },
+  cvInfoText: {
     fontSize: 9,
-    color: "#cbd5e1",
-    marginTop: 4,
+    color: "#374151",
+    textAlign: "center",
   },
-  // Content wrapper allows absolute sidebar + natural-flow main text
-  cvContentWrapper: {
-    position: "relative",
-    minHeight: 660,
+  // Two-column content: left 55%, divider, right 45%
+  cvTwoColumns: {
+    flexDirection: "row",
+    flex: 1,
   },
-  cvTextArea: {
+  cvLeftCol: {
+    flex: 55,
+    paddingLeft: 40,
+    paddingRight: 16,
     paddingTop: 20,
     paddingBottom: 24,
-    paddingLeft: 40,
-    paddingRight: 196,
+    borderRightWidth: 1,
+    borderRightColor: "#e5e7eb",
   },
-  cvSidebarAbs: {
-    position: "absolute",
-    top: 0,
-    right: 0,
-    width: 180,
-    paddingTop: 120,
-    paddingRight: 28,
-    paddingLeft: 12,
+  cvRightCol: {
+    flex: 45,
+    paddingLeft: 20,
+    paddingRight: 40,
+    paddingTop: 20,
+    paddingBottom: 24,
   },
   cvSideHeading: {
     fontSize: 12,
@@ -326,23 +355,47 @@ interface CvDocumentProps {
 
 export function CvDocument({ cv, profile, template = "classic" }: CvDocumentProps) {
   if (template === "modern") {
+    const birthFormatted = profile.birthdate
+      ? `Geb. ${profile.birthdate.split("-").reverse().join(".")}`
+      : null;
     return (
       <Document>
         <Page size="A4" style={styles.cvModernPage}>
-          <View style={styles.cvHeader} {...{ "data-testid": "modern-cv-header" }}>
+          {/* Photo banner */}
+          <View style={styles.cvPhotoBanner} {...{ "data-testid": "modern-cv-header" }}>
             {profile.photo ? (
-              <Image src={profile.photo} style={styles.modernSidebarPhoto} />
-            ) : null}
-            <Text style={styles.cvHeaderName}>{profile.name}</Text>
-            {profile.address ? (
-              <Text style={styles.cvHeaderMeta}>{profile.address}</Text>
+              <Image src={profile.photo} style={styles.cvBannerPhoto} />
             ) : null}
           </View>
-          <View style={styles.cvContentWrapper}>
-            <View style={styles.cvTextArea} {...{ "data-testid": "modern-content" }}>
+          {/* Name bar */}
+          <View style={styles.cvNameBar}>
+            <Text style={styles.cvHeaderName}>{profile.name}</Text>
+          </View>
+          {/* Info bar: birthdate | address | email + phone */}
+          <View style={styles.cvInfoBar}>
+            {birthFormatted ? (
+              <View style={styles.cvInfoCell}>
+                <Text style={styles.cvInfoText}>{birthFormatted}</Text>
+              </View>
+            ) : null}
+            {profile.address ? (
+              <View style={styles.cvInfoCell}>
+                <Text style={styles.cvInfoText}>{profile.address}</Text>
+              </View>
+            ) : null}
+            {(profile.email || profile.phone) ? (
+              <View style={styles.cvInfoCell}>
+                {profile.email ? <Text style={styles.cvInfoText}>{profile.email}</Text> : null}
+                {profile.phone ? <Text style={styles.cvInfoText}>{profile.phone}</Text> : null}
+              </View>
+            ) : null}
+          </View>
+          {/* Two-column content */}
+          <View style={styles.cvTwoColumns}>
+            <View style={styles.cvLeftCol} {...{ "data-testid": "modern-content" }}>
               {renderCvModernTextBlocks(cv)}
             </View>
-            <View style={styles.cvSidebarAbs}>
+            <View style={styles.cvRightCol}>
               {profile.qualifications?.length > 0 && (
                 <View {...{ "data-testid": "modern-cv-quals" }}>
                   <Text style={styles.cvSideHeading}>Qualifikationen</Text>

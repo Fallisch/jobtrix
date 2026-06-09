@@ -19,6 +19,8 @@ function makeEduEntry(): EducationEntry {
 const empty: ProfileData = {
   name: "",
   address: "",
+  email: "",
+  phone: "",
   birthdate: "",
   photo: null,
   education: [makeEduEntry()],
@@ -134,6 +136,36 @@ export default function ProfileForm() {
           onChange={(e) => set("address", e.target.value)}
           className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
           aria-label="Adresse"
+        />
+      </div>
+
+      {/* E-Mail */}
+      <div>
+        <label htmlFor="email" className="block text-sm font-medium mb-1">
+          E-Mail
+        </label>
+        <input
+          id="email"
+          type="email"
+          value={data.email}
+          onChange={(e) => set("email", e.target.value)}
+          className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+          aria-label="E-Mail"
+        />
+      </div>
+
+      {/* Telefon */}
+      <div>
+        <label htmlFor="phone" className="block text-sm font-medium mb-1">
+          Telefon
+        </label>
+        <input
+          id="phone"
+          type="tel"
+          value={data.phone}
+          onChange={(e) => set("phone", e.target.value)}
+          className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+          aria-label="Telefon"
         />
       </div>
 

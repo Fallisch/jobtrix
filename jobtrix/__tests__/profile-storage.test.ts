@@ -3,6 +3,8 @@ import { saveProfile, loadProfile, ProfileData } from "@/lib/profile-storage";
 const baseProfile: ProfileData = {
   name: "Max Mustermann",
   address: "Musterstraße 1, 12345 Berlin",
+  email: "max@example.de",
+  phone: "0151 99887766",
   birthdate: "1990-01-15",
   photo: null,
   education: [{ id: "1", institution: "TU Berlin", degree: "B.Sc.", year: "2015" }],

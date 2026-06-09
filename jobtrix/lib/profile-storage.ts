@@ -10,6 +10,8 @@ export interface EducationEntry {
 export interface ProfileData {
   name: string;
   address: string;
+  email: string;
+  phone: string;
   birthdate: string;
   photo: string | null;
   education: EducationEntry[];
@@ -33,6 +35,8 @@ export function saveProfile(data: ProfileData): void {
 function normalizeProfile(parsed: Record<string, unknown>): ProfileData {
   const { strengths: legacyStrengths, ...rest } = parsed;
   return {
+    email: "",
+    phone: "",
     ...rest,
     interests: Array.isArray(parsed.interests)
       ? parsed.interests
