@@ -115,6 +115,81 @@ describe("ProfileForm", () => {
     expect(screen.getByText("Reisen")).toBeInTheDocument();
   });
 
+  describe("Foto-Komprimierung", () => {
+    const COMPRESSED = "data:image/jpeg;base64,compressedresult";
+
+    class MockImage {
+      width = 1000;
+      height = 800;
+      onload: (() => void) | null = null;
+      onerror: ((e: Event) => void) | null = null;
+      set src(_: string) {
+        Promise.resolve().then(() => this.onload?.());
+      }
+    }
+
+    let originalImage: typeof global.Image;
+
+    beforeEach(() => {
+      originalImage = global.Image;
+      (global as unknown as { Image: unknown }).Image = MockImage;
+      jest.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue({
+        drawImage: jest.fn(),
+      } as unknown as CanvasRenderingContext2D);
+      jest.spyOn(HTMLCanvasElement.prototype, "toDataURL").mockReturnValue(COMPRESSED);
+    });
+
+    afterEach(() => {
+      global.Image = originalImage;
+      jest.restoreAllMocks();
+    });
+
+    it("speichert das komprimierte Foto in localStorage statt des Originals", async () => {
+      const user = userEvent.setup();
+      render(<ProfileForm />);
+
+      await user.type(screen.getByLabelText(/name/i), "Max Mustermann");
+      await user.type(screen.getByPlaceholderText(/institution/i), "TU Berlin");
+
+      const file = new File(["x".repeat(3 * 1024 * 1024)], "big.jpg", { type: "image/jpeg" });
+      const input = screen.getByLabelText(/foto/i);
+      await user.upload(input, file);
+
+      await waitFor(() => {
+        expect(screen.getByRole("img", { name: /vorschau/i })).toBeInTheDocument();
+      });
+
+      fireEvent.click(screen.getByRole("button", { name: /speichern/i }));
+
+      await waitFor(() => {
+        const profile = loadProfile();
+        expect(profile?.photo).toBe(COMPRESSED);
+      });
+    });
+  });
+
+  describe("Speicherfehler", () => {
+    afterEach(() => jest.restoreAllMocks());
+
+    it("zeigt Fehlermeldung wenn localStorage beim Speichern einen QuotaExceededError wirft", async () => {
+      const user = userEvent.setup();
+      jest.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+        throw new DOMException("QuotaExceededError", "QuotaExceededError");
+      });
+
+      render(<ProfileForm />);
+      await user.type(screen.getByLabelText(/name/i), "Max Mustermann");
+      await user.type(screen.getByPlaceholderText(/institution/i), "TU Berlin");
+      fireEvent.click(screen.getByRole("button", { name: /speichern/i }));
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(/profil konnte nicht gespeichert werden/i)
+        ).toBeInTheDocument();
+      });
+    });
+  });
+
   it("lädt vorhandenes Profil aus localStorage", () => {
     localStorage.setItem(
       "jobtrix_profile",

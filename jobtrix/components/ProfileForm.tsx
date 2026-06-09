@@ -10,6 +10,7 @@ import {
   saveProfile,
   validateProfile,
 } from "@/lib/profile-storage";
+import { compressImage } from "@/lib/image-compress";
 
 function makeEduEntry(): EducationEntry {
   return { id: crypto.randomUUID(), institution: "", degree: "", year: "" };
@@ -29,6 +30,7 @@ export default function ProfileForm() {
   const router = useRouter();
   const [data, setData] = useState<ProfileData>(empty);
   const [errors, setErrors] = useState<ProfileErrors>({});
+  const [saveError, setSaveError] = useState<string | null>(null);
   const [qualInput, setQualInput] = useState("");
   const [interestInput, setInterestInput] = useState("");
 
@@ -80,12 +82,11 @@ export default function ProfileForm() {
     setData((d) => ({ ...d, interests: d.interests.filter((x) => x !== s) }));
   }
 
-  function handlePhoto(e: React.ChangeEvent<HTMLInputElement>) {
+  async function handlePhoto(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => set("photo", reader.result as string);
-    reader.readAsDataURL(file);
+    const dataUrl = await compressImage(file);
+    set("photo", dataUrl);
   }
 
   function handleSubmit(e: React.FormEvent) {
@@ -93,8 +94,12 @@ export default function ProfileForm() {
     const errs = validateProfile(data);
     setErrors(errs);
     if (Object.keys(errs).length > 0) return;
-    saveProfile(data);
-    router.push("/");
+    try {
+      saveProfile(data);
+      router.push("/");
+    } catch {
+      setSaveError("Profil konnte nicht gespeichert werden. Bitte versuche es erneut.");
+    }
   }
 
   return (
@@ -310,6 +315,7 @@ export default function ProfileForm() {
       </div>
 
       {/* Speichern */}
+      {saveError && <p className="text-red-600 text-sm">{saveError}</p>}
       <button
         type="submit"
         className="w-full bg-primary text-white py-3 rounded-full font-semibold hover:brightness-110 transition"
