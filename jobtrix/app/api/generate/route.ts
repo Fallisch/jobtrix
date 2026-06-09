@@ -21,8 +21,9 @@ function buildPrompt(req: GenerateRequest): string {
   return `Du bist ein Karriereberater und erstellst professionelle deutsche Bewerbungsunterlagen.
 
 Erstelle auf Basis der folgenden Daten:
-1. Ein professionelles deutsches Anschreiben
-2. Einen strukturierten deutschen Lebenslauf
+1. Einen Betreffvorschlag für die Bewerbungs-E-Mail (Format: "Bewerbung als [erkannter Stellentitel aus der Stellenanzeige] – [Name des Bewerbers]")
+2. Ein professionelles deutsches Anschreiben
+3. Einen strukturierten deutschen Lebenslauf
 
 Bewerber:
 Name: ${profile.name}
@@ -46,12 +47,14 @@ Aufzählungen mit "-" am Zeilenanfang.
 
 Antworte im folgenden Format – nutze exakt diese Trennstruktur:
 
+BETREFF: [Betreffzeile hier]
+
 ANSCHREIBEN: [vollständiges Anschreiben hier]
 
 LEBENSLAUF: [vollständiger Lebenslauf hier]`;
 }
 
-const SECTION_MARKER = /\*{0,2}\s*(ANSCHREIBEN|LEBENSLAUF)\s*:\s*\*{0,2}/gi;
+const SECTION_MARKER = /\*{0,2}\s*(BETREFF|ANSCHREIBEN|LEBENSLAUF)\s*:\s*\*{0,2}/gi;
 
 function isNoiseLine(line: string, label: string): boolean {
   const trimmed = line.trim();
@@ -70,16 +73,20 @@ function cleanSection(section: string, label: string): string {
   return lines.slice(start, end).join("\n").trim();
 }
 
-function parseResponse(text: string): { coverLetter: string; cv: string } {
+function parseResponse(text: string): { emailSubject: string; coverLetter: string; cv: string } {
   const markers = [...text.matchAll(SECTION_MARKER)];
+  const betreff = markers.find((m) => m[1].toUpperCase() === "BETREFF");
   const anschreiben = markers.find((m) => m[1].toUpperCase() === "ANSCHREIBEN");
   const lebenslauf = markers.find((m) => m[1].toUpperCase() === "LEBENSLAUF");
 
-  const coverStart = anschreiben ? anschreiben.index + anschreiben[0].length : 0;
+  const subjectStart = betreff ? betreff.index + betreff[0].length : 0;
+  const subjectEnd = anschreiben ? anschreiben.index : lebenslauf ? lebenslauf.index : text.length;
+  const coverStart = anschreiben ? anschreiben.index + anschreiben[0].length : subjectEnd;
   const coverEnd = lebenslauf ? lebenslauf.index : text.length;
   const cvStart = lebenslauf ? lebenslauf.index + lebenslauf[0].length : text.length;
 
   return {
+    emailSubject: betreff ? cleanSection(text.slice(subjectStart, subjectEnd), "Betreff") : "",
     coverLetter: cleanSection(text.slice(coverStart, coverEnd), "Anschreiben"),
     cv: cleanSection(text.slice(cvStart), "Lebenslauf"),
   };
@@ -101,8 +108,8 @@ export async function POST(request: NextRequest) {
       .map((c) => (c as { type: "text"; text: string }).text)
       .join("");
 
-    const { coverLetter, cv } = parseResponse(text);
-    return NextResponse.json({ coverLetter, cv });
+    const { emailSubject, coverLetter, cv } = parseResponse(text);
+    return NextResponse.json({ emailSubject, coverLetter, cv });
   } catch (err) {
     console.error("[/api/generate] Fehler:", err);
     return NextResponse.json({ error: "Generierung fehlgeschlagen. Bitte versuche es erneut." }, { status: 500 });

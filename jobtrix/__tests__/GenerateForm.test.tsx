@@ -134,6 +134,30 @@ describe("GenerateForm", () => {
       });
     });
 
+    it("zeigt E-Mail-Entwurf-Sektion unterhalb von Anschreiben und Lebenslauf nach der Generierung", async () => {
+      (global.fetch as jest.Mock).mockResolvedValue({
+        ok: true,
+        json: () =>
+          Promise.resolve({
+            coverLetter: "Sehr geehrte Damen",
+            cv: "Lebenslauf-Text",
+            emailSubject: "Bewerbung als Entwickler – Max Mustermann",
+          }),
+      });
+
+      render(<GenerateForm />);
+      await userEvent.type(screen.getByRole("textbox", { name: JOB_POSTING }), "Stelle");
+      fireEvent.click(screen.getByRole("button", { name: GENERATE_BTN }));
+
+      await waitFor(() => {
+        expect(screen.getByTestId("email-draft-section")).toBeInTheDocument();
+      });
+
+      const headings = screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent);
+      expect(headings.indexOf("emailDraftTitle")).toBeGreaterThan(headings.indexOf("coverLetterTitle"));
+      expect(headings.indexOf("emailDraftTitle")).toBeGreaterThan(headings.indexOf("cvTitle"));
+    });
+
     it("Änderungen an Anschreiben bleiben bis zum Neustart erhalten", async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,

@@ -23,6 +23,12 @@
     "loading": "Deine Bewerbung wird erstellt …",
     "coverLetterTitle": "Anschreiben",
     "cvTitle": "Lebenslauf",
+    "emailDraftTitle": "E-Mail-Entwurf",
+    "emailSubjectLabel": "Betreff",
+    "emailBodyLabel": "Anschreiben",
+    "copySubject": "Betreff kopieren",
+    "copyBody": "Anschreiben kopieren",
+    "copied": "Kopiert ✓",
     "errorGeneric": "Generierung fehlgeschlagen. Bitte versuche es erneut."
   },
   "profile": {

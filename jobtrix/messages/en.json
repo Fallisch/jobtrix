@@ -23,6 +23,12 @@
     "loading": "Your application is being created …",
     "coverLetterTitle": "Cover letter",
     "cvTitle": "CV",
+    "emailDraftTitle": "Email draft",
+    "emailSubjectLabel": "Subject",
+    "emailBodyLabel": "Cover letter",
+    "copySubject": "Copy subject",
+    "copyBody": "Copy cover letter",
+    "copied": "Copied ✓",
     "errorGeneric": "Generation failed. Please try again."
   },
   "profile": {

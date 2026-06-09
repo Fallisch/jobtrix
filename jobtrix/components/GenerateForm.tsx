@@ -3,10 +3,12 @@
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { loadProfile } from "@/lib/profile-storage";
+import EmailDraft from "@/components/EmailDraft";
 
 interface GenerateResult {
   coverLetter: string;
   cv: string;
+  emailSubject: string;
 }
 
 export default function GenerateForm() {
@@ -155,6 +157,8 @@ export default function GenerateForm() {
               aria-label={t("cvTitle")}
             />
           </section>
+
+          <EmailDraft subject={result.emailSubject} body={editedCoverLetter} />
         </div>
       )}
     </div>

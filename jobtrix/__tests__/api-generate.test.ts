@@ -50,6 +50,24 @@ describe("POST /api/generate", () => {
     expect(typeof data.cv).toBe("string");
   });
 
+  it("fordert Claude an, einen Betreffvorschlag für die E-Mail zu generieren, und gibt ihn zurück", async () => {
+    mockCreate.mockResolvedValue({
+      content: [{
+        type: "text",
+        text: "BETREFF: Bewerbung als Senior Developer – Max Mustermann\n\nANSCHREIBEN: Sehr geehrte Damen\n\nLEBENSLAUF: Max Mustermann",
+      }],
+    });
+
+    const res = await POST(makeRequest({ jobPosting: "Senior Developer gesucht", profile }));
+    const data = await res.json();
+
+    const promptText = JSON.stringify(mockCreate.mock.calls[0][0]);
+    expect(promptText).toMatch(/Betreff/i);
+
+    expect(res.status).toBe(200);
+    expect(data.emailSubject).toBe("Bewerbung als Senior Developer – Max Mustermann");
+  });
+
   it("übergibt Profil und Stellentext an Claude API", async () => {
     mockCreate.mockResolvedValue({
       content: [{ type: "text", text: "ANSCHREIBEN: text\n\nLEBENSLAUF: text" }],
