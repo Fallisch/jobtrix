@@ -7,14 +7,15 @@ const PRIMARY = "#1E3A5F";
 const SIDEBAR_BG = "#1E3A5F";
 
 const styles = StyleSheet.create({
+  // ── Classic template ───────────────────────────────────────────────────────
   page: {
     fontFamily: "Helvetica",
     fontSize: 10.5,
-    paddingTop: 52,
-    paddingBottom: 52,
-    paddingHorizontal: 60,
+    paddingTop: 40,
+    paddingBottom: 40,
+    paddingHorizontal: 56,
     color: "#1a1a1a",
-    lineHeight: 1.5,
+    lineHeight: 1.45,
   },
   accentBar: {
     position: "absolute",
@@ -25,8 +26,8 @@ const styles = StyleSheet.create({
     backgroundColor: ACCENT,
   },
   header: {
-    marginBottom: 24,
-    paddingBottom: 16,
+    marginBottom: 20,
+    paddingBottom: 14,
     borderBottomWidth: 1,
     borderBottomColor: "#e5e7eb",
   },
@@ -41,43 +42,44 @@ const styles = StyleSheet.create({
     color: "#6b7280",
   },
   paragraph: {
-    marginBottom: 8,
+    marginBottom: 7,
   },
   sectionHeading: {
     fontSize: 10.5,
     fontFamily: "Helvetica-Bold",
     color: ACCENT,
     letterSpacing: 0.5,
-    marginTop: 18,
-    marginBottom: 4,
+    marginTop: 14,
+    marginBottom: 3,
     paddingBottom: 3,
     borderBottomWidth: 0.75,
     borderBottomColor: "#d1d5db",
   },
-  // Cover letter Modern layout (left dark sidebar)
+
+  // ── Cover Letter Modern (left dark sidebar) ────────────────────────────────
   modernPage: {
     fontFamily: "Helvetica",
-    fontSize: 10.5,
+    fontSize: 10,
     color: "#1a1a1a",
-    lineHeight: 1.5,
+    lineHeight: 1.45,
     flexDirection: "row",
   },
   modernSidebar: {
-    width: "35%",
+    width: "32%",
     backgroundColor: SIDEBAR_BG,
-    padding: 24,
+    padding: 20,
     color: "#ffffff",
     minHeight: "100%",
   },
   modernSidebarName: {
-    fontSize: 14,
+    fontSize: 13,
     fontFamily: "Helvetica-Bold",
     color: "#ffffff",
     marginBottom: 4,
     marginTop: 8,
   },
   modernSidebarMeta: {
-    fontSize: 9,
+    fontSize: 8.5,
     color: "#cbd5e1",
     marginBottom: 3,
   },
@@ -89,65 +91,48 @@ const styles = StyleSheet.create({
     objectFit: "cover",
   },
   modernContent: {
-    width: "65%",
-    padding: 36,
+    width: "68%",
+    padding: 24,
   },
   modernParagraph: {
-    marginBottom: 8,
+    marginBottom: 6,
   },
   modernSectionHeading: {
-    fontSize: 10.5,
+    fontSize: 10,
     fontFamily: "Helvetica-Bold",
     color: ACCENT,
     letterSpacing: 0.5,
-    marginTop: 18,
-    marginBottom: 4,
-    paddingBottom: 3,
+    marginTop: 10,
+    marginBottom: 3,
+    paddingBottom: 2,
     borderBottomWidth: 0.75,
     borderBottomColor: "#d1d5db",
   },
-  // CV-specific heading: larger + bolder than cover letter
-  cvMainHeading: {
-    fontSize: 12,
-    fontFamily: "Helvetica-Bold",
-    color: PRIMARY,
-    letterSpacing: 0.6,
-    marginTop: 18,
-    marginBottom: 5,
-    paddingBottom: 4,
-    borderBottomWidth: 1.5,
-    borderBottomColor: ACCENT,
-  },
-  // CV Modern layout (Beispiel-Layout style)
+
+  // ── CV Modern ──────────────────────────────────────────────────────────────
   cvModernPage: {
     fontFamily: "Helvetica",
-    fontSize: 10.5,
+    fontSize: 10,
     color: "#1a1a1a",
-    lineHeight: 1.5,
+    lineHeight: 1.45,
   },
-  // Photo banner: full-width, centered
-  cvPhotoBanner: {
-    width: "100%",
-    height: 180,
-    backgroundColor: SIDEBAR_BG,
-    alignItems: "center",
-    justifyContent: "center",
-    overflow: "hidden",
-  },
-  cvBannerPhoto: {
-    width: "100%",
-    height: 180,
-    objectFit: "cover",
-  },
-  // Dark name bar below photo
+  // Header: circle photo + name bar
   cvNameBar: {
     backgroundColor: SIDEBAR_BG,
-    paddingVertical: 10,
+    paddingTop: 18,
+    paddingBottom: 14,
     paddingHorizontal: 40,
     alignItems: "center",
   },
+  cvHeaderPhoto: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    marginBottom: 10,
+    objectFit: "cover",
+  },
   cvHeaderName: {
-    fontSize: 22,
+    fontSize: 20,
     fontFamily: "Helvetica-Bold",
     color: "#ffffff",
     letterSpacing: 4,
@@ -158,7 +143,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     borderBottomWidth: 1,
     borderBottomColor: "#e5e7eb",
-    paddingVertical: 8,
+    paddingVertical: 6,
     paddingHorizontal: 40,
     backgroundColor: "#f8f9fa",
   },
@@ -167,46 +152,84 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   cvInfoText: {
-    fontSize: 9,
+    fontSize: 8.5,
     color: "#374151",
     textAlign: "center",
   },
-  // Two-column content: left 55%, divider, right 45%
+  // Two-column content: left 55% | right 45%
   cvTwoColumns: {
     flexDirection: "row",
     flex: 1,
   },
   cvLeftCol: {
     flex: 55,
-    paddingLeft: 40,
-    paddingRight: 16,
-    paddingTop: 20,
-    paddingBottom: 24,
+    paddingLeft: 36,
+    paddingRight: 14,
+    paddingTop: 16,
+    paddingBottom: 20,
     borderRightWidth: 1,
     borderRightColor: "#e5e7eb",
   },
   cvRightCol: {
     flex: 45,
-    paddingLeft: 20,
-    paddingRight: 40,
-    paddingTop: 20,
-    paddingBottom: 24,
+    paddingLeft: 18,
+    paddingRight: 36,
+    paddingTop: 16,
+    paddingBottom: 20,
   },
-  cvSideHeading: {
-    fontSize: 12,
+  cvSectionHeading: {
+    fontSize: 11,
     fontFamily: "Helvetica-Bold",
     color: PRIMARY,
-    marginBottom: 10,
-    marginTop: 16,
+    marginBottom: 8,
+    marginTop: 14,
     letterSpacing: 0.3,
+    paddingBottom: 3,
+    borderBottomWidth: 1,
+    borderBottomColor: "#e5e7eb",
   },
+  // Data rows (Persönliche Daten)
+  cvDataRow: {
+    flexDirection: "row",
+    marginBottom: 4,
+  },
+  cvDataLabel: {
+    width: 70,
+    fontSize: 8.5,
+    fontFamily: "Helvetica-Bold",
+    color: "#6b7280",
+  },
+  cvDataValue: {
+    flex: 1,
+    fontSize: 9,
+    color: "#1a1a1a",
+  },
+  // Education entries
+  cvEduEntry: {
+    marginBottom: 8,
+  },
+  cvEduYear: {
+    fontSize: 8.5,
+    color: "#6b7280",
+    marginBottom: 1,
+  },
+  cvEduDegree: {
+    fontSize: 10,
+    fontFamily: "Helvetica-Bold",
+    color: PRIMARY,
+  },
+  cvEduInstitution: {
+    fontSize: 9,
+    color: "#374151",
+  },
+  // Skill bars (right column)
   skillRow: {
-    marginBottom: 7,
+    marginBottom: 6,
   },
   skillLabel: {
     fontSize: 9.5,
     color: "#374151",
-    marginBottom: 3,
+    marginBottom: 2,
   },
   skillBarBg: {
     height: 4,
@@ -251,43 +274,6 @@ function renderTextBlocks(text: string, modernStyle = false) {
   });
 }
 
-// Headings that are shown in the sidebar — filtered out of the main CV text in Modern layout
-const SIDEBAR_HEADING_PATTERN =
-  /^(QUALIFIKATION|STÄRK|FÄHIGKEIT|KENNTNIS|INTERESSE|HOBBY|HOBBIES|SOFT.?SKILL|KOMPETENZ|PERSÖNLICHE (INTERESSE|STÄRK|KOMPETENZ)|MEINE (STÄRK|QUALIF))/;
-
-function renderCvModernTextBlocks(text: string) {
-  const blocks = text.split(/\n{2,}/);
-  const result: React.ReactElement[] = [];
-  let skipNext = false;
-
-  for (let i = 0; i < blocks.length; i++) {
-    const trimmed = blocks[i].trim();
-    if (!trimmed) continue;
-
-    if (skipNext) {
-      skipNext = false;
-      continue;
-    }
-
-    if (isAllCapsHeading(trimmed) && SIDEBAR_HEADING_PATTERN.test(trimmed)) {
-      skipNext = true;
-      continue;
-    }
-
-    if (isAllCapsHeading(trimmed)) {
-      result.push(
-        <Text key={i} style={styles.cvMainHeading}>{trimmed}</Text>
-      );
-    } else {
-      result.push(
-        <Text key={i} style={styles.modernParagraph}>{trimmed}</Text>
-      );
-    }
-  }
-
-  return result;
-}
-
 function SkillBar({ label }: { label: string }) {
   return (
     <View style={styles.skillRow}>
@@ -309,8 +295,20 @@ function ModernSidebar({ profile }: { profile: ProfileData }) {
       {profile.address ? (
         <Text style={styles.modernSidebarMeta}>{profile.address}</Text>
       ) : null}
+      {profile.email ? (
+        <Text style={styles.modernSidebarMeta}>{profile.email}</Text>
+      ) : null}
+      {profile.phone ? (
+        <Text style={styles.modernSidebarMeta}>{profile.phone}</Text>
+      ) : null}
     </View>
   );
+}
+
+function formatDate(iso: string): string {
+  const parts = iso.split("-");
+  if (parts.length === 3) return `${parts[2]}.${parts[1]}.${parts[0]}`;
+  return iso;
 }
 
 interface CoverLetterDocumentProps {
@@ -355,27 +353,23 @@ interface CvDocumentProps {
 
 export function CvDocument({ cv, profile, template = "classic" }: CvDocumentProps) {
   if (template === "modern") {
-    const birthFormatted = profile.birthdate
-      ? `Geb. ${profile.birthdate.split("-").reverse().join(".")}`
-      : null;
+    const birthFormatted = profile.birthdate ? formatDate(profile.birthdate) : null;
     return (
       <Document>
         <Page size="A4" style={styles.cvModernPage}>
-          {/* Photo banner */}
-          <View style={styles.cvPhotoBanner} {...{ "data-testid": "modern-cv-header" }}>
+          {/* Header: circle photo + name */}
+          <View style={styles.cvNameBar} {...{ "data-testid": "modern-cv-header" }}>
             {profile.photo ? (
-              <Image src={profile.photo} style={styles.cvBannerPhoto} />
+              <Image src={profile.photo} style={styles.cvHeaderPhoto} />
             ) : null}
-          </View>
-          {/* Name bar */}
-          <View style={styles.cvNameBar}>
             <Text style={styles.cvHeaderName}>{profile.name}</Text>
           </View>
-          {/* Info bar: birthdate | address | email + phone */}
+
+          {/* Info bar */}
           <View style={styles.cvInfoBar}>
             {birthFormatted ? (
               <View style={styles.cvInfoCell}>
-                <Text style={styles.cvInfoText}>{birthFormatted}</Text>
+                <Text style={styles.cvInfoText}>Geb. {birthFormatted}</Text>
               </View>
             ) : null}
             {profile.address ? (
@@ -390,15 +384,56 @@ export function CvDocument({ cv, profile, template = "classic" }: CvDocumentProp
               </View>
             ) : null}
           </View>
+
           {/* Two-column content */}
           <View style={styles.cvTwoColumns}>
+            {/* Left column: structured profile data */}
             <View style={styles.cvLeftCol} {...{ "data-testid": "modern-content" }}>
-              {renderCvModernTextBlocks(cv)}
+              <Text style={styles.cvSectionHeading}>Persönliche Daten</Text>
+              {birthFormatted ? (
+                <View style={styles.cvDataRow}>
+                  <Text style={styles.cvDataLabel}>Geburtsdatum</Text>
+                  <Text style={styles.cvDataValue}>{birthFormatted}</Text>
+                </View>
+              ) : null}
+              {profile.address ? (
+                <View style={styles.cvDataRow}>
+                  <Text style={styles.cvDataLabel}>Adresse</Text>
+                  <Text style={styles.cvDataValue}>{profile.address}</Text>
+                </View>
+              ) : null}
+              {profile.email ? (
+                <View style={styles.cvDataRow}>
+                  <Text style={styles.cvDataLabel}>E-Mail</Text>
+                  <Text style={styles.cvDataValue}>{profile.email}</Text>
+                </View>
+              ) : null}
+              {profile.phone ? (
+                <View style={styles.cvDataRow}>
+                  <Text style={styles.cvDataLabel}>Telefon</Text>
+                  <Text style={styles.cvDataValue}>{profile.phone}</Text>
+                </View>
+              ) : null}
+
+              {profile.education?.length > 0 && (
+                <>
+                  <Text style={styles.cvSectionHeading}>Ausbildung</Text>
+                  {profile.education.map((edu, i) => (
+                    <View key={i} style={styles.cvEduEntry}>
+                      <Text style={styles.cvEduYear}>{edu.year}</Text>
+                      <Text style={styles.cvEduDegree}>{edu.degree}</Text>
+                      <Text style={styles.cvEduInstitution}>{edu.institution}</Text>
+                    </View>
+                  ))}
+                </>
+              )}
             </View>
+
+            {/* Right column: skills + interests */}
             <View style={styles.cvRightCol}>
               {profile.qualifications?.length > 0 && (
                 <View {...{ "data-testid": "modern-cv-quals" }}>
-                  <Text style={styles.cvSideHeading}>Qualifikationen</Text>
+                  <Text style={styles.cvSectionHeading}>Qualifikationen</Text>
                   {profile.qualifications.map((q, i) => (
                     <SkillBar key={i} label={q} />
                   ))}
@@ -406,7 +441,7 @@ export function CvDocument({ cv, profile, template = "classic" }: CvDocumentProp
               )}
               {profile.interests?.length > 0 && (
                 <View {...{ "data-testid": "modern-cv-interests" }}>
-                  <Text style={styles.cvSideHeading}>Persönliche Interessen</Text>
+                  <Text style={styles.cvSectionHeading}>Persönliche Interessen</Text>
                   {profile.interests.map((interest, i) => (
                     <SkillBar key={i} label={interest} />
                   ))}
