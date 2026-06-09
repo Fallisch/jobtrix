@@ -13,16 +13,16 @@ async function triggerDownload(element: React.ReactElement, filename: string) {
   URL.revokeObjectURL(url);
 }
 
-export async function downloadCoverLetterPdf(coverLetter: string, profile: ProfileData) {
+export async function downloadCoverLetterPdf(coverLetter: string, profile: ProfileData, template: "classic" | "modern" = "classic") {
   await triggerDownload(
-    React.createElement(CoverLetterDocument, { coverLetter, profile }),
+    React.createElement(CoverLetterDocument, { coverLetter, profile, template }),
     "anschreiben.pdf"
   );
 }
 
-export async function downloadCvPdf(cv: string, profile: ProfileData) {
+export async function downloadCvPdf(cv: string, profile: ProfileData, template: "classic" | "modern" = "classic") {
   await triggerDownload(
-    React.createElement(CvDocument, { cv, profile }),
+    React.createElement(CvDocument, { cv, profile, template }),
     "lebenslauf.pdf"
   );
 }

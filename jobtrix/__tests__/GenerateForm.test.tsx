@@ -158,6 +158,66 @@ describe("GenerateForm", () => {
       expect(headings.indexOf("emailDraftTitle")).toBeGreaterThan(headings.indexOf("cvTitle"));
     });
 
+    it("zeigt Template-Auswahl nach Generierung mit Klassisch und Modern", async () => {
+      (global.fetch as jest.Mock).mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ coverLetter: "Brief", cv: "CV", emailSubject: "Betr" }),
+      });
+
+      render(<GenerateForm />);
+      await userEvent.type(screen.getByRole("textbox", { name: JOB_POSTING }), "Stelle");
+      fireEvent.click(screen.getByRole("button", { name: GENERATE_BTN }));
+
+      await waitFor(() => screen.getByDisplayValue("Brief"));
+
+      expect(screen.getByRole("button", { name: /templateClassic/i })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /templateModern/i })).toBeInTheDocument();
+    });
+
+    it("Klassisch ist standardmäßig ausgewählt", async () => {
+      (global.fetch as jest.Mock).mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ coverLetter: "Brief", cv: "CV", emailSubject: "Betr" }),
+      });
+
+      render(<GenerateForm />);
+      await userEvent.type(screen.getByRole("textbox", { name: JOB_POSTING }), "Stelle");
+      fireEvent.click(screen.getByRole("button", { name: GENERATE_BTN }));
+
+      await waitFor(() => screen.getByDisplayValue("Brief"));
+
+      expect(screen.getByRole("button", { name: /templateClassic/i })).toHaveAttribute("aria-pressed", "true");
+      expect(screen.getByRole("button", { name: /templateModern/i })).toHaveAttribute("aria-pressed", "false");
+    });
+
+    it("Template-Auswahl bleibt nach erneutem Generieren erhalten", async () => {
+      (global.fetch as jest.Mock).mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ coverLetter: "Brief", cv: "CV", emailSubject: "Betr" }),
+      });
+
+      render(<GenerateForm />);
+      await userEvent.type(screen.getByRole("textbox", { name: JOB_POSTING }), "Stelle");
+      fireEvent.click(screen.getByRole("button", { name: GENERATE_BTN }));
+      await waitFor(() => screen.getByDisplayValue("Brief"));
+
+      // Auf Modern wechseln
+      fireEvent.click(screen.getByRole("button", { name: /templateModern/i }));
+      expect(screen.getByRole("button", { name: /templateModern/i })).toHaveAttribute("aria-pressed", "true");
+
+      // Erneut generieren
+      (global.fetch as jest.Mock).mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ coverLetter: "Neuer Brief", cv: "Neues CV", emailSubject: "Betr2" }),
+      });
+      fireEvent.click(screen.getByRole("button", { name: GENERATE_BTN }));
+      await waitFor(() => screen.getByDisplayValue("Neuer Brief"));
+
+      // Modern muss noch aktiv sein
+      expect(screen.getByRole("button", { name: /templateModern/i })).toHaveAttribute("aria-pressed", "true");
+      expect(screen.getByRole("button", { name: /templateClassic/i })).toHaveAttribute("aria-pressed", "false");
+    });
+
     it("Änderungen an Anschreiben bleiben bis zum Neustart erhalten", async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,

@@ -46,3 +46,60 @@ describe("CvDocument – PDF-Layout", () => {
     expect(screen.getByText("Mein detaillierter Lebenslauf")).toBeInTheDocument();
   });
 });
+
+describe("CoverLetterDocument – Modern-Layout", () => {
+  it("rendert eine Sidebar mit dem Namen des Nutzers", () => {
+    render(<CoverLetterDocument coverLetter="Sehr geehrte Damen" profile={profile} template="modern" />);
+    const sidebar = screen.getByTestId("modern-sidebar");
+    expect(sidebar).toBeInTheDocument();
+    expect(sidebar).toHaveTextContent("Anna Beispiel");
+  });
+
+  it("rendert den Anschreiben-Text im Hauptbereich", () => {
+    render(<CoverLetterDocument coverLetter="Mein modernes Anschreiben" profile={profile} template="modern" />);
+    const content = screen.getByTestId("modern-content");
+    expect(content).toHaveTextContent("Mein modernes Anschreiben");
+  });
+
+  it("klassisches Layout hat keine Sidebar", () => {
+    render(<CoverLetterDocument coverLetter="Brief" profile={profile} template="classic" />);
+    expect(screen.queryByTestId("modern-sidebar")).not.toBeInTheDocument();
+  });
+});
+
+describe("CoverLetterDocument – Modern-Layout Profilfoto", () => {
+  it("zeigt Foto im Modern-Layout wenn vorhanden", () => {
+    const profileWithPhoto = { ...profile, photo: "data:image/png;base64,abc123" };
+    render(<CoverLetterDocument coverLetter="Brief" profile={profileWithPhoto} template="modern" />);
+    const img = screen.getByRole("img");
+    expect(img).toHaveAttribute("src", "data:image/png;base64,abc123");
+  });
+
+  it("rendert ohne Crash wenn kein Foto vorhanden", () => {
+    const profileWithoutPhoto = { ...profile, photo: null };
+    expect(() =>
+      render(<CoverLetterDocument coverLetter="Brief" profile={profileWithoutPhoto} template="modern" />)
+    ).not.toThrow();
+    expect(screen.queryByRole("img")).not.toBeInTheDocument();
+  });
+});
+
+describe("CvDocument – Modern-Layout", () => {
+  it("rendert eine Sidebar mit dem Namen des Nutzers", () => {
+    render(<CvDocument cv="Lebenslauf-Inhalt" profile={profile} template="modern" />);
+    const sidebar = screen.getByTestId("modern-sidebar");
+    expect(sidebar).toBeInTheDocument();
+    expect(sidebar).toHaveTextContent("Anna Beispiel");
+  });
+
+  it("rendert den Lebenslauf-Text im Hauptbereich", () => {
+    render(<CvDocument cv="Mein moderner Lebenslauf" profile={profile} template="modern" />);
+    const content = screen.getByTestId("modern-content");
+    expect(content).toHaveTextContent("Mein moderner Lebenslauf");
+  });
+
+  it("klassisches Layout hat keine Sidebar", () => {
+    render(<CvDocument cv="CV" profile={profile} template="classic" />);
+    expect(screen.queryByTestId("modern-sidebar")).not.toBeInTheDocument();
+  });
+});

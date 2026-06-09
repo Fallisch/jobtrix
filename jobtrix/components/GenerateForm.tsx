@@ -23,6 +23,7 @@ export default function GenerateForm() {
   const [error, setError] = useState<string | null>(null);
   const [editedCoverLetter, setEditedCoverLetter] = useState("");
   const [editedCv, setEditedCv] = useState("");
+  const [selectedTemplate, setSelectedTemplate] = useState<"classic" | "modern">("classic");
 
   useEffect(() => {
     setHasProfile(loadProfile() !== null);
@@ -137,13 +138,40 @@ export default function GenerateForm() {
 
       {result && (
         <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium text-text">{t("templateLabel")}:</span>
+            <button
+              onClick={() => setSelectedTemplate("classic")}
+              aria-pressed={selectedTemplate === "classic"}
+              aria-label={t("templateClassic")}
+              className={`rounded-full px-4 py-1.5 text-sm font-semibold border transition ${
+                selectedTemplate === "classic"
+                  ? "bg-accent text-white border-accent"
+                  : "border-gray-200 text-text hover:border-accent hover:text-accent"
+              }`}
+            >
+              {t("templateClassic")}
+            </button>
+            <button
+              onClick={() => setSelectedTemplate("modern")}
+              aria-pressed={selectedTemplate === "modern"}
+              aria-label={t("templateModern")}
+              className={`rounded-full px-4 py-1.5 text-sm font-semibold border transition ${
+                selectedTemplate === "modern"
+                  ? "bg-accent text-white border-accent"
+                  : "border-gray-200 text-text hover:border-accent hover:text-accent"
+              }`}
+            >
+              {t("templateModern")}
+            </button>
+          </div>
           <section className="rounded-2xl border border-gray-200 bg-white overflow-hidden">
             <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-100 bg-surface">
               <h2 className="text-base font-semibold text-primary">{t("coverLetterTitle")}</h2>
               <button
                 onClick={() => {
                   const profile = loadProfile();
-                  if (profile) downloadCoverLetterPdf(editedCoverLetter, profile);
+                  if (profile) downloadCoverLetterPdf(editedCoverLetter, profile, selectedTemplate);
                 }}
                 className="inline-flex items-center gap-1.5 rounded-full border border-accent text-accent px-3.5 py-1.5 text-sm font-semibold hover:bg-accent hover:text-white transition"
                 aria-label={t("coverLetterPdfButton")}
@@ -170,7 +198,7 @@ export default function GenerateForm() {
               <button
                 onClick={() => {
                   const profile = loadProfile();
-                  if (profile) downloadCvPdf(editedCv, profile);
+                  if (profile) downloadCvPdf(editedCv, profile, selectedTemplate);
                 }}
                 className="inline-flex items-center gap-1.5 rounded-full border border-accent text-accent px-3.5 py-1.5 text-sm font-semibold hover:bg-accent hover:text-white transition"
                 aria-label={t("cvPdfButton")}

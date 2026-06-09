@@ -98,4 +98,28 @@ describe("PDF-Download-Verhalten", () => {
     const fetchCallsAfterGeneration = (global.fetch as jest.Mock).mock.calls.length;
     expect(fetchCallsAfterGeneration).toBe(1);
   });
+
+  it("Anschreiben-PDF verwendet das gewählte Template (Modern)", async () => {
+    await generateResult("Brief", "CV");
+
+    fireEvent.click(screen.getByRole("button", { name: /templateModern/i }));
+    fireEvent.click(screen.getByRole("button", { name: /coverLetterPdfButton/i }));
+
+    await waitFor(() => {
+      const pdfCall = (pdf as jest.Mock).mock.calls[0]?.[0];
+      expect(JSON.stringify(pdfCall)).toContain("modern");
+    });
+  });
+
+  it("Lebenslauf-PDF verwendet das gewählte Template (Modern)", async () => {
+    await generateResult("Brief", "CV");
+
+    fireEvent.click(screen.getByRole("button", { name: /templateModern/i }));
+    fireEvent.click(screen.getByRole("button", { name: /cvPdfButton/i }));
+
+    await waitFor(() => {
+      const pdfCall = (pdf as jest.Mock).mock.calls[0]?.[0];
+      expect(JSON.stringify(pdfCall)).toContain("modern");
+    });
+  });
 });

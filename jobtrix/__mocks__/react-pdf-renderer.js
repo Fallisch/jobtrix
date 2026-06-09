@@ -3,7 +3,7 @@ const React = require("react");
 const Document = ({ children }) => React.createElement("div", { "data-testid": "pdf-document" }, children);
 const Page = ({ children }) => React.createElement("div", { "data-testid": "pdf-page" }, children);
 const Text = ({ children }) => React.createElement("span", null, children);
-const View = ({ children }) => React.createElement("div", null, children);
+const View = ({ children, ...props }) => React.createElement("div", { "data-testid": props["data-testid"] }, children);
 const StyleSheet = { create: (styles) => styles };
 const Font = { register: jest.fn() };
 const Image = ({ src }) => React.createElement("img", { src });

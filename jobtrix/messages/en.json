@@ -31,7 +31,10 @@
     "copied": "Copied ✓",
     "errorGeneric": "Generation failed. Please try again.",
     "coverLetterPdfButton": "Download cover letter as PDF",
-    "cvPdfButton": "Download CV as PDF"
+    "cvPdfButton": "Download CV as PDF",
+    "templateLabel": "Layout",
+    "templateClassic": "Classic",
+    "templateModern": "Modern"
   },
   "profile": {
     "title": "Profile",
