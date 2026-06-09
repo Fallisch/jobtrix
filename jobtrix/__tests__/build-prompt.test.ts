@@ -14,6 +14,18 @@ const baseProfile: ProfileData = {
 };
 
 describe("buildPrompt", () => {
+  it("enthält Anweisung, typische KI-Floskeln zu vermeiden", () => {
+    const prompt = buildPrompt({ jobPosting: "Stelle als Entwickler", profile: baseProfile });
+    expect(prompt).toMatch(/floskeln|phrasen|formulierungen.*vermeid|vermeide.*floskeln/i);
+    expect(prompt).toMatch(/freue mich sehr|leidenschaftlich/i);
+  });
+
+  it("enthält Anweisung für natürliche, variierte Satzstruktur", () => {
+    const prompt = buildPrompt({ jobPosting: "Stelle als Entwickler", profile: baseProfile });
+    expect(prompt).toMatch(/satzl.nge|satzstruktur|kurze.*s.tze|lange.*s.tze|variier/i);
+  });
+
+
   it("enthält Qualifikations-Labels im Prompt (nicht [object Object])", () => {
     const prompt = buildPrompt({ jobPosting: "Stelle als Entwickler", profile: baseProfile });
     expect(prompt).toContain("TypeScript");
