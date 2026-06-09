@@ -86,6 +86,7 @@ const styles = StyleSheet.create({
     height: 80,
     borderRadius: 40,
     marginBottom: 12,
+    objectFit: "cover",
   },
   modernContent: {
     width: "65%",
@@ -115,6 +116,7 @@ const styles = StyleSheet.create({
   cvPhoto: {
     width: "100%",
     height: 160,
+    objectFit: "cover",
   },
   cvHeader: {
     backgroundColor: SIDEBAR_BG,
