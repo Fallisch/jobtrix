@@ -84,22 +84,47 @@ describe("CoverLetterDocument – Modern-Layout Profilfoto", () => {
   });
 });
 
-describe("CvDocument – Modern-Layout", () => {
-  it("rendert eine Sidebar mit dem Namen des Nutzers", () => {
+describe("CvDocument – Modern-Layout (Beispiel-Layout-Stil)", () => {
+  it("rendert Name in der Kopfzeile", () => {
     render(<CvDocument cv="Lebenslauf-Inhalt" profile={profile} template="modern" />);
-    const sidebar = screen.getByTestId("modern-sidebar");
-    expect(sidebar).toBeInTheDocument();
-    expect(sidebar).toHaveTextContent("Anna Beispiel");
+    const header = screen.getByTestId("modern-cv-header");
+    expect(header).toBeInTheDocument();
+    expect(header).toHaveTextContent("Anna Beispiel");
   });
 
-  it("rendert den Lebenslauf-Text im Hauptbereich", () => {
+  it("rendert den Lebenslauf-Text im linken Hauptbereich", () => {
     render(<CvDocument cv="Mein moderner Lebenslauf" profile={profile} template="modern" />);
     const content = screen.getByTestId("modern-content");
     expect(content).toHaveTextContent("Mein moderner Lebenslauf");
   });
 
-  it("klassisches Layout hat keine Sidebar", () => {
+  it("rendert Qualifikationen in der rechten Spalte", () => {
+    render(<CvDocument cv="CV" profile={profile} template="modern" />);
+    const quals = screen.getByTestId("modern-cv-quals");
+    expect(quals).toHaveTextContent("Python");
+    expect(quals).toHaveTextContent("SQL");
+  });
+
+  it("rendert Interessen in der rechten Spalte", () => {
+    render(<CvDocument cv="CV" profile={profile} template="modern" />);
+    const interests = screen.getByTestId("modern-cv-interests");
+    expect(interests).toHaveTextContent("Datenanalyse");
+  });
+
+  it("rendert Foto wenn vorhanden", () => {
+    const profileWithPhoto = { ...profile, photo: "data:image/png;base64,abc123" };
+    render(<CvDocument cv="CV" profile={profileWithPhoto} template="modern" />);
+    expect(screen.getByRole("img")).toHaveAttribute("src", "data:image/png;base64,abc123");
+  });
+
+  it("rendert ohne Crash wenn kein Foto vorhanden", () => {
+    expect(() =>
+      render(<CvDocument cv="CV" profile={{ ...profile, photo: null }} template="modern" />)
+    ).not.toThrow();
+  });
+
+  it("klassisches Layout hat keine modern-cv-header", () => {
     render(<CvDocument cv="CV" profile={profile} template="classic" />);
-    expect(screen.queryByTestId("modern-sidebar")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("modern-cv-header")).not.toBeInTheDocument();
   });
 });
