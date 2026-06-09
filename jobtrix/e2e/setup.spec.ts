@@ -6,7 +6,7 @@ test.describe("Projekt-Setup – Grundlegendes Layout", () => {
 
     const header = page.getByRole("banner");
     await expect(header).toBeVisible();
-    await expect(page.getByText("JobTRIX")).toBeVisible();
+    await expect(page.getByRole("link", { name: "JobTRIX" })).toBeVisible();
   });
 
   test("Manifest ist erreichbar und korrekt konfiguriert", async ({ page }) => {
