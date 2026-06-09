@@ -14,15 +14,29 @@ const baseProfile: ProfileData = {
 };
 
 describe("buildPrompt", () => {
-  it("enthält Anweisung, typische KI-Floskeln zu vermeiden", () => {
+  it("enthält Verbot der häufigsten KI-Floskeln mit konkreten Beispielen", () => {
     const prompt = buildPrompt({ jobPosting: "Stelle als Entwickler", profile: baseProfile });
-    expect(prompt).toMatch(/floskeln|phrasen|formulierungen.*vermeid|vermeide.*floskeln/i);
-    expect(prompt).toMatch(/freue mich sehr|leidenschaftlich/i);
+    expect(prompt).toMatch(/freue mich sehr/i);
+    expect(prompt).toMatch(/leidenschaftlich/i);
+    expect(prompt).toMatch(/motiviert/i);
+    expect(prompt).toMatch(/niemals verwenden|verboten/i);
   });
 
-  it("enthält Anweisung für natürliche, variierte Satzstruktur", () => {
+  it("enthält Anweisung zur Satzlängen-Variation mit explizitem Hinweis auf kurze und lange Sätze", () => {
     const prompt = buildPrompt({ jobPosting: "Stelle als Entwickler", profile: baseProfile });
-    expect(prompt).toMatch(/satzl.nge|satzstruktur|kurze.*s.tze|lange.*s.tze|variier/i);
+    expect(prompt).toMatch(/kurz|kurze/i);
+    expect(prompt).toMatch(/l.nger|lang/i);
+    expect(prompt).toMatch(/variier/i);
+  });
+
+  it("enthält Anweisung, Sätze nicht zweimal mit 'Ich' zu beginnen", () => {
+    const prompt = buildPrompt({ jobPosting: "Stelle als Entwickler", profile: baseProfile });
+    expect(prompt).toMatch(/nicht.*zweimal.*ich|nie.*zweimal.*ich|hintereinander.*ich/i);
+  });
+
+  it("enthält Anweisung zu konkreten statt abstrakten Formulierungen", () => {
+    const prompt = buildPrompt({ jobPosting: "Stelle als Entwickler", profile: baseProfile });
+    expect(prompt).toMatch(/konkret|abstrakt/i);
   });
 
 
