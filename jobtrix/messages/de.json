@@ -34,7 +34,10 @@
     "cvPdfButton": "Lebenslauf als PDF herunterladen",
     "templateLabel": "Layout",
     "templateClassic": "Klassisch",
-    "templateModern": "Modern"
+    "templateModern": "Modern",
+    "cvStyleLabel": "Lebenslauf-Stil",
+    "cvStyleClassic": "Klassisch",
+    "cvStyleAmerican": "Amerikanisch"
   },
   "profile": {
     "title": "Profil",

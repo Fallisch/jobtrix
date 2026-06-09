@@ -24,6 +24,7 @@ export default function GenerateForm() {
   const [editedCoverLetter, setEditedCoverLetter] = useState("");
   const [editedCv, setEditedCv] = useState("");
   const [selectedTemplate, setSelectedTemplate] = useState<"classic" | "modern">("classic");
+  const [cvStyle, setCvStyle] = useState<"classic" | "american">("classic");
 
   useEffect(() => {
     setHasProfile(loadProfile() !== null);
@@ -41,7 +42,7 @@ export default function GenerateForm() {
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ jobPosting, companyName, contactPerson, profile }),
+        body: JSON.stringify({ jobPosting, companyName, contactPerson, profile, cvStyle }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -109,13 +110,44 @@ export default function GenerateForm() {
           </div>
         </div>
 
-        <button
-          onClick={handleGenerate}
-          disabled={!canGenerate || loading}
-          className="w-full sm:w-auto bg-accent text-white px-8 py-3 rounded-full font-semibold text-base hover:brightness-110 transition disabled:opacity-40 disabled:cursor-not-allowed"
-        >
-          {t("generateButton")}
-        </button>
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            onClick={handleGenerate}
+            disabled={!canGenerate || loading}
+            className="w-full sm:w-auto bg-accent text-white px-8 py-3 rounded-full font-semibold text-base hover:brightness-110 transition disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            {t("generateButton")}
+          </button>
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-text/60">{t("cvStyleLabel")}:</span>
+            <button
+              type="button"
+              onClick={() => setCvStyle("classic")}
+              aria-pressed={cvStyle === "classic"}
+              aria-label={t("cvStyleClassic")}
+              className={`rounded-full px-3.5 py-1.5 text-sm font-semibold border transition ${
+                cvStyle === "classic"
+                  ? "bg-accent text-white border-accent"
+                  : "border-gray-200 text-text hover:border-accent hover:text-accent"
+              }`}
+            >
+              {t("cvStyleClassic")}
+            </button>
+            <button
+              type="button"
+              onClick={() => setCvStyle("american")}
+              aria-pressed={cvStyle === "american"}
+              aria-label={t("cvStyleAmerican")}
+              className={`rounded-full px-3.5 py-1.5 text-sm font-semibold border transition ${
+                cvStyle === "american"
+                  ? "bg-accent text-white border-accent"
+                  : "border-gray-200 text-text hover:border-accent hover:text-accent"
+              }`}
+            >
+              {t("cvStyleAmerican")}
+            </button>
+          </div>
+        </div>
       </div>
 
       {loading && (

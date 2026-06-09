@@ -34,7 +34,10 @@
     "cvPdfButton": "Download CV as PDF",
     "templateLabel": "Layout",
     "templateClassic": "Classic",
-    "templateModern": "Modern"
+    "templateModern": "Modern",
+    "cvStyleLabel": "CV style",
+    "cvStyleClassic": "Classic",
+    "cvStyleAmerican": "American"
   },
   "profile": {
     "title": "Profile",

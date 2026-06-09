@@ -218,6 +218,49 @@ describe("GenerateForm", () => {
       expect(screen.getByRole("button", { name: /templateClassic/i })).toHaveAttribute("aria-pressed", "false");
     });
 
+    it("zeigt Lebenslauf-Stil-Auswahl mit Klassisch als Standard", () => {
+      render(<GenerateForm />);
+      const classicBtn = screen.getByRole("button", { name: /cvStyleClassic/i });
+      const americanBtn = screen.getByRole("button", { name: /cvStyleAmerican/i });
+      expect(classicBtn).toBeInTheDocument();
+      expect(americanBtn).toBeInTheDocument();
+      expect(classicBtn).toHaveAttribute("aria-pressed", "true");
+      expect(americanBtn).toHaveAttribute("aria-pressed", "false");
+    });
+
+    it("sendet cvStyle classic standardmäßig beim Generieren", async () => {
+      (global.fetch as jest.Mock).mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ coverLetter: "Brief", cv: "CV", emailSubject: "Betr" }),
+      });
+
+      render(<GenerateForm />);
+      await userEvent.type(screen.getByRole("textbox", { name: JOB_POSTING }), "Stelle");
+      fireEvent.click(screen.getByRole("button", { name: GENERATE_BTN }));
+
+      await waitFor(() => screen.getByDisplayValue("Brief"));
+
+      const body = JSON.parse((global.fetch as jest.Mock).mock.calls[0][1].body);
+      expect(body.cvStyle).toBe("classic");
+    });
+
+    it("sendet cvStyle american wenn Amerikanisch ausgewählt", async () => {
+      (global.fetch as jest.Mock).mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ coverLetter: "Brief", cv: "CV", emailSubject: "Betr" }),
+      });
+
+      render(<GenerateForm />);
+      fireEvent.click(screen.getByRole("button", { name: /cvStyleAmerican/i }));
+      await userEvent.type(screen.getByRole("textbox", { name: JOB_POSTING }), "Stelle");
+      fireEvent.click(screen.getByRole("button", { name: GENERATE_BTN }));
+
+      await waitFor(() => screen.getByDisplayValue("Brief"));
+
+      const body = JSON.parse((global.fetch as jest.Mock).mock.calls[0][1].body);
+      expect(body.cvStyle).toBe("american");
+    });
+
     it("Änderungen an Anschreiben bleiben bis zum Neustart erhalten", async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
