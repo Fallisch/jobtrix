@@ -16,8 +16,8 @@ const profile = {
   birthdate: "1990-01-01",
   photo: null,
   education: [{ id: "1", institution: "TU Berlin", degree: "B.Sc. Informatik", year: "2015" }],
-  qualifications: ["TypeScript", "React"],
-  interests: ["Reisen"],
+  qualifications: [{ label: "TypeScript", value: 80 }, { label: "React", value: 60 }],
+  interests: [{ label: "Reisen", value: 60 }],
 };
 
 function makeRequest(body: object) {

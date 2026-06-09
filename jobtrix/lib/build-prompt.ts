@@ -14,8 +14,8 @@ export function buildPrompt(req: GenerateRequest): string {
   const eduText = profile.education
     .map((e) => `${e.degree} – ${e.institution} (${e.year})`)
     .join("\n");
-  const qualText = profile.qualifications.join(", ");
-  const interestsText = profile.interests.join(", ");
+  const qualText = profile.qualifications.map((q) => q.label).join(", ");
+  const interestsText = profile.interests.map((i) => i.label).join(", ");
 
   return `Du bist ein Karriereberater und erstellst professionelle deutsche Bewerbungsunterlagen.
 
