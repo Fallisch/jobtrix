@@ -20,9 +20,9 @@ export async function downloadCoverLetterPdf(coverLetter: string, profile: Profi
   );
 }
 
-export async function downloadCvPdf(cv: string, profile: ProfileData, template: "classic" | "modern" = "classic") {
+export async function downloadCvPdf(cv: string, profile: ProfileData, template: "classic" | "modern" = "classic", cvStyle: "classic" | "american" = "classic") {
   await triggerDownload(
-    React.createElement(CvDocument, { cv, profile, template }),
+    React.createElement(CvDocument, { cv, profile, template, cvStyle }),
     "lebenslauf.pdf"
   );
 }

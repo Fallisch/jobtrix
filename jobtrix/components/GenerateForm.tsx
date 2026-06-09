@@ -230,7 +230,7 @@ export default function GenerateForm() {
               <button
                 onClick={() => {
                   const profile = loadProfile();
-                  if (profile) downloadCvPdf(editedCv, profile, selectedTemplate);
+                  if (profile) downloadCvPdf(editedCv, profile, selectedTemplate, cvStyle);
                 }}
                 className="inline-flex items-center gap-1.5 rounded-full border border-accent text-accent px-3.5 py-1.5 text-sm font-semibold hover:bg-accent hover:text-white transition"
                 aria-label={t("cvPdfButton")}

@@ -349,11 +349,13 @@ interface CvDocumentProps {
   cv: string;
   profile: ProfileData;
   template?: "classic" | "modern";
+  cvStyle?: "classic" | "american";
 }
 
-export function CvDocument({ cv, profile, template = "classic" }: CvDocumentProps) {
+export function CvDocument({ cv, profile, template = "classic", cvStyle }: CvDocumentProps) {
   if (template === "modern") {
     const birthFormatted = profile.birthdate ? formatDate(profile.birthdate) : null;
+    const education = cvStyle === "american" ? [...profile.education].reverse() : profile.education;
     return (
       <Document>
         <Page size="A4" style={styles.cvModernPage}>
@@ -415,11 +417,11 @@ export function CvDocument({ cv, profile, template = "classic" }: CvDocumentProp
                 </View>
               ) : null}
 
-              {profile.education?.length > 0 && (
+              {education?.length > 0 && (
                 <>
                   <Text style={styles.cvSectionHeading}>Ausbildung</Text>
-                  {profile.education.map((edu, i) => (
-                    <View key={i} style={styles.cvEduEntry}>
+                  {education.map((edu, i) => (
+                    <View key={i} style={styles.cvEduEntry} {...{ "data-testid": "modern-edu-entry" }}>
                       <Text style={styles.cvEduYear}>{edu.year}</Text>
                       <Text style={styles.cvEduDegree}>{edu.degree}</Text>
                       <Text style={styles.cvEduInstitution}>{edu.institution}</Text>

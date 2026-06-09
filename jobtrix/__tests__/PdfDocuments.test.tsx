@@ -135,3 +135,34 @@ describe("CvDocument – Modern-Layout (Beispiel-Layout-Stil)", () => {
     expect(screen.queryByTestId("modern-cv-header")).not.toBeInTheDocument();
   });
 });
+
+describe("CvDocument – Modern-Layout cvStyle", () => {
+  const profileMultiEdu: ProfileData = {
+    ...profile,
+    education: [
+      { id: "1", institution: "HTW Berlin", degree: "B.Sc.", year: "2014" },
+      { id: "2", institution: "HU Berlin", degree: "M.Sc.", year: "2018" },
+    ],
+  };
+
+  it("zeigt Ausbildungseinträge chronologisch bei cvStyle classic", () => {
+    render(<CvDocument cv="CV" profile={profileMultiEdu} template="modern" cvStyle="classic" />);
+    const entries = screen.getAllByTestId("modern-edu-entry");
+    expect(entries[0]).toHaveTextContent("2014");
+    expect(entries[1]).toHaveTextContent("2018");
+  });
+
+  it("zeigt Ausbildungseinträge antichronologisch bei cvStyle american", () => {
+    render(<CvDocument cv="CV" profile={profileMultiEdu} template="modern" cvStyle="american" />);
+    const entries = screen.getAllByTestId("modern-edu-entry");
+    expect(entries[0]).toHaveTextContent("2018");
+    expect(entries[1]).toHaveTextContent("2014");
+  });
+
+  it("verhält sich wie classic wenn cvStyle fehlt", () => {
+    render(<CvDocument cv="CV" profile={profileMultiEdu} template="modern" />);
+    const entries = screen.getAllByTestId("modern-edu-entry");
+    expect(entries[0]).toHaveTextContent("2014");
+    expect(entries[1]).toHaveTextContent("2018");
+  });
+});
