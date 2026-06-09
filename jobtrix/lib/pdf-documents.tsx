@@ -113,11 +113,6 @@ const styles = StyleSheet.create({
     color: "#1a1a1a",
     lineHeight: 1.5,
   },
-  cvPhoto: {
-    width: "100%",
-    height: 160,
-    objectFit: "cover",
-  },
   cvHeader: {
     backgroundColor: SIDEBAR_BG,
     paddingVertical: 18,
@@ -136,28 +131,24 @@ const styles = StyleSheet.create({
     color: "#cbd5e1",
     marginTop: 4,
   },
-  cvColumns: {
-    flexDirection: "row",
-    flex: 1,
+  // Content wrapper allows absolute sidebar + natural-flow main text
+  cvContentWrapper: {
+    position: "relative",
   },
-  cvMainColumn: {
-    width: "57%",
-    paddingTop: 24,
+  cvTextArea: {
+    paddingTop: 20,
     paddingBottom: 24,
     paddingLeft: 40,
-    paddingRight: 16,
+    paddingRight: 196,
   },
-  cvDivider: {
-    width: 1,
-    backgroundColor: "#e5e7eb",
-    marginVertical: 16,
-  },
-  cvSideColumn: {
-    width: "40%",
-    paddingTop: 24,
-    paddingBottom: 24,
-    paddingLeft: 16,
-    paddingRight: 32,
+  cvSidebarAbs: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    width: 180,
+    paddingTop: 20,
+    paddingRight: 28,
+    paddingLeft: 12,
   },
   cvSideHeading: {
     fontSize: 12,
@@ -297,12 +288,11 @@ export function CvDocument({ cv, profile, template = "classic" }: CvDocumentProp
               <Text style={styles.cvHeaderMeta}>{profile.address}</Text>
             ) : null}
           </View>
-          <View style={styles.cvColumns}>
-            <View style={styles.cvMainColumn} {...{ "data-testid": "modern-content" }}>
+          <View style={styles.cvContentWrapper}>
+            <View style={styles.cvTextArea} {...{ "data-testid": "modern-content" }}>
               {renderTextBlocks(cv, true)}
             </View>
-            <View style={styles.cvDivider} />
-            <View style={styles.cvSideColumn}>
+            <View style={styles.cvSidebarAbs}>
               {profile.qualifications?.length > 0 && (
                 <View {...{ "data-testid": "modern-cv-quals" }}>
                   <Text style={styles.cvSideHeading}>Qualifikationen</Text>
