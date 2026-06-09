@@ -10,6 +10,7 @@ const config: Config = {
   testPathIgnorePatterns: ["/node_modules/", "/e2e/"],
   moduleNameMapper: {
     "^next-intl/config$": "<rootDir>/__mocks__/next-intl-config.js",
+    "^@react-pdf/renderer$": "<rootDir>/__mocks__/react-pdf-renderer.js",
     "^@/(.*)$": "<rootDir>/$1",
   },
 };

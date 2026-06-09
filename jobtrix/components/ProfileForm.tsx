@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
 import {
   ProfileData,
   EducationEntry,
@@ -27,7 +26,6 @@ const empty: ProfileData = {
 };
 
 export default function ProfileForm() {
-  const t = useTranslations("profile");
   const router = useRouter();
   const [data, setData] = useState<ProfileData>(empty);
   const [errors, setErrors] = useState<ProfileErrors>({});

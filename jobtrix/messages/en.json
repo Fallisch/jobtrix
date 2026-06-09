@@ -29,7 +29,9 @@
     "copySubject": "Copy subject",
     "copyBody": "Copy cover letter",
     "copied": "Copied ✓",
-    "errorGeneric": "Generation failed. Please try again."
+    "errorGeneric": "Generation failed. Please try again.",
+    "coverLetterPdfButton": "Download cover letter as PDF",
+    "cvPdfButton": "Download CV as PDF"
   },
   "profile": {
     "title": "Profile",
