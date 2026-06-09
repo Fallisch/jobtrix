@@ -8,8 +8,8 @@ const baseProfile: ProfileData = {
   birthdate: "1990-01-15",
   photo: null,
   education: [{ id: "1", institution: "TU Berlin", degree: "B.Sc.", year: "2015" }],
-  qualifications: ["TypeScript", "React"],
-  interests: ["Reisen"],
+  qualifications: [{ label: "TypeScript", value: 80 }, { label: "React", value: 60 }],
+  interests: [{ label: "Reisen", value: 60 }],
 };
 
 beforeEach(() => localStorage.clear());
@@ -57,7 +57,10 @@ describe("loadProfile / Legacy-Migration", () => {
     };
     localStorage.setItem("jobtrix_profile", JSON.stringify(legacy));
 
-    expect(loadProfile()?.interests).toEqual(["Teamfähigkeit", "Kreativität"]);
+    expect(loadProfile()?.interests).toEqual([
+      { label: "Teamfähigkeit", value: 60 },
+      { label: "Kreativität", value: 60 },
+    ]);
   });
 
   it("lädt ein Profil ganz ohne interests-/strengths-Feld mit leerer Interessen-Liste", () => {
@@ -72,5 +75,41 @@ describe("loadProfile / Legacy-Migration", () => {
     localStorage.setItem("jobtrix_profile", JSON.stringify(ancient));
 
     expect(loadProfile()?.interests).toEqual([]);
+  });
+});
+
+describe("loadProfile / Skill-Werte", () => {
+  it("mappt alte String-Qualifikationen auf {label, value: 60}", () => {
+    localStorage.setItem(
+      "jobtrix_profile",
+      JSON.stringify({ name: "Test", qualifications: ["Python", "SQL"], interests: [] })
+    );
+    const profile = loadProfile();
+    expect(profile?.qualifications).toEqual([
+      { label: "Python", value: 60 },
+      { label: "SQL", value: 60 },
+    ]);
+  });
+
+  it("mappt alte String-Interessen auf {label, value: 60}", () => {
+    localStorage.setItem(
+      "jobtrix_profile",
+      JSON.stringify({ name: "Test", qualifications: [], interests: ["Coding"] })
+    );
+    expect(loadProfile()?.interests).toEqual([{ label: "Coding", value: 60 }]);
+  });
+
+  it("behält Objekt-Format mit individuellem value", () => {
+    localStorage.setItem(
+      "jobtrix_profile",
+      JSON.stringify({
+        name: "Test",
+        qualifications: [{ label: "Python", value: 80 }],
+        interests: [{ label: "Lesen", value: 40 }],
+      })
+    );
+    const profile = loadProfile();
+    expect(profile?.qualifications).toEqual([{ label: "Python", value: 80 }]);
+    expect(profile?.interests).toEqual([{ label: "Lesen", value: 40 }]);
   });
 });

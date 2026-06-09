@@ -1,6 +1,6 @@
 import React from "react";
 import { Document, Page, Text, View, StyleSheet, Image } from "@react-pdf/renderer";
-import { ProfileData } from "@/lib/profile-storage";
+import { ProfileData, SkillItem } from "@/lib/profile-storage";
 
 const ACCENT = "#2F80ED";
 const PRIMARY = "#1E3A5F";
@@ -274,12 +274,15 @@ function renderTextBlocks(text: string, modernStyle = false) {
   });
 }
 
-function SkillBar({ label }: { label: string }) {
+function SkillBar({ label, value }: SkillItem) {
   return (
     <View style={styles.skillRow}>
       <Text style={styles.skillLabel}>{label}</Text>
       <View style={styles.skillBarBg}>
-        <View style={styles.skillBarFill} />
+        <View
+          style={{ ...styles.skillBarFill, width: `${value}%` }}
+          {...{ "data-testid": "skill-bar-fill" }}
+        />
       </View>
     </View>
   );
@@ -441,7 +444,7 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
                 <View {...{ "data-testid": "modern-cv-quals" }}>
                   <Text style={styles.cvSectionHeading}>Qualifikationen</Text>
                   {profile.qualifications.map((q, i) => (
-                    <SkillBar key={i} label={q} />
+                    <SkillBar key={i} label={q.label} value={q.value} />
                   ))}
                 </View>
               )}
@@ -449,7 +452,7 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
                 <View {...{ "data-testid": "modern-cv-interests" }}>
                   <Text style={styles.cvSectionHeading}>Persönliche Interessen</Text>
                   {profile.interests.map((interest, i) => (
-                    <SkillBar key={i} label={interest} />
+                    <SkillBar key={i} label={interest.label} value={interest.value} />
                   ))}
                 </View>
               )}

@@ -93,7 +93,38 @@ describe("ProfileForm", () => {
 
     await waitFor(() => {
       const profile = loadProfile();
-      expect(profile?.interests).toEqual(["Reisen"]);
+      expect(profile?.interests).toEqual([{ label: "Reisen", value: 60 }]);
+    });
+  });
+
+  it("zeigt pro Qualifikations-Chip einen Slider an", async () => {
+    const user = userEvent.setup();
+    render(<ProfileForm />);
+
+    await user.type(screen.getByPlaceholderText(/typescript/i), "TypeScript");
+    await user.click(screen.getByRole("button", { name: /^hinzufügen$/i }));
+
+    const slider = screen.getByRole("slider", { name: /typescript/i });
+    expect(slider).toBeInTheDocument();
+  });
+
+  it("speichert den Slider-Wert einer Qualifikation in localStorage", async () => {
+    const user = userEvent.setup();
+    render(<ProfileForm />);
+
+    await user.type(screen.getByLabelText(/name/i), "Max Mustermann");
+    await user.type(screen.getByPlaceholderText(/institution/i), "TU Berlin");
+    await user.type(screen.getByPlaceholderText(/typescript/i), "TypeScript");
+    await user.click(screen.getByRole("button", { name: /^hinzufügen$/i }));
+
+    const slider = screen.getByRole("slider", { name: /typescript/i });
+    fireEvent.change(slider, { target: { value: "80" } });
+
+    fireEvent.click(screen.getByRole("button", { name: /speichern/i }));
+
+    await waitFor(() => {
+      const profile = loadProfile();
+      expect(profile?.qualifications).toEqual([{ label: "TypeScript", value: 80 }]);
     });
   });
 

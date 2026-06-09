@@ -62,26 +62,40 @@ export default function ProfileForm() {
 
   function addQualification(value: string) {
     const trimmed = value.trim();
-    if (trimmed && !data.qualifications.includes(trimmed)) {
-      setData((d) => ({ ...d, qualifications: [...d.qualifications, trimmed] }));
+    if (trimmed && !data.qualifications.some((q) => q.label === trimmed)) {
+      setData((d) => ({ ...d, qualifications: [...d.qualifications, { label: trimmed, value: 60 }] }));
     }
     setQualInput("");
   }
 
-  function removeQualification(q: string) {
-    setData((d) => ({ ...d, qualifications: d.qualifications.filter((x) => x !== q) }));
+  function removeQualification(label: string) {
+    setData((d) => ({ ...d, qualifications: d.qualifications.filter((q) => q.label !== label) }));
+  }
+
+  function updateQualificationValue(label: string, value: number) {
+    setData((d) => ({
+      ...d,
+      qualifications: d.qualifications.map((q) => q.label === label ? { ...q, value } : q),
+    }));
   }
 
   function addInterest(value: string) {
     const trimmed = value.trim();
-    if (trimmed && !data.interests.includes(trimmed)) {
-      setData((d) => ({ ...d, interests: [...d.interests, trimmed] }));
+    if (trimmed && !data.interests.some((i) => i.label === trimmed)) {
+      setData((d) => ({ ...d, interests: [...d.interests, { label: trimmed, value: 60 }] }));
     }
     setInterestInput("");
   }
 
-  function removeInterest(s: string) {
-    setData((d) => ({ ...d, interests: d.interests.filter((x) => x !== s) }));
+  function removeInterest(label: string) {
+    setData((d) => ({ ...d, interests: d.interests.filter((i) => i.label !== label) }));
+  }
+
+  function updateInterestValue(label: string, value: number) {
+    setData((d) => ({
+      ...d,
+      interests: d.interests.map((i) => i.label === label ? { ...i, value } : i),
+    }));
   }
 
   async function handlePhoto(e: React.ChangeEvent<HTMLInputElement>) {
@@ -281,22 +295,32 @@ export default function ProfileForm() {
             Hinzufügen
           </button>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-col gap-2">
           {data.qualifications.map((q) => (
-            <span
-              key={q}
-              className="inline-flex items-center gap-1 bg-accent/10 text-accent text-sm px-3 py-1 rounded-full"
-            >
-              {q}
-              <button
-                type="button"
-                onClick={() => removeQualification(q)}
-                className="text-accent/60 hover:text-accent ml-1"
-                aria-label={`${q} entfernen`}
-              >
-                ×
-              </button>
-            </span>
+            <div key={q.label} className="flex items-center gap-2 flex-wrap">
+              <span className="inline-flex items-center gap-1 bg-accent/10 text-accent text-sm px-3 py-1 rounded-full">
+                {q.label}
+                <button
+                  type="button"
+                  onClick={() => removeQualification(q.label)}
+                  className="text-accent/60 hover:text-accent ml-1"
+                  aria-label={`${q.label} entfernen`}
+                >
+                  ×
+                </button>
+              </span>
+              <input
+                type="range"
+                min={20}
+                max={100}
+                step={20}
+                value={q.value}
+                onChange={(e) => updateQualificationValue(q.label, Number(e.target.value))}
+                aria-label={q.label}
+                className="w-32 accent-accent"
+              />
+              <span className="text-xs text-gray-500">{q.value}%</span>
+            </div>
           ))}
         </div>
       </div>
@@ -326,22 +350,32 @@ export default function ProfileForm() {
             Interesse hinzufügen
           </button>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-col gap-2">
           {data.interests.map((s) => (
-            <span
-              key={s}
-              className="inline-flex items-center gap-1 bg-accent/10 text-accent text-sm px-3 py-1 rounded-full"
-            >
-              {s}
-              <button
-                type="button"
-                onClick={() => removeInterest(s)}
-                className="text-accent/60 hover:text-accent ml-1"
-                aria-label={`${s} entfernen`}
-              >
-                ×
-              </button>
-            </span>
+            <div key={s.label} className="flex items-center gap-2 flex-wrap">
+              <span className="inline-flex items-center gap-1 bg-accent/10 text-accent text-sm px-3 py-1 rounded-full">
+                {s.label}
+                <button
+                  type="button"
+                  onClick={() => removeInterest(s.label)}
+                  className="text-accent/60 hover:text-accent ml-1"
+                  aria-label={`${s.label} entfernen`}
+                >
+                  ×
+                </button>
+              </span>
+              <input
+                type="range"
+                min={20}
+                max={100}
+                step={20}
+                value={s.value}
+                onChange={(e) => updateInterestValue(s.label, Number(e.target.value))}
+                aria-label={s.label}
+                className="w-32 accent-accent"
+              />
+              <span className="text-xs text-gray-500">{s.value}%</span>
+            </div>
           ))}
         </div>
       </div>

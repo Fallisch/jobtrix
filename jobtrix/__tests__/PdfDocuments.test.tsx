@@ -11,8 +11,8 @@ const profile: ProfileData = {
   birthdate: "1992-03-15",
   photo: null,
   education: [{ id: "1", institution: "HU Berlin", degree: "M.Sc.", year: "2018" }],
-  qualifications: ["Python", "SQL"],
-  interests: ["Datenanalyse"],
+  qualifications: [{ label: "Python", value: 80 }, { label: "SQL", value: 60 }],
+  interests: [{ label: "Datenanalyse", value: 40 }],
 };
 
 describe("CoverLetterDocument – PDF-Layout", () => {
@@ -197,5 +197,21 @@ describe("CvDocument – Modern-Layout cvStyle", () => {
     const entries = screen.getAllByTestId("modern-edu-entry");
     expect(entries[0]).toHaveTextContent("2014");
     expect(entries[1]).toHaveTextContent("2018");
+  });
+});
+
+describe("CvDocument – Skill-Bar Breite", () => {
+  it("Skill-Bar-Fill hat die Breite des übergebenen value", () => {
+    render(<CvDocument cv="CV" profile={profile} template="modern" />);
+    const fills = screen.getAllByTestId("skill-bar-fill");
+    expect(fills[0]).toHaveStyle({ width: "80%" });
+    expect(fills[1]).toHaveStyle({ width: "60%" });
+  });
+
+  it("Interesse-Skill-Bar hat die Breite des übergebenen value", () => {
+    render(<CvDocument cv="CV" profile={profile} template="modern" />);
+    const fills = screen.getAllByTestId("skill-bar-fill");
+    const interestFill = fills[2];
+    expect(interestFill).toHaveStyle({ width: "40%" });
   });
 });
