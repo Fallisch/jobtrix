@@ -96,11 +96,23 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   modernSectionHeading: {
+    fontSize: 10.5,
+    fontFamily: "Helvetica-Bold",
+    color: ACCENT,
+    letterSpacing: 0.5,
+    marginTop: 18,
+    marginBottom: 4,
+    paddingBottom: 3,
+    borderBottomWidth: 0.75,
+    borderBottomColor: "#d1d5db",
+  },
+  // CV-specific heading: larger + bolder than cover letter
+  cvMainHeading: {
     fontSize: 12,
     fontFamily: "Helvetica-Bold",
     color: PRIMARY,
-    letterSpacing: 0.5,
-    marginTop: 20,
+    letterSpacing: 0.6,
+    marginTop: 18,
     marginBottom: 5,
     paddingBottom: 4,
     borderBottomWidth: 1.5,
@@ -145,12 +157,11 @@ const styles = StyleSheet.create({
   cvSidebarAbs: {
     position: "absolute",
     top: 0,
-    bottom: 0,
     right: 0,
     width: 180,
+    paddingTop: 120,
     paddingRight: 28,
     paddingLeft: 12,
-    justifyContent: "center",
   },
   cvSideHeading: {
     fontSize: 12,
@@ -212,7 +223,8 @@ function renderTextBlocks(text: string, modernStyle = false) {
 }
 
 // Headings that are shown in the sidebar — filtered out of the main CV text in Modern layout
-const SIDEBAR_HEADING_PATTERN = /^(QUALIFIKATION|STÄRK|FÄHIGKEIT|KENNTNIS|INTERESSE|HOBBY|HOBBIES|PERSÖNLICH)/;
+const SIDEBAR_HEADING_PATTERN =
+  /^(QUALIFIKATION|STÄRK|FÄHIGKEIT|KENNTNIS|INTERESSE|HOBBY|HOBBIES|SOFT.?SKILL|KOMPETENZ|PERSÖNLICHE (INTERESSE|STÄRK|KOMPETENZ)|MEINE (STÄRK|QUALIF))/;
 
 function renderCvModernTextBlocks(text: string) {
   const blocks = text.split(/\n{2,}/);
@@ -235,7 +247,7 @@ function renderCvModernTextBlocks(text: string) {
 
     if (isAllCapsHeading(trimmed)) {
       result.push(
-        <Text key={i} style={styles.modernSectionHeading}>{trimmed}</Text>
+        <Text key={i} style={styles.cvMainHeading}>{trimmed}</Text>
       );
     } else {
       result.push(
