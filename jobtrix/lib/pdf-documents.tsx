@@ -288,8 +288,10 @@ export function CvDocument({ cv, profile, template = "classic" }: CvDocumentProp
     return (
       <Document>
         <Page size="A4" style={styles.cvModernPage}>
-          {profile.photo ? <Image src={profile.photo} style={styles.cvPhoto} /> : null}
           <View style={styles.cvHeader} {...{ "data-testid": "modern-cv-header" }}>
+            {profile.photo ? (
+              <Image src={profile.photo} style={styles.modernSidebarPhoto} />
+            ) : null}
             <Text style={styles.cvHeaderName}>{profile.name}</Text>
             {profile.address ? (
               <Text style={styles.cvHeaderMeta}>{profile.address}</Text>
