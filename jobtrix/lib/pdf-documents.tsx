@@ -285,9 +285,9 @@ function SkillBar({ label }: { label: string }) {
   );
 }
 
-function ModernSidebar({ profile }: { profile: ProfileData }) {
+function ModernSidebar({ profile, sidebarBg }: { profile: ProfileData; sidebarBg?: string }) {
   return (
-    <View style={styles.modernSidebar} {...{ "data-testid": "modern-sidebar" }}>
+    <View style={{ ...styles.modernSidebar, backgroundColor: sidebarBg ?? SIDEBAR_BG }} {...{ "data-testid": "modern-sidebar" }}>
       {profile.photo ? (
         <Image src={profile.photo} style={styles.modernSidebarPhoto} />
       ) : null}
@@ -315,14 +315,16 @@ interface CoverLetterDocumentProps {
   coverLetter: string;
   profile: ProfileData;
   template?: "classic" | "modern";
+  accentColor?: string;
 }
 
-export function CoverLetterDocument({ coverLetter, profile, template = "classic" }: CoverLetterDocumentProps) {
+export function CoverLetterDocument({ coverLetter, profile, template = "classic", accentColor }: CoverLetterDocumentProps) {
   if (template === "modern") {
+    const sidebarBg = accentColor ?? SIDEBAR_BG;
     return (
       <Document>
         <Page size="A4" style={styles.modernPage}>
-          <ModernSidebar profile={profile} />
+          <ModernSidebar profile={profile} sidebarBg={sidebarBg} />
           <View style={styles.modernContent} {...{ "data-testid": "modern-content" }}>
             {renderTextBlocks(coverLetter, true)}
           </View>
@@ -350,17 +352,19 @@ interface CvDocumentProps {
   profile: ProfileData;
   template?: "classic" | "modern";
   cvStyle?: "classic" | "american";
+  accentColor?: string;
 }
 
-export function CvDocument({ cv, profile, template = "classic", cvStyle }: CvDocumentProps) {
+export function CvDocument({ cv, profile, template = "classic", cvStyle, accentColor }: CvDocumentProps) {
   if (template === "modern") {
+    const headerBg = accentColor ?? SIDEBAR_BG;
     const birthFormatted = profile.birthdate ? formatDate(profile.birthdate) : null;
     const education = cvStyle === "american" ? [...profile.education].reverse() : profile.education;
     return (
       <Document>
         <Page size="A4" style={styles.cvModernPage}>
           {/* Header: circle photo + name */}
-          <View style={styles.cvNameBar} {...{ "data-testid": "modern-cv-header" }}>
+          <View style={{ ...styles.cvNameBar, backgroundColor: headerBg }} {...{ "data-testid": "modern-cv-header" }}>
             {profile.photo ? (
               <Image src={profile.photo} style={styles.cvHeaderPhoto} />
             ) : null}

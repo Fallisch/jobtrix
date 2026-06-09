@@ -122,4 +122,30 @@ describe("PDF-Download-Verhalten", () => {
       expect(JSON.stringify(pdfCall)).toContain("modern");
     });
   });
+
+  it("Anschreiben-PDF verwendet gewählte accentColor aus der Palette", async () => {
+    await generateResult("Brief", "CV");
+
+    fireEvent.click(screen.getByRole("button", { name: /templateModern/i }));
+    fireEvent.click(screen.getByRole("button", { name: /Farbe #1A5C38/i }));
+    fireEvent.click(screen.getByRole("button", { name: /coverLetterPdfButton/i }));
+
+    await waitFor(() => {
+      const pdfCall = (pdf as jest.Mock).mock.calls[0]?.[0];
+      expect(JSON.stringify(pdfCall)).toContain("#1A5C38");
+    });
+  });
+
+  it("Lebenslauf-PDF verwendet gewählte accentColor aus der Palette", async () => {
+    await generateResult("Brief", "CV");
+
+    fireEvent.click(screen.getByRole("button", { name: /templateModern/i }));
+    fireEvent.click(screen.getByRole("button", { name: /Farbe #5C1A1A/i }));
+    fireEvent.click(screen.getByRole("button", { name: /cvPdfButton/i }));
+
+    await waitFor(() => {
+      const pdfCall = (pdf as jest.Mock).mock.calls[0]?.[0];
+      expect(JSON.stringify(pdfCall)).toContain("#5C1A1A");
+    });
+  });
 });

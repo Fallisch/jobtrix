@@ -69,6 +69,25 @@ describe("CoverLetterDocument – Modern-Layout", () => {
   });
 });
 
+describe("CoverLetterDocument – Modern-Layout Farbe", () => {
+  it("Standardfarbe der Sidebar ist #1E3A5F wenn kein accentColor übergeben", () => {
+    render(<CoverLetterDocument coverLetter="Brief" profile={profile} template="modern" />);
+    const sidebar = screen.getByTestId("modern-sidebar");
+    expect(sidebar).toHaveStyle({ backgroundColor: "#1E3A5F" });
+  });
+
+  it("Sidebar verwendet accentColor wenn übergeben", () => {
+    render(<CoverLetterDocument coverLetter="Brief" profile={profile} template="modern" accentColor="#1A5C38" />);
+    const sidebar = screen.getByTestId("modern-sidebar");
+    expect(sidebar).toHaveStyle({ backgroundColor: "#1A5C38" });
+  });
+
+  it("accentColor hat keinen Effekt auf klassisches Layout", () => {
+    render(<CoverLetterDocument coverLetter="Brief" profile={profile} template="classic" accentColor="#1A5C38" />);
+    expect(screen.queryByTestId("modern-sidebar")).not.toBeInTheDocument();
+  });
+});
+
 describe("CoverLetterDocument – Modern-Layout Profilfoto", () => {
   it("zeigt Foto im Modern-Layout wenn vorhanden", () => {
     const profileWithPhoto = { ...profile, photo: "data:image/png;base64,abc123" };
@@ -83,6 +102,20 @@ describe("CoverLetterDocument – Modern-Layout Profilfoto", () => {
       render(<CoverLetterDocument coverLetter="Brief" profile={profileWithoutPhoto} template="modern" />)
     ).not.toThrow();
     expect(screen.queryByRole("img")).not.toBeInTheDocument();
+  });
+});
+
+describe("CvDocument – Modern-Layout Farbe", () => {
+  it("Standardfarbe des Headers ist #1E3A5F wenn kein accentColor übergeben", () => {
+    render(<CvDocument cv="CV" profile={profile} template="modern" />);
+    const header = screen.getByTestId("modern-cv-header");
+    expect(header).toHaveStyle({ backgroundColor: "#1E3A5F" });
+  });
+
+  it("Header verwendet accentColor wenn übergeben", () => {
+    render(<CvDocument cv="CV" profile={profile} template="modern" accentColor="#5C1A1A" />);
+    const header = screen.getByTestId("modern-cv-header");
+    expect(header).toHaveStyle({ backgroundColor: "#5C1A1A" });
   });
 });
 

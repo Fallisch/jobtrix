@@ -6,6 +6,15 @@ import { loadProfile } from "@/lib/profile-storage";
 import EmailDraft from "@/components/EmailDraft";
 import { downloadCoverLetterPdf, downloadCvPdf } from "@/lib/download-pdf";
 
+const ACCENT_COLORS = [
+  "#1E3A5F",
+  "#1A5C38",
+  "#5C1A1A",
+  "#2D2D5C",
+  "#5C3D1A",
+  "#374151",
+];
+
 interface GenerateResult {
   coverLetter: string;
   cv: string;
@@ -25,6 +34,7 @@ export default function GenerateForm() {
   const [editedCv, setEditedCv] = useState("");
   const [selectedTemplate, setSelectedTemplate] = useState<"classic" | "modern">("classic");
   const [cvStyle, setCvStyle] = useState<"classic" | "american">("classic");
+  const [accentColor, setAccentColor] = useState<string>("#1E3A5F");
 
   useEffect(() => {
     setHasProfile(loadProfile() !== null);
@@ -196,6 +206,27 @@ export default function GenerateForm() {
             >
               {t("templateModern")}
             </button>
+
+            {selectedTemplate === "modern" && (
+              <div className="flex items-center gap-2 ml-2" data-testid="color-palette">
+                <span className="text-sm text-text/50">Farbe:</span>
+                {ACCENT_COLORS.map((color) => (
+                  <button
+                    key={color}
+                    type="button"
+                    onClick={() => setAccentColor(color)}
+                    aria-label={`Farbe ${color}`}
+                    aria-pressed={accentColor === color}
+                    className={`w-6 h-6 rounded-full border-2 transition-all hover:scale-110 ${
+                      accentColor === color
+                        ? "border-white ring-2 ring-offset-1 ring-gray-400 scale-110"
+                        : "border-transparent"
+                    }`}
+                    style={{ backgroundColor: color }}
+                  />
+                ))}
+              </div>
+            )}
           </div>
           <section className="rounded-2xl border border-gray-200 bg-white overflow-hidden">
             <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-100 bg-surface">
@@ -203,7 +234,7 @@ export default function GenerateForm() {
               <button
                 onClick={() => {
                   const profile = loadProfile();
-                  if (profile) downloadCoverLetterPdf(editedCoverLetter, profile, selectedTemplate);
+                  if (profile) downloadCoverLetterPdf(editedCoverLetter, profile, selectedTemplate, accentColor);
                 }}
                 className="inline-flex items-center gap-1.5 rounded-full border border-accent text-accent px-3.5 py-1.5 text-sm font-semibold hover:bg-accent hover:text-white transition"
                 aria-label={t("coverLetterPdfButton")}
@@ -230,7 +261,7 @@ export default function GenerateForm() {
               <button
                 onClick={() => {
                   const profile = loadProfile();
-                  if (profile) downloadCvPdf(editedCv, profile, selectedTemplate, cvStyle);
+                  if (profile) downloadCvPdf(editedCv, profile, selectedTemplate, cvStyle, accentColor);
                 }}
                 className="inline-flex items-center gap-1.5 rounded-full border border-accent text-accent px-3.5 py-1.5 text-sm font-semibold hover:bg-accent hover:text-white transition"
                 aria-label={t("cvPdfButton")}

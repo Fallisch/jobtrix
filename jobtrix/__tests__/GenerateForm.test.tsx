@@ -261,6 +261,65 @@ describe("GenerateForm", () => {
       expect(body.cvStyle).toBe("american");
     });
 
+    it("zeigt Farbpalette mit mindestens 5 Optionen wenn Modern-Template aktiv", async () => {
+      (global.fetch as jest.Mock).mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ coverLetter: "Brief", cv: "CV", emailSubject: "Betr" }),
+      });
+
+      render(<GenerateForm />);
+      await userEvent.type(screen.getByRole("textbox", { name: JOB_POSTING }), "Stelle");
+      fireEvent.click(screen.getByRole("button", { name: GENERATE_BTN }));
+      await waitFor(() => screen.getByDisplayValue("Brief"));
+
+      fireEvent.click(screen.getByRole("button", { name: /templateModern/i }));
+
+      const palette = screen.getByTestId("color-palette");
+      expect(palette).toBeInTheDocument();
+      const colorButtons = palette.querySelectorAll("button");
+      expect(colorButtons.length).toBeGreaterThanOrEqual(5);
+    });
+
+    it("Farbpalette ist ausgeblendet wenn Klassisch-Template aktiv", async () => {
+      (global.fetch as jest.Mock).mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ coverLetter: "Brief", cv: "CV", emailSubject: "Betr" }),
+      });
+
+      render(<GenerateForm />);
+      await userEvent.type(screen.getByRole("textbox", { name: JOB_POSTING }), "Stelle");
+      fireEvent.click(screen.getByRole("button", { name: GENERATE_BTN }));
+      await waitFor(() => screen.getByDisplayValue("Brief"));
+
+      // Klassisch ist Standard → keine Palette
+      expect(screen.queryByTestId("color-palette")).not.toBeInTheDocument();
+
+      // Modern auswählen → Palette erscheint
+      fireEvent.click(screen.getByRole("button", { name: /templateModern/i }));
+      expect(screen.getByTestId("color-palette")).toBeInTheDocument();
+
+      // Zurück zu Klassisch → Palette verschwindet
+      fireEvent.click(screen.getByRole("button", { name: /templateClassic/i }));
+      expect(screen.queryByTestId("color-palette")).not.toBeInTheDocument();
+    });
+
+    it("Standardfarbe #1E3A5F ist initial ausgewählt", async () => {
+      (global.fetch as jest.Mock).mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ coverLetter: "Brief", cv: "CV", emailSubject: "Betr" }),
+      });
+
+      render(<GenerateForm />);
+      await userEvent.type(screen.getByRole("textbox", { name: JOB_POSTING }), "Stelle");
+      fireEvent.click(screen.getByRole("button", { name: GENERATE_BTN }));
+      await waitFor(() => screen.getByDisplayValue("Brief"));
+
+      fireEvent.click(screen.getByRole("button", { name: /templateModern/i }));
+
+      const defaultBtn = screen.getByRole("button", { name: /Farbe #1E3A5F/i });
+      expect(defaultBtn).toHaveAttribute("aria-pressed", "true");
+    });
+
     it("Änderungen an Anschreiben bleiben bis zum Neustart erhalten", async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
