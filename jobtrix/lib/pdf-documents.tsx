@@ -96,15 +96,15 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   modernSectionHeading: {
-    fontSize: 10.5,
+    fontSize: 12,
     fontFamily: "Helvetica-Bold",
-    color: ACCENT,
+    color: PRIMARY,
     letterSpacing: 0.5,
-    marginTop: 18,
-    marginBottom: 4,
-    paddingBottom: 3,
-    borderBottomWidth: 0.75,
-    borderBottomColor: "#d1d5db",
+    marginTop: 20,
+    marginBottom: 5,
+    paddingBottom: 4,
+    borderBottomWidth: 1.5,
+    borderBottomColor: ACCENT,
   },
   // CV Modern layout (Beispiel-Layout style)
   cvModernPage: {
@@ -134,6 +134,7 @@ const styles = StyleSheet.create({
   // Content wrapper allows absolute sidebar + natural-flow main text
   cvContentWrapper: {
     position: "relative",
+    minHeight: 660,
   },
   cvTextArea: {
     paddingTop: 20,
@@ -144,11 +145,12 @@ const styles = StyleSheet.create({
   cvSidebarAbs: {
     position: "absolute",
     top: 0,
+    bottom: 0,
     right: 0,
     width: 180,
-    paddingTop: 20,
     paddingRight: 28,
     paddingLeft: 12,
+    justifyContent: "center",
   },
   cvSideHeading: {
     fontSize: 12,
@@ -207,6 +209,42 @@ function renderTextBlocks(text: string, modernStyle = false) {
       </Text>
     );
   });
+}
+
+// Headings that are shown in the sidebar — filtered out of the main CV text in Modern layout
+const SIDEBAR_HEADING_PATTERN = /^(QUALIFIKATION|STÄRK|FÄHIGKEIT|KENNTNIS|INTERESSE|HOBBY|HOBBIES|PERSÖNLICH)/;
+
+function renderCvModernTextBlocks(text: string) {
+  const blocks = text.split(/\n{2,}/);
+  const result: React.ReactElement[] = [];
+  let skipNext = false;
+
+  for (let i = 0; i < blocks.length; i++) {
+    const trimmed = blocks[i].trim();
+    if (!trimmed) continue;
+
+    if (skipNext) {
+      skipNext = false;
+      continue;
+    }
+
+    if (isAllCapsHeading(trimmed) && SIDEBAR_HEADING_PATTERN.test(trimmed)) {
+      skipNext = true;
+      continue;
+    }
+
+    if (isAllCapsHeading(trimmed)) {
+      result.push(
+        <Text key={i} style={styles.modernSectionHeading}>{trimmed}</Text>
+      );
+    } else {
+      result.push(
+        <Text key={i} style={styles.modernParagraph}>{trimmed}</Text>
+      );
+    }
+  }
+
+  return result;
 }
 
 function SkillBar({ label }: { label: string }) {
@@ -290,7 +328,7 @@ export function CvDocument({ cv, profile, template = "classic" }: CvDocumentProp
           </View>
           <View style={styles.cvContentWrapper}>
             <View style={styles.cvTextArea} {...{ "data-testid": "modern-content" }}>
-              {renderTextBlocks(cv, true)}
+              {renderCvModernTextBlocks(cv)}
             </View>
             <View style={styles.cvSidebarAbs}>
               {profile.qualifications?.length > 0 && (
