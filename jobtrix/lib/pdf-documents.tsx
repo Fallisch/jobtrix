@@ -2,44 +2,84 @@ import React from "react";
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 import { ProfileData } from "@/lib/profile-storage";
 
+const ACCENT = "#2F80ED";
+const PRIMARY = "#1E3A5F";
+
 const styles = StyleSheet.create({
   page: {
     fontFamily: "Helvetica",
-    fontSize: 11,
-    paddingTop: 48,
-    paddingBottom: 48,
-    paddingHorizontal: 56,
+    fontSize: 10.5,
+    paddingTop: 52,
+    paddingBottom: 52,
+    paddingHorizontal: 60,
     color: "#1a1a1a",
     lineHeight: 1.5,
   },
+  accentBar: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 4,
+    backgroundColor: ACCENT,
+  },
   header: {
-    marginBottom: 28,
-    borderBottomWidth: 1,
-    borderBottomColor: "#d1d5db",
+    marginBottom: 24,
     paddingBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#e5e7eb",
   },
   name: {
-    fontSize: 18,
+    fontSize: 20,
     fontFamily: "Helvetica-Bold",
-    marginBottom: 4,
+    color: PRIMARY,
+    marginBottom: 3,
   },
-  address: {
-    fontSize: 10,
+  meta: {
+    fontSize: 9.5,
     color: "#6b7280",
   },
-  body: {
-    whiteSpace: "pre-wrap",
+  paragraph: {
+    marginBottom: 8,
   },
-  section: {
-    marginBottom: 16,
-  },
-  sectionTitle: {
+  sectionHeading: {
+    fontSize: 10.5,
     fontFamily: "Helvetica-Bold",
-    fontSize: 12,
-    marginBottom: 6,
-    color: "#374151",
+    color: ACCENT,
+    letterSpacing: 0.5,
+    marginTop: 18,
+    marginBottom: 4,
+    paddingBottom: 3,
+    borderBottomWidth: 0.75,
+    borderBottomColor: "#d1d5db",
   },
 });
+
+function isAllCapsHeading(line: string): boolean {
+  const trimmed = line.trim();
+  return (
+    trimmed.length > 0 &&
+    trimmed.length < 40 &&
+    trimmed === trimmed.toUpperCase() &&
+    /[A-ZÄÖÜ]/.test(trimmed)
+  );
+}
+
+function renderTextBlocks(text: string) {
+  const blocks = text.split(/\n{2,}/);
+  return blocks.map((block, i) => {
+    const trimmed = block.trim();
+    if (!trimmed) return null;
+    if (isAllCapsHeading(trimmed)) {
+      return <Text key={i} style={styles.sectionHeading}>{trimmed}</Text>;
+    }
+    return (
+      <Text key={i} style={styles.paragraph}>
+        {trimmed}
+      </Text>
+    );
+  });
+}
 
 interface CoverLetterDocumentProps {
   coverLetter: string;
@@ -50,13 +90,12 @@ export function CoverLetterDocument({ coverLetter, profile }: CoverLetterDocumen
   return (
     <Document>
       <Page size="A4" style={styles.page}>
+        <View style={styles.accentBar} />
         <View style={styles.header}>
           <Text style={styles.name}>{profile.name}</Text>
-          {profile.address ? <Text style={styles.address}>{profile.address}</Text> : null}
+          {profile.address ? <Text style={styles.meta}>{profile.address}</Text> : null}
         </View>
-        <View style={styles.body}>
-          <Text>{coverLetter}</Text>
-        </View>
+        <View>{renderTextBlocks(coverLetter)}</View>
       </Page>
     </Document>
   );
@@ -71,13 +110,12 @@ export function CvDocument({ cv, profile }: CvDocumentProps) {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
+        <View style={styles.accentBar} />
         <View style={styles.header}>
           <Text style={styles.name}>{profile.name}</Text>
-          {profile.address ? <Text style={styles.address}>{profile.address}</Text> : null}
+          {profile.address ? <Text style={styles.meta}>{profile.address}</Text> : null}
         </View>
-        <View style={styles.body}>
-          <Text>{cv}</Text>
-        </View>
+        <View>{renderTextBlocks(cv)}</View>
       </Page>
     </Document>
   );
