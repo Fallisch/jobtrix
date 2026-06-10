@@ -18,6 +18,11 @@ test.describe("Generate Page – QA", () => {
     await page.reload();
   });
 
+  test("AC: /de/generate lädt ohne Server-Fehler (HTTP 200)", async ({ page }) => {
+    const response = await page.goto("/de/generate");
+    expect(response?.status()).toBe(200);
+  });
+
   test("AC: Eingabemaske mit allen Feldern vorhanden", async ({ page }) => {
     await expect(page.getByRole("textbox", { name: /Stellenanzeige/i })).toBeVisible();
     await expect(page.getByRole("textbox", { name: /Firmenname/i })).toBeVisible();
