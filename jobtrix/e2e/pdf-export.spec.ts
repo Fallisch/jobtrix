@@ -78,6 +78,8 @@ test.describe("PDF-Export – vollständiger Bewerbungsflow", () => {
     await page.getByRole("button", { name: /Bewerbung generieren/i }).click();
     await page.waitForSelector("textarea[aria-label='Anschreiben']");
 
+    await page.getByTestId("cover-letter-agree-checkbox").check();
+
     const [download] = await Promise.all([
       page.waitForEvent("download"),
       page.getByRole("button", { name: /Anschreiben als PDF/i }).click(),
@@ -102,6 +104,8 @@ test.describe("PDF-Export – vollständiger Bewerbungsflow", () => {
     await page.getByRole("textbox", { name: /Stellenanzeige/i }).fill("Stelle");
     await page.getByRole("button", { name: /Bewerbung generieren/i }).click();
     await page.waitForSelector("textarea[aria-label='Anschreiben']");
+
+    await page.getByTestId("cv-agree-checkbox").check();
 
     const [download] = await Promise.all([
       page.waitForEvent("download"),
@@ -129,7 +133,8 @@ test.describe("PDF-Export – vollständiger Bewerbungsflow", () => {
     const coverLetterArea = page.getByRole("textbox", { name: /^Anschreiben$/i });
     await coverLetterArea.fill("Individuell überarbeitetes Anschreiben für genau diese Stelle.");
 
-    // PDF herunterladen
+    // Lesen bestätigen und PDF herunterladen
+    await page.getByTestId("cover-letter-agree-checkbox").check();
     const [download] = await Promise.all([
       page.waitForEvent("download"),
       page.getByRole("button", { name: /Anschreiben als PDF/i }).click(),

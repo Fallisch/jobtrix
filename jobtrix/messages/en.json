@@ -37,7 +37,8 @@
     "templateModern": "Modern",
     "cvStyleLabel": "CV style",
     "cvStyleClassic": "Classic",
-    "cvStyleAmerican": "American"
+    "cvStyleAmerican": "American",
+    "confirmReadAgree": "I have read the text and agree to it"
   },
   "profile": {
     "title": "Profile",

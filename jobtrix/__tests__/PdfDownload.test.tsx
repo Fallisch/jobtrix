@@ -62,6 +62,7 @@ describe("PDF-Download-Verhalten", () => {
   it("Anschreiben-PDF-Button löst clientseitigen Download aus (kein Server-Roundtrip)", async () => {
     await generateResult("Originaltext", "CV");
 
+    fireEvent.click(screen.getByTestId("cover-letter-agree-checkbox"));
     fireEvent.click(screen.getByRole("button", { name: /coverLetterPdfButton/i }));
 
     await waitFor(() => {
@@ -79,6 +80,7 @@ describe("PDF-Download-Verhalten", () => {
     await userEvent.clear(coverLetterArea);
     await userEvent.type(coverLetterArea, "Bearbeiteter Inhalt");
 
+    fireEvent.click(screen.getByTestId("cover-letter-agree-checkbox"));
     fireEvent.click(screen.getByRole("button", { name: /coverLetterPdfButton/i }));
 
     await waitFor(() => {
@@ -90,6 +92,7 @@ describe("PDF-Download-Verhalten", () => {
   it("Lebenslauf-PDF-Button löst clientseitigen Download aus", async () => {
     await generateResult("Anschreiben", "Lebenslauf-Text");
 
+    fireEvent.click(screen.getByTestId("cv-agree-checkbox"));
     fireEvent.click(screen.getByRole("button", { name: /cvPdfButton/i }));
 
     await waitFor(() => {
@@ -103,6 +106,7 @@ describe("PDF-Download-Verhalten", () => {
     await generateResult("Brief", "CV");
 
     fireEvent.click(screen.getByRole("button", { name: /templateModern/i }));
+    fireEvent.click(screen.getByTestId("cover-letter-agree-checkbox"));
     fireEvent.click(screen.getByRole("button", { name: /coverLetterPdfButton/i }));
 
     await waitFor(() => {
@@ -115,6 +119,7 @@ describe("PDF-Download-Verhalten", () => {
     await generateResult("Brief", "CV");
 
     fireEvent.click(screen.getByRole("button", { name: /templateModern/i }));
+    fireEvent.click(screen.getByTestId("cv-agree-checkbox"));
     fireEvent.click(screen.getByRole("button", { name: /cvPdfButton/i }));
 
     await waitFor(() => {
@@ -128,6 +133,7 @@ describe("PDF-Download-Verhalten", () => {
 
     fireEvent.click(screen.getByRole("button", { name: /templateModern/i }));
     fireEvent.click(screen.getByRole("button", { name: /Farbe #1A5C38/i }));
+    fireEvent.click(screen.getByTestId("cover-letter-agree-checkbox"));
     fireEvent.click(screen.getByRole("button", { name: /coverLetterPdfButton/i }));
 
     await waitFor(() => {
@@ -141,6 +147,7 @@ describe("PDF-Download-Verhalten", () => {
 
     fireEvent.click(screen.getByRole("button", { name: /templateModern/i }));
     fireEvent.click(screen.getByRole("button", { name: /Farbe #5C1A1A/i }));
+    fireEvent.click(screen.getByTestId("cv-agree-checkbox"));
     fireEvent.click(screen.getByRole("button", { name: /cvPdfButton/i }));
 
     await waitFor(() => {

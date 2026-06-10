@@ -61,8 +61,19 @@ test.describe("Template-Auswahl – QA (Issue #8)", () => {
     await expect(page.getByRole("button", { name: /Modern/i })).toHaveAttribute("aria-pressed", "true");
   });
 
-  test("AC: PDF-Download-Buttons für beide Templates sichtbar", async ({ page }) => {
-    await expect(page.getByRole("button", { name: /Anschreiben als PDF/i })).toBeVisible();
-    await expect(page.getByRole("button", { name: /Lebenslauf als PDF/i })).toBeVisible();
+  test("AC: PDF-Download-Buttons für beide Templates sichtbar und nach Bestätigung aktiv", async ({ page }) => {
+    const coverLetterPdfButton = page.getByRole("button", { name: /Anschreiben als PDF/i });
+    const cvPdfButton = page.getByRole("button", { name: /Lebenslauf als PDF/i });
+
+    await expect(coverLetterPdfButton).toBeVisible();
+    await expect(cvPdfButton).toBeVisible();
+    await expect(coverLetterPdfButton).toBeDisabled();
+    await expect(cvPdfButton).toBeDisabled();
+
+    await page.getByTestId("cover-letter-agree-checkbox").check();
+    await page.getByTestId("cv-agree-checkbox").check();
+
+    await expect(coverLetterPdfButton).toBeEnabled();
+    await expect(cvPdfButton).toBeEnabled();
   });
 });

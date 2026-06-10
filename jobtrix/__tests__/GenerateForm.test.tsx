@@ -339,4 +339,84 @@ describe("GenerateForm", () => {
       expect(screen.getByDisplayValue("Bearbeiteter Text")).toBeInTheDocument();
     });
   });
+
+  describe("Bestätigungs-Checkboxen vor PDF-Download", () => {
+    beforeEach(() => {
+      localStorage.setItem("jobtrix_profile", JSON.stringify(mockProfile));
+    });
+
+    async function generate() {
+      (global.fetch as jest.Mock).mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ coverLetter: "Brief", cv: "CV", emailSubject: "Betr" }),
+      });
+      render(<GenerateForm />);
+      await userEvent.type(screen.getByRole("textbox", { name: JOB_POSTING }), "Stelle");
+      fireEvent.click(screen.getByRole("button", { name: GENERATE_BTN }));
+      await waitFor(() => screen.getByDisplayValue("Brief"));
+    }
+
+    it("zeigt Bestätigungs-Checkbox unter dem Anschreiben-Textfeld", async () => {
+      await generate();
+      expect(screen.getByTestId("cover-letter-agree-checkbox")).toBeInTheDocument();
+    });
+
+    it("zeigt eine separate Bestätigungs-Checkbox unter dem Lebenslauf-Textfeld", async () => {
+      await generate();
+      const coverLetterCheckbox = screen.getByTestId("cover-letter-agree-checkbox");
+      const cvCheckbox = screen.getByTestId("cv-agree-checkbox");
+      expect(cvCheckbox).toBeInTheDocument();
+      expect(cvCheckbox).not.toBe(coverLetterCheckbox);
+    });
+
+    it("'Anschreiben als PDF' ist deaktiviert bis die Checkbox angehakt wird", async () => {
+      await generate();
+      const pdfButton = screen.getByRole("button", { name: /coverLetterPdfButton/i });
+      expect(pdfButton).toBeDisabled();
+
+      fireEvent.click(screen.getByTestId("cover-letter-agree-checkbox"));
+
+      expect(pdfButton).toBeEnabled();
+    });
+
+    it("'Lebenslauf als PDF' ist deaktiviert bis die Checkbox angehakt wird", async () => {
+      await generate();
+      const pdfButton = screen.getByRole("button", { name: /cvPdfButton/i });
+      expect(pdfButton).toBeDisabled();
+
+      fireEvent.click(screen.getByTestId("cv-agree-checkbox"));
+
+      expect(pdfButton).toBeEnabled();
+    });
+
+    it("setzt Checkbox und PDF-Button zurück, wenn der Anschreiben-Text nach dem Anhaken bearbeitet wird", async () => {
+      await generate();
+
+      const checkbox = screen.getByTestId("cover-letter-agree-checkbox");
+      const pdfButton = screen.getByRole("button", { name: /coverLetterPdfButton/i });
+      fireEvent.click(checkbox);
+      expect(pdfButton).toBeEnabled();
+
+      const textarea = screen.getByDisplayValue("Brief");
+      await userEvent.type(textarea, " zusätzlich");
+
+      expect(checkbox).not.toBeChecked();
+      expect(pdfButton).toBeDisabled();
+    });
+
+    it("setzt Checkbox und PDF-Button zurück, wenn der Lebenslauf-Text nach dem Anhaken bearbeitet wird", async () => {
+      await generate();
+
+      const checkbox = screen.getByTestId("cv-agree-checkbox");
+      const pdfButton = screen.getByRole("button", { name: /cvPdfButton/i });
+      fireEvent.click(checkbox);
+      expect(pdfButton).toBeEnabled();
+
+      const textarea = screen.getByDisplayValue("CV");
+      await userEvent.type(textarea, " zusätzlich");
+
+      expect(checkbox).not.toBeChecked();
+      expect(pdfButton).toBeDisabled();
+    });
+  });
 });

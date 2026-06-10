@@ -32,6 +32,8 @@ export default function GenerateForm() {
   const [error, setError] = useState<string | null>(null);
   const [editedCoverLetter, setEditedCoverLetter] = useState("");
   const [editedCv, setEditedCv] = useState("");
+  const [coverLetterAgreed, setCoverLetterAgreed] = useState(false);
+  const [cvAgreed, setCvAgreed] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<"classic" | "modern">("classic");
   const [cvStyle, setCvStyle] = useState<"classic" | "american">("classic");
   const [accentColor, setAccentColor] = useState<string>("#1E3A5F");
@@ -236,7 +238,8 @@ export default function GenerateForm() {
                   const profile = loadProfile();
                   if (profile) downloadCoverLetterPdf(editedCoverLetter, profile, selectedTemplate, accentColor);
                 }}
-                className="inline-flex items-center gap-1.5 rounded-full border border-accent text-accent px-3.5 py-1.5 text-sm font-semibold hover:bg-accent hover:text-white transition"
+                disabled={!coverLetterAgreed}
+                className="inline-flex items-center gap-1.5 rounded-full border border-accent text-accent px-3.5 py-1.5 text-sm font-semibold hover:bg-accent hover:text-white transition disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-accent"
                 aria-label={t("coverLetterPdfButton")}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
@@ -248,11 +251,24 @@ export default function GenerateForm() {
             </div>
             <textarea
               value={editedCoverLetter}
-              onChange={(e) => setEditedCoverLetter(e.target.value)}
+              onChange={(e) => {
+                setEditedCoverLetter(e.target.value);
+                setCoverLetterAgreed(false);
+              }}
               rows={12}
               className="w-full px-5 py-4 text-sm text-text bg-transparent focus:outline-none resize-y"
               aria-label={t("coverLetterTitle")}
             />
+            <label className="flex items-center gap-2 px-5 pb-4 text-sm text-text/70">
+              <input
+                type="checkbox"
+                checked={coverLetterAgreed}
+                onChange={(e) => setCoverLetterAgreed(e.target.checked)}
+                data-testid="cover-letter-agree-checkbox"
+                className="h-4 w-4 rounded border-gray-300 text-accent focus:ring-accent"
+              />
+              {t("confirmReadAgree")}
+            </label>
           </section>
 
           <section className="rounded-2xl border border-gray-200 bg-white overflow-hidden">
@@ -263,7 +279,8 @@ export default function GenerateForm() {
                   const profile = loadProfile();
                   if (profile) downloadCvPdf(editedCv, profile, selectedTemplate, cvStyle, accentColor);
                 }}
-                className="inline-flex items-center gap-1.5 rounded-full border border-accent text-accent px-3.5 py-1.5 text-sm font-semibold hover:bg-accent hover:text-white transition"
+                disabled={!cvAgreed}
+                className="inline-flex items-center gap-1.5 rounded-full border border-accent text-accent px-3.5 py-1.5 text-sm font-semibold hover:bg-accent hover:text-white transition disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-accent"
                 aria-label={t("cvPdfButton")}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
@@ -275,11 +292,24 @@ export default function GenerateForm() {
             </div>
             <textarea
               value={editedCv}
-              onChange={(e) => setEditedCv(e.target.value)}
+              onChange={(e) => {
+                setEditedCv(e.target.value);
+                setCvAgreed(false);
+              }}
               rows={12}
               className="w-full px-5 py-4 text-sm text-text bg-transparent focus:outline-none resize-y"
               aria-label={t("cvTitle")}
             />
+            <label className="flex items-center gap-2 px-5 pb-4 text-sm text-text/70">
+              <input
+                type="checkbox"
+                checked={cvAgreed}
+                onChange={(e) => setCvAgreed(e.target.checked)}
+                data-testid="cv-agree-checkbox"
+                className="h-4 w-4 rounded border-gray-300 text-accent focus:ring-accent"
+              />
+              {t("confirmReadAgree")}
+            </label>
           </section>
 
           <EmailDraft subject={result.emailSubject} body={editedCoverLetter} />
