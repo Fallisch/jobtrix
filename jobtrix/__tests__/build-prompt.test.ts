@@ -25,6 +25,17 @@ describe("buildPrompt", () => {
     expect(prompt).toMatch(/satzl.nge|satzstruktur|kurze.*s.tze|lange.*s.tze|variier/i);
   });
 
+  it("enthält Anweisung, austauschbare Schlussfloskeln im Anschreiben zu vermeiden", () => {
+    const prompt = buildPrompt({ jobPosting: "Stelle als Entwickler", profile: baseProfile });
+    expect(prompt).toMatch(/schlussfloskel|abschlussfloskel|schlusss.tze?.*vermeid|vermeid.*schluss/i);
+    expect(prompt).toMatch(/freue mich auf ein pers.nliches gespr.ch|einladung.*vorstellungsgespr.ch/i);
+  });
+
+  it("enthält Anweisung, Sätze nicht wiederholt mit „Ich“ zu beginnen", () => {
+    const prompt = buildPrompt({ jobPosting: "Stelle als Entwickler", profile: baseProfile });
+    expect(prompt).toMatch(/nicht mehrere s.tze.*ich|ich.*satzanf.nge|satzanf.nge.*ich/i);
+  });
+
   it("enthält Qualifikations-Labels im Prompt (nicht [object Object])", () => {
     const prompt = buildPrompt({ jobPosting: "Stelle als Entwickler", profile: baseProfile });
     expect(prompt).toContain("TypeScript");

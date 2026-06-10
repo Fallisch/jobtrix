@@ -44,6 +44,8 @@ ${cvStyle === "american" ? "Sortiere Berufserfahrung und Ausbildung antichronolo
 - Vermeide typische KI-Floskeln und abgedroschene Phrasen wie „Ich freue mich sehr", „Als leidenschaftlicher", „Mit großer Begeisterung" oder „Ich bin überzeugt".
 - Bevorzuge einen direkten, persönlichen Ton – schreibe so, wie ein Mensch tatsächlich spricht und denkt.
 - Keine übertriebene Förmlichkeit oder aufgesetzte Begeisterung; sachlich und authentisch bleiben.
+- Vermeide austauschbare Schlussfloskeln im Anschreiben wie „Ich freue mich auf ein persönliches Gespräch" oder „Über eine Einladung zum Vorstellungsgespräch würde ich mich sehr freuen" – formuliere den letzten Satz konkret und individuell.
+- Beginne nicht mehrere Sätze hintereinander mit „Ich" – variiere die Satzanfänge bewusst.
 
 Wichtig: Schreibe Anschreiben und Lebenslauf in reinem Klartext ohne Markdown-Formatierung –
 also ohne Sternchen (**fett**), ohne Raute-Überschriften (#, ##), ohne Tabellen (| ... |) und
