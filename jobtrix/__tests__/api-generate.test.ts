@@ -68,20 +68,17 @@ describe("POST /api/generate", () => {
     expect(data.emailSubject).toBe("Bewerbung als Senior Developer – Max Mustermann");
   });
 
-  it("übergibt Profil und Stellentext an Claude API (zwei Aufrufe: generieren + humanisieren)", async () => {
+  it("übergibt Profil und Stellentext an Claude API", async () => {
     mockCreate.mockResolvedValue({
       content: [{ type: "text", text: "ANSCHREIBEN: text\n\nLEBENSLAUF: text" }],
     });
 
     await POST(makeRequest({ jobPosting: "Senior Developer gesucht", profile }));
 
-    expect(mockCreate).toHaveBeenCalledTimes(2);
-    const firstCallPrompt = JSON.stringify(mockCreate.mock.calls[0][0]);
-    expect(firstCallPrompt).toContain("Senior Developer gesucht");
-    expect(firstCallPrompt).toContain("Max Mustermann");
-    const secondCallPrompt = JSON.stringify(mockCreate.mock.calls[1][0]);
-    expect(secondCallPrompt).toContain("ANSCHREIBEN:");
-    expect(secondCallPrompt).toContain("LEBENSLAUF:");
+    expect(mockCreate).toHaveBeenCalledTimes(1);
+    const promptText = JSON.stringify(mockCreate.mock.calls[0][0]);
+    expect(promptText).toContain("Senior Developer gesucht");
+    expect(promptText).toContain("Max Mustermann");
   });
 
   it("weist Claude an, reinen Klartext ohne Markdown-Formatierung zu liefern", async () => {

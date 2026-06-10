@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
-import { buildPrompt, buildHumanizePrompt, GenerateRequest } from "@/lib/build-prompt";
+import { buildPrompt, GenerateRequest } from "@/lib/build-prompt";
 
 const SECTION_MARKER = /\*{0,2}\s*(BETREFF|ANSCHREIBEN|LEBENSLAUF)\s*:\s*\*{0,2}/gi;
 
@@ -57,25 +57,7 @@ export async function POST(request: NextRequest) {
       .join("");
 
     const { emailSubject, coverLetter, cv } = parseResponse(text);
-
-    const humanizeMessage = await client.messages.create({
-      model: "claude-sonnet-4-6",
-      max_tokens: 4096,
-      messages: [{ role: "user", content: buildHumanizePrompt(coverLetter, cv) }],
-    });
-
-    const humanizedText = humanizeMessage.content
-      .filter((c) => c.type === "text")
-      .map((c) => (c as { type: "text"; text: string }).text)
-      .join("");
-
-    const { coverLetter: humanizedCoverLetter, cv: humanizedCv } = parseResponse(humanizedText);
-
-    return NextResponse.json({
-      emailSubject,
-      coverLetter: humanizedCoverLetter || coverLetter,
-      cv: humanizedCv || cv,
-    });
+    return NextResponse.json({ emailSubject, coverLetter, cv });
   } catch (err) {
     console.error("[/api/generate] Fehler:", err);
     return NextResponse.json({ error: "Generierung fehlgeschlagen. Bitte versuche es erneut." }, { status: 500 });
