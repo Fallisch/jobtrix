@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import {
   ProfileData,
@@ -29,6 +30,7 @@ const empty: ProfileData = {
 };
 
 export default function ProfileForm() {
+  const t = useTranslations("profile");
   const router = useRouter();
   const [data, setData] = useState<ProfileData>(empty);
   const [errors, setErrors] = useState<ProfileErrors>({});
@@ -114,18 +116,18 @@ export default function ProfileForm() {
       saveProfile(data);
       router.push("/");
     } catch {
-      setSaveError("Profil konnte nicht gespeichert werden. Bitte versuche es erneut.");
+      setSaveError(t("saveError"));
     }
   }
 
   return (
     <form onSubmit={handleSubmit} className="max-w-2xl mx-auto px-4 py-8 space-y-6">
-      <h1 className="text-2xl font-bold text-primary">Profil</h1>
+      <h1 className="text-2xl font-bold text-primary">{t("title")}</h1>
 
       {/* Name */}
       <div>
         <label htmlFor="name" className="block text-sm font-medium mb-1">
-          Name *
+          {t("nameLabel")}
         </label>
         <input
           id="name"
@@ -133,15 +135,15 @@ export default function ProfileForm() {
           value={data.name}
           onChange={(e) => set("name", e.target.value)}
           className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
-          aria-label="Name"
+          aria-label={t("nameLabel")}
         />
-        {errors.name && <p className="text-red-600 text-sm mt-1">{errors.name}</p>}
+        {errors.name && <p className="text-red-600 text-sm mt-1">{t(`errors.${errors.name}`)}</p>}
       </div>
 
       {/* Adresse */}
       <div>
         <label htmlFor="address" className="block text-sm font-medium mb-1">
-          Adresse
+          {t("addressLabel")}
         </label>
         <input
           id="address"
@@ -149,14 +151,14 @@ export default function ProfileForm() {
           value={data.address}
           onChange={(e) => set("address", e.target.value)}
           className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
-          aria-label="Adresse"
+          aria-label={t("addressLabel")}
         />
       </div>
 
       {/* E-Mail */}
       <div>
         <label htmlFor="email" className="block text-sm font-medium mb-1">
-          E-Mail
+          {t("emailLabel")}
         </label>
         <input
           id="email"
@@ -164,14 +166,14 @@ export default function ProfileForm() {
           value={data.email}
           onChange={(e) => set("email", e.target.value)}
           className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
-          aria-label="E-Mail"
+          aria-label={t("emailLabel")}
         />
       </div>
 
       {/* Telefon */}
       <div>
         <label htmlFor="phone" className="block text-sm font-medium mb-1">
-          Telefon
+          {t("phoneLabel")}
         </label>
         <input
           id="phone"
@@ -179,14 +181,14 @@ export default function ProfileForm() {
           value={data.phone}
           onChange={(e) => set("phone", e.target.value)}
           className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
-          aria-label="Telefon"
+          aria-label={t("phoneLabel")}
         />
       </div>
 
       {/* Geburtsdatum */}
       <div>
         <label htmlFor="birthdate" className="block text-sm font-medium mb-1">
-          Geburtsdatum
+          {t("birthdateLabel")}
         </label>
         <input
           id="birthdate"
@@ -194,14 +196,14 @@ export default function ProfileForm() {
           value={data.birthdate}
           onChange={(e) => set("birthdate", e.target.value)}
           className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
-          aria-label="Geburtsdatum"
+          aria-label={t("birthdateLabel")}
         />
       </div>
 
       {/* Foto */}
       <div>
         <label htmlFor="photo" className="block text-sm font-medium mb-1">
-          Foto
+          {t("photoLabel")}
         </label>
         <input
           id="photo"
@@ -213,7 +215,7 @@ export default function ProfileForm() {
         {data.photo && (
           <img
             src={data.photo}
-            alt="Vorschau"
+            alt={t("photoPreviewAlt")}
             className="mt-2 h-20 w-20 rounded-full object-cover border"
           />
         )}
@@ -221,12 +223,12 @@ export default function ProfileForm() {
 
       {/* Ausbildung */}
       <div>
-        <h2 className="text-lg font-semibold text-primary mb-2">Ausbildung *</h2>
+        <h2 className="text-lg font-semibold text-primary mb-2">{t("educationTitle")}</h2>
         {data.education.map((edu) => (
           <div key={edu.id} className="border border-gray-200 rounded-md p-3 mb-3 space-y-2">
             <input
               type="text"
-              placeholder="Institution"
+              placeholder={t("institutionPlaceholder")}
               value={edu.institution}
               onChange={(e) => updateEdu(edu.id, "institution", e.target.value)}
               className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
@@ -234,14 +236,14 @@ export default function ProfileForm() {
             <div className="flex gap-2">
               <input
                 type="text"
-                placeholder="Abschluss"
+                placeholder={t("degreePlaceholder")}
                 value={edu.degree}
                 onChange={(e) => updateEdu(edu.id, "degree", e.target.value)}
                 className="flex-1 border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
               />
               <input
                 type="text"
-                placeholder="Jahr"
+                placeholder={t("yearPlaceholder")}
                 value={edu.year}
                 onChange={(e) => updateEdu(edu.id, "year", e.target.value)}
                 className="w-24 border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
@@ -251,32 +253,32 @@ export default function ProfileForm() {
               type="button"
               onClick={() => removeEdu(edu.id)}
               className="text-sm text-red-500 hover:text-red-700"
-              aria-label="Entfernen"
+              aria-label={t("remove")}
             >
-              Entfernen
+              {t("remove")}
             </button>
           </div>
         ))}
         {errors.education && (
-          <p className="text-red-600 text-sm mt-1">{errors.education}</p>
+          <p className="text-red-600 text-sm mt-1">{t(`errors.${errors.education}`)}</p>
         )}
         <button
           type="button"
           onClick={addEdu}
           className="text-sm text-accent hover:underline"
-          aria-label="Ausbildung hinzufügen"
+          aria-label={t("addEducation")}
         >
-          + Ausbildung hinzufügen
+          + {t("addEducation")}
         </button>
       </div>
 
       {/* Qualifikationen */}
       <div>
-        <h2 className="text-lg font-semibold text-primary mb-2">Qualifikationen</h2>
+        <h2 className="text-lg font-semibold text-primary mb-2">{t("qualificationsTitle")}</h2>
         <div className="flex gap-2 mb-2">
           <input
             type="text"
-            placeholder="z. B. TypeScript"
+            placeholder={t("qualificationPlaceholder")}
             value={qualInput}
             onChange={(e) => setQualInput(e.target.value)}
             onKeyDown={(e) => {
@@ -292,7 +294,7 @@ export default function ProfileForm() {
             onClick={() => addQualification(qualInput)}
             className="px-3 py-2 bg-surface border border-gray-300 rounded-md text-sm hover:bg-gray-100"
           >
-            Hinzufügen
+            {t("add")}
           </button>
         </div>
         <div className="flex flex-col gap-2">
@@ -304,7 +306,7 @@ export default function ProfileForm() {
                   type="button"
                   onClick={() => removeQualification(q.label)}
                   className="text-accent/60 hover:text-accent ml-1"
-                  aria-label={`${q.label} entfernen`}
+                  aria-label={t("removeItem", { label: q.label })}
                 >
                   ×
                 </button>
@@ -327,11 +329,11 @@ export default function ProfileForm() {
 
       {/* Persönliche Interessen */}
       <div>
-        <h2 className="text-lg font-semibold text-primary mb-2">Persönliche Interessen</h2>
+        <h2 className="text-lg font-semibold text-primary mb-2">{t("interestsTitle")}</h2>
         <div className="flex gap-2 mb-2">
           <input
             type="text"
-            placeholder="z. B. Fotografie"
+            placeholder={t("interestPlaceholder")}
             value={interestInput}
             onChange={(e) => setInterestInput(e.target.value)}
             onKeyDown={(e) => {
@@ -347,7 +349,7 @@ export default function ProfileForm() {
             onClick={() => addInterest(interestInput)}
             className="px-3 py-2 bg-surface border border-gray-300 rounded-md text-sm hover:bg-gray-100"
           >
-            Interesse hinzufügen
+            {t("addInterest")}
           </button>
         </div>
         <div className="flex flex-col gap-2">
@@ -359,7 +361,7 @@ export default function ProfileForm() {
                   type="button"
                   onClick={() => removeInterest(s.label)}
                   className="text-accent/60 hover:text-accent ml-1"
-                  aria-label={`${s.label} entfernen`}
+                  aria-label={t("removeItem", { label: s.label })}
                 >
                   ×
                 </button>
@@ -385,9 +387,9 @@ export default function ProfileForm() {
       <button
         type="submit"
         className="w-full bg-primary text-white py-3 rounded-full font-semibold hover:brightness-110 transition"
-        aria-label="Speichern"
+        aria-label={t("save")}
       >
-        Speichern
+        {t("save")}
       </button>
     </form>
   );

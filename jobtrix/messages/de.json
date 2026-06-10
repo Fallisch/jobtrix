@@ -42,8 +42,31 @@
   },
   "profile": {
     "title": "Profil",
+    "nameLabel": "Name *",
+    "addressLabel": "Adresse",
+    "emailLabel": "E-Mail",
+    "phoneLabel": "Telefon",
+    "birthdateLabel": "Geburtsdatum",
+    "photoLabel": "Foto",
+    "photoPreviewAlt": "Vorschau",
+    "educationTitle": "Ausbildung *",
+    "institutionPlaceholder": "Institution",
+    "degreePlaceholder": "Abschluss",
+    "yearPlaceholder": "Jahr",
+    "qualificationsTitle": "Qualifikationen",
+    "qualificationPlaceholder": "z. B. TypeScript",
+    "add": "Hinzufügen",
+    "interestsTitle": "Persönliche Interessen",
+    "interestPlaceholder": "z. B. Fotografie",
+    "addInterest": "Interesse hinzufügen",
+    "removeItem": "{label} entfernen",
     "save": "Speichern",
+    "saveError": "Profil konnte nicht gespeichert werden. Bitte versuche es erneut.",
     "addEducation": "Ausbildung hinzufügen",
-    "remove": "Entfernen"
+    "remove": "Entfernen",
+    "errors": {
+      "required": "Name ist erforderlich",
+      "minEducation": "Mindestens ein Ausbildungseintrag erforderlich"
+    }
   }
 }

@@ -42,8 +42,31 @@
   },
   "profile": {
     "title": "Profile",
+    "nameLabel": "Name *",
+    "addressLabel": "Address",
+    "emailLabel": "Email",
+    "phoneLabel": "Phone",
+    "birthdateLabel": "Date of birth",
+    "photoLabel": "Photo",
+    "photoPreviewAlt": "Preview",
+    "educationTitle": "Education *",
+    "institutionPlaceholder": "Institution",
+    "degreePlaceholder": "Degree",
+    "yearPlaceholder": "Year",
+    "qualificationsTitle": "Qualifications",
+    "qualificationPlaceholder": "e.g. TypeScript",
+    "add": "Add",
+    "interestsTitle": "Personal interests",
+    "interestPlaceholder": "e.g. Photography",
+    "addInterest": "Add interest",
+    "removeItem": "Remove {label}",
     "save": "Save",
+    "saveError": "Could not save profile. Please try again.",
     "addEducation": "Add education",
-    "remove": "Remove"
+    "remove": "Remove",
+    "errors": {
+      "required": "Name is required",
+      "minEducation": "At least one education entry is required"
+    }
   }
 }
