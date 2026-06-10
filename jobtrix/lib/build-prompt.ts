@@ -8,6 +8,36 @@ export interface GenerateRequest {
   cvStyle?: "classic" | "american";
 }
 
+export function buildHumanizePrompt(coverLetter: string, cv: string): string {
+  return `Du bekommst ein Anschreiben und einen Lebenslauf, die von einer KI erstellt wurden. Schreibe beide Texte so um, dass sie nicht mehr als KI-Text erkannt werden.
+
+Techniken die du zwingend anwenden musst:
+
+Satzlänge extrem variieren: Manche Sätze nur 4–6 Wörter. Andere deutlich länger, mit Nebensatz. Kein gleichmäßiger Rhythmus.
+
+Nie zweimal hintereinander mit „Ich" beginnen. Wechsle zu Verben, Zeitangaben, Beobachtungen.
+
+Gelegentlich einen Absatz aus nur einem kurzen Satz bestehen lassen.
+
+Keine drei gleichlangen Listenpunkte. Wenn aufgezählt wird, dann ungleichmäßig.
+
+Den Schluss des Anschreibens konkret und direkt formulieren – keine Floskel wie „Über eine Einladung zum Gespräch würde ich mich sehr freuen".
+
+Behalte alle Fakten (Name, Ausbildung, Qualifikationen, Stelle) exakt bei. Ändere nur Stil und Struktur.
+
+ANSCHREIBEN:
+${coverLetter}
+
+LEBENSLAUF:
+${cv}
+
+Antworte im folgenden Format – nutze exakt diese Trennstruktur:
+
+ANSCHREIBEN: [umgeschriebenes Anschreiben hier]
+
+LEBENSLAUF: [umgeschriebener Lebenslauf hier]`;
+}
+
 export function buildPrompt(req: GenerateRequest): string {
   const { jobPosting, companyName, contactPerson, profile, cvStyle } = req;
 
