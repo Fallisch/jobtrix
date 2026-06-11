@@ -64,6 +64,8 @@ describe("POST /api/checkout", () => {
     expect(args.payment_method_types).toEqual(expect.arrayContaining(["card", "sepa_debit"]));
     expect(args.line_items[0].price_data.unit_amount).toBe(999);
     expect(args.client_reference_id).toBe("user-1");
+    expect(args.success_url).toMatch(/\/pricing\?status=success$/);
+    expect(args.cancel_url).toMatch(/\/pricing\?status=cancelled$/);
   });
 
   it("erzeugt eine Stripe-Checkout-Session für 'lifetime' mit dem Lifetime-Preis", async () => {

@@ -1,4 +1,8 @@
+import { config } from "dotenv";
 import { defineConfig, devices } from "@playwright/test";
+
+config({ path: ".env" });
+config({ path: ".env.local", override: true });
 
 export default defineConfig({
   testDir: "./e2e",

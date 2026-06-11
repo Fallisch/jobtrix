@@ -137,6 +137,8 @@
       "buyButton": "Buy now"
     },
     "secureNote": "Secure payment via Stripe by card or SEPA direct debit.",
-    "checkoutError": "Redirecting to Stripe failed. Please try again."
+    "checkoutError": "Redirecting to Stripe failed. Please try again.",
+    "checkoutSuccess": "Payment successful! Your access is now active – you can generate more applications right away.",
+    "checkoutCancelled": "Payment was cancelled. You can try again anytime."
   }
 }

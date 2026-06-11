@@ -1,8 +1,13 @@
 import PricingCards from "@/components/PricingCards";
 import { getPricingConfig } from "@/lib/pricing";
 
-export default function PricingPage() {
-  const config = getPricingConfig();
+interface PricingPageProps {
+  searchParams: { status?: string };
+}
 
-  return <PricingCards config={config} />;
+export default function PricingPage({ searchParams }: PricingPageProps) {
+  const config = getPricingConfig();
+  const status = searchParams.status === "success" || searchParams.status === "cancelled" ? searchParams.status : null;
+
+  return <PricingCards config={config} status={status} />;
 }

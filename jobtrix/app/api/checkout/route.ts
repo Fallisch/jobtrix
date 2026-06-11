@@ -40,8 +40,8 @@ export async function POST(request: NextRequest) {
     ],
     client_reference_id: session.user.id,
     metadata: { userId: session.user.id, package: pkg },
-    success_url: `${baseUrl}/?checkout=success`,
-    cancel_url: `${baseUrl}/?checkout=cancelled`,
+    success_url: `${baseUrl}/pricing?status=success`,
+    cancel_url: `${baseUrl}/pricing?status=cancelled`,
   });
 
   return NextResponse.json({ url: checkoutSession.url });

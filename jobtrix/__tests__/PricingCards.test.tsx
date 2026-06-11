@@ -95,4 +95,22 @@ describe("PricingCards", () => {
       expect(screen.getByRole("alert")).toBeInTheDocument();
     });
   });
+
+  it("zeigt eine Erfolgsmeldung nach erfolgreicher Rückkehr von Stripe (status=success)", () => {
+    render(<PricingCards config={config} status="success" />);
+
+    expect(screen.getByRole("status")).toHaveTextContent("Zahlung erfolgreich");
+  });
+
+  it("zeigt eine Abbruchmeldung wenn die Zahlung abgebrochen wurde (status=cancelled)", () => {
+    render(<PricingCards config={config} status="cancelled" />);
+
+    expect(screen.getByRole("status")).toHaveTextContent("Die Zahlung wurde abgebrochen");
+  });
+
+  it("zeigt keine Status-Meldung ohne status-Parameter", () => {
+    render(<PricingCards config={config} />);
+
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
+  });
 });

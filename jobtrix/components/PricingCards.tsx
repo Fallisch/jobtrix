@@ -9,6 +9,7 @@ interface PricingCardsProps {
     lifetime: { priceEur: number };
   };
   navigate?: (url: string) => void;
+  status?: "success" | "cancelled" | null;
 }
 
 export default function PricingCards({
@@ -16,6 +17,7 @@ export default function PricingCards({
   navigate = (url: string) => {
     window.location.href = url;
   },
+  status = null,
 }: PricingCardsProps) {
   const t = useTranslations("pricing");
   const locale = useLocale();
@@ -59,6 +61,16 @@ export default function PricingCards({
       {error && (
         <div role="alert" className="mb-6 rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-red-700 text-sm">
           {error}
+        </div>
+      )}
+      {status === "success" && (
+        <div role="status" className="mb-6 rounded-xl bg-green-50 border border-green-200 px-4 py-3 text-green-700 text-sm">
+          {t("checkoutSuccess")}
+        </div>
+      )}
+      {status === "cancelled" && (
+        <div role="status" className="mb-6 rounded-xl bg-amber-50 border border-amber-200 px-4 py-3 text-amber-700 text-sm">
+          {t("checkoutCancelled")}
         </div>
       )}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

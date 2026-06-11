@@ -137,6 +137,8 @@
       "buyButton": "Jetzt kaufen"
     },
     "secureNote": "Sichere Zahlung über Stripe per Kreditkarte oder SEPA-Lastschrift.",
-    "checkoutError": "Weiterleitung zu Stripe ist fehlgeschlagen. Bitte versuche es erneut."
+    "checkoutError": "Weiterleitung zu Stripe ist fehlgeschlagen. Bitte versuche es erneut.",
+    "checkoutSuccess": "Zahlung erfolgreich! Dein Zugang ist jetzt aktiv – du kannst direkt weitere Bewerbungen generieren.",
+    "checkoutCancelled": "Die Zahlung wurde abgebrochen. Du kannst es jederzeit erneut versuchen."
   }
 }
