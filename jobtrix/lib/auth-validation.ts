@@ -59,3 +59,49 @@ export function validateLogin(data: LoginData): LoginErrors {
 
   return errors;
 }
+
+export interface ForgotPasswordData {
+  email: string;
+}
+
+export interface ForgotPasswordErrors {
+  email?: string;
+}
+
+export function validateForgotPassword(data: ForgotPasswordData): ForgotPasswordErrors {
+  const errors: ForgotPasswordErrors = {};
+
+  if (!data.email.trim()) {
+    errors.email = "required";
+  } else if (!EMAIL_REGEX.test(data.email)) {
+    errors.email = "invalid";
+  }
+
+  return errors;
+}
+
+export interface ResetPasswordData {
+  password: string;
+  passwordConfirm: string;
+}
+
+export interface ResetPasswordErrors {
+  password?: string;
+  passwordConfirm?: string;
+}
+
+export function validateResetPassword(data: ResetPasswordData): ResetPasswordErrors {
+  const errors: ResetPasswordErrors = {};
+
+  if (!data.password) {
+    errors.password = "required";
+  } else if (data.password.length < MIN_PASSWORD_LENGTH) {
+    errors.password = "tooShort";
+  }
+
+  if (data.passwordConfirm !== data.password) {
+    errors.passwordConfirm = "mismatch";
+  }
+
+  return errors;
+}

@@ -79,6 +79,11 @@ export default function LoginForm() {
             {errors.password && (
               <p className="text-red-600 text-sm mt-1">{t(`errors.password.${errors.password}`)}</p>
             )}
+            <p className="text-sm text-right mt-1">
+              <Link href={`/${locale}/forgot-password`} className="text-accent hover:underline">
+                {t("forgotPasswordLink")}
+              </Link>
+            </p>
           </div>
 
           {submitError && (

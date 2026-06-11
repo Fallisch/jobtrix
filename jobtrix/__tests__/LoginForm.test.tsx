@@ -81,6 +81,15 @@ describe("LoginForm", () => {
     await waitFor(() => expect(mockPush).toHaveBeenCalledWith("/de/profile"));
   });
 
+  it("verlinkt auf die Passwort-vergessen-Seite", () => {
+    render(<LoginForm />);
+
+    expect(screen.getByRole("link", { name: "Passwort vergessen?" })).toHaveAttribute(
+      "href",
+      "/de/forgot-password"
+    );
+  });
+
   it("zeigt eine Fehlermeldung bei falschen Zugangsdaten", async () => {
     mockedSignIn.mockResolvedValue({ error: "CredentialsSignin", status: 401, ok: false, url: null });
 

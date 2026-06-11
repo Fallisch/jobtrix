@@ -47,6 +47,7 @@
       "passwordLabel": "Password",
       "submit": "Log in",
       "registerLink": "No account yet? Register now",
+      "forgotPasswordLink": "Forgot your password?",
       "errors": {
         "email": {
           "required": "Email address is required"
@@ -55,6 +56,43 @@
           "required": "Password is required"
         },
         "invalidCredentials": "Email or password is incorrect"
+      }
+    },
+    "forgotPassword": {
+      "title": "Forgot password",
+      "description": "Enter your email address. If an account exists, we'll send you a link to reset your password.",
+      "emailLabel": "Email",
+      "submit": "Request link",
+      "successMessage": "If an account exists for this email address, we've sent a link to reset your password.",
+      "backToLoginLink": "Back to login",
+      "errors": {
+        "email": {
+          "required": "Email address is required",
+          "invalid": "Please enter a valid email address"
+        },
+        "generic": "Something went wrong. Please try again."
+      }
+    },
+    "resetPassword": {
+      "title": "Set a new password",
+      "passwordLabel": "New password",
+      "passwordConfirmLabel": "Confirm password",
+      "submit": "Save password",
+      "successMessage": "Your password has been changed successfully. You can now log in.",
+      "loginLink": "Go to login",
+      "invalidTokenTitle": "Link invalid or expired",
+      "invalidTokenMessage": "This password reset link is invalid or has expired.",
+      "forgotPasswordLink": "Request a new link",
+      "errors": {
+        "password": {
+          "required": "Password is required",
+          "tooShort": "The password must be at least 8 characters long"
+        },
+        "passwordConfirm": {
+          "mismatch": "Passwords do not match"
+        },
+        "invalidToken": "This link is invalid or has expired.",
+        "generic": "Something went wrong. Please try again."
       }
     }
   },
