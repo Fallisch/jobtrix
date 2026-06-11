@@ -33,6 +33,7 @@ jest.mock("next-intl", () => {
 
 jest.mock("next/navigation", () => ({
   useRouter: () => ({ push: jest.fn() }),
+  useParams: () => ({ locale: mockLocaleState.locale }),
 }));
 
 function setLocale(locale: "de" | "en") {
@@ -51,12 +52,18 @@ const emptyProfile: ProfileData = {
   interests: [],
 };
 
+type AccessData = { package: "none" | "limited" | "lifetime"; validUntil: string | null };
+
 function mockFetch({
   getProfile = emptyProfile,
+  getAccess = { package: "none", validUntil: null },
   postOk = true,
-}: { getProfile?: ProfileData; postOk?: boolean } = {}) {
-  global.fetch = jest.fn((_url: string, options?: RequestInit) => {
+}: { getProfile?: ProfileData; getAccess?: AccessData; postOk?: boolean } = {}) {
+  global.fetch = jest.fn((url: string, options?: RequestInit) => {
     if (!options || options.method === undefined) {
+      if (url.toString().includes("/api/access")) {
+        return Promise.resolve({ ok: true, json: async () => getAccess } as Response);
+      }
       return Promise.resolve({ ok: true, json: async () => getProfile } as Response);
     }
     return Promise.resolve({ ok: postOk, json: async () => ({}) } as Response);
@@ -277,6 +284,35 @@ describe("ProfileForm", () => {
 
     expect(await screen.findByDisplayValue("Erika Musterfrau")).toBeInTheDocument();
     expect(screen.getByDisplayValue("HU Berlin")).toBeInTheDocument();
+  });
+
+  describe("Zugang-Gültigkeitsdatum (Issue #22)", () => {
+    it("zeigt das Gültigkeitsdatum bei aktivem zeitlich begrenztem Zugang an", async () => {
+      mockFetch({ getAccess: { package: "limited", validUntil: "2026-12-31T00:00:00.000Z" } });
+
+      render(<ProfileForm />);
+
+      expect(await screen.findByText(/gültig bis/i)).toBeInTheDocument();
+      expect(screen.getByText(/31\.12\.2026/)).toBeInTheDocument();
+    });
+
+    it("zeigt keinen Hinweis auf ein Gültigkeitsdatum bei Lifetime-Zugang", async () => {
+      mockFetch({ getAccess: { package: "lifetime", validUntil: null } });
+
+      render(<ProfileForm />);
+      await waitFor(() => {});
+
+      expect(screen.queryByText(/gültig bis/i)).not.toBeInTheDocument();
+    });
+
+    it("zeigt keinen Hinweis auf ein Gültigkeitsdatum ohne aktiven Zugang", async () => {
+      mockFetch({ getAccess: { package: "none", validUntil: null } });
+
+      render(<ProfileForm />);
+      await waitFor(() => {});
+
+      expect(screen.queryByText(/gültig bis/i)).not.toBeInTheDocument();
+    });
   });
 
   describe("Englisch (AC1)", () => {

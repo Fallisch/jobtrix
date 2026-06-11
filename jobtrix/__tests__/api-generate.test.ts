@@ -203,4 +203,25 @@ describe("Zugangskontrolle", () => {
 
     expect(res.status).toBe(200);
   });
+
+  it("liefert 'Zugang erforderlich' bei abgelaufenem zeitlich begrenztem Zugang", async () => {
+    const validUntil = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    await prisma.access.create({ data: { userId, freeGenerationUsed: true, package: "limited", validUntil } });
+
+    const res = await POST(makeRequest({ jobPosting: "Stelle", profile }));
+    const data = await res.json();
+
+    expect(res.status).toBe(402);
+    expect(data.error).toBe("access_required");
+    expect(mockCreate).not.toHaveBeenCalled();
+  });
+
+  it("erlaubt die Generierung bei noch gültigem zeitlich begrenztem Zugang", async () => {
+    const validUntil = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    await prisma.access.create({ data: { userId, freeGenerationUsed: true, package: "limited", validUntil } });
+
+    const res = await POST(makeRequest({ jobPosting: "Stelle", profile }));
+
+    expect(res.status).toBe(200);
+  });
 });

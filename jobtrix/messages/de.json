@@ -146,6 +146,7 @@
     "removeItem": "{label} entfernen",
     "save": "Speichern",
     "saveError": "Profil konnte nicht gespeichert werden. Bitte versuche es erneut.",
+    "accessValidUntil": "Dein zeitlich begrenzter Zugang ist gültig bis {date}.",
     "addEducation": "Ausbildung hinzufügen",
     "remove": "Entfernen",
     "errors": {

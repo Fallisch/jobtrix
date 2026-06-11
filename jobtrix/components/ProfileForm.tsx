@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import {
   ProfileData,
   EducationEntry,
@@ -27,14 +27,22 @@ const empty: ProfileData = {
   interests: [],
 };
 
+interface AccessState {
+  package: "none" | "limited" | "lifetime";
+  validUntil: string | null;
+}
+
 export default function ProfileForm() {
   const t = useTranslations("profile");
   const router = useRouter();
+  const params = useParams();
+  const locale = (params?.locale as string) ?? "de";
   const [data, setData] = useState<ProfileData>(empty);
   const [errors, setErrors] = useState<ProfileErrors>({});
   const [saveError, setSaveError] = useState<string | null>(null);
   const [qualInput, setQualInput] = useState("");
   const [interestInput, setInterestInput] = useState("");
+  const [access, setAccess] = useState<AccessState | null>(null);
   const interactedRef = useRef(false);
 
   useEffect(() => {
@@ -48,6 +56,13 @@ export default function ProfileForm() {
           ...profile,
           education: profile.education.length > 0 ? profile.education : [makeEduEntry()],
         });
+      })
+      .catch(() => {});
+
+    fetch("/api/access")
+      .then((res) => (res.ok ? (res.json() as Promise<AccessState>) : null))
+      .then((accessState) => {
+        if (accessState) setAccess(accessState);
       })
       .catch(() => {});
   }, []);
@@ -146,6 +161,16 @@ export default function ProfileForm() {
   return (
     <form onSubmit={handleSubmit} className="max-w-2xl mx-auto px-4 py-8 space-y-6">
       <h1 className="text-2xl font-bold text-primary">{t("title")}</h1>
+
+      {access?.package === "limited" && access.validUntil && (
+        <p className="text-sm text-text/70 bg-surface border border-gray-200 rounded-md px-3 py-2">
+          {t("accessValidUntil", {
+            date: new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeZone: "UTC" }).format(
+              new Date(access.validUntil)
+            ),
+          })}
+        </p>
+      )}
 
       {/* Name */}
       <div>

@@ -146,6 +146,7 @@
     "removeItem": "Remove {label}",
     "save": "Save",
     "saveError": "Could not save profile. Please try again.",
+    "accessValidUntil": "Your time-limited access is valid until {date}.",
     "addEducation": "Add education",
     "remove": "Remove",
     "errors": {
