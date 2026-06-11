@@ -18,9 +18,10 @@ function makeRequest(body: object) {
 describe("POST /api/auth/reset-password", () => {
   const email = `reset-password-test-${Date.now()}@example.com`;
   let userId: string;
+  let passwordHash: string;
 
   beforeAll(async () => {
-    const passwordHash = await bcrypt.hash("old-password", 10);
+    passwordHash = await bcrypt.hash("old-password", 10);
     const user = await prisma.user.create({ data: { email, passwordHash } });
     userId = user.id;
   });
@@ -31,7 +32,7 @@ describe("POST /api/auth/reset-password", () => {
   });
 
   it("setzt das Passwort mit gueltigem Token neu", async () => {
-    const token = generateResetToken(userId);
+    const token = generateResetToken(userId, passwordHash);
     const res = await POST(makeRequest({ token, password: "neues-passwort" }));
     const data = await res.json();
 
@@ -53,13 +54,27 @@ describe("POST /api/auth/reset-password", () => {
   it("lehnt ein abgelaufenes Token ab", async () => {
     const realNow = Date.now;
     jest.spyOn(Date, "now").mockReturnValue(realNow() - 2 * 60 * 60 * 1000);
-    const expiredToken = generateResetToken(userId);
+    const expiredToken = generateResetToken(userId, passwordHash);
     Date.now = realNow;
 
     const res = await POST(makeRequest({ token: expiredToken, password: "neues-passwort" }));
     const data = await res.json();
 
     expect(res.status).toBe(400);
+    expect(data.error).toBe("invalid_token");
+  });
+
+  it("lehnt ein bereits eingeloestes Token bei erneuter Verwendung ab (Replay-Schutz)", async () => {
+    const user = await prisma.user.findUniqueOrThrow({ where: { id: userId } });
+    const token = generateResetToken(userId, user.passwordHash);
+
+    const firstRes = await POST(makeRequest({ token, password: "noch-ein-passwort" }));
+    expect(firstRes.status).toBe(200);
+
+    const secondRes = await POST(makeRequest({ token, password: "wieder-ein-anderes-passwort" }));
+    const data = await secondRes.json();
+
+    expect(secondRes.status).toBe(400);
     expect(data.error).toBe("invalid_token");
   });
 });

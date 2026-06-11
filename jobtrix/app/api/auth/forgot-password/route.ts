@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
   if (email) {
     const user = await prisma.user.findUnique({ where: { email } });
     if (user) {
-      const token = generateResetToken(user.id);
+      const token = generateResetToken(user.id, user.passwordHash);
       const baseUrl = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
       const resetUrl = `${baseUrl}/de/reset-password?token=${token}`;
       await sendPasswordResetEmail({ to: user.email, resetUrl });

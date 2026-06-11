@@ -33,7 +33,7 @@ test.describe("Issue #18 – Passwort zurücksetzen per E-Mail", () => {
     ).toBeVisible();
 
     // Schritt 2: Signiertes Reset-Token (entspricht dem Link aus der Brevo-Mail) einlösen
-    const token = generateResetToken(user.id);
+    const token = generateResetToken(user.id, user.passwordHash);
     await page.goto(`/de/reset-password?token=${token}`);
     await page.getByLabel("Neues Passwort").fill(newPassword);
     await page.getByLabel("Passwort bestätigen").fill(newPassword);

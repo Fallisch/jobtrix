@@ -23,9 +23,10 @@ function makeRequest(body: object) {
 describe("POST /api/auth/forgot-password", () => {
   const email = `forgot-password-test-${Date.now()}@example.com`;
   let userId: string;
+  let passwordHash: string;
 
   beforeAll(async () => {
-    const passwordHash = await bcrypt.hash("old-password", 10);
+    passwordHash = await bcrypt.hash("old-password", 10);
     const user = await prisma.user.create({ data: { email, passwordHash } });
     userId = user.id;
   });
@@ -51,7 +52,7 @@ describe("POST /api/auth/forgot-password", () => {
     expect(to).toBe(email);
 
     const token = new URL(resetUrl).searchParams.get("token") ?? "";
-    expect(verifyResetToken(token)).toEqual({ userId });
+    expect(verifyResetToken(token, passwordHash)).toEqual({ userId });
   });
 
   it("liefert dieselbe Antwort, wenn der Account nicht existiert, ohne E-Mail zu versenden", async () => {
