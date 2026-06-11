@@ -6,8 +6,9 @@ jest.mock("next-intl", () => ({
   useTranslations: () => (key: string) => key,
 }));
 
+const mockPush = jest.fn();
 jest.mock("next/navigation", () => ({
-  useRouter: () => ({ push: jest.fn() }),
+  useRouter: () => ({ push: mockPush }),
   useParams: () => ({ locale: "de" }),
 }));
 
@@ -25,6 +26,7 @@ const mockProfile = {
 
 beforeEach(() => {
   (global.fetch as jest.Mock).mockReset();
+  mockPush.mockClear();
   localStorage.clear();
 });
 
@@ -116,6 +118,22 @@ describe("GenerateForm", () => {
       await waitFor(() => {
         expect(screen.getByDisplayValue("Sehr geehrte Damen")).toBeInTheDocument();
         expect(screen.getByDisplayValue("Max Mustermann, Lebenslauf")).toBeInTheDocument();
+      });
+    });
+
+    it("leitet zur Bezahlseite weiter wenn die API 'Zugang erforderlich' meldet", async () => {
+      (global.fetch as jest.Mock).mockResolvedValue({
+        ok: false,
+        status: 402,
+        json: () => Promise.resolve({ error: "access_required" }),
+      });
+
+      render(<GenerateForm />);
+      await userEvent.type(screen.getByRole("textbox", { name: JOB_POSTING }), "Stelle");
+      fireEvent.click(screen.getByRole("button", { name: GENERATE_BTN }));
+
+      await waitFor(() => {
+        expect(mockPush).toHaveBeenCalledWith("/de/pricing");
       });
     });
 

@@ -2,12 +2,19 @@
  * @jest-environment node
  */
 jest.mock("@anthropic-ai/sdk");
+jest.mock("next-auth/next", () => ({
+  getServerSession: jest.fn(),
+}));
 
+import bcrypt from "bcrypt";
 import { POST } from "@/app/api/generate/route";
 import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest } from "next/server";
+import { getServerSession } from "next-auth/next";
+import { prisma } from "@/lib/prisma";
 
 const MockedAnthropic = jest.mocked(Anthropic);
+const mockedGetServerSession = jest.mocked(getServerSession);
 let mockCreate: jest.Mock;
 
 const profile = {
@@ -28,10 +35,27 @@ function makeRequest(body: object) {
   });
 }
 
-beforeEach(() => {
+const email = `generate-test-${Date.now()}@example.com`;
+let userId: string;
+
+beforeAll(async () => {
+  const passwordHash = await bcrypt.hash("password", 10);
+  const user = await prisma.user.create({ data: { email, passwordHash } });
+  userId = user.id;
+});
+
+afterAll(async () => {
+  await prisma.access.deleteMany({ where: { userId } });
+  await prisma.user.delete({ where: { id: userId } });
+  await prisma.$disconnect();
+});
+
+beforeEach(async () => {
   mockCreate = jest.fn();
   MockedAnthropic.mockImplementation(() => ({ messages: { create: mockCreate } } as never));
   process.env.ANTHROPIC_API_KEY = "test-key";
+  mockedGetServerSession.mockResolvedValue({ user: { id: userId }, expires: "" });
+  await prisma.access.deleteMany({ where: { userId } });
 });
 
 describe("POST /api/generate", () => {
@@ -135,5 +159,48 @@ describe("POST /api/generate", () => {
 
     expect(res.status).toBe(500);
     expect(data).toHaveProperty("error");
+  });
+});
+
+describe("Zugangskontrolle", () => {
+  beforeEach(() => {
+    mockCreate.mockResolvedValue({
+      content: [{ type: "text", text: "ANSCHREIBEN: text\n\nLEBENSLAUF: text" }],
+    });
+  });
+
+  it("liefert 401 ohne Session", async () => {
+    mockedGetServerSession.mockResolvedValue(null);
+
+    const res = await POST(makeRequest({ jobPosting: "Stelle", profile }));
+
+    expect(res.status).toBe(401);
+  });
+
+  it("erlaubt die erste Generierung kostenlos und markiert sie als verbraucht", async () => {
+    const res = await POST(makeRequest({ jobPosting: "Stelle", profile }));
+
+    expect(res.status).toBe(200);
+    const access = await prisma.access.findUnique({ where: { userId } });
+    expect(access?.freeGenerationUsed).toBe(true);
+  });
+
+  it("liefert 'Zugang erforderlich' bei bereits verbrauchter kostenloser Generierung ohne Paket", async () => {
+    await prisma.access.create({ data: { userId, freeGenerationUsed: true, package: "none" } });
+
+    const res = await POST(makeRequest({ jobPosting: "Stelle", profile }));
+    const data = await res.json();
+
+    expect(res.status).toBe(402);
+    expect(data.error).toBe("access_required");
+    expect(mockCreate).not.toHaveBeenCalled();
+  });
+
+  it("erlaubt die Generierung bei aktivem Lifetime-Zugang", async () => {
+    await prisma.access.create({ data: { userId, freeGenerationUsed: true, package: "lifetime" } });
+
+    const res = await POST(makeRequest({ jobPosting: "Stelle", profile }));
+
+    expect(res.status).toBe(200);
   });
 });

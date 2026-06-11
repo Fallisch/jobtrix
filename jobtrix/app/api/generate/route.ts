@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { checkAccess } from "@/lib/access";
 import { buildPrompt, GenerateRequest } from "@/lib/build-prompt";
 
 const SECTION_MARKER = /\*{0,2}\s*(BETREFF|ANSCHREIBEN|LEBENSLAUF)\s*:\s*\*{0,2}/gi;
@@ -41,6 +45,26 @@ function parseResponse(text: string): { emailSubject: string; coverLetter: strin
 }
 
 export async function POST(request: NextRequest) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  }
+  const userId = session.user.id;
+
+  const access = await prisma.access.findUnique({ where: { userId } });
+  const decision = checkAccess(access);
+  if (!decision.allowed) {
+    return NextResponse.json({ error: decision.reason }, { status: 402 });
+  }
+
+  if (decision.markFreeGenerationUsed) {
+    await prisma.access.upsert({
+      where: { userId },
+      create: { userId, freeGenerationUsed: true },
+      update: { freeGenerationUsed: true },
+    });
+  }
+
   try {
     const body = (await request.json()) as GenerateRequest;
     const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
+import { useRouter, useParams } from "next/navigation";
 import { loadProfile } from "@/lib/profile-storage";
 import EmailDraft from "@/components/EmailDraft";
 import { downloadCoverLetterPdf, downloadCvPdf } from "@/lib/download-pdf";
@@ -23,6 +24,8 @@ interface GenerateResult {
 
 export default function GenerateForm() {
   const t = useTranslations("generate");
+  const router = useRouter();
+  const { locale } = useParams<{ locale: string }>();
   const [jobPosting, setJobPosting] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [contactPerson, setContactPerson] = useState("");
@@ -58,6 +61,10 @@ export default function GenerateForm() {
       });
       const data = await res.json();
       if (!res.ok) {
+        if (data.error === "access_required") {
+          router.push(`/${locale}/pricing`);
+          return;
+        }
         setError(data.error ?? t("errorGeneric"));
       } else {
         setResult(data);

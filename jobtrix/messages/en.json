@@ -114,5 +114,29 @@
       "required": "Name is required",
       "minEducation": "At least one education entry is required"
     }
+  },
+  "pricing": {
+    "title": "Access to JobTRIX",
+    "subtitle": "Your free trial generation has already been used. Choose a package to create more applications.",
+    "recommendedBadge": "Recommended",
+    "limited": {
+      "title": "Limited-time access",
+      "duration": "Valid for {days} days",
+      "feature1": "Unlimited generations",
+      "feature2": "All layouts and templates",
+      "feature3": "PDF export of cover letter and CV",
+      "buyButton": "Buy now"
+    },
+    "lifetime": {
+      "title": "Lifetime access",
+      "duration": "One-time payment, valid forever",
+      "feature1": "Unlimited generations",
+      "feature2": "All layouts and templates",
+      "feature3": "PDF export of cover letter and CV",
+      "feature4": "All future updates included",
+      "buyButton": "Buy now"
+    },
+    "secureNote": "Secure payment via Stripe by card or SEPA direct debit.",
+    "checkoutError": "Redirecting to Stripe failed. Please try again."
   }
 }

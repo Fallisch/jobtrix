@@ -114,5 +114,29 @@
       "required": "Name ist erforderlich",
       "minEducation": "Mindestens ein Ausbildungseintrag erforderlich"
     }
+  },
+  "pricing": {
+    "title": "Zugang zu JobTRIX",
+    "subtitle": "Deine kostenlose Probegenerierung wurde bereits genutzt. Wähle ein Paket, um weitere Bewerbungen zu erstellen.",
+    "recommendedBadge": "Empfohlen",
+    "limited": {
+      "title": "Zeitlich begrenzter Zugang",
+      "duration": "{days} Tage gültig",
+      "feature1": "Unbegrenzte Generierungen",
+      "feature2": "Alle Layouts und Vorlagen",
+      "feature3": "PDF-Export von Anschreiben und Lebenslauf",
+      "buyButton": "Jetzt kaufen"
+    },
+    "lifetime": {
+      "title": "Lifetime-Zugang",
+      "duration": "Einmalig, lebenslang gültig",
+      "feature1": "Unbegrenzte Generierungen",
+      "feature2": "Alle Layouts und Vorlagen",
+      "feature3": "PDF-Export von Anschreiben und Lebenslauf",
+      "feature4": "Alle zukünftigen Updates inklusive",
+      "buyButton": "Jetzt kaufen"
+    },
+    "secureNote": "Sichere Zahlung über Stripe per Kreditkarte oder SEPA-Lastschrift.",
+    "checkoutError": "Weiterleitung zu Stripe ist fehlgeschlagen. Bitte versuche es erneut."
   }
 }
