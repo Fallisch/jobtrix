@@ -17,7 +17,10 @@ export async function verifyCredentials(email: string, password: string): Promis
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   session: {
-    strategy: "database",
+    // Der Credentials Provider unterstuetzt in NextAuth v4 nur JWT-Sessions.
+    // Der aktuelle Zugang-Status wird stattdessen im session-Callback bei
+    // jeder Anfrage live aus der Datenbank gelesen.
+    strategy: "jwt",
   },
   providers: [
     CredentialsProvider({
@@ -32,4 +35,25 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (!token.id) return session;
+
+      session.user.id = token.id;
+
+      const user = await prisma.user.findUnique({ where: { id: token.id } });
+      if (user) {
+        session.user.email = user.email;
+        session.user.name = user.name;
+      }
+
+      return session;
+    },
+  },
 };
