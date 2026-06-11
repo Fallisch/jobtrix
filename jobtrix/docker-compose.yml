@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: jobtrix
+      POSTGRES_PASSWORD: jobtrix
+      POSTGRES_DB: jobtrix
+    ports:
+      - "5432:5432"
+    volumes:
+      - jobtrix_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  jobtrix_postgres_data:
