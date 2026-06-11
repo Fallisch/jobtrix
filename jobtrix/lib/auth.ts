@@ -21,6 +21,7 @@ export const authOptions: NextAuthOptions = {
     // Der aktuelle Zugang-Status wird stattdessen im session-Callback bei
     // jeder Anfrage live aus der Datenbank gelesen.
     strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60,
   },
   providers: [
     CredentialsProvider({

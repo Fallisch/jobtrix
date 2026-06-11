@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import Header from "@/components/Header";
 import InstallBanner from "@/components/InstallBanner";
+import AuthSessionProvider from "@/components/AuthSessionProvider";
 
 export const metadata: Metadata = {
   title: "JobTRIX",
@@ -38,9 +39,11 @@ export default async function LocaleLayout({
 
   return (
     <NextIntlClientProvider messages={messages}>
-      <Header locale={locale} />
-      <main>{children}</main>
-      <InstallBanner />
+      <AuthSessionProvider>
+        <Header locale={locale} />
+        <main>{children}</main>
+        <InstallBanner />
+      </AuthSessionProvider>
     </NextIntlClientProvider>
   );
 }

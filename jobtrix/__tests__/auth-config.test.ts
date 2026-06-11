@@ -28,6 +28,10 @@ describe("NextAuth-Konfiguration", () => {
     expect(authOptions.providers.find((p) => p.id === "credentials")).toBeDefined();
   });
 
+  it("Sessions bleiben standardmäßig 30 Tage gültig", () => {
+    expect(authOptions.session?.maxAge).toBe(30 * 24 * 60 * 60);
+  });
+
   it("authorisiert einen User mit korrekten Zugangsdaten", async () => {
     const user = await verifyCredentials(email, password);
 

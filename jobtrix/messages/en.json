@@ -10,7 +10,53 @@
     "cta": "Get started"
   },
   "nav": {
-    "profile": "Profile"
+    "profile": "Profile",
+    "logout": "Logout"
+  },
+  "auth": {
+    "register": {
+      "title": "Register",
+      "emailLabel": "Email",
+      "passwordLabel": "Password",
+      "passwordConfirmLabel": "Confirm password",
+      "termsLabel": "I accept the terms and conditions and the privacy policy.",
+      "submit": "Register",
+      "loginLink": "Already have an account? Log in",
+      "errors": {
+        "email": {
+          "required": "Email address is required",
+          "invalid": "Please enter a valid email address"
+        },
+        "password": {
+          "required": "Password is required",
+          "tooShort": "Password must be at least 8 characters long"
+        },
+        "passwordConfirm": {
+          "mismatch": "Passwords do not match"
+        },
+        "termsAccepted": {
+          "required": "Please accept the terms and conditions and privacy policy"
+        },
+        "emailTaken": "This email address is already in use",
+        "generic": "Registration failed. Please try again."
+      }
+    },
+    "login": {
+      "title": "Log in",
+      "emailLabel": "Email",
+      "passwordLabel": "Password",
+      "submit": "Log in",
+      "registerLink": "No account yet? Register now",
+      "errors": {
+        "email": {
+          "required": "Email address is required"
+        },
+        "password": {
+          "required": "Password is required"
+        },
+        "invalidCredentials": "Email or password is incorrect"
+      }
+    }
   },
   "generate": {
     "title": "Create application",
