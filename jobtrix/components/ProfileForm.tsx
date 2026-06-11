@@ -1,14 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import {
   ProfileData,
   EducationEntry,
   ProfileErrors,
-  loadProfile,
-  saveProfile,
   validateProfile,
 } from "@/lib/profile-storage";
 import { compressImage } from "@/lib/image-compress";
@@ -37,45 +35,61 @@ export default function ProfileForm() {
   const [saveError, setSaveError] = useState<string | null>(null);
   const [qualInput, setQualInput] = useState("");
   const [interestInput, setInterestInput] = useState("");
+  const interactedRef = useRef(false);
 
   useEffect(() => {
-    const saved = loadProfile();
-    if (saved) setData(saved);
+    fetch("/api/profile")
+      .then((res) => (res.ok ? (res.json() as Promise<ProfileData>) : null))
+      .then((profile) => {
+        // Skip if the user already started editing while the request was in flight,
+        // so a late response can't overwrite their changes.
+        if (!profile || interactedRef.current) return;
+        setData({
+          ...profile,
+          education: profile.education.length > 0 ? profile.education : [makeEduEntry()],
+        });
+      })
+      .catch(() => {});
   }, []);
 
+  function mutate(updater: (d: ProfileData) => ProfileData) {
+    interactedRef.current = true;
+    setData(updater);
+  }
+
   function set<K extends keyof ProfileData>(key: K, value: ProfileData[K]) {
-    setData((d) => ({ ...d, [key]: value }));
+    mutate((d) => ({ ...d, [key]: value }));
   }
 
   function updateEdu(id: string, field: keyof EducationEntry, value: string) {
-    setData((d) => ({
+    mutate((d) => ({
       ...d,
       education: d.education.map((e) => (e.id === id ? { ...e, [field]: value } : e)),
     }));
   }
 
   function addEdu() {
-    setData((d) => ({ ...d, education: [...d.education, makeEduEntry()] }));
+    mutate((d) => ({ ...d, education: [...d.education, makeEduEntry()] }));
   }
 
   function removeEdu(id: string) {
-    setData((d) => ({ ...d, education: d.education.filter((e) => e.id !== id) }));
+    mutate((d) => ({ ...d, education: d.education.filter((e) => e.id !== id) }));
   }
 
   function addQualification(value: string) {
     const trimmed = value.trim();
     if (trimmed && !data.qualifications.some((q) => q.label === trimmed)) {
-      setData((d) => ({ ...d, qualifications: [...d.qualifications, { label: trimmed, value: 60 }] }));
+      mutate((d) => ({ ...d, qualifications: [...d.qualifications, { label: trimmed, value: 60 }] }));
     }
     setQualInput("");
   }
 
   function removeQualification(label: string) {
-    setData((d) => ({ ...d, qualifications: d.qualifications.filter((q) => q.label !== label) }));
+    mutate((d) => ({ ...d, qualifications: d.qualifications.filter((q) => q.label !== label) }));
   }
 
   function updateQualificationValue(label: string, value: number) {
-    setData((d) => ({
+    mutate((d) => ({
       ...d,
       qualifications: d.qualifications.map((q) => q.label === label ? { ...q, value } : q),
     }));
@@ -84,17 +98,17 @@ export default function ProfileForm() {
   function addInterest(value: string) {
     const trimmed = value.trim();
     if (trimmed && !data.interests.some((i) => i.label === trimmed)) {
-      setData((d) => ({ ...d, interests: [...d.interests, { label: trimmed, value: 60 }] }));
+      mutate((d) => ({ ...d, interests: [...d.interests, { label: trimmed, value: 60 }] }));
     }
     setInterestInput("");
   }
 
   function removeInterest(label: string) {
-    setData((d) => ({ ...d, interests: d.interests.filter((i) => i.label !== label) }));
+    mutate((d) => ({ ...d, interests: d.interests.filter((i) => i.label !== label) }));
   }
 
   function updateInterestValue(label: string, value: number) {
-    setData((d) => ({
+    mutate((d) => ({
       ...d,
       interests: d.interests.map((i) => i.label === label ? { ...i, value } : i),
     }));
@@ -107,13 +121,22 @@ export default function ProfileForm() {
     set("photo", dataUrl);
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const errs = validateProfile(data);
     setErrors(errs);
     if (Object.keys(errs).length > 0) return;
     try {
-      saveProfile(data);
+      const res = await fetch("/api/profile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) {
+        setSaveError(t("saveError"));
+        return;
+      }
+      setSaveError(null);
       router.push("/");
     } catch {
       setSaveError(t("saveError"));

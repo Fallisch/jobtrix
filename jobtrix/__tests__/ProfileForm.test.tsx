@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import ProfileForm from "@/components/ProfileForm";
-import { loadProfile } from "@/lib/profile-storage";
+import { ProfileData } from "@/lib/profile-storage";
 
 const mockLocaleState: { locale: "de" | "en" } = { locale: "de" };
 
@@ -39,21 +39,54 @@ function setLocale(locale: "de" | "en") {
   mockLocaleState.locale = locale;
 }
 
+const emptyProfile: ProfileData = {
+  name: "",
+  address: "",
+  email: "",
+  phone: "",
+  birthdate: "",
+  photo: null,
+  education: [],
+  qualifications: [],
+  interests: [],
+};
+
+function mockFetch({
+  getProfile = emptyProfile,
+  postOk = true,
+}: { getProfile?: ProfileData; postOk?: boolean } = {}) {
+  global.fetch = jest.fn((_url: string, options?: RequestInit) => {
+    if (!options || options.method === undefined) {
+      return Promise.resolve({ ok: true, json: async () => getProfile } as Response);
+    }
+    return Promise.resolve({ ok: postOk, json: async () => ({}) } as Response);
+  }) as jest.Mock;
+}
+
+function findPostBody() {
+  const postCall = (global.fetch as jest.Mock).mock.calls.find(
+    ([, options]) => options?.method === "POST"
+  );
+  return JSON.parse(postCall[1].body);
+}
+
 beforeEach(() => {
-  localStorage.clear();
   setLocale("de");
+  mockFetch();
 });
 
 describe("ProfileForm", () => {
-  it("rendert alle Pflichtfelder", () => {
+  it("rendert alle Pflichtfelder", async () => {
     render(<ProfileForm />);
+    await waitFor(() => {});
     expect(screen.getByLabelText(/name/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/adresse/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/geburtsdatum/i)).toBeInTheDocument();
   });
 
-  it("zeigt mindestens ein leeres Ausbildungsfeld an", () => {
+  it("zeigt mindestens ein leeres Ausbildungsfeld an", async () => {
     render(<ProfileForm />);
+    await waitFor(() => {});
     expect(screen.getByPlaceholderText(/institution/i)).toBeInTheDocument();
   });
 
@@ -74,7 +107,7 @@ describe("ProfileForm", () => {
     });
   });
 
-  it("speichert in localStorage bei validen Daten", async () => {
+  it("speichert das Profil per POST an /api/profile bei validen Daten", async () => {
     const user = userEvent.setup();
     render(<ProfileForm />);
 
@@ -84,14 +117,15 @@ describe("ProfileForm", () => {
     fireEvent.click(screen.getByRole("button", { name: /speichern/i }));
 
     await waitFor(() => {
-      const profile = loadProfile();
-      expect(profile?.name).toBe("Max Mustermann");
-      expect(profile?.education[0].institution).toBe("TU Berlin");
+      const body = findPostBody();
+      expect(body.name).toBe("Max Mustermann");
+      expect(body.education[0].institution).toBe("TU Berlin");
     });
   });
 
   it("fügt einen neuen Ausbildungseintrag hinzu", async () => {
     render(<ProfileForm />);
+    await waitFor(() => {});
     const before = screen.getAllByPlaceholderText(/institution/i).length;
     fireEvent.click(screen.getByRole("button", { name: /ausbildung hinzufügen/i }));
     expect(screen.getAllByPlaceholderText(/institution/i).length).toBe(before + 1);
@@ -111,7 +145,7 @@ describe("ProfileForm", () => {
     expect(screen.queryByText("Wandern")).not.toBeInTheDocument();
   });
 
-  it("speichert persönliche Interessen in localStorage", async () => {
+  it("speichert persönliche Interessen per POST an /api/profile", async () => {
     const user = userEvent.setup();
     render(<ProfileForm />);
 
@@ -123,8 +157,8 @@ describe("ProfileForm", () => {
     fireEvent.click(screen.getByRole("button", { name: /speichern/i }));
 
     await waitFor(() => {
-      const profile = loadProfile();
-      expect(profile?.interests).toEqual([{ label: "Reisen", value: 60 }]);
+      const body = findPostBody();
+      expect(body.interests).toEqual([{ label: "Reisen", value: 60 }]);
     });
   });
 
@@ -139,7 +173,7 @@ describe("ProfileForm", () => {
     expect(slider).toBeInTheDocument();
   });
 
-  it("speichert den Slider-Wert einer Qualifikation in localStorage", async () => {
+  it("speichert den Slider-Wert einer Qualifikation per POST an /api/profile", async () => {
     const user = userEvent.setup();
     render(<ProfileForm />);
 
@@ -154,27 +188,9 @@ describe("ProfileForm", () => {
     fireEvent.click(screen.getByRole("button", { name: /speichern/i }));
 
     await waitFor(() => {
-      const profile = loadProfile();
-      expect(profile?.qualifications).toEqual([{ label: "TypeScript", value: 80 }]);
+      const body = findPostBody();
+      expect(body.qualifications).toEqual([{ label: "TypeScript", value: 80 }]);
     });
-  });
-
-  it("rendert ein Legacy-Profil mit `strengths` statt `interests` ohne Crash und zeigt migrierte Interessen", () => {
-    localStorage.setItem(
-      "jobtrix_profile",
-      JSON.stringify({
-        name: "Lisa Altmann",
-        address: "",
-        birthdate: "",
-        photo: null,
-        education: [{ id: "1", institution: "HU Berlin", degree: "M.A.", year: "2012" }],
-        qualifications: [],
-        strengths: ["Reisen"],
-      })
-    );
-
-    expect(() => render(<ProfileForm />)).not.toThrow();
-    expect(screen.getByText("Reisen")).toBeInTheDocument();
   });
 
   describe("Foto-Komprimierung", () => {
@@ -206,7 +222,7 @@ describe("ProfileForm", () => {
       jest.restoreAllMocks();
     });
 
-    it("speichert das komprimierte Foto in localStorage statt des Originals", async () => {
+    it("sendet das komprimierte Foto per POST statt des Originals", async () => {
       const user = userEvent.setup();
       render(<ProfileForm />);
 
@@ -224,20 +240,16 @@ describe("ProfileForm", () => {
       fireEvent.click(screen.getByRole("button", { name: /speichern/i }));
 
       await waitFor(() => {
-        const profile = loadProfile();
-        expect(profile?.photo).toBe(COMPRESSED);
+        const body = findPostBody();
+        expect(body.photo).toBe(COMPRESSED);
       });
     });
   });
 
   describe("Speicherfehler", () => {
-    afterEach(() => jest.restoreAllMocks());
-
-    it("zeigt Fehlermeldung wenn localStorage beim Speichern einen QuotaExceededError wirft", async () => {
+    it("zeigt Fehlermeldung wenn das Speichern per API fehlschlägt", async () => {
       const user = userEvent.setup();
-      jest.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
-        throw new DOMException("QuotaExceededError", "QuotaExceededError");
-      });
+      mockFetch({ postOk: false });
 
       render(<ProfileForm />);
       await user.type(screen.getByLabelText(/name/i), "Max Mustermann");
@@ -252,29 +264,27 @@ describe("ProfileForm", () => {
     });
   });
 
-  it("lädt vorhandenes Profil aus localStorage", () => {
-    localStorage.setItem(
-      "jobtrix_profile",
-      JSON.stringify({
+  it("lädt vorhandenes Profil von der API", async () => {
+    mockFetch({
+      getProfile: {
+        ...emptyProfile,
         name: "Erika Musterfrau",
-        address: "",
-        birthdate: "",
-        photo: null,
         education: [{ id: "1", institution: "HU Berlin", degree: "M.A.", year: "2020" }],
-        qualifications: [],
-        interests: [],
-      })
-    );
+      },
+    });
+
     render(<ProfileForm />);
-    expect(screen.getByDisplayValue("Erika Musterfrau")).toBeInTheDocument();
+
+    expect(await screen.findByDisplayValue("Erika Musterfrau")).toBeInTheDocument();
     expect(screen.getByDisplayValue("HU Berlin")).toBeInTheDocument();
   });
 
   describe("Englisch (AC1)", () => {
     beforeEach(() => setLocale("en"));
 
-    it("zeigt Titel und Hauptfelder auf Englisch", () => {
+    it("zeigt Titel und Hauptfelder auf Englisch", async () => {
       render(<ProfileForm />);
+      await waitFor(() => {});
       expect(screen.getByRole("heading", { level: 1, name: /^profile$/i })).toBeInTheDocument();
       expect(screen.getByLabelText(/^name/i)).toBeInTheDocument();
       expect(screen.getByLabelText(/^address$/i)).toBeInTheDocument();
@@ -284,8 +294,9 @@ describe("ProfileForm", () => {
       expect(screen.getByLabelText(/^photo$/i)).toBeInTheDocument();
     });
 
-    it("zeigt die Ausbildungs-Sektion auf Englisch", () => {
+    it("zeigt die Ausbildungs-Sektion auf Englisch", async () => {
       render(<ProfileForm />);
+      await waitFor(() => {});
       expect(screen.getByRole("heading", { name: /^education \*$/i })).toBeInTheDocument();
       expect(screen.getByPlaceholderText(/^degree$/i)).toBeInTheDocument();
       expect(screen.getByPlaceholderText(/^year$/i)).toBeInTheDocument();
@@ -293,8 +304,9 @@ describe("ProfileForm", () => {
       expect(screen.getByRole("button", { name: /add education/i })).toBeInTheDocument();
     });
 
-    it("zeigt Qualifikationen und Interessen auf Englisch", () => {
+    it("zeigt Qualifikationen und Interessen auf Englisch", async () => {
       render(<ProfileForm />);
+      await waitFor(() => {});
       expect(screen.getByRole("heading", { name: /^qualifications$/i })).toBeInTheDocument();
       expect(screen.getByPlaceholderText(/^e\.g\. typescript$/i)).toBeInTheDocument();
       expect(screen.getByRole("button", { name: /^add$/i })).toBeInTheDocument();
@@ -313,6 +325,7 @@ describe("ProfileForm", () => {
 
     it("zeigt den Speichern-Button und Validierungsfehler auf Englisch", async () => {
       render(<ProfileForm />);
+      await waitFor(() => {});
       expect(screen.getByRole("button", { name: /^save$/i })).toBeInTheDocument();
 
       fireEvent.click(screen.getByRole("button", { name: /^save$/i }));
@@ -327,11 +340,9 @@ describe("ProfileForm", () => {
       });
     });
 
-    it("zeigt den Speicherfehler auf Englisch bei einem QuotaExceededError", async () => {
+    it("zeigt den Speicherfehler auf Englisch wenn das Speichern per API fehlschlägt", async () => {
       const user = userEvent.setup();
-      jest.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
-        throw new DOMException("QuotaExceededError", "QuotaExceededError");
-      });
+      mockFetch({ postOk: false });
 
       render(<ProfileForm />);
       await user.type(screen.getByLabelText(/^name/i), "Max Mustermann");
@@ -341,8 +352,6 @@ describe("ProfileForm", () => {
       await waitFor(() => {
         expect(screen.getByText(/^could not save profile\. please try again\.$/i)).toBeInTheDocument();
       });
-
-      jest.restoreAllMocks();
     });
   });
 });
