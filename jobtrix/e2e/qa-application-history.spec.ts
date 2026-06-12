@@ -49,7 +49,7 @@ test.describe("Issue #23 – Bewerbungshistorie", () => {
     await page.waitForSelector("textarea[aria-label='Anschreiben']", { timeout: 120_000 });
 
     await page.goto("/de/application-history");
-    await expect(page.getByText("TypeScript-Entwickler")).toBeVisible();
+    await expect(page.getByRole("heading", { level: 2, name: "TypeScript-Entwickler" })).toBeVisible();
 
     await page.getByRole("link", { name: "Anzeigen" }).first().click();
     await expect(page.getByRole("heading", { level: 1 })).toContainText("TypeScript-Entwickler");
