@@ -31,6 +31,13 @@ describe("buildPrompt", () => {
     expect(prompt).toMatch(/freue mich auf ein pers.nliches gespr.ch|einladung.*vorstellungsgespr.ch/i);
   });
 
+  it("enthält AIDA-basierte Strukturvorgaben für das Anschreiben (Einstieg, Hauptteil, Schluss)", () => {
+    const prompt = buildPrompt({ jobPosting: "Stelle als Entwickler", profile: baseProfile });
+    expect(prompt).toMatch(/aida/i);
+    expect(prompt).toMatch(/mit gro.em interesse.*stellenanzeige gelesen/i);
+    expect(prompt).toMatch(/mehrwert/i);
+  });
+
   it("enthält Anweisung, Sätze nicht wiederholt mit „Ich“ zu beginnen", () => {
     const prompt = buildPrompt({ jobPosting: "Stelle als Entwickler", profile: baseProfile });
     expect(prompt).toMatch(/nicht mehrere s.tze.*ich|ich.*satzanf.nge|satzanf.nge.*ich/i);

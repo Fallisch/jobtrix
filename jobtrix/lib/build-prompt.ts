@@ -48,6 +48,11 @@ ${cvStyle === "american" ? "Sortiere Berufserfahrung und Ausbildung antichronolo
 - Vermeide austauschbare Schlussfloskeln im Anschreiben wie „Ich freue mich auf ein persönliches Gespräch" oder „Über eine Einladung zum Vorstellungsgespräch würde ich mich sehr freuen" – formuliere den letzten Satz konkret und individuell.
 - Beginne nicht mehrere Sätze hintereinander mit „Ich" – variiere die Satzanfänge bewusst.
 
+Aufbau des Anschreibens (AIDA-Prinzip) – halte diese Struktur ein:
+- Einstieg (Attention): Kein Standardeinstieg wie „Mit großem Interesse habe ich Ihre Stellenanzeige gelesen" oder „Hiermit bewerbe ich mich auf die Position als..." – starte mit einem konkreten, individuellen Aufhänger zu Unternehmen, Aufgabe oder eigener Motivation.
+- Hauptteil (Interest & Desire): Verknüpfe die Qualifikationen und Erfahrungen des Bewerbers konkret mit den Anforderungen aus der Stellenanzeige und zeige den Mehrwert für das Unternehmen – keine reine Aufzählung von Eigenschaften.
+- Schluss (Action): Selbstbewusster, individueller Abschluss mit konkretem nächsten Schritt (siehe Regel zu Schlussfloskeln oben).
+
 Wichtig: Schreibe Anschreiben und Lebenslauf in reinem Klartext ohne Markdown-Formatierung –
 also ohne Sternchen (**fett**), ohne Raute-Überschriften (#, ##), ohne Tabellen (| ... |) und
 ohne Trennlinien (---). Verwende stattdessen normale Absätze, Zeilenumbrüche und ggf. einfache
