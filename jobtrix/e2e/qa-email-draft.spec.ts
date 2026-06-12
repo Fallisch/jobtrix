@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { registerAndLogin, uniqueEmail } from "./helpers/auth";
 
 const PROFILE = {
   name: "Max Mustermann",
@@ -15,6 +16,7 @@ const COVER_LETTER = "Sehr geehrte Damen und Herren, mit großem Interesse bewer
 test.describe("E-Mail-Entwurf nach der Generierung – QA", () => {
   test.beforeEach(async ({ context, page }) => {
     await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+    await registerAndLogin(page, uniqueEmail("e2e-email-draft"), "correct-password");
     await page.goto("/de/generate");
     await page.evaluate((p) => {
       localStorage.setItem("jobtrix_profile", JSON.stringify(p));

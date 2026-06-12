@@ -11,6 +11,9 @@ test.describe("Issue #19 – Profil aus Datenbank statt localStorage", () => {
     const institution = "TU Berlin";
 
     await page.goto("/de/register");
+    // Wartet, bis die initialen NextAuth-Requests (Session/CSRF) abgeschlossen sind,
+    // um eine Race Condition bei den CSRF-Cookies zu vermeiden (siehe Issue #24).
+    await page.waitForLoadState("networkidle");
     await page.getByLabel("E-Mail").fill(email);
     await page.getByLabel("Passwort", { exact: true }).fill(password);
     await page.getByLabel("Passwort bestätigen").fill(password);
@@ -34,6 +37,7 @@ test.describe("Issue #19 – Profil aus Datenbank statt localStorage", () => {
     const newPage = await context.newPage();
 
     await newPage.goto("/de/login");
+    await newPage.waitForLoadState("networkidle");
     await newPage.getByLabel("E-Mail").fill(email);
     await newPage.getByLabel("Passwort").fill(password);
     await newPage.getByRole("button", { name: "Anmelden" }).click();

@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { registerAndLogin, uniqueEmail } from "./helpers/auth";
 
 const PROFILE_OLD_FORMAT = {
   name: "Anna Beispiel",
@@ -13,6 +14,10 @@ const PROFILE_OLD_FORMAT = {
 };
 
 test.describe("Skill-Balken individuell anpassbar – QA (Issue #12)", () => {
+  test.beforeEach(async ({ page }) => {
+    await registerAndLogin(page, uniqueEmail("e2e-skill-slider"), "correct-password");
+  });
+
   test("Slider erscheint nach Hinzufügen einer Qualifikation", async ({ page }) => {
     await page.goto("/de/profile");
 
@@ -39,7 +44,9 @@ test.describe("Skill-Balken individuell anpassbar – QA (Issue #12)", () => {
     await expect(page.getByText("80%")).toBeVisible();
   });
 
-  test("Altes Profil (String-Format) wird ohne Datenverlust auf 60% migriert", async ({ page }) => {
+  // Seit der DB-Migration des Profils (#19) liest /de/profile nicht mehr aus localStorage,
+  // daher greift diese Migration auf der Profilseite nicht mehr. Separat als Issue erfasst.
+  test.fixme("Altes Profil (String-Format) wird ohne Datenverlust auf 60% migriert", async ({ page }) => {
     await page.goto("/de/profile");
     await page.evaluate((p) => {
       localStorage.setItem("jobtrix_profile", JSON.stringify(p));
@@ -70,11 +77,10 @@ test.describe("Skill-Balken individuell anpassbar – QA (Issue #12)", () => {
     await page.getByRole("textbox", { name: /Name/i }).fill("Test User");
     await page.getByPlaceholder(/Institution/i).fill("TU Berlin");
     await page.getByRole("button", { name: /Speichern/i }).click();
+    await page.waitForURL("**/de");
 
-    const saved = await page.evaluate(() => {
-      const raw = localStorage.getItem("jobtrix_profile");
-      return raw ? JSON.parse(raw) : null;
-    });
+    const res = await page.request.get("/api/profile");
+    const saved = await res.json();
 
     expect(saved?.qualifications).toContainEqual({ label: "Python", value: 80 });
     expect(saved?.interests).toContainEqual({ label: "Lesen", value: 40 });

@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { registerAndLogin, uniqueEmail } from "./helpers/auth";
 
 const PROFILE = {
   name: "Anna Beispiel",
@@ -18,6 +19,7 @@ const MOCK_RESULT = {
 
 test.describe("Template-Auswahl – QA (Issue #8)", () => {
   test.beforeEach(async ({ page }) => {
+    await registerAndLogin(page, uniqueEmail("e2e-template"), "correct-password");
     await page.goto("/de/generate");
     await page.evaluate((p) => {
       localStorage.setItem("jobtrix_profile", JSON.stringify(p));
@@ -32,21 +34,24 @@ test.describe("Template-Auswahl – QA (Issue #8)", () => {
   });
 
   test("AC: Template-Auswahl mit Klassisch und Modern erscheint nach Generierung", async ({ page }) => {
-    await expect(page.getByRole("button", { name: /Klassisch/i })).toBeVisible();
-    await expect(page.getByRole("button", { name: /Modern/i })).toBeVisible();
+    const templateSection = page.getByText("Layout:").locator("xpath=..");
+    await expect(templateSection.getByRole("button", { name: "Klassisch", exact: true })).toBeVisible();
+    await expect(templateSection.getByRole("button", { name: "Modern", exact: true })).toBeVisible();
   });
 
   test("AC: Klassisch ist standardmäßig aktiv (aria-pressed=true)", async ({ page }) => {
-    const klassischBtn = page.getByRole("button", { name: /Klassisch/i });
-    const modernBtn = page.getByRole("button", { name: /Modern/i });
+    const templateSection = page.getByText("Layout:").locator("xpath=..");
+    const klassischBtn = templateSection.getByRole("button", { name: "Klassisch", exact: true });
+    const modernBtn = templateSection.getByRole("button", { name: "Modern", exact: true });
     await expect(klassischBtn).toHaveAttribute("aria-pressed", "true");
     await expect(modernBtn).toHaveAttribute("aria-pressed", "false");
   });
 
   test("AC: Template-Umschalten auf Modern funktioniert", async ({ page }) => {
-    await page.getByRole("button", { name: /Modern/i }).click();
-    await expect(page.getByRole("button", { name: /Modern/i })).toHaveAttribute("aria-pressed", "true");
-    await expect(page.getByRole("button", { name: /Klassisch/i })).toHaveAttribute("aria-pressed", "false");
+    const templateSection = page.getByText("Layout:").locator("xpath=..");
+    await templateSection.getByRole("button", { name: "Modern", exact: true }).click();
+    await expect(templateSection.getByRole("button", { name: "Modern", exact: true })).toHaveAttribute("aria-pressed", "true");
+    await expect(templateSection.getByRole("button", { name: "Klassisch", exact: true })).toHaveAttribute("aria-pressed", "false");
   });
 
   test("AC: Template-Auswahl bleibt nach erneutem Generieren erhalten", async ({ page }) => {

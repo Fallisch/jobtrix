@@ -1,7 +1,9 @@
 import { test, expect } from "@playwright/test";
+import { registerAndLogin, uniqueEmail } from "./helpers/auth";
 
 test.describe("Issue #15 – Profilseite ins Sprachsystem (DE/EN) einbinden", () => {
   test.beforeEach(async ({ page }) => {
+    await registerAndLogin(page, uniqueEmail("e2e-profile-i18n"), "correct-password");
     await page.goto("/de/profile");
     await page.evaluate(() => localStorage.clear());
   });

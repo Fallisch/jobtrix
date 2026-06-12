@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { uniqueEmail } from "./helpers/auth";
 
 test.describe("Issue #17 – Registrierung, Login, Logout & Routenschutz", () => {
   test("Story: Geschützte Seite ohne Login leitet zu /de/login weiter", async ({ page }) => {
@@ -8,10 +9,11 @@ test.describe("Issue #17 – Registrierung, Login, Logout & Routenschutz", () =>
   });
 
   test("Story: Registrieren -> automatisch eingeloggt -> Profile/Generate erreichbar -> Logout -> Routenschutz greift wieder", async ({ page }) => {
-    const email = `e2e-${Date.now()}@example.com`;
+    const email = uniqueEmail("e2e-auth");
     const password = "correct-password";
 
     await page.goto("/de/register");
+    await page.waitForLoadState("networkidle");
     await expect(page.getByRole("heading", { name: "Registrieren" })).toBeVisible();
 
     await page.getByLabel("E-Mail").fill(email);
@@ -37,6 +39,9 @@ test.describe("Issue #17 – Registrierung, Login, Logout & Routenschutz", () =>
 
   test("Story: Login mit falschen Zugangsdaten zeigt Fehlermeldung", async ({ page }) => {
     await page.goto("/de/login");
+    // Wartet, bis die initialen NextAuth-Requests (Session/CSRF) abgeschlossen sind,
+    // um eine Race Condition bei den CSRF-Cookies zu vermeiden (siehe Issue #24).
+    await page.waitForLoadState("networkidle");
 
     await page.getByLabel("E-Mail").fill("nicht-existent@example.com");
     await page.getByLabel("Passwort").fill("falsches-passwort");

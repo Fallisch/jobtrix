@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { registerAndLogin, uniqueEmail } from "./helpers/auth";
 
 const PROFILE = {
   name: "Lena Testmann",
@@ -15,6 +16,7 @@ const MOCK_CV = "Lena Testmann\n\nAUSBILDUNG\nB.Sc. Informatik, FU Berlin, 2019\
 
 test.describe("PDF-Export – vollständiger Bewerbungsflow", () => {
   test.beforeEach(async ({ page }) => {
+    await registerAndLogin(page, uniqueEmail("e2e-pdf-export"), "correct-password");
     await page.goto("/de/generate");
     await page.evaluate((p) => {
       localStorage.setItem("jobtrix_profile", JSON.stringify(p));
@@ -71,7 +73,7 @@ test.describe("PDF-Export – vollständiger Bewerbungsflow", () => {
 
     const apiRequests: string[] = [];
     page.on("request", (req) => {
-      if (req.url().includes("/api/")) apiRequests.push(req.url());
+      if (req.url().includes("/api/") && !req.url().includes("/api/auth/")) apiRequests.push(req.url());
     });
 
     await page.getByRole("textbox", { name: /Stellenanzeige/i }).fill("Stelle");
