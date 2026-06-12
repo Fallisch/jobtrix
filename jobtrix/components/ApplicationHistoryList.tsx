@@ -40,6 +40,15 @@ export default function ApplicationHistoryList() {
 
   if (entries === null) return null;
 
+  async function handleDelete(id: string) {
+    if (!window.confirm(t("deleteConfirm"))) return;
+
+    const res = await fetch(`/api/application-history/${id}`, { method: "DELETE" });
+    if (res.ok) {
+      setEntries((prev) => (prev ? prev.filter((entry) => entry.id !== id) : prev));
+    }
+  }
+
   return (
     <div className="max-w-3xl mx-auto px-4 py-8 space-y-6">
       <h1 className="text-3xl font-bold text-primary">{t("title")}</h1>
@@ -81,6 +90,13 @@ export default function ApplicationHistoryList() {
                   className="rounded-full px-4 py-2 text-sm font-semibold border border-gray-200 text-text hover:border-accent hover:text-accent transition"
                 >
                   {t("pdfButton")}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleDelete(entry.id)}
+                  className="rounded-full px-4 py-2 text-sm font-semibold border border-gray-200 text-red-600 hover:border-red-600 hover:bg-red-50 transition"
+                >
+                  {t("deleteButton")}
                 </button>
               </div>
             </div>

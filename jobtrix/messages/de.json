@@ -190,6 +190,8 @@
     "untitled": "Bewerbung",
     "viewButton": "Anzeigen",
     "pdfButton": "PDF erneut herunterladen",
+    "deleteButton": "Löschen",
+    "deleteConfirm": "Diesen Eintrag aus der Bewerbungshistorie löschen?",
     "backLink": "Zurück zur Übersicht",
     "notFound": "Eintrag nicht gefunden.",
     "coverLetterTitle": "Anschreiben",

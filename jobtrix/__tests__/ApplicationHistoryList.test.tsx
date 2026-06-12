@@ -115,4 +115,46 @@ describe("ApplicationHistoryList", () => {
     expect(calls[0][0].props.template).toBe("modern");
     expect(calls[1][0].props.template).toBe("modern");
   });
+
+  it("zeigt für jeden Eintrag einen Löschen-Button", async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve(entries) });
+
+    render(<ApplicationHistoryList />);
+
+    await waitFor(() => screen.getByText(/Senior Developer/));
+    expect(screen.getAllByRole("button", { name: /deleteButton/i })).toHaveLength(2);
+  });
+
+  it("entfernt einen Eintrag nach Bestätigung und erfolgreichem Löschen ohne Reload", async () => {
+    (global.fetch as jest.Mock)
+      .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve(entries) })
+      .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve({ success: true }) });
+    jest.spyOn(window, "confirm").mockReturnValue(true);
+
+    render(<ApplicationHistoryList />);
+
+    await waitFor(() => screen.getByText(/Senior Developer/));
+    const deleteButtons = screen.getAllByRole("button", { name: /deleteButton/i });
+    fireEvent.click(deleteButtons[0]);
+
+    await waitFor(() => {
+      expect(screen.queryByText(/Senior Developer/)).not.toBeInTheDocument();
+    });
+    expect(screen.getByText(/Junior Developer/)).toBeInTheDocument();
+    expect(global.fetch).toHaveBeenLastCalledWith("/api/application-history/entry-2", { method: "DELETE" });
+  });
+
+  it("entfernt einen Eintrag nicht, wenn die Bestätigung abgelehnt wird", async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve(entries) });
+    jest.spyOn(window, "confirm").mockReturnValue(false);
+
+    render(<ApplicationHistoryList />);
+
+    await waitFor(() => screen.getByText(/Senior Developer/));
+    const deleteButtons = screen.getAllByRole("button", { name: /deleteButton/i });
+    fireEvent.click(deleteButtons[0]);
+
+    expect(screen.getByText(/Senior Developer/)).toBeInTheDocument();
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+  });
 });

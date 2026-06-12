@@ -190,6 +190,8 @@
     "untitled": "Application",
     "viewButton": "View",
     "pdfButton": "Download PDF again",
+    "deleteButton": "Delete",
+    "deleteConfirm": "Delete this entry from your application history?",
     "backLink": "Back to overview",
     "notFound": "Entry not found.",
     "coverLetterTitle": "Cover letter",

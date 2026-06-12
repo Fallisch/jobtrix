@@ -16,3 +16,19 @@ export async function GET(_request: Request, { params }: { params: { id: string 
 
   return NextResponse.json(entry);
 }
+
+export async function DELETE(_request: Request, { params }: { params: { id: string } }) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  }
+
+  const entry = await prisma.applicationHistoryEntry.findUnique({ where: { id: params.id } });
+  if (!entry || entry.userId !== session.user.id) {
+    return NextResponse.json({ error: "not_found" }, { status: 404 });
+  }
+
+  await prisma.applicationHistoryEntry.delete({ where: { id: params.id } });
+
+  return NextResponse.json({ success: true });
+}
