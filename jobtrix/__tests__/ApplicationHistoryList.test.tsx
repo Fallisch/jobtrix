@@ -116,6 +116,15 @@ describe("ApplicationHistoryList", () => {
     expect(calls[1][0].props.template).toBe("modern");
   });
 
+  it("zeigt für jeden Eintrag Datum UND Uhrzeit der Erstellung an", async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve(entries) });
+
+    render(<ApplicationHistoryList />);
+
+    await waitFor(() => screen.getByText(/Senior Developer/));
+    expect(screen.getAllByText(/\d{1,2}:\d{2}/).length).toBeGreaterThan(0);
+  });
+
   it("zeigt für jeden Eintrag einen Löschen-Button", async () => {
     (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve(entries) });
 

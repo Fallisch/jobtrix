@@ -53,7 +53,13 @@ export default function ApplicationHistoryDetail({ id }: { id: string }) {
           {entry.companyName ? ` – ${entry.companyName}` : ""}
         </h1>
         <span className="text-sm text-text/60 whitespace-nowrap">
-          {new Date(entry.createdAt).toLocaleDateString(locale)}
+          {new Date(entry.createdAt).toLocaleString(locale, {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          })}
         </span>
       </div>
 

@@ -57,6 +57,15 @@ describe("ApplicationHistoryDetail", () => {
     expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
   });
 
+  it("zeigt Datum UND Uhrzeit der Erstellung an", async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve(entry) });
+
+    render(<ApplicationHistoryDetail id="entry-1" />);
+
+    await waitFor(() => screen.getByRole("heading", { level: 1 }));
+    expect(screen.getByText(/\d{1,2}:\d{2}/)).toBeInTheDocument();
+  });
+
   it("löst beim Klick auf 'PDF erneut herunterladen' den PDF-Export von Anschreiben und Lebenslauf mit dem gespeicherten Schnappschuss aus", async () => {
     (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve(entry) });
 

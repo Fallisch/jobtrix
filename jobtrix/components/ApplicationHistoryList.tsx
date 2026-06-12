@@ -70,7 +70,13 @@ export default function ApplicationHistoryList() {
                   {entry.companyName ? ` – ${entry.companyName}` : ""}
                 </h2>
                 <span className="text-sm text-text/60 whitespace-nowrap">
-                  {new Date(entry.createdAt).toLocaleDateString(locale)}
+                  {new Date(entry.createdAt).toLocaleString(locale, {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
                 </span>
               </div>
               <p className="text-sm text-text/80">{excerpt(entry.coverLetter)}</p>
