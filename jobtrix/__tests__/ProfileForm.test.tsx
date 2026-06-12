@@ -31,8 +31,10 @@ jest.mock("next-intl", () => {
   };
 });
 
+const mockPush = jest.fn();
+
 jest.mock("next/navigation", () => ({
-  useRouter: () => ({ push: jest.fn() }),
+  useRouter: () => ({ push: mockPush }),
   useParams: () => ({ locale: mockLocaleState.locale }),
 }));
 
@@ -80,6 +82,7 @@ function findPostBody() {
 beforeEach(() => {
   setLocale("de");
   mockFetch();
+  mockPush.mockClear();
 });
 
 describe("ProfileForm", () => {
@@ -284,6 +287,35 @@ describe("ProfileForm", () => {
 
     expect(await screen.findByDisplayValue("Erika Musterfrau")).toBeInTheDocument();
     expect(screen.getByDisplayValue("HU Berlin")).toBeInTheDocument();
+  });
+
+  describe("Sprachpräfix nach Speichern (Issue #25)", () => {
+    it("navigiert nach erfolgreichem Speichern unter /en/profile zu /en", async () => {
+      setLocale("en");
+      const user = userEvent.setup();
+      render(<ProfileForm />);
+
+      await user.type(screen.getByLabelText(/^name/i), "Max Mustermann");
+      await user.type(screen.getByPlaceholderText(/^institution$/i), "TU Berlin");
+      await user.click(screen.getByRole("button", { name: /^save$/i }));
+
+      await waitFor(() => {
+        expect(mockPush).toHaveBeenCalledWith("/en");
+      });
+    });
+
+    it("navigiert nach erfolgreichem Speichern unter /de/profile zu /de", async () => {
+      const user = userEvent.setup();
+      render(<ProfileForm />);
+
+      await user.type(screen.getByLabelText(/name/i), "Max Mustermann");
+      await user.type(screen.getByPlaceholderText(/institution/i), "TU Berlin");
+      await user.click(screen.getByRole("button", { name: /speichern/i }));
+
+      await waitFor(() => {
+        expect(mockPush).toHaveBeenCalledWith("/de");
+      });
+    });
   });
 
   describe("Zugang-Gültigkeitsdatum (Issue #22)", () => {

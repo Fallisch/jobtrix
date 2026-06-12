@@ -152,7 +152,7 @@ export default function ProfileForm() {
         return;
       }
       setSaveError(null);
-      router.push("/");
+      router.push(`/${locale}`);
     } catch {
       setSaveError(t("saveError"));
     }
