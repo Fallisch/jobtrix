@@ -96,4 +96,23 @@ describe("ApplicationHistoryList", () => {
       expect(global.URL.createObjectURL).toHaveBeenCalledTimes(2);
     });
   });
+
+  it("verwendet beim PDF-Re-Export das im Eintrag gespeicherte Layout 'modern'", async () => {
+    const entriesWithModern = [{ ...entries[0], template: "modern" as const }, entries[1]];
+    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve(entriesWithModern) });
+
+    render(<ApplicationHistoryList />);
+
+    await waitFor(() => screen.getByText(/Senior Developer/));
+    const pdfButtons = screen.getAllByRole("button", { name: /pdfButton/i });
+    fireEvent.click(pdfButtons[0]);
+
+    await waitFor(() => {
+      expect(global.URL.createObjectURL).toHaveBeenCalledTimes(2);
+    });
+
+    const calls = (pdf as jest.Mock).mock.calls;
+    expect(calls[0][0].props.template).toBe("modern");
+    expect(calls[1][0].props.template).toBe("modern");
+  });
 });

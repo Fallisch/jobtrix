@@ -242,6 +242,33 @@ describe("GenerateForm", () => {
       expect(screen.getByRole("button", { name: /templateClassic/i })).toHaveAttribute("aria-pressed", "false");
     });
 
+    it("sendet das aktuell ausgewählte Layout beim Generieren an /api/generate", async () => {
+      (global.fetch as jest.Mock).mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ coverLetter: "Brief", cv: "CV", emailSubject: "Betr" }),
+      });
+
+      render(<GenerateForm />);
+      await userEvent.type(screen.getByRole("textbox", { name: JOB_POSTING }), "Stelle");
+      fireEvent.click(screen.getByRole("button", { name: GENERATE_BTN }));
+      await waitFor(() => screen.getByDisplayValue("Brief"));
+
+      // Auf Modern wechseln
+      fireEvent.click(screen.getByRole("button", { name: /templateModern/i }));
+
+      // Erneut generieren
+      (global.fetch as jest.Mock).mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ coverLetter: "Neuer Brief", cv: "Neues CV", emailSubject: "Betr2" }),
+      });
+      fireEvent.click(screen.getByRole("button", { name: GENERATE_BTN }));
+      await waitFor(() => screen.getByDisplayValue("Neuer Brief"));
+
+      const lastCall = (global.fetch as jest.Mock).mock.calls.at(-1) as [string, RequestInit];
+      const body = JSON.parse(lastCall[1].body as string);
+      expect(body.template).toBe("modern");
+    });
+
     it("zeigt Lebenslauf-Stil-Auswahl mit Klassisch als Standard", () => {
       render(<GenerateForm />);
       const classicBtn = screen.getByRole("button", { name: /cvStyleClassic/i });

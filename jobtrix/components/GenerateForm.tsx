@@ -58,7 +58,7 @@ export default function GenerateForm() {
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ jobPosting, jobTitle, companyName, contactPerson, profile, cvStyle }),
+        body: JSON.stringify({ jobPosting, jobTitle, companyName, contactPerson, profile, cvStyle, template: selectedTemplate }),
       });
       const data = await res.json();
       if (!res.ok) {

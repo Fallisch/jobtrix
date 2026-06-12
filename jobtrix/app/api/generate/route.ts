@@ -91,6 +91,7 @@ export async function POST(request: NextRequest) {
         coverLetter,
         cv,
         profileSnapshot: body.profile as object,
+        template: body.template ?? "classic",
       },
     });
 

@@ -68,6 +68,7 @@ model ApplicationHistoryEntry {
   coverLetter     String   @db.Text
   cv              String   @db.Text
   profileSnapshot Json
+  template        String   @default("classic")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 

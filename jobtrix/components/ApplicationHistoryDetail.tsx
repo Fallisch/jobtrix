@@ -60,8 +60,8 @@ export default function ApplicationHistoryDetail({ id }: { id: string }) {
       <button
         type="button"
         onClick={() => {
-          downloadCoverLetterPdf(entry.coverLetter, entry.profileSnapshot);
-          downloadCvPdf(entry.cv, entry.profileSnapshot);
+          downloadCoverLetterPdf(entry.coverLetter, entry.profileSnapshot, entry.template);
+          downloadCvPdf(entry.cv, entry.profileSnapshot, entry.template);
         }}
         className="rounded-full px-4 py-2 text-sm font-semibold border border-gray-200 text-text hover:border-accent hover:text-accent transition"
       >

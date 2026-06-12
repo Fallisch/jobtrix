@@ -261,4 +261,31 @@ describe("Bewerbungshistorie", () => {
     expect(entries[0].cv).toBe("Max Mustermann – Lebenslauf");
     expect(entries[0].profileSnapshot).toEqual(profile);
   });
+
+  it("speichert das beim Generieren gewählte PDF-Layout 'modern' im Historie-Eintrag", async () => {
+    const res = await POST(makeRequest({
+      jobPosting: "Wir suchen einen Entwickler",
+      profile,
+      template: "modern",
+    }));
+
+    expect(res.status).toBe(200);
+
+    const entries = await prisma.applicationHistoryEntry.findMany({ where: { userId } });
+    expect(entries).toHaveLength(1);
+    expect(entries[0].template).toBe("modern");
+  });
+
+  it("speichert 'classic' als Layout im Historie-Eintrag, wenn kein Layout angegeben wird", async () => {
+    const res = await POST(makeRequest({
+      jobPosting: "Wir suchen einen Entwickler",
+      profile,
+    }));
+
+    expect(res.status).toBe(200);
+
+    const entries = await prisma.applicationHistoryEntry.findMany({ where: { userId } });
+    expect(entries).toHaveLength(1);
+    expect(entries[0].template).toBe("classic");
+  });
 });
