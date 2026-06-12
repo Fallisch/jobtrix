@@ -43,18 +43,44 @@ beforeEach(() => {
 });
 
 describe("ApplicationHistoryDetail", () => {
-  it("zeigt Anschreiben, E-Mail-Entwurf und Lebenslauf eines Eintrags schreibgeschützt an", async () => {
+  it("zeigt einen Eintrag schreibgeschützt an und standardmäßig nur das Anschreiben", async () => {
     (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve(entry) });
 
     render(<ApplicationHistoryDetail id="entry-1" />);
 
     await waitFor(() => screen.getByRole("heading", { level: 1 }));
     expect(screen.getByText(/Acme GmbH/)).toBeInTheDocument();
-    expect(screen.getAllByText("Sehr geehrte Damen und Herren").length).toBeGreaterThanOrEqual(1);
-    expect(screen.getByText("Max Mustermann – Lebenslauf")).toBeInTheDocument();
-    expect(screen.getByText("Bewerbung als Senior Developer")).toBeInTheDocument();
+    expect(screen.getByText("Sehr geehrte Damen und Herren")).toBeInTheDocument();
+    expect(screen.queryByText("Max Mustermann – Lebenslauf")).not.toBeInTheDocument();
+    expect(screen.queryByText("Bewerbung als Senior Developer")).not.toBeInTheDocument();
 
     expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
+  });
+
+  it("zeigt nach Klick auf den Lebenslauf-Tab nur den Lebenslauf an", async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve(entry) });
+
+    render(<ApplicationHistoryDetail id="entry-1" />);
+
+    await waitFor(() => screen.getByRole("heading", { level: 1 }));
+    fireEvent.click(screen.getByRole("tab", { name: /cvTitle/i }));
+
+    expect(screen.getByText("Max Mustermann – Lebenslauf")).toBeInTheDocument();
+    expect(screen.queryByText("Sehr geehrte Damen und Herren")).not.toBeInTheDocument();
+    expect(screen.queryByText("Bewerbung als Senior Developer")).not.toBeInTheDocument();
+  });
+
+  it("zeigt nach Klick auf den E-Mail-Entwurf-Tab Betreff und Anschreiben-Text als Entwurf an", async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve(entry) });
+
+    render(<ApplicationHistoryDetail id="entry-1" />);
+
+    await waitFor(() => screen.getByRole("heading", { level: 1 }));
+    fireEvent.click(screen.getByRole("tab", { name: /emailDraftTitle/i }));
+
+    expect(screen.getByText("Bewerbung als Senior Developer")).toBeInTheDocument();
+    expect(screen.getByText("Sehr geehrte Damen und Herren")).toBeInTheDocument();
+    expect(screen.queryByText("Max Mustermann – Lebenslauf")).not.toBeInTheDocument();
   });
 
   it("zeigt Datum UND Uhrzeit der Erstellung an", async () => {

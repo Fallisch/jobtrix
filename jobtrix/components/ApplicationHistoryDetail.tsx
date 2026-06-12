@@ -7,11 +7,14 @@ import Link from "next/link";
 import { ApplicationHistoryEntry } from "@/components/ApplicationHistoryList";
 import { downloadCoverLetterPdf, downloadCvPdf } from "@/lib/download-pdf";
 
+type Tab = "coverLetter" | "cv" | "email";
+
 export default function ApplicationHistoryDetail({ id }: { id: string }) {
   const t = useTranslations("applicationHistory");
   const { locale } = useParams<{ locale: string }>();
   const [entry, setEntry] = useState<ApplicationHistoryEntry | null>(null);
   const [notFound, setNotFound] = useState(false);
+  const [activeTab, setActiveTab] = useState<Tab>("coverLetter");
 
   useEffect(() => {
     fetch(`/api/application-history/${id}`)
@@ -74,27 +77,69 @@ export default function ApplicationHistoryDetail({ id }: { id: string }) {
         {t("pdfButton")}
       </button>
 
-      <section className="bg-white rounded-xl shadow p-5 space-y-2">
-        <h2 className="font-semibold text-primary">{t("coverLetterTitle")}</h2>
-        <p className="text-sm text-text/80 whitespace-pre-wrap">{entry.coverLetter}</p>
-      </section>
+      <div role="tablist" className="flex gap-2 border-b border-gray-200">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeTab === "coverLetter"}
+          onClick={() => setActiveTab("coverLetter")}
+          className={`px-4 py-2 text-sm font-semibold border-b-2 -mb-px transition ${
+            activeTab === "coverLetter" ? "border-accent text-accent" : "border-transparent text-text/60 hover:text-accent"
+          }`}
+        >
+          {t("coverLetterTitle")}
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeTab === "cv"}
+          onClick={() => setActiveTab("cv")}
+          className={`px-4 py-2 text-sm font-semibold border-b-2 -mb-px transition ${
+            activeTab === "cv" ? "border-accent text-accent" : "border-transparent text-text/60 hover:text-accent"
+          }`}
+        >
+          {t("cvTitle")}
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeTab === "email"}
+          onClick={() => setActiveTab("email")}
+          className={`px-4 py-2 text-sm font-semibold border-b-2 -mb-px transition ${
+            activeTab === "email" ? "border-accent text-accent" : "border-transparent text-text/60 hover:text-accent"
+          }`}
+        >
+          {t("emailDraftTitle")}
+        </button>
+      </div>
 
-      <section className="bg-white rounded-xl shadow p-5 space-y-2">
-        <h2 className="font-semibold text-primary">{t("cvTitle")}</h2>
-        <p className="text-sm text-text/80 whitespace-pre-wrap">{entry.cv}</p>
-      </section>
-
-      <section className="bg-white rounded-xl shadow p-5 space-y-2">
-        <h2 className="font-semibold text-primary">{t("emailDraftTitle")}</h2>
-        <div>
-          <span className="text-sm font-medium text-text/60">{t("emailSubjectLabel")}</span>
-          <p className="text-sm text-text/80">{entry.emailSubject}</p>
-        </div>
-        <div>
-          <span className="text-sm font-medium text-text/60">{t("emailBodyLabel")}</span>
+      {activeTab === "coverLetter" && (
+        <section className="bg-white rounded-xl shadow p-5 space-y-2">
+          <h2 className="font-semibold text-primary">{t("coverLetterTitle")}</h2>
           <p className="text-sm text-text/80 whitespace-pre-wrap">{entry.coverLetter}</p>
-        </div>
-      </section>
+        </section>
+      )}
+
+      {activeTab === "cv" && (
+        <section className="bg-white rounded-xl shadow p-5 space-y-2">
+          <h2 className="font-semibold text-primary">{t("cvTitle")}</h2>
+          <p className="text-sm text-text/80 whitespace-pre-wrap">{entry.cv}</p>
+        </section>
+      )}
+
+      {activeTab === "email" && (
+        <section className="bg-white rounded-xl shadow p-5 space-y-2">
+          <h2 className="font-semibold text-primary">{t("emailDraftTitle")}</h2>
+          <div>
+            <span className="text-sm font-medium text-text/60">{t("emailSubjectLabel")}</span>
+            <p className="text-sm text-text/80">{entry.emailSubject}</p>
+          </div>
+          <div>
+            <span className="text-sm font-medium text-text/60">{t("emailBodyLabel")}</span>
+            <p className="text-sm text-text/80 whitespace-pre-wrap">{entry.coverLetter}</p>
+          </div>
+        </section>
+      )}
     </div>
   );
 }
