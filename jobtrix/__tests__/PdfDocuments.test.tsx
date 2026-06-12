@@ -200,6 +200,30 @@ describe("CvDocument – Modern-Layout cvStyle", () => {
   });
 });
 
+describe("CoverLetterDocument – Dokument-Kennzeichnung", () => {
+  it("zeigt die Kennzeichnung 'Anschreiben' im klassischen Layout", () => {
+    render(<CoverLetterDocument coverLetter="Brief" profile={profile} template="classic" />);
+    expect(screen.getByText("Anschreiben")).toBeInTheDocument();
+  });
+
+  it("zeigt die Kennzeichnung 'Anschreiben' im modernen Layout", () => {
+    render(<CoverLetterDocument coverLetter="Brief" profile={profile} template="modern" />);
+    expect(screen.getByText("Anschreiben")).toBeInTheDocument();
+  });
+});
+
+describe("CvDocument – Dokument-Kennzeichnung", () => {
+  it("zeigt die Kennzeichnung 'Lebenslauf' im klassischen Layout", () => {
+    render(<CvDocument cv="Lebenslauf-Inhalt" profile={profile} template="classic" />);
+    expect(screen.getByText("Lebenslauf")).toBeInTheDocument();
+  });
+
+  it("zeigt die Kennzeichnung 'Lebenslauf' im modernen Layout", () => {
+    render(<CvDocument cv="Lebenslauf-Inhalt" profile={profile} template="modern" />);
+    expect(screen.getByText("Lebenslauf")).toBeInTheDocument();
+  });
+});
+
 describe("CvDocument – Skill-Bar Breite", () => {
   it("Skill-Bar-Fill hat die Breite des übergebenen value", () => {
     render(<CvDocument cv="CV" profile={profile} template="modern" />);

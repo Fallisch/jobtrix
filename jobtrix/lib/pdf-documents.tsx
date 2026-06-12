@@ -55,6 +55,13 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.75,
     borderBottomColor: "#d1d5db",
   },
+  documentLabel: {
+    fontSize: 9,
+    fontFamily: "Helvetica-Bold",
+    color: ACCENT,
+    letterSpacing: 1,
+    marginBottom: 8,
+  },
 
   // ── Cover Letter Modern (left dark sidebar) ────────────────────────────────
   modernPage: {
@@ -329,6 +336,7 @@ export function CoverLetterDocument({ coverLetter, profile, template = "classic"
         <Page size="A4" style={styles.modernPage}>
           <ModernSidebar profile={profile} sidebarBg={sidebarBg} />
           <View style={styles.modernContent} {...{ "data-testid": "modern-content" }}>
+            <Text style={styles.documentLabel}>Anschreiben</Text>
             {renderTextBlocks(coverLetter, true)}
           </View>
         </Page>
@@ -340,6 +348,7 @@ export function CoverLetterDocument({ coverLetter, profile, template = "classic"
     <Document>
       <Page size="A4" style={styles.page}>
         <View style={styles.accentBar} />
+        <Text style={styles.documentLabel}>Anschreiben</Text>
         <View style={styles.header}>
           <Text style={styles.name}>{profile.name}</Text>
           {profile.address ? <Text style={styles.meta}>{profile.address}</Text> : null}
@@ -398,6 +407,7 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
           <View style={styles.cvTwoColumns}>
             {/* Left column: structured profile data */}
             <View style={styles.cvLeftCol} {...{ "data-testid": "modern-content" }}>
+              <Text style={styles.documentLabel}>Lebenslauf</Text>
               <Text style={styles.cvSectionHeading}>Persönliche Daten</Text>
               {birthFormatted ? (
                 <View style={styles.cvDataRow}>
@@ -467,6 +477,7 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
     <Document>
       <Page size="A4" style={styles.page}>
         <View style={styles.accentBar} />
+        <Text style={styles.documentLabel}>Lebenslauf</Text>
         <View style={styles.header}>
           <Text style={styles.name}>{profile.name}</Text>
           {profile.address ? <Text style={styles.meta}>{profile.address}</Text> : null}
