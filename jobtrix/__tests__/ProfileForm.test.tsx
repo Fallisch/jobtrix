@@ -100,6 +100,12 @@ describe("ProfileForm", () => {
     expect(screen.getByPlaceholderText(/institution/i)).toBeInTheDocument();
   });
 
+  it("zeigt einen übersetzten Button 'Datei auswählen' für den Foto-Upload", async () => {
+    render(<ProfileForm />);
+    await waitFor(() => {});
+    expect(screen.getByRole("button", { name: "Datei auswählen" })).toBeInTheDocument();
+  });
+
   it("zeigt Fehlermeldung wenn Speichern ohne Name versucht wird", async () => {
     render(<ProfileForm />);
     fireEvent.click(screen.getByRole("button", { name: /speichern/i }));
@@ -360,6 +366,12 @@ describe("ProfileForm", () => {
       expect(screen.getByLabelText(/^phone$/i)).toBeInTheDocument();
       expect(screen.getByLabelText(/date of birth/i)).toBeInTheDocument();
       expect(screen.getByLabelText(/^photo$/i)).toBeInTheDocument();
+    });
+
+    it("zeigt einen übersetzten Button 'Choose file' für den Foto-Upload", async () => {
+      render(<ProfileForm />);
+      await waitFor(() => {});
+      expect(screen.getByRole("button", { name: "Choose file" })).toBeInTheDocument();
     });
 
     it("zeigt die Ausbildungs-Sektion auf Englisch", async () => {

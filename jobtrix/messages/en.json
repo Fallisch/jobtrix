@@ -134,6 +134,7 @@
     "phoneLabel": "Phone",
     "birthdateLabel": "Date of birth",
     "photoLabel": "Photo",
+    "photoChooseFile": "Choose file",
     "photoPreviewAlt": "Preview",
     "educationTitle": "Education *",
     "institutionPlaceholder": "Institution",

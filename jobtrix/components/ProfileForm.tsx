@@ -44,6 +44,7 @@ export default function ProfileForm() {
   const [interestInput, setInterestInput] = useState("");
   const [access, setAccess] = useState<AccessState | null>(null);
   const interactedRef = useRef(false);
+  const photoInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetch("/api/profile")
@@ -255,11 +256,19 @@ export default function ProfileForm() {
         </label>
         <input
           id="photo"
+          ref={photoInputRef}
           type="file"
           accept="image/*"
           onChange={handlePhoto}
-          className="block text-sm text-text/60 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-accent file:text-white hover:file:brightness-110"
+          className="sr-only"
         />
+        <button
+          type="button"
+          onClick={() => photoInputRef.current?.click()}
+          className="rounded-full py-2 px-4 text-sm font-semibold bg-accent text-white hover:brightness-110"
+        >
+          {t("photoChooseFile")}
+        </button>
         {data.photo && (
           <img
             src={data.photo}
