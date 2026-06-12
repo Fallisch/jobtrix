@@ -1,18 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { registerAndLogin, uniqueEmail } from "./helpers/auth";
 
-const PROFILE_OLD_FORMAT = {
-  name: "Anna Beispiel",
-  address: "Hauptstraße 5, 10115 Berlin",
-  email: "anna@example.de",
-  phone: "0151 12345678",
-  birthdate: "1992-03-15",
-  photo: null,
-  education: [{ id: "1", institution: "HU Berlin", degree: "M.Sc.", year: "2018" }],
-  qualifications: ["Python", "SQL"],
-  interests: ["Datenanalyse"],
-};
-
 test.describe("Skill-Balken individuell anpassbar – QA (Issue #12)", () => {
   test.beforeEach(async ({ page }) => {
     await registerAndLogin(page, uniqueEmail("e2e-skill-slider"), "correct-password");
@@ -42,22 +30,6 @@ test.describe("Skill-Balken individuell anpassbar – QA (Issue #12)", () => {
     await expect(slider).toHaveValue("80");
 
     await expect(page.getByText("80%")).toBeVisible();
-  });
-
-  // Seit der DB-Migration des Profils (#19) liest /de/profile nicht mehr aus localStorage,
-  // daher greift diese Migration auf der Profilseite nicht mehr. Separat als Issue erfasst.
-  test.fixme("Altes Profil (String-Format) wird ohne Datenverlust auf 60% migriert", async ({ page }) => {
-    await page.goto("/de/profile");
-    await page.evaluate((p) => {
-      localStorage.setItem("jobtrix_profile", JSON.stringify(p));
-    }, PROFILE_OLD_FORMAT);
-    await page.reload();
-
-    const slider = page.getByRole("slider", { name: /Python/i });
-    await expect(slider).toBeVisible();
-    await expect(slider).toHaveValue("60");
-
-    await page.screenshot({ path: "docs/qa-skill-slider-migration.png", fullPage: false });
   });
 
   test("Profil mit individuellen Skill-Werten wird korrekt gespeichert", async ({ page }) => {
