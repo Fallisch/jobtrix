@@ -81,6 +81,19 @@ export async function POST(request: NextRequest) {
       .join("");
 
     const { emailSubject, coverLetter, cv } = parseResponse(text);
+
+    await prisma.applicationHistoryEntry.create({
+      data: {
+        userId,
+        jobTitle: body.jobTitle,
+        companyName: body.companyName,
+        emailSubject,
+        coverLetter,
+        cv,
+        profileSnapshot: body.profile as object,
+      },
+    });
+
     return NextResponse.json({ emailSubject, coverLetter, cv });
   } catch (err) {
     console.error("[/api/generate] Fehler:", err);

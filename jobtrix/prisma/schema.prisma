@@ -20,6 +20,8 @@ model User {
   sessions Session[]
   profile  UserProfile?
   access   Access?
+
+  applicationHistory ApplicationHistoryEntry[]
 }
 
 model UserProfile {
@@ -54,6 +56,22 @@ model Access {
   stripePaymentId    String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ApplicationHistoryEntry {
+  id              String   @id @default(cuid())
+  userId          String
+  createdAt       DateTime @default(now())
+  jobTitle        String?
+  companyName     String?
+  emailSubject    String
+  coverLetter     String   @db.Text
+  cv              String   @db.Text
+  profileSnapshot Json
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model Account {

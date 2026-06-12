@@ -11,6 +11,7 @@
   },
   "nav": {
     "profile": "Profil",
+    "applicationHistory": "Bewerbungshistorie",
     "logout": "Abmelden"
   },
   "auth": {
@@ -100,6 +101,7 @@
     "title": "Bewerbung erstellen",
     "jobPostingLabel": "Stellenanzeige",
     "jobPostingPlaceholder": "Stellenanzeige hier einfügen…",
+    "jobTitleLabel": "Stellentitel",
     "companyNameLabel": "Firmenname",
     "contactPersonLabel": "Ansprechpartner",
     "optional": "Optional",
@@ -179,5 +181,20 @@
     "checkoutError": "Weiterleitung zu Stripe ist fehlgeschlagen. Bitte versuche es erneut.",
     "checkoutSuccess": "Zahlung erfolgreich! Dein Zugang ist jetzt aktiv – du kannst direkt weitere Bewerbungen generieren.",
     "checkoutCancelled": "Die Zahlung wurde abgebrochen. Du kannst es jederzeit erneut versuchen."
+  },
+  "applicationHistory": {
+    "title": "Bewerbungshistorie",
+    "emptyState": "Du hast noch keine Bewerbungen erstellt.",
+    "emptyStateLink": "Jetzt Bewerbung erstellen",
+    "untitled": "Bewerbung",
+    "viewButton": "Anzeigen",
+    "pdfButton": "PDF erneut herunterladen",
+    "backLink": "Zurück zur Übersicht",
+    "notFound": "Eintrag nicht gefunden.",
+    "coverLetterTitle": "Anschreiben",
+    "cvTitle": "Lebenslauf",
+    "emailDraftTitle": "E-Mail-Entwurf",
+    "emailSubjectLabel": "Betreff",
+    "emailBodyLabel": "Text"
   }
 }

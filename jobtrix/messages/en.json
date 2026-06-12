@@ -11,6 +11,7 @@
   },
   "nav": {
     "profile": "Profile",
+    "applicationHistory": "Application history",
     "logout": "Logout"
   },
   "auth": {
@@ -100,6 +101,7 @@
     "title": "Create application",
     "jobPostingLabel": "Job posting",
     "jobPostingPlaceholder": "Paste job posting here…",
+    "jobTitleLabel": "Job title",
     "companyNameLabel": "Company name",
     "contactPersonLabel": "Contact person",
     "optional": "Optional",
@@ -179,5 +181,20 @@
     "checkoutError": "Redirecting to Stripe failed. Please try again.",
     "checkoutSuccess": "Payment successful! Your access is now active – you can generate more applications right away.",
     "checkoutCancelled": "Payment was cancelled. You can try again anytime."
+  },
+  "applicationHistory": {
+    "title": "Application history",
+    "emptyState": "You haven't created any applications yet.",
+    "emptyStateLink": "Create an application now",
+    "untitled": "Application",
+    "viewButton": "View",
+    "pdfButton": "Download PDF again",
+    "backLink": "Back to overview",
+    "notFound": "Entry not found.",
+    "coverLetterTitle": "Cover letter",
+    "cvTitle": "CV",
+    "emailDraftTitle": "Email draft",
+    "emailSubjectLabel": "Subject",
+    "emailBodyLabel": "Body"
   }
 }

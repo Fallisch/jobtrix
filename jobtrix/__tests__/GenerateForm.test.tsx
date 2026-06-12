@@ -32,6 +32,7 @@ beforeEach(() => {
 
 // Translation keys (mock returns key as-is)
 const JOB_POSTING = /jobPostingLabel/i;
+const JOB_TITLE = /jobTitleLabel/i;
 const COMPANY_NAME = /companyNameLabel/i;
 const CONTACT_PERSON = /contactPersonLabel/i;
 const GENERATE_BTN = /generateButton/i;
@@ -41,6 +42,11 @@ describe("GenerateForm", () => {
     it("rendert Textfeld für Stellenanzeige", () => {
       render(<GenerateForm />);
       expect(screen.getByRole("textbox", { name: JOB_POSTING })).toBeInTheDocument();
+    });
+
+    it("rendert optionales Feld für Stellentitel", () => {
+      render(<GenerateForm />);
+      expect(screen.getByRole("textbox", { name: JOB_TITLE })).toBeInTheDocument();
     });
 
     it("rendert optionales Feld für Firmenname", () => {

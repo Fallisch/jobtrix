@@ -2,6 +2,7 @@ import { ProfileData } from "@/lib/profile-storage";
 
 export interface GenerateRequest {
   jobPosting: string;
+  jobTitle?: string;
   companyName?: string;
   contactPerson?: string;
   profile: ProfileData;

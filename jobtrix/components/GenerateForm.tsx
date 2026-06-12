@@ -27,6 +27,7 @@ export default function GenerateForm() {
   const router = useRouter();
   const { locale } = useParams<{ locale: string }>();
   const [jobPosting, setJobPosting] = useState("");
+  const [jobTitle, setJobTitle] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [contactPerson, setContactPerson] = useState("");
   const [hasProfile, setHasProfile] = useState(false);
@@ -57,7 +58,7 @@ export default function GenerateForm() {
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ jobPosting, companyName, contactPerson, profile, cvStyle }),
+        body: JSON.stringify({ jobPosting, jobTitle, companyName, contactPerson, profile, cvStyle }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -95,6 +96,21 @@ export default function GenerateForm() {
             className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent resize-y"
             placeholder={t("jobPostingPlaceholder")}
             aria-label={t("jobPostingLabel")}
+          />
+        </div>
+
+        <div>
+          <label htmlFor="jobTitle" className="block text-sm font-medium text-text mb-1">
+            {t("jobTitleLabel")}
+          </label>
+          <input
+            id="jobTitle"
+            type="text"
+            value={jobTitle}
+            onChange={(e) => setJobTitle(e.target.value)}
+            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent"
+            placeholder={t("optional")}
+            aria-label={t("jobTitleLabel")}
           />
         </div>
 

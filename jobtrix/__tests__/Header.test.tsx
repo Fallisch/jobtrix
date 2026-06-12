@@ -64,6 +64,23 @@ describe("Header", () => {
     expect(screen.queryByRole("button", { name: "Abmelden" })).not.toBeInTheDocument();
   });
 
+  it("zeigt im abgemeldeten Zustand keinen Navigationspunkt 'Bewerbungshistorie'", () => {
+    render(<Header locale="de" />);
+    expect(screen.queryByRole("link", { name: "Bewerbungshistorie" })).not.toBeInTheDocument();
+  });
+
+  it("zeigt im angemeldeten Zustand einen Navigationspunkt 'Bewerbungshistorie'", () => {
+    mockedUseSession.mockReturnValue({
+      data: { user: {}, expires: "" },
+      status: "authenticated",
+      update: jest.fn(),
+    } as ReturnType<typeof useSession>);
+
+    render(<Header locale="de" />);
+    const link = screen.getByRole("link", { name: "Bewerbungshistorie" });
+    expect(link).toHaveAttribute("href", "/de/application-history");
+  });
+
   it("zeigt im angemeldeten Zustand einen Logout-Button", () => {
     mockedUseSession.mockReturnValue({
       data: { user: {}, expires: "" },

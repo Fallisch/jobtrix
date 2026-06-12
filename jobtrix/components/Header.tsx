@@ -40,6 +40,14 @@ export default function Header({ locale }: { locale: string }) {
             {locale === "de" ? "Profil" : "Profile"}
           </Link>
           {status === "authenticated" && (
+            <Link
+              href={`/${locale}/application-history`}
+              className="text-sm font-medium text-white/80 hover:text-white transition-colors"
+            >
+              {t("applicationHistory")}
+            </Link>
+          )}
+          {status === "authenticated" && (
             <button
               onClick={handleLogout}
               className="text-sm font-medium text-white/80 hover:text-white transition-colors"

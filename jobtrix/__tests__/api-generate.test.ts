@@ -45,6 +45,7 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
+  await prisma.applicationHistoryEntry.deleteMany({ where: { userId } });
   await prisma.access.deleteMany({ where: { userId } });
   await prisma.user.delete({ where: { id: userId } });
   await prisma.$disconnect();
@@ -223,5 +224,41 @@ describe("Zugangskontrolle", () => {
     const res = await POST(makeRequest({ jobPosting: "Stelle", profile }));
 
     expect(res.status).toBe(200);
+  });
+});
+
+describe("Bewerbungshistorie", () => {
+  beforeEach(async () => {
+    mockCreate.mockResolvedValue({
+      content: [{
+        type: "text",
+        text: "BETREFF: Bewerbung als Senior Developer – Max Mustermann\n\nANSCHREIBEN: Sehr geehrte Damen und Herren\n\nLEBENSLAUF: Max Mustermann – Lebenslauf",
+      }],
+    });
+    await prisma.applicationHistoryEntry.deleteMany({ where: { userId } });
+  });
+
+  afterAll(async () => {
+    await prisma.applicationHistoryEntry.deleteMany({ where: { userId } });
+  });
+
+  it("legt nach erfolgreicher Generierung einen Bewerbungshistorie-Eintrag mit den korrekten Daten an", async () => {
+    const res = await POST(makeRequest({
+      jobPosting: "Wir suchen einen Entwickler",
+      jobTitle: "Senior Developer",
+      companyName: "Acme GmbH",
+      profile,
+    }));
+
+    expect(res.status).toBe(200);
+
+    const entries = await prisma.applicationHistoryEntry.findMany({ where: { userId } });
+    expect(entries).toHaveLength(1);
+    expect(entries[0].jobTitle).toBe("Senior Developer");
+    expect(entries[0].companyName).toBe("Acme GmbH");
+    expect(entries[0].emailSubject).toBe("Bewerbung als Senior Developer – Max Mustermann");
+    expect(entries[0].coverLetter).toBe("Sehr geehrte Damen und Herren");
+    expect(entries[0].cv).toBe("Max Mustermann – Lebenslauf");
+    expect(entries[0].profileSnapshot).toEqual(profile);
   });
 });
