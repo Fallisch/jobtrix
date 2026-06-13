@@ -303,6 +303,139 @@ describe("CvDocument – Dokument-Kennzeichnung", () => {
   });
 });
 
+describe("CoverLetterDocument – Traditionell-Layout", () => {
+  it("rendert Briefkopf mit Foto oben rechts neben den Kontaktdaten", () => {
+    const profileWithPhoto = { ...profile, photo: "data:image/png;base64,abc123" };
+    render(<CoverLetterDocument coverLetter="Sehr geehrte Damen" profile={profileWithPhoto} template="traditional" />);
+    const header = screen.getByTestId("traditional-header");
+    const img = within(header).getByRole("img");
+    expect(img).toHaveAttribute("src", "data:image/png;base64,abc123");
+    expect(header.lastElementChild).toBe(img);
+    expect(screen.getByText("Anna Beispiel")).toBeInTheDocument();
+  });
+
+  it("rendert ohne Crash wenn kein Foto vorhanden", () => {
+    expect(() =>
+      render(<CoverLetterDocument coverLetter="Brief" profile={{ ...profile, photo: null }} template="traditional" />)
+    ).not.toThrow();
+    expect(screen.queryByRole("img")).not.toBeInTheDocument();
+  });
+
+  it("rendert Datum und Betreff im formalen Briefstil", () => {
+    render(<CoverLetterDocument coverLetter="Sehr geehrte Damen" profile={profile} template="traditional" />);
+    expect(screen.getByTestId("traditional-date")).toHaveTextContent(/^\d{2}\.\d{2}\.\d{4}$/);
+    expect(screen.getByTestId("traditional-subject")).toHaveTextContent(/Betreff/i);
+  });
+
+  it("rendert den Anschreiben-Text", () => {
+    render(<CoverLetterDocument coverLetter="Mein individuelles Anschreiben" profile={profile} template="traditional" />);
+    expect(screen.getByText("Mein individuelles Anschreiben")).toBeInTheDocument();
+  });
+
+  it("ist schwarz-weiß unabhängig von übergebener Akzentfarbe", () => {
+    render(<CoverLetterDocument coverLetter="Brief" profile={profile} template="traditional" accentColor="#FF0000" />);
+    const header = screen.getByTestId("traditional-header");
+    expect(header).not.toHaveStyle({ backgroundColor: "#FF0000" });
+    expect(screen.queryByTestId("modern-sidebar")).not.toBeInTheDocument();
+  });
+});
+
+describe("CvDocument – Traditionell-Layout", () => {
+  const profileWithExperience: ProfileData = {
+    ...profile,
+    experience: [
+      {
+        id: "1",
+        company: "Acme GmbH",
+        position: "Entwickler",
+        period: "01/2020 - 12/2022",
+        tasks: "Backend-Entwicklung\nCode-Reviews",
+      },
+    ],
+  };
+
+  it("rendert Name und Kontaktdaten links sowie Foto oben rechts im Kopfbereich", () => {
+    const profileWithPhoto = { ...profile, photo: "data:image/png;base64,abc123" };
+    render(<CvDocument cv="CV" profile={profileWithPhoto} template="traditional" />);
+    const header = screen.getByTestId("traditional-header");
+    expect(within(header).getByText("Anna Beispiel")).toBeInTheDocument();
+    expect(within(header).getByText("Hauptstraße 5, 10115 Berlin")).toBeInTheDocument();
+    const img = within(header).getByRole("img");
+    expect(img).toHaveAttribute("src", "data:image/png;base64,abc123");
+    expect(header.lastElementChild).toBe(img);
+  });
+
+  it("rendert Berufserfahrung als Tabelle mit Zeitraum links und Inhalt (inkl. Aufgaben-Stichpunkten) rechts", () => {
+    render(<CvDocument cv="CV" profile={profileWithExperience} template="traditional" />);
+    expect(screen.getByTestId("traditional-exp-table")).toBeInTheDocument();
+    const row = screen.getByTestId("traditional-exp-row");
+    expect(row).toHaveTextContent("01/2020 - 12/2022");
+    expect(row).toHaveTextContent("Entwickler");
+    expect(row).toHaveTextContent("Acme GmbH");
+    expect(row).toHaveTextContent("Backend-Entwicklung");
+    expect(row).toHaveTextContent("Code-Reviews");
+  });
+
+  it("rendert Ausbildung als Tabelle mit Zeitraum links und Inhalt rechts", () => {
+    render(<CvDocument cv="CV" profile={profile} template="traditional" />);
+    expect(screen.getByTestId("traditional-edu-table")).toBeInTheDocument();
+    const row = screen.getByTestId("traditional-edu-row");
+    expect(row).toHaveTextContent("2018");
+    expect(row).toHaveTextContent("M.Sc.");
+    expect(row).toHaveTextContent("HU Berlin");
+  });
+
+  it("rendert Qualifikationen und Interessen als Liste ohne Fortschrittsbalken", () => {
+    render(<CvDocument cv="CV" profile={profile} template="traditional" />);
+    expect(screen.getByTestId("traditional-quals")).toHaveTextContent("Python");
+    expect(screen.getByTestId("traditional-quals")).toHaveTextContent("SQL");
+    expect(screen.getByTestId("traditional-interests")).toHaveTextContent("Datenanalyse");
+    expect(screen.queryAllByTestId("skill-bar-fill")).toHaveLength(0);
+  });
+
+  it("zeigt keine Berufserfahrung-Tabelle wenn keine Einträge vorhanden sind", () => {
+    render(<CvDocument cv="CV" profile={profile} template="traditional" />);
+    expect(screen.queryByTestId("traditional-exp-table")).not.toBeInTheDocument();
+  });
+
+  it("ist schwarz-weiß unabhängig von übergebener Akzentfarbe", () => {
+    render(<CvDocument cv="CV" profile={profile} template="traditional" accentColor="#FF0000" />);
+    const header = screen.getByTestId("traditional-header");
+    expect(header).not.toHaveStyle({ backgroundColor: "#FF0000" });
+    expect(screen.queryByTestId("modern-cv-header")).not.toBeInTheDocument();
+  });
+});
+
+describe("CvDocument – Traditionell-Layout cvStyle", () => {
+  const profileMulti: ProfileData = {
+    ...profile,
+    education: [
+      { id: "1", institution: "HTW Berlin", degree: "B.Sc.", year: "2014" },
+      { id: "2", institution: "HU Berlin", degree: "M.Sc.", year: "2018" },
+    ],
+    experience: [
+      { id: "1", company: "Firma A", position: "Junior Entwickler", period: "2018 - 2020", tasks: "Aufgabe A" },
+      { id: "2", company: "Firma B", position: "Senior Entwickler", period: "2020 - 2023", tasks: "Aufgabe B" },
+    ],
+  };
+
+  it("sortiert Berufserfahrungs- und Ausbildungs-Tabelle bei cvStyle classic chronologisch", () => {
+    render(<CvDocument cv="CV" profile={profileMulti} template="traditional" cvStyle="classic" />);
+    const expRows = screen.getAllByTestId("traditional-exp-row");
+    const eduRows = screen.getAllByTestId("traditional-edu-row");
+    expect(expRows[0]).toHaveTextContent("Firma A");
+    expect(eduRows[0]).toHaveTextContent("2014");
+  });
+
+  it("sortiert Berufserfahrungs- und Ausbildungs-Tabelle bei cvStyle american jeweils eigenständig antichronologisch", () => {
+    render(<CvDocument cv="CV" profile={profileMulti} template="traditional" cvStyle="american" />);
+    const expRows = screen.getAllByTestId("traditional-exp-row");
+    const eduRows = screen.getAllByTestId("traditional-edu-row");
+    expect(expRows[0]).toHaveTextContent("Firma B");
+    expect(eduRows[0]).toHaveTextContent("2018");
+  });
+});
+
 describe("CvDocument – Skill-Bar Breite", () => {
   it("Skill-Bar-Fill hat die Breite des übergebenen value", () => {
     render(<CvDocument cv="CV" profile={profile} template="modern" />);

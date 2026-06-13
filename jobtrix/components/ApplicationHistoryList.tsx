@@ -16,7 +16,7 @@ export interface ApplicationHistoryEntry {
   coverLetter: string;
   cv: string;
   profileSnapshot: ProfileData;
-  template: "classic" | "modern";
+  template: "classic" | "modern" | "traditional";
 }
 
 const EXCERPT_LENGTH = 150;

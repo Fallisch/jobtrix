@@ -121,6 +121,7 @@
     "templateLabel": "Layout",
     "templateClassic": "Classic",
     "templateModern": "Modern",
+    "templateTraditional": "Traditional",
     "cvStyleLabel": "CV style",
     "cvStyleClassic": "Classic",
     "cvStyleAmerican": "American",

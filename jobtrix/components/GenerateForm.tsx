@@ -38,7 +38,7 @@ export default function GenerateForm() {
   const [editedCv, setEditedCv] = useState("");
   const [coverLetterAgreed, setCoverLetterAgreed] = useState(false);
   const [cvAgreed, setCvAgreed] = useState(false);
-  const [selectedTemplate, setSelectedTemplate] = useState<"classic" | "modern">("classic");
+  const [selectedTemplate, setSelectedTemplate] = useState<"classic" | "modern" | "traditional">("classic");
   const [cvStyle, setCvStyle] = useState<"classic" | "american">("classic");
   const [accentColor, setAccentColor] = useState<string>("#1E3A5F");
 
@@ -230,6 +230,18 @@ export default function GenerateForm() {
               }`}
             >
               {t("templateModern")}
+            </button>
+            <button
+              onClick={() => setSelectedTemplate("traditional")}
+              aria-pressed={selectedTemplate === "traditional"}
+              aria-label={t("templateTraditional")}
+              className={`rounded-full px-4 py-1.5 text-sm font-semibold border transition ${
+                selectedTemplate === "traditional"
+                  ? "bg-accent text-white border-accent"
+                  : "border-gray-200 text-text hover:border-accent hover:text-accent"
+              }`}
+            >
+              {t("templateTraditional")}
             </button>
 
             {selectedTemplate === "modern" && (

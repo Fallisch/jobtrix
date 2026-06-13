@@ -273,6 +273,122 @@ const styles = StyleSheet.create({
     backgroundColor: ACCENT,
     borderRadius: 2,
   },
+
+  // ── Traditional template (schwarz-weiß, tabellarisch) ──────────────────────
+  traditionalPage: {
+    fontFamily: "Helvetica",
+    fontSize: 10,
+    color: "#1a1a1a",
+    lineHeight: 1.4,
+  },
+  traditionalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    marginBottom: 16,
+    paddingBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#1a1a1a",
+  },
+  traditionalHeaderLeft: {
+    flexGrow: 1,
+  },
+  traditionalDocumentLabel: {
+    fontSize: 9,
+    fontFamily: "Helvetica-Bold",
+    color: "#1a1a1a",
+    letterSpacing: 1,
+    marginBottom: 8,
+  },
+  traditionalName: {
+    fontSize: 16,
+    fontFamily: "Helvetica-Bold",
+    color: "#1a1a1a",
+    marginBottom: 4,
+  },
+  traditionalMeta: {
+    fontSize: 9,
+    color: "#374151",
+    marginBottom: 1,
+  },
+  traditionalPhoto: {
+    width: 70,
+    height: 90,
+    objectFit: "cover",
+    borderWidth: 1,
+    borderColor: "#1a1a1a",
+  },
+  traditionalSectionHeading: {
+    fontSize: 10.5,
+    fontFamily: "Helvetica-Bold",
+    color: "#1a1a1a",
+    letterSpacing: 0.5,
+    marginTop: 14,
+    marginBottom: 4,
+    paddingBottom: 3,
+    borderBottomWidth: 0.75,
+    borderBottomColor: "#1a1a1a",
+  },
+  traditionalTable: {
+    borderWidth: 0.75,
+    borderColor: "#9ca3af",
+  },
+  traditionalTableRow: {
+    flexDirection: "row",
+    borderBottomWidth: 0.75,
+    borderBottomColor: "#e5e7eb",
+    paddingVertical: 5,
+    paddingHorizontal: 6,
+  },
+  traditionalCellPeriod: {
+    width: 90,
+    fontSize: 9,
+    color: "#374151",
+  },
+  traditionalCellContent: {
+    flex: 1,
+  },
+  traditionalCellTitle: {
+    fontSize: 10,
+    fontFamily: "Helvetica-Bold",
+    color: "#1a1a1a",
+  },
+  traditionalCellSubtitle: {
+    fontSize: 9,
+    color: "#374151",
+  },
+  traditionalCellTask: {
+    fontSize: 8.5,
+    color: "#374151",
+    marginTop: 2,
+    marginLeft: 6,
+  },
+  traditionalListItem: {
+    fontSize: 9.5,
+    color: "#1a1a1a",
+    marginBottom: 2,
+  },
+  traditionalParagraph: {
+    marginBottom: 7,
+    fontSize: 10,
+    color: "#1a1a1a",
+  },
+  traditionalRecipientBlock: {
+    marginBottom: 24,
+    minHeight: 60,
+  },
+  traditionalDateRow: {
+    fontSize: 9.5,
+    color: "#374151",
+    marginBottom: 14,
+    textAlign: "right",
+  },
+  traditionalSubject: {
+    fontSize: 10.5,
+    fontFamily: "Helvetica-Bold",
+    color: "#1a1a1a",
+    marginBottom: 10,
+  },
 });
 
 function isAllCapsHeading(line: string): boolean {
@@ -285,20 +401,29 @@ function isAllCapsHeading(line: string): boolean {
   );
 }
 
-function renderTextBlocks(text: string, modernStyle = false) {
+function renderTextBlocks(text: string, variant: "classic" | "modern" | "traditional" = "classic") {
+  const headingStyle =
+    variant === "modern" ? styles.modernSectionHeading
+    : variant === "traditional" ? styles.traditionalSectionHeading
+    : styles.sectionHeading;
+  const paragraphStyle =
+    variant === "modern" ? styles.modernParagraph
+    : variant === "traditional" ? styles.traditionalParagraph
+    : styles.paragraph;
+
   const blocks = text.split(/\n{2,}/);
   return blocks.map((block, i) => {
     const trimmed = block.trim();
     if (!trimmed) return null;
     if (isAllCapsHeading(trimmed)) {
       return (
-        <Text key={i} style={modernStyle ? styles.modernSectionHeading : styles.sectionHeading}>
+        <Text key={i} style={headingStyle}>
           {trimmed}
         </Text>
       );
     }
     return (
-      <Text key={i} style={modernStyle ? styles.modernParagraph : styles.paragraph}>
+      <Text key={i} style={paragraphStyle}>
         {trimmed}
       </Text>
     );
@@ -339,6 +464,23 @@ function ModernSidebar({ profile, sidebarBg }: { profile: ProfileData; sidebarBg
   );
 }
 
+function TraditionalHeader({ profile, documentLabel }: { profile: ProfileData; documentLabel: string }) {
+  const birthFormatted = profile.birthdate ? formatDate(profile.birthdate) : null;
+  return (
+    <View style={styles.traditionalHeader} {...{ "data-testid": "traditional-header" }}>
+      <View style={styles.traditionalHeaderLeft}>
+        <Text style={styles.traditionalDocumentLabel}>{documentLabel}</Text>
+        <Text style={styles.traditionalName}>{profile.name}</Text>
+        {profile.address ? <Text style={styles.traditionalMeta}>{profile.address}</Text> : null}
+        {birthFormatted ? <Text style={styles.traditionalMeta}>Geb. {birthFormatted}</Text> : null}
+        {profile.email ? <Text style={styles.traditionalMeta}>{profile.email}</Text> : null}
+        {profile.phone ? <Text style={styles.traditionalMeta}>{profile.phone}</Text> : null}
+      </View>
+      {profile.photo ? <Image src={profile.photo} style={styles.traditionalPhoto} /> : null}
+    </View>
+  );
+}
+
 function formatDate(iso: string): string {
   const parts = iso.split("-");
   if (parts.length === 3) return `${parts[2]}.${parts[1]}.${parts[0]}`;
@@ -348,7 +490,7 @@ function formatDate(iso: string): string {
 interface CoverLetterDocumentProps {
   coverLetter: string;
   profile: ProfileData;
-  template?: "classic" | "modern";
+  template?: "classic" | "modern" | "traditional";
   accentColor?: string;
 }
 
@@ -361,8 +503,28 @@ export function CoverLetterDocument({ coverLetter, profile, template = "classic"
           <ModernSidebar profile={profile} sidebarBg={sidebarBg} />
           <View style={styles.modernContent} {...{ "data-testid": "modern-content" }}>
             <Text style={styles.documentLabel}>Anschreiben</Text>
-            {renderTextBlocks(coverLetter, true)}
+            {renderTextBlocks(coverLetter, "modern")}
           </View>
+        </Page>
+      </Document>
+    );
+  }
+
+  if (template === "traditional") {
+    const today = new Date();
+    const dateStr = `${String(today.getDate()).padStart(2, "0")}.${String(today.getMonth() + 1).padStart(2, "0")}.${today.getFullYear()}`;
+    return (
+      <Document>
+        <Page size="A4" style={styles.traditionalPage}>
+          <TraditionalHeader profile={profile} documentLabel="Anschreiben" />
+          <View style={styles.traditionalRecipientBlock} {...{ "data-testid": "traditional-recipient" }} />
+          <View {...{ "data-testid": "traditional-date" }}>
+            <Text style={styles.traditionalDateRow}>{dateStr}</Text>
+          </View>
+          <View {...{ "data-testid": "traditional-subject" }}>
+            <Text style={styles.traditionalSubject}>Betreff: Bewerbung</Text>
+          </View>
+          <View>{renderTextBlocks(coverLetter, "traditional")}</View>
         </Page>
       </Document>
     );
@@ -386,7 +548,7 @@ export function CoverLetterDocument({ coverLetter, profile, template = "classic"
 interface CvDocumentProps {
   cv: string;
   profile: ProfileData;
-  template?: "classic" | "modern";
+  template?: "classic" | "modern" | "traditional";
   cvStyle?: "classic" | "american";
   accentColor?: string;
 }
@@ -513,6 +675,81 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
               )}
             </View>
           </View>
+        </Page>
+      </Document>
+    );
+  }
+
+  if (template === "traditional") {
+    const education = cvStyle === "american" ? [...profile.education].reverse() : profile.education;
+    const experience = cvStyle === "american" ? [...profile.experience].reverse() : profile.experience;
+    return (
+      <Document>
+        <Page size="A4" style={styles.traditionalPage}>
+          <TraditionalHeader profile={profile} documentLabel="Lebenslauf" />
+
+          {experience?.length > 0 && (
+            <>
+              <Text style={styles.traditionalSectionHeading}>Berufserfahrung</Text>
+              <View style={styles.traditionalTable} {...{ "data-testid": "traditional-exp-table" }}>
+                {experience.map((exp, i) => (
+                  <View key={i} style={styles.traditionalTableRow} {...{ "data-testid": "traditional-exp-row" }}>
+                    <Text style={styles.traditionalCellPeriod}>{exp.period}</Text>
+                    <View style={styles.traditionalCellContent}>
+                      <Text style={styles.traditionalCellTitle}>{exp.position}</Text>
+                      <Text style={styles.traditionalCellSubtitle}>{exp.company}</Text>
+                      {exp.tasks
+                        .split("\n")
+                        .map((line) => line.trim())
+                        .filter((line) => line.length > 0)
+                        .map((line, j) => (
+                          <Text key={j} style={styles.traditionalCellTask}>• {line}</Text>
+                        ))}
+                    </View>
+                  </View>
+                ))}
+              </View>
+            </>
+          )}
+
+          {education?.length > 0 && (
+            <>
+              <Text style={styles.traditionalSectionHeading}>Ausbildung</Text>
+              <View style={styles.traditionalTable} {...{ "data-testid": "traditional-edu-table" }}>
+                {education.map((edu, i) => (
+                  <View key={i} style={styles.traditionalTableRow} {...{ "data-testid": "traditional-edu-row" }}>
+                    <Text style={styles.traditionalCellPeriod}>{edu.year}</Text>
+                    <View style={styles.traditionalCellContent}>
+                      <Text style={styles.traditionalCellTitle}>{edu.degree}</Text>
+                      <Text style={styles.traditionalCellSubtitle}>{edu.institution}</Text>
+                    </View>
+                  </View>
+                ))}
+              </View>
+            </>
+          )}
+
+          {profile.qualifications?.length > 0 && (
+            <>
+              <Text style={styles.traditionalSectionHeading}>Qualifikationen</Text>
+              <View {...{ "data-testid": "traditional-quals" }}>
+                {profile.qualifications.map((q, i) => (
+                  <Text key={i} style={styles.traditionalListItem}>• {q.label}</Text>
+                ))}
+              </View>
+            </>
+          )}
+
+          {profile.interests?.length > 0 && (
+            <>
+              <Text style={styles.traditionalSectionHeading}>Interessen</Text>
+              <View {...{ "data-testid": "traditional-interests" }}>
+                {profile.interests.map((interest, i) => (
+                  <Text key={i} style={styles.traditionalListItem}>• {interest.label}</Text>
+                ))}
+              </View>
+            </>
+          )}
         </Page>
       </Document>
     );

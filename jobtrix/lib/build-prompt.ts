@@ -7,7 +7,7 @@ export interface GenerateRequest {
   contactPerson?: string;
   profile: ProfileData;
   cvStyle?: "classic" | "american";
-  template?: "classic" | "modern";
+  template?: "classic" | "modern" | "traditional";
 }
 
 export function buildPrompt(req: GenerateRequest): string {
