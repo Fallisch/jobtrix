@@ -229,6 +229,30 @@ const styles = StyleSheet.create({
     fontSize: 9,
     color: "#374151",
   },
+  // Experience entries
+  cvExpEntry: {
+    marginBottom: 8,
+  },
+  cvExpPeriod: {
+    fontSize: 8.5,
+    color: "#6b7280",
+    marginBottom: 1,
+  },
+  cvExpPosition: {
+    fontSize: 10,
+    fontFamily: "Helvetica-Bold",
+    color: PRIMARY,
+  },
+  cvExpCompany: {
+    fontSize: 9,
+    color: "#374151",
+  },
+  cvExpTask: {
+    fontSize: 8.5,
+    color: "#374151",
+    marginTop: 2,
+    marginLeft: 8,
+  },
   // Skill bars (right column)
   skillRow: {
     marginBottom: 6,
@@ -372,6 +396,7 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
     const headerBg = accentColor ?? SIDEBAR_BG;
     const birthFormatted = profile.birthdate ? formatDate(profile.birthdate) : null;
     const education = cvStyle === "american" ? [...profile.education].reverse() : profile.education;
+    const experience = cvStyle === "american" ? [...profile.experience].reverse() : profile.experience;
     return (
       <Document>
         <Page size="A4" style={styles.cvModernPage}>
@@ -433,6 +458,26 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
                   <Text style={styles.cvDataValue}>{profile.phone}</Text>
                 </View>
               ) : null}
+
+              {experience?.length > 0 && (
+                <>
+                  <Text style={styles.cvSectionHeading}>Berufserfahrung</Text>
+                  {experience.map((exp, i) => (
+                    <View key={i} style={styles.cvExpEntry} {...{ "data-testid": "modern-exp-entry" }}>
+                      <Text style={styles.cvExpPeriod}>{exp.period}</Text>
+                      <Text style={styles.cvExpPosition}>{exp.position}</Text>
+                      <Text style={styles.cvExpCompany}>{exp.company}</Text>
+                      {exp.tasks
+                        .split("\n")
+                        .map((line) => line.trim())
+                        .filter((line) => line.length > 0)
+                        .map((line, j) => (
+                          <Text key={j} style={styles.cvExpTask}>• {line}</Text>
+                        ))}
+                    </View>
+                  ))}
+                </>
+              )}
 
               {education?.length > 0 && (
                 <>

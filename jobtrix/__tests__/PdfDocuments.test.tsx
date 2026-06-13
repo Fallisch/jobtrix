@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import React from "react";
 import { CoverLetterDocument, CvDocument } from "@/lib/pdf-documents";
 import { ProfileData } from "@/lib/profile-storage";
@@ -11,6 +11,7 @@ const profile: ProfileData = {
   birthdate: "1992-03-15",
   photo: null,
   education: [{ id: "1", institution: "HU Berlin", degree: "M.Sc.", year: "2018" }],
+  experience: [],
   qualifications: [{ label: "Python", value: 80 }, { label: "SQL", value: 60 }],
   interests: [{ label: "Datenanalyse", value: 40 }],
 };
@@ -197,6 +198,84 @@ describe("CvDocument – Modern-Layout cvStyle", () => {
     const entries = screen.getAllByTestId("modern-edu-entry");
     expect(entries[0]).toHaveTextContent("2014");
     expect(entries[1]).toHaveTextContent("2018");
+  });
+});
+
+describe("CvDocument – Modern-Layout Berufserfahrung", () => {
+  const profileWithExperience: ProfileData = {
+    ...profile,
+    experience: [
+      {
+        id: "1",
+        company: "Acme GmbH",
+        position: "Entwickler",
+        period: "01/2020 - 12/2022",
+        tasks: "Backend-Entwicklung\nCode-Reviews",
+      },
+    ],
+  };
+
+  it("rendert Berufserfahrung-Sektion mit Firma, Position, Zeitraum und Aufgaben als Stichpunkte", () => {
+    render(<CvDocument cv="CV" profile={profileWithExperience} template="modern" />);
+    const entry = screen.getByTestId("modern-exp-entry");
+    expect(entry).toHaveTextContent("Acme GmbH");
+    expect(entry).toHaveTextContent("Entwickler");
+    expect(entry).toHaveTextContent("01/2020 - 12/2022");
+    expect(entry).toHaveTextContent("Backend-Entwicklung");
+    expect(entry).toHaveTextContent("Code-Reviews");
+  });
+
+  it("zeigt Berufserfahrung vor Ausbildung in der linken Spalte", () => {
+    render(<CvDocument cv="CV" profile={profileWithExperience} template="modern" />);
+    const content = screen.getByTestId("modern-content");
+    const headings = within(content).getAllByText(/^(Berufserfahrung|Ausbildung)$/);
+    expect(headings[0]).toHaveTextContent("Berufserfahrung");
+    expect(headings[1]).toHaveTextContent("Ausbildung");
+  });
+
+  it("zeigt keine Berufserfahrung-Sektion wenn keine Einträge vorhanden sind", () => {
+    render(<CvDocument cv="CV" profile={profile} template="modern" />);
+    expect(screen.queryByText("Berufserfahrung")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("modern-exp-entry")).not.toBeInTheDocument();
+  });
+});
+
+describe("CvDocument – Modern-Layout Berufserfahrung cvStyle", () => {
+  const profileMultiExp: ProfileData = {
+    ...profile,
+    experience: [
+      { id: "1", company: "Firma A", position: "Junior Entwickler", period: "2018 - 2020", tasks: "Aufgabe A" },
+      { id: "2", company: "Firma B", position: "Senior Entwickler", period: "2020 - 2023", tasks: "Aufgabe B" },
+    ],
+  };
+
+  it("zeigt Berufserfahrungseinträge chronologisch bei cvStyle classic", () => {
+    render(<CvDocument cv="CV" profile={profileMultiExp} template="modern" cvStyle="classic" />);
+    const entries = screen.getAllByTestId("modern-exp-entry");
+    expect(entries[0]).toHaveTextContent("Firma A");
+    expect(entries[1]).toHaveTextContent("Firma B");
+  });
+
+  it("zeigt Berufserfahrungseinträge antichronologisch bei cvStyle american", () => {
+    render(<CvDocument cv="CV" profile={profileMultiExp} template="modern" cvStyle="american" />);
+    const entries = screen.getAllByTestId("modern-exp-entry");
+    expect(entries[0]).toHaveTextContent("Firma B");
+    expect(entries[1]).toHaveTextContent("Firma A");
+  });
+
+  it("sortiert Ausbildung unabhängig von der Berufserfahrung-Sortierung", () => {
+    const profileMulti: ProfileData = {
+      ...profileMultiExp,
+      education: [
+        { id: "1", institution: "HTW Berlin", degree: "B.Sc.", year: "2014" },
+        { id: "2", institution: "HU Berlin", degree: "M.Sc.", year: "2018" },
+      ],
+    };
+    render(<CvDocument cv="CV" profile={profileMulti} template="modern" cvStyle="american" />);
+    const expEntries = screen.getAllByTestId("modern-exp-entry");
+    const eduEntries = screen.getAllByTestId("modern-edu-entry");
+    expect(expEntries[0]).toHaveTextContent("Firma B");
+    expect(eduEntries[0]).toHaveTextContent("2018");
   });
 });
 
