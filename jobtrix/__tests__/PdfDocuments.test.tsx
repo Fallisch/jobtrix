@@ -548,7 +548,7 @@ describe("CvDocument – Akzent-Layout", () => {
     expect(headings[1]).toHaveTextContent("Ausbildung");
 
     const expEntry = screen.getByTestId("accent-exp-entry");
-    expect(expEntry).toHaveTextContent("▶");
+    expect(expEntry).toHaveTextContent(">");
     expect(expEntry).toHaveTextContent("01/2020 - 12/2022");
     expect(expEntry).toHaveTextContent("Acme GmbH");
     expect(expEntry).toHaveTextContent("Entwickler");
@@ -559,7 +559,7 @@ describe("CvDocument – Akzent-Layout", () => {
   it("rendert Ausbildung als eigenen Zeitstrahl-Abschnitt", () => {
     render(<CvDocument cv="CV" profile={profile} template="accent" />);
     const eduEntry = screen.getByTestId("accent-edu-entry");
-    expect(eduEntry).toHaveTextContent("▶");
+    expect(eduEntry).toHaveTextContent(">");
     expect(eduEntry).toHaveTextContent("2018");
     expect(eduEntry).toHaveTextContent("M.Sc.");
     expect(eduEntry).toHaveTextContent("HU Berlin");

@@ -115,4 +115,50 @@ test.describe("Issue #39 – Akzentfarbe und CV-Stil in Bewerbungshistorie", () 
     await prisma.applicationHistoryEntry.deleteMany({ where: { userId } });
     await prisma.user.delete({ where: { id: userId } });
   });
+
+  test("Re-Export aus der Bewerbungshistorie-Übersicht (Liste) behält Akzentfarbe (Modern) bei", async ({ page }) => {
+    const userId = await registerAndLogin(page, uniqueEmail("e2e-history-list-accent"), "correct-password");
+
+    await prisma.applicationHistoryEntry.create({
+      data: {
+        userId,
+        jobTitle: "Senior Developer",
+        companyName: "Acme GmbH",
+        emailSubject: "Bewerbung als Senior Developer – Lena Testmann",
+        coverLetter: "Sehr geehrte Damen und Herren,\n\nIch bewerbe mich hiermit.",
+        cv: "Lena Testmann\n\nLebenslauf-Inhalt",
+        profileSnapshot: PROFILE_SNAPSHOT,
+        template: "modern",
+        accentColor: ACCENT_COLOR,
+        cvStyle: "american",
+      },
+    });
+
+    await page.goto("/de/application-history");
+    await page.waitForSelector("h1");
+
+    const downloads: import("@playwright/test").Download[] = [];
+    page.on("download", (d) => downloads.push(d));
+
+    await page.getByRole("button", { name: "PDF erneut herunterladen" }).first().click();
+    await expect.poll(() => downloads.length).toBe(2);
+
+    const cvDownload = downloads.find((d) => d.suggestedFilename() === "lebenslauf.pdf")!;
+    const letterDownload = downloads.find((d) => d.suggestedFilename() === "anschreiben.pdf")!;
+
+    const cvBuf = fs.readFileSync((await cvDownload.path())!);
+    const letterBuf = fs.readFileSync((await letterDownload.path())!);
+
+    const fillOperator = hexToFillOperator(ACCENT_COLOR);
+    const cvContent = decodePdfStreams(cvBuf);
+    const letterContent = decodePdfStreams(letterBuf);
+
+    // Akzentfarbe wird im Lebenslauf-Header (modern-cv-header) und in der
+    // Anschreiben-Sidebar (modern-sidebar) als Hintergrundfarbe verwendet.
+    expect(cvContent).toContain(fillOperator);
+    expect(letterContent).toContain(fillOperator);
+
+    await prisma.applicationHistoryEntry.deleteMany({ where: { userId } });
+    await prisma.user.delete({ where: { id: userId } });
+  });
 });

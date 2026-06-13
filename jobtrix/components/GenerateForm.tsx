@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter, useParams } from "next/navigation";
-import { loadProfile } from "@/lib/profile-storage";
+import { loadProfile, saveProfile } from "@/lib/profile-storage";
 import EmailDraft from "@/components/EmailDraft";
 import { downloadCoverLetterPdf, downloadCvPdf } from "@/lib/download-pdf";
 
@@ -44,6 +44,19 @@ export default function GenerateForm() {
 
   useEffect(() => {
     setHasProfile(loadProfile() !== null);
+    (async () => {
+      try {
+        const res = await fetch("/api/profile");
+        if (!res?.ok) return;
+        const data = await res.json();
+        if (data?.name) {
+          saveProfile(data);
+          setHasProfile(true);
+        }
+      } catch {
+        // Kein gespeichertes Profil in Postgres erreichbar – lokales Profil bleibt maßgeblich.
+      }
+    })();
   }, []);
 
   const canGenerate = jobPosting.trim().length > 0 && hasProfile;
@@ -58,7 +71,7 @@ export default function GenerateForm() {
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ jobPosting, jobTitle, companyName, contactPerson, profile, cvStyle, template: selectedTemplate }),
+        body: JSON.stringify({ jobPosting, jobTitle, companyName, contactPerson, profile, cvStyle, template: selectedTemplate, accentColor }),
       });
       const data = await res.json();
       if (!res.ok) {

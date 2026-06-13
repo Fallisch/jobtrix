@@ -89,8 +89,11 @@ test.describe("PDF-Export – vollständiger Bewerbungsflow", () => {
 
     expect(download.suggestedFilename()).toBe("anschreiben.pdf");
 
-    // nur ein API-Request (generate), kein zweiter für PDF
-    const pdfApiCalls = apiRequests.filter((url) => url.includes("/api/") && !url.includes("/api/generate"));
+    // kein zusätzlicher API-Request für die PDF-Erzeugung selbst
+    // (/api/generate für die Bewerbung, /api/profile für die Profil-Synchronisierung beim Mount)
+    const pdfApiCalls = apiRequests.filter(
+      (url) => url.includes("/api/") && !url.includes("/api/generate") && !url.includes("/api/profile")
+    );
     expect(pdfApiCalls).toHaveLength(0);
   });
 

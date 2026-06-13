@@ -93,7 +93,11 @@ test.describe("Issue #37 – PDF-Layout 'Traditionell'", () => {
       page.getByRole("button", { name: /Lebenslauf als PDF/i }).click(),
     ]);
     const cvBuf = fs.readFileSync((await cvDownload.path())!);
-    const cvText = extractText(decodePdfStreams(cvBuf));
+    const cvContent = decodePdfStreams(cvBuf);
+    const cvText = extractText(cvContent);
+
+    // Seitenränder: Inhalt ist um 56pt horizontal / 40pt vertikal vom Blattrand eingerückt
+    expect(cvContent).toContain("1 0 0 1 56 40 cm");
 
     expect(cvText).toContain("Berufserfahrung");
     expect(cvText).toContain("Acme GmbH");
@@ -114,7 +118,11 @@ test.describe("Issue #37 – PDF-Layout 'Traditionell'", () => {
       page.getByRole("button", { name: /Anschreiben als PDF/i }).click(),
     ]);
     const letterBuf = fs.readFileSync((await letterDownload.path())!);
-    const letterText = extractText(decodePdfStreams(letterBuf));
+    const letterContent = decodePdfStreams(letterBuf);
+    const letterText = extractText(letterContent);
+
+    // Seitenränder: Anschreiben-Text klebt nicht am Blattrand
+    expect(letterContent).toContain("1 0 0 1 56 40 cm");
 
     expect(letterText).toContain("Betreff");
     expect(letterText).toMatch(/\d{2}\.\d{2}\.\d{4}/);

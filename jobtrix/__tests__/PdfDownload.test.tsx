@@ -70,7 +70,7 @@ describe("PDF-Download-Verhalten", () => {
     });
     // kein zusätzlicher fetch-Aufruf für PDF-Generierung
     const fetchCallsAfterGeneration = (global.fetch as jest.Mock).mock.calls.length;
-    expect(fetchCallsAfterGeneration).toBe(1); // nur der eine generate-Call
+    expect(fetchCallsAfterGeneration).toBe(2); // Profil-Sync beim Mount + der eine generate-Call
   });
 
   it("Anschreiben-PDF enthält bearbeiteten Text, nicht den Original-Text", async () => {
@@ -98,8 +98,9 @@ describe("PDF-Download-Verhalten", () => {
     await waitFor(() => {
       expect(global.URL.createObjectURL).toHaveBeenCalled();
     });
+    // Profil-Sync beim Mount + der eine generate-Call
     const fetchCallsAfterGeneration = (global.fetch as jest.Mock).mock.calls.length;
-    expect(fetchCallsAfterGeneration).toBe(1);
+    expect(fetchCallsAfterGeneration).toBe(2);
   });
 
   it("Anschreiben-PDF verwendet das gewählte Template (Modern)", async () => {

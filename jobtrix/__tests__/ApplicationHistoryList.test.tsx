@@ -116,6 +116,29 @@ describe("ApplicationHistoryList", () => {
     expect(calls[1][0].props.template).toBe("modern");
   });
 
+  it("verwendet beim PDF-Re-Export die im Eintrag gespeicherte Akzentfarbe und den CV-Stil", async () => {
+    const entriesWithAccent = [
+      { ...entries[0], template: "modern" as const, accentColor: "#1A5C38", cvStyle: "american" as const },
+      entries[1],
+    ];
+    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve(entriesWithAccent) });
+
+    render(<ApplicationHistoryList />);
+
+    await waitFor(() => screen.getByText(/Senior Developer/));
+    const pdfButtons = screen.getAllByRole("button", { name: /pdfButton/i });
+    fireEvent.click(pdfButtons[0]);
+
+    await waitFor(() => {
+      expect(global.URL.createObjectURL).toHaveBeenCalledTimes(2);
+    });
+
+    const calls = (pdf as jest.Mock).mock.calls;
+    expect(calls[0][0].props.accentColor).toBe("#1A5C38");
+    expect(calls[1][0].props.accentColor).toBe("#1A5C38");
+    expect(calls[1][0].props.cvStyle).toBe("american");
+  });
+
   it("zeigt für jeden Eintrag Datum UND Uhrzeit der Erstellung an", async () => {
     (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve(entries) });
 

@@ -278,6 +278,9 @@ const styles = StyleSheet.create({
   traditionalPage: {
     fontFamily: "Helvetica",
     fontSize: 10,
+    paddingTop: 40,
+    paddingBottom: 40,
+    paddingHorizontal: 56,
     color: "#1a1a1a",
     lineHeight: 1.4,
   },
@@ -694,7 +697,7 @@ function AccentTimelineEntry({
 }) {
   return (
     <View style={styles.accentTimelineEntry} {...{ "data-testid": testId }}>
-      <Text style={{ ...styles.accentTimelineMarker, color: accentColor }}>▶</Text>
+      <Text style={{ ...styles.accentTimelineMarker, color: accentColor }}>{">"}</Text>
       <View style={styles.accentTimelineContent}>
         <Text style={styles.accentTimelinePeriod}>{period}</Text>
         <Text style={{ ...styles.accentTimelineTitle, color: accentColor }}>{title}</Text>

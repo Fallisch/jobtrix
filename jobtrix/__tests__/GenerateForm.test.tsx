@@ -291,7 +291,8 @@ describe("GenerateForm", () => {
 
       await waitFor(() => screen.getByDisplayValue("Brief"));
 
-      const body = JSON.parse((global.fetch as jest.Mock).mock.calls[0][1].body);
+      const lastCall = (global.fetch as jest.Mock).mock.calls.at(-1) as [string, RequestInit];
+      const body = JSON.parse(lastCall[1].body as string);
       expect(body.cvStyle).toBe("classic");
     });
 
@@ -308,7 +309,8 @@ describe("GenerateForm", () => {
 
       await waitFor(() => screen.getByDisplayValue("Brief"));
 
-      const body = JSON.parse((global.fetch as jest.Mock).mock.calls[0][1].body);
+      const lastCall = (global.fetch as jest.Mock).mock.calls.at(-1) as [string, RequestInit];
+      const body = JSON.parse(lastCall[1].body as string);
       expect(body.cvStyle).toBe("american");
     });
 
@@ -388,6 +390,72 @@ describe("GenerateForm", () => {
       await userEvent.type(coverLetterArea, "Bearbeiteter Text");
 
       expect(screen.getByDisplayValue("Bearbeiteter Text")).toBeInTheDocument();
+    });
+  });
+
+  describe("Profil-Synchronisierung mit /api/profile", () => {
+    const apiProfile = {
+      name: "Anna Beispiel",
+      address: "Hauptstraße 5",
+      email: "anna@example.com",
+      phone: "0151 123456",
+      birthdate: "1990-01-01",
+      photo: null,
+      education: [{ id: "1", institution: "HU Berlin", degree: "M.Sc.", year: "2018" }],
+      experience: [{ id: "1", company: "Acme GmbH", position: "Entwickler", period: "01/2020 - 12/2022", tasks: "Backend" }],
+      qualifications: [],
+      interests: [],
+    };
+
+    it("übernimmt das in /api/profile gespeicherte Profil (inkl. Berufserfahrung) in localStorage", async () => {
+      (global.fetch as jest.Mock).mockImplementation((url: string) => {
+        if (url === "/api/profile") {
+          return Promise.resolve({ ok: true, json: () => Promise.resolve(apiProfile) });
+        }
+        return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
+      });
+
+      render(<GenerateForm />);
+
+      await waitFor(() => {
+        const stored = JSON.parse(localStorage.getItem("jobtrix_profile") ?? "null");
+        expect(stored?.experience).toEqual(apiProfile.experience);
+      });
+    });
+
+    it("überschreibt ein vorhandenes localStorage-Profil nicht, wenn /api/profile kein gespeichertes Profil liefert", async () => {
+      localStorage.setItem("jobtrix_profile", JSON.stringify(mockProfile));
+      (global.fetch as jest.Mock).mockImplementation((url: string) => {
+        if (url === "/api/profile") {
+          return Promise.resolve({
+            ok: true,
+            json: () =>
+              Promise.resolve({
+                name: "",
+                address: "",
+                email: "",
+                phone: "",
+                birthdate: "",
+                photo: null,
+                education: [],
+                experience: [],
+                qualifications: [],
+                interests: [],
+              }),
+          });
+        }
+        return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
+      });
+
+      render(<GenerateForm />);
+
+      await waitFor(() => {
+        expect((global.fetch as jest.Mock)).toHaveBeenCalledWith("/api/profile");
+      });
+      await new Promise((r) => setTimeout(r, 0));
+
+      const stored = JSON.parse(localStorage.getItem("jobtrix_profile") ?? "null");
+      expect(stored).toEqual(mockProfile);
     });
   });
 
@@ -500,6 +568,32 @@ describe("GenerateForm", () => {
       const lastCall = (global.fetch as jest.Mock).mock.calls.at(-1) as [string, RequestInit];
       const body = JSON.parse(lastCall[1].body as string);
       expect(body.template).toBe("accent");
+    });
+
+    it("sendet die ausgewählte Akzentfarbe an /api/generate", async () => {
+      (global.fetch as jest.Mock).mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ coverLetter: "Brief", cv: "CV", emailSubject: "Betr" }),
+      });
+
+      render(<GenerateForm />);
+      await userEvent.type(screen.getByRole("textbox", { name: JOB_POSTING }), "Stelle");
+      fireEvent.click(screen.getByRole("button", { name: GENERATE_BTN }));
+      await waitFor(() => screen.getByDisplayValue("Brief"));
+
+      fireEvent.click(screen.getByRole("button", { name: /templateAccent/i }));
+      fireEvent.click(screen.getByRole("button", { name: "Farbe #1A5C38" }));
+
+      (global.fetch as jest.Mock).mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ coverLetter: "Neuer Brief", cv: "Neues CV", emailSubject: "Betr2" }),
+      });
+      fireEvent.click(screen.getByRole("button", { name: GENERATE_BTN }));
+      await waitFor(() => screen.getByDisplayValue("Neuer Brief"));
+
+      const lastCall = (global.fetch as jest.Mock).mock.calls.at(-1) as [string, RequestInit];
+      const body = JSON.parse(lastCall[1].body as string);
+      expect(body.accentColor).toBe("#1A5C38");
     });
 
     it("zeigt Akzentfarben-Palette wenn Akzent-Template aktiv ist", async () => {
