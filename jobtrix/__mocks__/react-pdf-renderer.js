@@ -7,9 +7,14 @@ const View = ({ children, style, ...props }) => React.createElement("div", { "da
 const StyleSheet = { create: (styles) => styles };
 const Font = { register: jest.fn() };
 const Image = ({ src }) => React.createElement("img", { src });
+const Svg = ({ children, ...props }) => React.createElement("svg", { "data-testid": props["data-testid"] }, children);
+const Defs = ({ children }) => React.createElement("defs", null, children);
+const LinearGradient = ({ children, id }) => React.createElement("linearGradient", { id }, children);
+const Stop = ({ offset, stopColor }) => React.createElement("stop", { offset, stopColor });
+const Rect = (props) => React.createElement("rect", props);
 
 const pdf = jest.fn(() => ({
   toBlob: jest.fn().mockResolvedValue(new Blob(["mock pdf"], { type: "application/pdf" })),
 }));
 
-module.exports = { Document, Page, Text, View, StyleSheet, Font, Image, pdf };
+module.exports = { Document, Page, Text, View, StyleSheet, Font, Image, Svg, Defs, LinearGradient, Stop, Rect, pdf };

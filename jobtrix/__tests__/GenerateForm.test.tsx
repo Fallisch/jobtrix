@@ -455,6 +455,70 @@ describe("GenerateForm", () => {
     });
   });
 
+  describe("Layout-Auswahl Akzent", () => {
+    beforeEach(() => {
+      localStorage.setItem("jobtrix_profile", JSON.stringify(mockProfile));
+    });
+
+    it("zeigt Template-Option Akzent zusätzlich zu den anderen Layouts", async () => {
+      (global.fetch as jest.Mock).mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ coverLetter: "Brief", cv: "CV", emailSubject: "Betr" }),
+      });
+
+      render(<GenerateForm />);
+      await userEvent.type(screen.getByRole("textbox", { name: JOB_POSTING }), "Stelle");
+      fireEvent.click(screen.getByRole("button", { name: GENERATE_BTN }));
+      await waitFor(() => screen.getByDisplayValue("Brief"));
+
+      const accentBtn = screen.getByRole("button", { name: /templateAccent/i });
+      expect(accentBtn).toBeInTheDocument();
+      expect(accentBtn).toHaveAttribute("aria-pressed", "false");
+    });
+
+    it("sendet 'accent' an /api/generate wenn Akzent ausgewählt ist", async () => {
+      (global.fetch as jest.Mock).mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ coverLetter: "Brief", cv: "CV", emailSubject: "Betr" }),
+      });
+
+      render(<GenerateForm />);
+      await userEvent.type(screen.getByRole("textbox", { name: JOB_POSTING }), "Stelle");
+      fireEvent.click(screen.getByRole("button", { name: GENERATE_BTN }));
+      await waitFor(() => screen.getByDisplayValue("Brief"));
+
+      fireEvent.click(screen.getByRole("button", { name: /templateAccent/i }));
+      expect(screen.getByRole("button", { name: /templateAccent/i })).toHaveAttribute("aria-pressed", "true");
+
+      (global.fetch as jest.Mock).mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ coverLetter: "Neuer Brief", cv: "Neues CV", emailSubject: "Betr2" }),
+      });
+      fireEvent.click(screen.getByRole("button", { name: GENERATE_BTN }));
+      await waitFor(() => screen.getByDisplayValue("Neuer Brief"));
+
+      const lastCall = (global.fetch as jest.Mock).mock.calls.at(-1) as [string, RequestInit];
+      const body = JSON.parse(lastCall[1].body as string);
+      expect(body.template).toBe("accent");
+    });
+
+    it("zeigt Akzentfarben-Palette wenn Akzent-Template aktiv ist", async () => {
+      (global.fetch as jest.Mock).mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ coverLetter: "Brief", cv: "CV", emailSubject: "Betr" }),
+      });
+
+      render(<GenerateForm />);
+      await userEvent.type(screen.getByRole("textbox", { name: JOB_POSTING }), "Stelle");
+      fireEvent.click(screen.getByRole("button", { name: GENERATE_BTN }));
+      await waitFor(() => screen.getByDisplayValue("Brief"));
+
+      fireEvent.click(screen.getByRole("button", { name: /templateAccent/i }));
+
+      expect(screen.getByTestId("color-palette")).toBeInTheDocument();
+    });
+  });
+
   describe("Bestätigungs-Checkboxen vor PDF-Download", () => {
     beforeEach(() => {
       localStorage.setItem("jobtrix_profile", JSON.stringify(mockProfile));

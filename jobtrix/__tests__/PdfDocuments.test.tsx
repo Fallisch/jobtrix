@@ -451,3 +451,167 @@ describe("CvDocument – Skill-Bar Breite", () => {
     expect(interestFill).toHaveStyle({ width: "40%" });
   });
 });
+
+describe("CoverLetterDocument – Akzent-Layout", () => {
+  it("rendert Foto-Banner mit Foto", () => {
+    const profileWithPhoto = { ...profile, photo: "data:image/png;base64,abc123" };
+    render(<CoverLetterDocument coverLetter="Brief" profile={profileWithPhoto} template="accent" />);
+    const banner = screen.getByTestId("accent-banner");
+    const img = within(banner).getByRole("img");
+    expect(img).toHaveAttribute("src", "data:image/png;base64,abc123");
+  });
+
+  it("rendert ohne Crash wenn kein Foto vorhanden", () => {
+    expect(() =>
+      render(<CoverLetterDocument coverLetter="Brief" profile={{ ...profile, photo: null }} template="accent" />)
+    ).not.toThrow();
+    expect(screen.queryByRole("img")).not.toBeInTheDocument();
+  });
+
+  it("Namensband verwendet Standardfarbe wenn kein accentColor übergeben", () => {
+    render(<CoverLetterDocument coverLetter="Brief" profile={profile} template="accent" />);
+    const nameBand = screen.getByTestId("accent-name-band");
+    expect(nameBand).toHaveStyle({ backgroundColor: "#1E3A5F" });
+    expect(nameBand).toHaveTextContent("Anna Beispiel");
+  });
+
+  it("Namensband verwendet accentColor wenn übergeben", () => {
+    render(<CoverLetterDocument coverLetter="Brief" profile={profile} template="accent" accentColor="#5C1A1A" />);
+    const nameBand = screen.getByTestId("accent-name-band");
+    expect(nameBand).toHaveStyle({ backgroundColor: "#5C1A1A" });
+  });
+
+  it("rendert 'Bewerbung'-Band mit Akzentstreifen in gewählter Farbe", () => {
+    render(<CoverLetterDocument coverLetter="Brief" profile={profile} template="accent" accentColor="#5C1A1A" />);
+    const band = screen.getByTestId("accent-bewerbung-band");
+    expect(band).toHaveTextContent("Bewerbung");
+    const stripes = band.querySelectorAll("div");
+    expect(stripes[0]).toHaveStyle({ backgroundColor: "#5C1A1A" });
+  });
+
+  it("rendert den Anschreiben-Text einspaltig", () => {
+    render(<CoverLetterDocument coverLetter="Mein individuelles Anschreiben" profile={profile} template="accent" />);
+    expect(screen.getByText("Mein individuelles Anschreiben")).toBeInTheDocument();
+  });
+
+  it("klassisches Layout hat kein Foto-Banner", () => {
+    render(<CoverLetterDocument coverLetter="Brief" profile={profile} template="classic" />);
+    expect(screen.queryByTestId("accent-banner")).not.toBeInTheDocument();
+  });
+});
+
+describe("CvDocument – Akzent-Layout", () => {
+  const profileWithExperience: ProfileData = {
+    ...profile,
+    experience: [
+      {
+        id: "1",
+        company: "Acme GmbH",
+        position: "Entwickler",
+        period: "01/2020 - 12/2022",
+        tasks: "Backend-Entwicklung\nCode-Reviews",
+      },
+    ],
+  };
+
+  it("rendert Foto-Banner mit Foto und Namensband", () => {
+    const profileWithPhoto = { ...profile, photo: "data:image/png;base64,abc123" };
+    render(<CvDocument cv="CV" profile={profileWithPhoto} template="accent" />);
+    const banner = screen.getByTestId("accent-banner");
+    const img = within(banner).getByRole("img");
+    expect(img).toHaveAttribute("src", "data:image/png;base64,abc123");
+    expect(screen.getByTestId("accent-name-band")).toHaveTextContent("Anna Beispiel");
+  });
+
+  it("rendert ohne Crash wenn kein Foto vorhanden", () => {
+    expect(() =>
+      render(<CvDocument cv="CV" profile={{ ...profile, photo: null }} template="accent" />)
+    ).not.toThrow();
+    expect(screen.queryByRole("img")).not.toBeInTheDocument();
+  });
+
+  it("Namensband verwendet Standardfarbe wenn kein accentColor übergeben", () => {
+    render(<CvDocument cv="CV" profile={profile} template="accent" />);
+    expect(screen.getByTestId("accent-name-band")).toHaveStyle({ backgroundColor: "#1E3A5F" });
+  });
+
+  it("Namensband verwendet accentColor wenn übergeben", () => {
+    render(<CvDocument cv="CV" profile={profile} template="accent" accentColor="#5C1A1A" />);
+    expect(screen.getByTestId("accent-name-band")).toHaveStyle({ backgroundColor: "#5C1A1A" });
+  });
+
+  it("rendert Berufserfahrung als Zeitstrahl mit Pfeil-Marker vor Ausbildung", () => {
+    render(<CvDocument cv="CV" profile={profileWithExperience} template="accent" />);
+    const content = screen.getByTestId("accent-content");
+    const headings = within(content).getAllByText(/^(Berufserfahrung|Ausbildung)$/);
+    expect(headings[0]).toHaveTextContent("Berufserfahrung");
+    expect(headings[1]).toHaveTextContent("Ausbildung");
+
+    const expEntry = screen.getByTestId("accent-exp-entry");
+    expect(expEntry).toHaveTextContent("▶");
+    expect(expEntry).toHaveTextContent("01/2020 - 12/2022");
+    expect(expEntry).toHaveTextContent("Acme GmbH");
+    expect(expEntry).toHaveTextContent("Entwickler");
+    expect(expEntry).toHaveTextContent("Backend-Entwicklung");
+    expect(expEntry).toHaveTextContent("Code-Reviews");
+  });
+
+  it("rendert Ausbildung als eigenen Zeitstrahl-Abschnitt", () => {
+    render(<CvDocument cv="CV" profile={profile} template="accent" />);
+    const eduEntry = screen.getByTestId("accent-edu-entry");
+    expect(eduEntry).toHaveTextContent("▶");
+    expect(eduEntry).toHaveTextContent("2018");
+    expect(eduEntry).toHaveTextContent("M.Sc.");
+    expect(eduEntry).toHaveTextContent("HU Berlin");
+  });
+
+  it("zeigt keine Berufserfahrung-Sektion wenn keine Einträge vorhanden sind", () => {
+    render(<CvDocument cv="CV" profile={profile} template="accent" />);
+    expect(screen.queryByText("Berufserfahrung")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("accent-exp-entry")).not.toBeInTheDocument();
+  });
+
+  it("rendert Qualifikationen und Interessen als Fortschrittsbalken", () => {
+    render(<CvDocument cv="CV" profile={profile} template="accent" />);
+    const quals = screen.getByTestId("accent-cv-quals");
+    expect(quals).toHaveTextContent("Python");
+    const interests = screen.getByTestId("accent-cv-interests");
+    expect(interests).toHaveTextContent("Datenanalyse");
+    expect(screen.getAllByTestId("skill-bar-fill")).toHaveLength(3);
+  });
+
+  it("klassisches Layout hat kein Foto-Banner", () => {
+    render(<CvDocument cv="CV" profile={profile} template="classic" />);
+    expect(screen.queryByTestId("accent-banner")).not.toBeInTheDocument();
+  });
+});
+
+describe("CvDocument – Akzent-Layout cvStyle", () => {
+  const profileMulti: ProfileData = {
+    ...profile,
+    education: [
+      { id: "1", institution: "HTW Berlin", degree: "B.Sc.", year: "2014" },
+      { id: "2", institution: "HU Berlin", degree: "M.Sc.", year: "2018" },
+    ],
+    experience: [
+      { id: "1", company: "Firma A", position: "Junior Entwickler", period: "2018 - 2020", tasks: "Aufgabe A" },
+      { id: "2", company: "Firma B", position: "Senior Entwickler", period: "2020 - 2023", tasks: "Aufgabe B" },
+    ],
+  };
+
+  it("sortiert Berufserfahrung und Ausbildung bei cvStyle classic chronologisch", () => {
+    render(<CvDocument cv="CV" profile={profileMulti} template="accent" cvStyle="classic" />);
+    const expEntries = screen.getAllByTestId("accent-exp-entry");
+    const eduEntries = screen.getAllByTestId("accent-edu-entry");
+    expect(expEntries[0]).toHaveTextContent("Firma A");
+    expect(eduEntries[0]).toHaveTextContent("2014");
+  });
+
+  it("sortiert Berufserfahrung und Ausbildung bei cvStyle american jeweils eigenständig antichronologisch", () => {
+    render(<CvDocument cv="CV" profile={profileMulti} template="accent" cvStyle="american" />);
+    const expEntries = screen.getAllByTestId("accent-exp-entry");
+    const eduEntries = screen.getAllByTestId("accent-edu-entry");
+    expect(expEntries[0]).toHaveTextContent("Firma B");
+    expect(eduEntries[0]).toHaveTextContent("2018");
+  });
+});

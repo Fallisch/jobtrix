@@ -122,6 +122,7 @@
     "templateClassic": "Classic",
     "templateModern": "Modern",
     "templateTraditional": "Traditional",
+    "templateAccent": "Accent",
     "cvStyleLabel": "CV style",
     "cvStyleClassic": "Classic",
     "cvStyleAmerican": "American",
