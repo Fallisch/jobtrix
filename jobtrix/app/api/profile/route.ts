@@ -12,6 +12,7 @@ const emptyProfile: ProfileData = {
   birthdate: "",
   photo: null,
   education: [],
+  experience: [],
   qualifications: [],
   interests: [],
 };
@@ -24,6 +25,7 @@ function toProfileData(record: {
   birthdate: string;
   photo: string | null;
   education: unknown;
+  experience: unknown;
   qualifications: unknown;
   interests: unknown;
 }): ProfileData {
@@ -35,6 +37,7 @@ function toProfileData(record: {
     birthdate: record.birthdate,
     photo: record.photo,
     education: record.education as ProfileData["education"],
+    experience: record.experience as ProfileData["experience"],
     qualifications: record.qualifications as ProfileData["qualifications"],
     interests: record.interests as ProfileData["interests"],
   };

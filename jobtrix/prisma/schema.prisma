@@ -34,6 +34,7 @@ model UserProfile {
   birthdate      String   @default("")
   photo          String?  @db.Text
   education      Json     @default("[]")
+  experience     Json     @default("[]")
   qualifications Json     @default("[]")
   interests      Json     @default("[]")
   updatedAt      DateTime @updatedAt

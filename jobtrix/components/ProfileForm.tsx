@@ -6,6 +6,7 @@ import { useRouter, useParams } from "next/navigation";
 import {
   ProfileData,
   EducationEntry,
+  ExperienceEntry,
   ProfileErrors,
   validateProfile,
 } from "@/lib/profile-storage";
@@ -13,6 +14,10 @@ import { compressImage } from "@/lib/image-compress";
 
 function makeEduEntry(): EducationEntry {
   return { id: crypto.randomUUID(), institution: "", degree: "", year: "" };
+}
+
+function makeExpEntry(): ExperienceEntry {
+  return { id: crypto.randomUUID(), company: "", position: "", period: "", tasks: "" };
 }
 
 const empty: ProfileData = {
@@ -23,6 +28,7 @@ const empty: ProfileData = {
   birthdate: "",
   photo: null,
   education: [makeEduEntry()],
+  experience: [],
   qualifications: [],
   interests: [],
 };
@@ -90,6 +96,21 @@ export default function ProfileForm() {
 
   function removeEdu(id: string) {
     mutate((d) => ({ ...d, education: d.education.filter((e) => e.id !== id) }));
+  }
+
+  function updateExp(id: string, field: keyof ExperienceEntry, value: string) {
+    mutate((d) => ({
+      ...d,
+      experience: d.experience.map((e) => (e.id === id ? { ...e, [field]: value } : e)),
+    }));
+  }
+
+  function addExp() {
+    mutate((d) => ({ ...d, experience: [...d.experience, makeExpEntry()] }));
+  }
+
+  function removeExp(id: string) {
+    mutate((d) => ({ ...d, experience: d.experience.filter((e) => e.id !== id) }));
   }
 
   function addQualification(value: string) {
@@ -326,6 +347,61 @@ export default function ProfileForm() {
           aria-label={t("addEducation")}
         >
           + {t("addEducation")}
+        </button>
+      </div>
+
+      {/* Berufserfahrung */}
+      <div>
+        <h2 className="text-lg font-semibold text-primary mb-2">{t("experienceTitle")}</h2>
+        {data.experience.map((exp) => (
+          <div key={exp.id} className="border border-gray-200 rounded-md p-3 mb-3 space-y-2">
+            <input
+              type="text"
+              placeholder={t("companyPlaceholder")}
+              value={exp.company}
+              onChange={(e) => updateExp(exp.id, "company", e.target.value)}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+            />
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder={t("positionPlaceholder")}
+                value={exp.position}
+                onChange={(e) => updateExp(exp.id, "position", e.target.value)}
+                className="flex-1 border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+              />
+              <input
+                type="text"
+                placeholder={t("periodPlaceholder")}
+                value={exp.period}
+                onChange={(e) => updateExp(exp.id, "period", e.target.value)}
+                className="w-32 border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+              />
+            </div>
+            <textarea
+              placeholder={t("tasksPlaceholder")}
+              value={exp.tasks}
+              onChange={(e) => updateExp(exp.id, "tasks", e.target.value)}
+              rows={3}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+            />
+            <button
+              type="button"
+              onClick={() => removeExp(exp.id)}
+              className="text-sm text-red-500 hover:text-red-700"
+              aria-label={t("remove")}
+            >
+              {t("remove")}
+            </button>
+          </div>
+        ))}
+        <button
+          type="button"
+          onClick={addExp}
+          className="text-sm text-accent hover:underline"
+          aria-label={t("addExperience")}
+        >
+          + {t("addExperience")}
         </button>
       </div>
 

@@ -8,6 +8,7 @@ const baseProfile: ProfileData = {
   birthdate: "1990-01-15",
   photo: null,
   education: [{ id: "1", institution: "TU Berlin", degree: "B.Sc.", year: "2015" }],
+  experience: [{ id: "1", company: "Acme GmbH", position: "Entwickler", period: "01/2020 - 12/2022", tasks: "Backend-Entwicklung" }],
   qualifications: [{ label: "TypeScript", value: 80 }, { label: "React", value: 60 }],
   interests: [{ label: "Reisen", value: 60 }],
 };
@@ -42,6 +43,18 @@ describe("saveProfile / loadProfile", () => {
     saveProfile(multiEdu);
     expect(loadProfile()?.education).toHaveLength(2);
   });
+
+  it("speichert und lädt Berufserfahrungseinträge korrekt", () => {
+    const multiExp = {
+      ...baseProfile,
+      experience: [
+        { id: "1", company: "Acme GmbH", position: "Entwickler", period: "01/2020 - 12/2022", tasks: "Backend-Entwicklung" },
+        { id: "2", company: "Beta AG", position: "Senior Entwickler", period: "01/2023 - heute", tasks: "Teamleitung" },
+      ],
+    };
+    saveProfile(multiExp);
+    expect(loadProfile()?.experience).toEqual(multiExp.experience);
+  });
 });
 
 describe("loadProfile / Legacy-Migration", () => {
@@ -75,6 +88,21 @@ describe("loadProfile / Legacy-Migration", () => {
     localStorage.setItem("jobtrix_profile", JSON.stringify(ancient));
 
     expect(loadProfile()?.interests).toEqual([]);
+  });
+
+  it("lädt ein Profil ohne experience-Feld mit leerer Berufserfahrungs-Liste", () => {
+    const legacy = {
+      name: "Alte Hasin",
+      address: "Altstraße 1, 10115 Berlin",
+      birthdate: "1985-05-05",
+      photo: null,
+      education: [{ id: "1", institution: "FU Berlin", degree: "B.A.", year: "2008" }],
+      qualifications: [],
+      interests: [],
+    };
+    localStorage.setItem("jobtrix_profile", JSON.stringify(legacy));
+
+    expect(loadProfile()?.experience).toEqual([]);
   });
 });
 

@@ -7,6 +7,14 @@ export interface EducationEntry {
   year: string;
 }
 
+export interface ExperienceEntry {
+  id: string;
+  company: string;
+  position: string;
+  period: string;
+  tasks: string;
+}
+
 export interface SkillItem {
   label: string;
   value: number;
@@ -20,6 +28,7 @@ export interface ProfileData {
   birthdate: string;
   photo: string | null;
   education: EducationEntry[];
+  experience: ExperienceEntry[];
   qualifications: SkillItem[];
   interests: SkillItem[];
 }
@@ -53,6 +62,7 @@ function normalizeProfile(parsed: Record<string, unknown>): ProfileData {
     email: "",
     phone: "",
     ...rest,
+    experience: Array.isArray(parsed.experience) ? (parsed.experience as ExperienceEntry[]) : [],
     qualifications: toSkillItems(parsed.qualifications),
     interests: toSkillItems(rawInterests),
   } as ProfileData;

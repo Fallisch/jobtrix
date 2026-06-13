@@ -30,6 +30,7 @@ const profileData: ProfileData = {
   birthdate: "1990-01-15",
   photo: null,
   education: [{ id: "1", institution: "TU Berlin", degree: "B.Sc.", year: "2015" }],
+  experience: [{ id: "1", company: "Acme GmbH", position: "Entwickler", period: "01/2020 - 12/2022", tasks: "Backend-Entwicklung" }],
   qualifications: [{ label: "TypeScript", value: 80 }],
   interests: [{ label: "Reisen", value: 60 }],
 };
@@ -69,6 +70,7 @@ describe("GET/POST /api/profile", () => {
     expect(res.status).toBe(200);
     expect(data.name).toBe("");
     expect(data.education).toEqual([]);
+    expect(data.experience).toEqual([]);
   });
 
   it("speichert ein Profil per POST und liefert es per GET zurück", async () => {
