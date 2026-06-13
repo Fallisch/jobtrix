@@ -9,6 +9,7 @@ const baseProfile: ProfileData = {
   birthdate: "1990-01-01",
   photo: null,
   education: [{ id: "1", institution: "TU Berlin", degree: "B.Sc.", year: "2015" }],
+  experience: [],
   qualifications: [{ label: "TypeScript", value: 80 }, { label: "React", value: 60 }],
   interests: [{ label: "Reisen", value: 40 }],
 };
@@ -54,5 +55,34 @@ describe("buildPrompt", () => {
     const prompt = buildPrompt({ jobPosting: "Stelle als Entwickler", profile: baseProfile });
     expect(prompt).toContain("Reisen");
     expect(prompt).not.toContain("[object Object]");
+  });
+});
+
+describe("buildPrompt – Berufserfahrung", () => {
+  const profileWithExperience: ProfileData = {
+    ...baseProfile,
+    experience: [
+      {
+        id: "1",
+        company: "Acme GmbH",
+        position: "Entwickler",
+        period: "01/2020 - 12/2022",
+        tasks: "Backend-Entwicklung",
+      },
+    ],
+  };
+
+  it("enthält einen Berufserfahrung-Abschnitt mit Firma, Position, Zeitraum und Aufgaben wenn Einträge vorhanden sind", () => {
+    const prompt = buildPrompt({ jobPosting: "Stelle als Entwickler", profile: profileWithExperience });
+    expect(prompt).toContain("Berufserfahrung:");
+    expect(prompt).toContain("Acme GmbH");
+    expect(prompt).toContain("Entwickler");
+    expect(prompt).toContain("01/2020 - 12/2022");
+    expect(prompt).toContain("Backend-Entwicklung");
+  });
+
+  it("erzeugt keinen Berufserfahrung-Abschnitt wenn keine Einträge vorhanden sind", () => {
+    const prompt = buildPrompt({ jobPosting: "Stelle als Entwickler", profile: baseProfile });
+    expect(prompt).not.toContain("Berufserfahrung:");
   });
 });

@@ -16,6 +16,9 @@ export function buildPrompt(req: GenerateRequest): string {
   const eduText = profile.education
     .map((e) => `${e.degree} – ${e.institution} (${e.year})`)
     .join("\n");
+  const expText = profile.experience
+    .map((e) => `${e.position} – ${e.company} (${e.period})\n${e.tasks}`)
+    .join("\n");
   const qualText = profile.qualifications.map((q) => q.label).join(", ");
   const interestsText = profile.interests.map((i) => i.label).join(", ");
 
@@ -32,7 +35,7 @@ Adresse: ${profile.address}
 Geburtsdatum: ${profile.birthdate}
 Ausbildung:
 ${eduText}
-Qualifikationen: ${qualText}
+${profile.experience.length > 0 ? `Berufserfahrung:\n${expText}\n` : ""}Qualifikationen: ${qualText}
 ${profile.interests.length > 0 ? `Persönliche Interessen: ${interestsText}` : ""}
 
 ${companyName ? `Unternehmen: ${companyName}` : ""}
