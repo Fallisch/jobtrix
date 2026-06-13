@@ -2,8 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --color-background: #ffffff;
+  --color-surface: #f7f8fa;
+  --color-text: #1a1a2e;
+  --color-primary: #1e3a5f;
+  --color-accent: #2f80ed;
+}
+
+.dark {
+  --color-background: #121826;
+  --color-surface: #1e293b;
+  --color-text: #f5f7fa;
+  --color-primary: #2c4a73;
+  --color-accent: #5b9bf5;
+}
+
 body {
-  background-color: #ffffff;
-  color: #1a1a2e;
+  background-color: var(--color-background);
+  color: var(--color-text);
   font-family: var(--font-inter, "Inter", sans-serif);
+}
+
+body,
+body * {
+  transition: background-color 200ms ease, border-color 200ms ease, color 200ms ease;
 }

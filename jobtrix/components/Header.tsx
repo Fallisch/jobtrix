@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import { useTranslations } from "next-intl";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export default function Header({ locale }: { locale: string }) {
   const router = useRouter();
@@ -62,6 +63,7 @@ export default function Header({ locale }: { locale: string }) {
           >
             {other}
           </button>
+          <ThemeToggle />
         </nav>
       </div>
     </header>

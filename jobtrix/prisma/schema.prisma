@@ -37,6 +37,7 @@ model UserProfile {
   experience     Json     @default("[]")
   qualifications Json     @default("[]")
   interests      Json     @default("[]")
+  themePreference String  @default("system")
   updatedAt      DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)

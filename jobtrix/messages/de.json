@@ -12,7 +12,9 @@
   "nav": {
     "profile": "Profil",
     "applicationHistory": "Bewerbungshistorie",
-    "logout": "Abmelden"
+    "logout": "Abmelden",
+    "toggleToDark": "Zu Dunkelmodus wechseln",
+    "toggleToLight": "Zu Hellmodus wechseln"
   },
   "auth": {
     "register": {

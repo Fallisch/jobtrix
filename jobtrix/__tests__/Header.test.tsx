@@ -2,10 +2,15 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Header from "@/components/Header";
 import { useSession, signOut } from "next-auth/react";
+import { useTheme } from "next-themes";
 
 jest.mock("next/navigation", () => ({
   useRouter: () => ({ push: jest.fn() }),
   usePathname: () => "/de",
+}));
+
+jest.mock("next-themes", () => ({
+  useTheme: jest.fn(),
 }));
 
 jest.mock("next-intl", () => {
@@ -31,6 +36,7 @@ jest.mock("next-auth/react", () => ({
 
 const mockedUseSession = jest.mocked(useSession);
 const mockedSignOut = jest.mocked(signOut);
+const mockedUseTheme = jest.mocked(useTheme);
 
 describe("Header", () => {
   beforeEach(() => {
@@ -40,6 +46,15 @@ describe("Header", () => {
       update: jest.fn(),
     } as ReturnType<typeof useSession>);
     mockedSignOut.mockReset();
+    mockedUseTheme.mockReturnValue({
+      theme: "light",
+      resolvedTheme: "light",
+      setTheme: jest.fn(),
+    } as unknown as ReturnType<typeof useTheme>);
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ themePreference: "light" }),
+    });
   });
 
   it("zeigt den App-Namen JobTRIX an", () => {
@@ -103,5 +118,10 @@ describe("Header", () => {
     await userEvent.click(screen.getByRole("button", { name: "Abmelden" }));
 
     expect(mockedSignOut).toHaveBeenCalledWith({ callbackUrl: "/de" });
+  });
+
+  it("zeigt den Dark-Mode-Umschalter an", () => {
+    render(<Header locale="de" />);
+    expect(screen.getByRole("button", { name: "Zu Dunkelmodus wechseln" })).toBeInTheDocument();
   });
 });

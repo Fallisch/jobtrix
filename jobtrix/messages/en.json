@@ -12,7 +12,9 @@
   "nav": {
     "profile": "Profile",
     "applicationHistory": "Application history",
-    "logout": "Logout"
+    "logout": "Logout",
+    "toggleToDark": "Switch to dark mode",
+    "toggleToLight": "Switch to light mode"
   },
   "auth": {
     "register": {
