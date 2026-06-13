@@ -122,6 +122,48 @@ describe("ApplicationHistoryDetail", () => {
     expect(calls[1][0].props.template).toBe("modern");
   });
 
+  it("übergibt beim PDF-Re-Export die im Eintrag gespeicherte Akzentfarbe und den Lebenslauf-Stil", async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({ ...entry, template: "modern", accentColor: "#1A5C38", cvStyle: "american" }),
+    });
+
+    render(<ApplicationHistoryDetail id="entry-1" />);
+
+    await waitFor(() => screen.getByRole("heading", { level: 1 }));
+    fireEvent.click(screen.getByRole("button", { name: /pdfButton/i }));
+
+    await waitFor(() => {
+      expect(global.URL.createObjectURL).toHaveBeenCalledTimes(2);
+    });
+
+    const calls = (pdf as jest.Mock).mock.calls;
+    expect(calls[0][0].props.accentColor).toBe("#1A5C38");
+    expect(calls[1][0].props.accentColor).toBe("#1A5C38");
+    expect(calls[1][0].props.cvStyle).toBe("american");
+  });
+
+  it("verwendet beim PDF-Re-Export Standardwerte, wenn Akzentfarbe und Lebenslauf-Stil im Eintrag fehlen", async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({ ...entry, template: "modern", accentColor: null, cvStyle: null }),
+    });
+
+    render(<ApplicationHistoryDetail id="entry-1" />);
+
+    await waitFor(() => screen.getByRole("heading", { level: 1 }));
+    fireEvent.click(screen.getByRole("button", { name: /pdfButton/i }));
+
+    await waitFor(() => {
+      expect(global.URL.createObjectURL).toHaveBeenCalledTimes(2);
+    });
+
+    const calls = (pdf as jest.Mock).mock.calls;
+    expect(calls[0][0].props.accentColor).toBeUndefined();
+    expect(calls[1][0].props.accentColor).toBeUndefined();
+    expect(calls[1][0].props.cvStyle).toBe("classic");
+  });
+
   it("zeigt einen Hinweis mit Link zur Übersicht, wenn der Eintrag nicht gefunden wird", async () => {
     (global.fetch as jest.Mock).mockResolvedValue({ ok: false, status: 404, json: () => Promise.resolve({ error: "not_found" }) });
 

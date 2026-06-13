@@ -70,6 +70,8 @@ model ApplicationHistoryEntry {
   cv              String   @db.Text
   profileSnapshot Json
   template        String   @default("classic")
+  accentColor     String?
+  cvStyle         String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 

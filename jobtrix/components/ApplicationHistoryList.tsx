@@ -17,6 +17,8 @@ export interface ApplicationHistoryEntry {
   cv: string;
   profileSnapshot: ProfileData;
   template: "classic" | "modern" | "traditional" | "accent";
+  accentColor?: string | null;
+  cvStyle?: "classic" | "american" | null;
 }
 
 const EXCERPT_LENGTH = 150;

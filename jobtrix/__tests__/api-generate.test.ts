@@ -289,4 +289,33 @@ describe("Bewerbungshistorie", () => {
     expect(entries).toHaveLength(1);
     expect(entries[0].template).toBe("classic");
   });
+
+  it("speichert die beim Generieren gewählte Akzentfarbe im Historie-Eintrag", async () => {
+    const res = await POST(makeRequest({
+      jobPosting: "Wir suchen einen Entwickler",
+      profile,
+      template: "modern",
+      accentColor: "#1A5C38",
+    }));
+
+    expect(res.status).toBe(200);
+
+    const entries = await prisma.applicationHistoryEntry.findMany({ where: { userId } });
+    expect(entries).toHaveLength(1);
+    expect(entries[0].accentColor).toBe("#1A5C38");
+  });
+
+  it("speichert den beim Generieren gewählten Lebenslauf-Stil im Historie-Eintrag", async () => {
+    const res = await POST(makeRequest({
+      jobPosting: "Wir suchen einen Entwickler",
+      profile,
+      cvStyle: "american",
+    }));
+
+    expect(res.status).toBe(200);
+
+    const entries = await prisma.applicationHistoryEntry.findMany({ where: { userId } });
+    expect(entries).toHaveLength(1);
+    expect(entries[0].cvStyle).toBe("american");
+  });
 });

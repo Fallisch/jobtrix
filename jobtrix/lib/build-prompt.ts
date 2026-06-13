@@ -8,6 +8,7 @@ export interface GenerateRequest {
   profile: ProfileData;
   cvStyle?: "classic" | "american";
   template?: "classic" | "modern" | "traditional" | "accent";
+  accentColor?: string;
 }
 
 export function buildPrompt(req: GenerateRequest): string {

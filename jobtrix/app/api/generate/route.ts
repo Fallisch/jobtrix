@@ -92,6 +92,8 @@ export async function POST(request: NextRequest) {
         cv,
         profileSnapshot: body.profile as object,
         template: body.template ?? "classic",
+        accentColor: body.accentColor,
+        cvStyle: body.cvStyle,
       },
     });
 
