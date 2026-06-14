@@ -42,6 +42,14 @@ export default function Header({ locale }: { locale: string }) {
           </Link>
           {status === "authenticated" && (
             <Link
+              href={`/${locale}/generate`}
+              className="text-sm font-medium text-white/80 hover:text-white transition-colors"
+            >
+              {t("startApplication")}
+            </Link>
+          )}
+          {status === "authenticated" && (
+            <Link
               href={`/${locale}/application-history`}
               className="text-sm font-medium text-white/80 hover:text-white transition-colors"
             >

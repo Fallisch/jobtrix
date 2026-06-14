@@ -11,6 +11,7 @@
   },
   "nav": {
     "profile": "Profile",
+    "startApplication": "Start application",
     "applicationHistory": "Application history",
     "logout": "Logout",
     "toggleToDark": "Switch to dark mode",

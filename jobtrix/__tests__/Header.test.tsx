@@ -84,6 +84,23 @@ describe("Header", () => {
     expect(screen.queryByRole("link", { name: "Bewerbungshistorie" })).not.toBeInTheDocument();
   });
 
+  it("zeigt im abgemeldeten Zustand keinen Navigationspunkt 'Bewerbung starten'", () => {
+    render(<Header locale="de" />);
+    expect(screen.queryByRole("link", { name: "Bewerbung starten" })).not.toBeInTheDocument();
+  });
+
+  it("zeigt im angemeldeten Zustand einen Navigationspunkt 'Bewerbung starten', der zur Generierung führt", () => {
+    mockedUseSession.mockReturnValue({
+      data: { user: {}, expires: "" },
+      status: "authenticated",
+      update: jest.fn(),
+    } as ReturnType<typeof useSession>);
+
+    render(<Header locale="de" />);
+    const link = screen.getByRole("link", { name: "Bewerbung starten" });
+    expect(link).toHaveAttribute("href", "/de/generate");
+  });
+
   it("zeigt im angemeldeten Zustand einen Navigationspunkt 'Bewerbungshistorie'", () => {
     mockedUseSession.mockReturnValue({
       data: { user: {}, expires: "" },
