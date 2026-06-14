@@ -20,7 +20,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[calc(100vh-64px)] px-4 text-center">
-      <h1 className="text-4xl sm:text-5xl font-bold text-primary mb-4">
+      <h1 className="text-4xl sm:text-5xl font-bold text-primary dark:text-accent mb-4">
         {t("headline")}
       </h1>
       <p className="text-lg text-text/70 max-w-xl mb-8">

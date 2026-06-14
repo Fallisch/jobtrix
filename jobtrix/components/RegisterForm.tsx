@@ -59,8 +59,8 @@ export default function RegisterForm() {
 
   return (
     <div className="max-w-md mx-auto px-4 py-12">
-      <div className="rounded-xl border border-gray-200 bg-white p-6 space-y-6">
-        <h1 className="text-2xl font-bold text-primary">{t("title")}</h1>
+      <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface p-6 space-y-6">
+        <h1 className="text-2xl font-bold text-primary dark:text-accent">{t("title")}</h1>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -72,11 +72,11 @@ export default function RegisterForm() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
               aria-label={t("emailLabel")}
             />
             {errors.email && (
-              <p className="text-red-600 text-sm mt-1">{t(`errors.email.${errors.email}`)}</p>
+              <p className="text-red-600 dark:text-red-400 text-sm mt-1">{t(`errors.email.${errors.email}`)}</p>
             )}
           </div>
 
@@ -89,11 +89,11 @@ export default function RegisterForm() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
               aria-label={t("passwordLabel")}
             />
             {errors.password && (
-              <p className="text-red-600 text-sm mt-1">{t(`errors.password.${errors.password}`)}</p>
+              <p className="text-red-600 dark:text-red-400 text-sm mt-1">{t(`errors.password.${errors.password}`)}</p>
             )}
           </div>
 
@@ -106,11 +106,11 @@ export default function RegisterForm() {
               type="password"
               value={passwordConfirm}
               onChange={(e) => setPasswordConfirm(e.target.value)}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
               aria-label={t("passwordConfirmLabel")}
             />
             {errors.passwordConfirm && (
-              <p className="text-red-600 text-sm mt-1">{t(`errors.passwordConfirm.${errors.passwordConfirm}`)}</p>
+              <p className="text-red-600 dark:text-red-400 text-sm mt-1">{t(`errors.passwordConfirm.${errors.passwordConfirm}`)}</p>
             )}
           </div>
 
@@ -120,17 +120,17 @@ export default function RegisterForm() {
                 type="checkbox"
                 checked={termsAccepted}
                 onChange={(e) => setTermsAccepted(e.target.checked)}
-                className="h-4 w-4 rounded border-gray-300 text-accent focus:ring-accent"
+                className="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-accent focus:ring-accent"
               />
               {t("termsLabel")}
             </label>
             {errors.termsAccepted && (
-              <p className="text-red-600 text-sm mt-1">{t(`errors.termsAccepted.${errors.termsAccepted}`)}</p>
+              <p className="text-red-600 dark:text-red-400 text-sm mt-1">{t(`errors.termsAccepted.${errors.termsAccepted}`)}</p>
             )}
           </div>
 
           {submitError && (
-            <div role="alert" className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-red-700 text-sm">
+            <div role="alert" className="rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 px-4 py-3 text-red-700 dark:text-red-300 text-sm">
               {t(`errors.${submitError}`)}
             </div>
           )}
