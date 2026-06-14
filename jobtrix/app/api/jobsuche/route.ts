@@ -1,0 +1,91 @@
+import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
+
+const API_BASE = "https://rest.arbeitsagentur.de/jobboerse/jobsuche-service/pc/v4";
+
+// Öffentlich bekannter Default-API-Key der offiziellen BA-Jobsuche-App.
+// Die inoffizielle API erfordert keine eigene Registrierung, kann sich aber
+// jederzeit ändern – daher über ARBEITSAGENTUR_API_KEY konfigurierbar.
+const DEFAULT_API_KEY = "jobboerse-jobsuche";
+
+interface ArbeitsagenturJob {
+  titel?: string;
+  arbeitgeber?: string;
+  arbeitsort?: { ort?: string };
+  refnr?: string;
+  externeUrl?: string;
+}
+
+export interface JobSearchResult {
+  title: string;
+  company: string;
+  location: string;
+  description: string | null;
+  url: string;
+}
+
+async function fetchDescription(refnr: string, apiKey: string): Promise<string | null> {
+  try {
+    const encoded = Buffer.from(refnr).toString("base64");
+    const res = await fetch(`${API_BASE}/jobdetails/${encoded}`, {
+      headers: { "X-API-Key": apiKey },
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data?.stellenangebotsBeschreibung ?? null;
+  } catch {
+    return null;
+  }
+}
+
+export async function GET(request: NextRequest) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  }
+
+  const { searchParams } = new URL(request.url);
+  const was = searchParams.get("was") ?? "";
+  const wo = searchParams.get("wo") ?? "";
+  const apiKey = process.env.ARBEITSAGENTUR_API_KEY || DEFAULT_API_KEY;
+
+  try {
+    const params = new URLSearchParams();
+    if (was) params.set("was", was);
+    if (wo) params.set("wo", wo);
+
+    const res = await fetch(`${API_BASE}/jobs?${params.toString()}`, {
+      headers: { "X-API-Key": apiKey },
+    });
+
+    if (!res.ok) {
+      return NextResponse.json({ results: [] });
+    }
+
+    const data = await res.json();
+    const angebote: ArbeitsagenturJob[] = Array.isArray(data?.stellenangebote) ? data.stellenangebote : [];
+
+    const results: JobSearchResult[] = await Promise.all(
+      angebote.map(async (item) => {
+        const title = item.titel ?? "";
+        const company = item.arbeitgeber ?? "";
+        const location = item.arbeitsort?.ort ?? "";
+        const refnr = item.refnr ?? "";
+
+        if (item.externeUrl) {
+          return { title, company, location, description: null, url: item.externeUrl };
+        }
+
+        const description = refnr ? await fetchDescription(refnr, apiKey) : null;
+        const url = `https://www.arbeitsagentur.de/jobsuche/jobdetail/${encodeURIComponent(refnr)}`;
+
+        return { title, company, location, description, url };
+      })
+    );
+
+    return NextResponse.json({ results });
+  } catch {
+    return NextResponse.json({ results: [] });
+  }
+}

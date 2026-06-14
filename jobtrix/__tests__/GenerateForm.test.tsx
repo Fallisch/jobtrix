@@ -782,4 +782,108 @@ describe("GenerateForm", () => {
       expect(pdfButton).toBeDisabled();
     });
   });
+
+  describe("Stelle suchen", () => {
+    beforeEach(() => {
+      localStorage.setItem("jobtrix_profile", JSON.stringify(mockProfile));
+    });
+
+    function mockJobSearch(results: unknown[]) {
+      (global.fetch as jest.Mock).mockImplementation((url: string) => {
+        if (typeof url === "string" && url.startsWith("/api/jobsuche")) {
+          return Promise.resolve({ ok: true, json: () => Promise.resolve({ results }) });
+        }
+        return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
+      });
+    }
+
+    it("rendert Eingabefelder für Berufsfeld und Ort sowie einen Such-Button", () => {
+      render(<GenerateForm />);
+      expect(screen.getByRole("textbox", { name: /jobSearchFieldLabel/i })).toBeInTheDocument();
+      expect(screen.getByRole("textbox", { name: /jobSearchLocationLabel/i })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /jobSearchButton/i })).toBeInTheDocument();
+    });
+
+    it("zeigt Trefferliste mit Titel, Firma, Ort und Link 'Original ansehen' nach Suche", async () => {
+      mockJobSearch([
+        { title: "Softwareentwickler", company: "Acme GmbH", location: "Berlin", description: "Beschreibungstext", url: "https://example.com/job/1" },
+      ]);
+
+      render(<GenerateForm />);
+      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchFieldLabel/i }), "Entwickler");
+      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchLocationLabel/i }), "Berlin");
+      fireEvent.click(screen.getByRole("button", { name: /jobSearchButton/i }));
+
+      await waitFor(() => {
+        expect(screen.getByText("Softwareentwickler")).toBeInTheDocument();
+      });
+      expect(screen.getByText(/Acme GmbH/)).toBeInTheDocument();
+      expect(screen.getByText(/Berlin/)).toBeInTheDocument();
+      expect(screen.getByRole("link", { name: /jobSearchViewOriginal/i })).toHaveAttribute("href", "https://example.com/job/1");
+
+      const jobsucheCall = (global.fetch as jest.Mock).mock.calls.find((c) => String(c[0]).startsWith("/api/jobsuche"));
+      expect(jobsucheCall![0]).toContain("was=Entwickler");
+      expect(jobsucheCall![0]).toContain("wo=Berlin");
+    });
+
+    it("übernimmt den Beschreibungstext eines Treffers in das Feld 'Stellenanzeige' bei Klick", async () => {
+      mockJobSearch([
+        { title: "Softwareentwickler", company: "Acme GmbH", location: "Berlin", description: "Wir suchen einen Entwickler...", url: "https://example.com/job/1" },
+      ]);
+
+      render(<GenerateForm />);
+      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchFieldLabel/i }), "Entwickler");
+      fireEvent.click(screen.getByRole("button", { name: /jobSearchButton/i }));
+      await waitFor(() => screen.getByText("Softwareentwickler"));
+
+      fireEvent.click(screen.getByTestId("job-result-0"));
+
+      expect(screen.getByRole("textbox", { name: JOB_POSTING })).toHaveValue("Wir suchen einen Entwickler...");
+    });
+
+    it("öffnet die Originalanzeige in neuem Tab bei Klick auf einen Treffer ohne Beschreibungstext", async () => {
+      const openSpy = jest.spyOn(window, "open").mockImplementation(() => null);
+      mockJobSearch([
+        { title: "Frontend Developer", company: "External GmbH", location: "Hamburg", description: null, url: "https://example.com/job/2" },
+      ]);
+
+      render(<GenerateForm />);
+      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchFieldLabel/i }), "Developer");
+      fireEvent.click(screen.getByRole("button", { name: /jobSearchButton/i }));
+      await waitFor(() => screen.getByText("Frontend Developer"));
+
+      fireEvent.click(screen.getByTestId("job-result-0"));
+
+      expect(openSpy).toHaveBeenCalledWith("https://example.com/job/2", "_blank");
+      expect(screen.getByRole("textbox", { name: JOB_POSTING })).toHaveValue("");
+
+      openSpy.mockRestore();
+    });
+
+    it("zeigt 'keine Treffer gefunden' bei leerer Trefferliste ohne technischen Fehlerhinweis", async () => {
+      mockJobSearch([]);
+
+      render(<GenerateForm />);
+      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchFieldLabel/i }), "Astronaut");
+      fireEvent.click(screen.getByRole("button", { name: /jobSearchButton/i }));
+
+      await waitFor(() => {
+        expect(screen.getByText(/jobSearchNoResults/i)).toBeInTheDocument();
+      });
+      expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+    });
+
+    it("manuelles Einfügen in 'Stellenanzeige' bleibt nach einer Jobsuche möglich", async () => {
+      mockJobSearch([
+        { title: "Softwareentwickler", company: "Acme GmbH", location: "Berlin", description: "Beschreibung", url: "https://example.com/job/1" },
+      ]);
+
+      render(<GenerateForm />);
+      fireEvent.click(screen.getByRole("button", { name: /jobSearchButton/i }));
+      await waitFor(() => screen.getByText("Softwareentwickler"));
+
+      await userEvent.type(screen.getByRole("textbox", { name: JOB_POSTING }), "Manuell eingefügter Text");
+      expect(screen.getByRole("textbox", { name: JOB_POSTING })).toHaveValue("Manuell eingefügter Text");
+    });
+  });
 });

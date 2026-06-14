@@ -22,6 +22,14 @@ interface GenerateResult {
   emailSubject: string;
 }
 
+interface JobSearchResult {
+  title: string;
+  company: string;
+  location: string;
+  description: string | null;
+  url: string;
+}
+
 export default function GenerateForm() {
   const t = useTranslations("generate");
   const router = useRouter();
@@ -41,6 +49,11 @@ export default function GenerateForm() {
   const [selectedTemplate, setSelectedTemplate] = useState<"classic" | "modern" | "traditional" | "accent" | "creative">("classic");
   const [cvStyle, setCvStyle] = useState<"classic" | "american">("classic");
   const [accentColor, setAccentColor] = useState<string>("#1E3A5F");
+  const [jobSearchField, setJobSearchField] = useState("");
+  const [jobSearchLocation, setJobSearchLocation] = useState("");
+  const [jobSearchLoading, setJobSearchLoading] = useState(false);
+  const [jobSearchPerformed, setJobSearchPerformed] = useState(false);
+  const [jobResults, setJobResults] = useState<JobSearchResult[]>([]);
 
   useEffect(() => {
     setHasProfile(loadProfile() !== null);
@@ -92,11 +105,102 @@ export default function GenerateForm() {
     }
   }
 
+  async function handleJobSearch() {
+    setJobSearchLoading(true);
+    setJobSearchPerformed(true);
+    try {
+      const params = new URLSearchParams();
+      if (jobSearchField.trim()) params.set("was", jobSearchField.trim());
+      if (jobSearchLocation.trim()) params.set("wo", jobSearchLocation.trim());
+
+      const res = await fetch(`/api/jobsuche?${params.toString()}`);
+      const data = await res.json();
+      setJobResults(Array.isArray(data?.results) ? data.results : []);
+    } catch {
+      setJobResults([]);
+    } finally {
+      setJobSearchLoading(false);
+    }
+  }
+
+  function handleJobResultClick(result: JobSearchResult) {
+    if (result.description) {
+      setJobPosting(result.description);
+    } else {
+      window.open(result.url, "_blank");
+    }
+  }
+
   return (
     <div className="max-w-3xl mx-auto px-4 py-8 space-y-6">
       <h1 className="text-3xl font-bold text-primary dark:text-accent">{t("title")}</h1>
 
       <div className="space-y-4">
+        <div className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface p-4 space-y-3">
+          <h2 className="text-sm font-semibold text-text">{t("jobSearchTitle")}</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_auto] gap-3">
+            <input
+              id="jobSearchField"
+              type="text"
+              value={jobSearchField}
+              onChange={(e) => setJobSearchField(e.target.value)}
+              placeholder={t("jobSearchFieldPlaceholder")}
+              aria-label={t("jobSearchFieldLabel")}
+              className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-2.5 text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent"
+            />
+            <input
+              id="jobSearchLocation"
+              type="text"
+              value={jobSearchLocation}
+              onChange={(e) => setJobSearchLocation(e.target.value)}
+              placeholder={t("jobSearchLocationPlaceholder")}
+              aria-label={t("jobSearchLocationLabel")}
+              className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-2.5 text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent"
+            />
+            <button
+              type="button"
+              onClick={handleJobSearch}
+              disabled={jobSearchLoading}
+              className="rounded-xl bg-accent text-white px-5 py-2.5 text-sm font-semibold hover:brightness-110 transition disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              {jobSearchLoading ? t("jobSearchSearching") : t("jobSearchButton")}
+            </button>
+          </div>
+
+          {jobSearchPerformed && (
+            jobResults.length === 0 ? (
+              <p className="text-sm text-text/60">{t("jobSearchNoResults")}</p>
+            ) : (
+              <div className="space-y-2">
+                {jobResults.map((result, i) => (
+                  <div
+                    key={i}
+                    className="rounded-xl border border-gray-200 dark:border-gray-700 px-4 py-3 flex items-start justify-between gap-3"
+                  >
+                    <button
+                      type="button"
+                      data-testid={`job-result-${i}`}
+                      onClick={() => handleJobResultClick(result)}
+                      className="text-left flex-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
+                    >
+                      <p className="font-semibold text-text">{result.title}</p>
+                      <p className="text-sm text-text/60">{result.company} · {result.location}</p>
+                    </button>
+                    <a
+                      href={result.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-accent hover:underline whitespace-nowrap shrink-0"
+                    >
+                      {t("jobSearchViewOriginal")}
+                    </a>
+                  </div>
+                ))}
+              </div>
+            )
+          )}
+        </div>
+
         <div>
           <label htmlFor="jobPosting" className="block text-sm font-medium text-text mb-1">
             {t("jobPostingLabel")}
