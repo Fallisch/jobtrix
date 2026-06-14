@@ -16,7 +16,7 @@ export interface ApplicationHistoryEntry {
   coverLetter: string;
   cv: string;
   profileSnapshot: ProfileData;
-  template: "classic" | "modern" | "traditional" | "accent";
+  template: "classic" | "modern" | "traditional" | "accent" | "creative";
   accentColor?: string | null;
   cvStyle?: "classic" | "american" | null;
 }

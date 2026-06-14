@@ -12,9 +12,11 @@ const Defs = ({ children }) => React.createElement("defs", null, children);
 const LinearGradient = ({ children, id }) => React.createElement("linearGradient", { id }, children);
 const Stop = ({ offset, stopColor }) => React.createElement("stop", { offset, stopColor });
 const Rect = (props) => React.createElement("rect", props);
+const Path = (props) => React.createElement("path", props);
+const Circle = (props) => React.createElement("circle", props);
 
 const pdf = jest.fn(() => ({
   toBlob: jest.fn().mockResolvedValue(new Blob(["mock pdf"], { type: "application/pdf" })),
 }));
 
-module.exports = { Document, Page, Text, View, StyleSheet, Font, Image, Svg, Defs, LinearGradient, Stop, Rect, pdf };
+module.exports = { Document, Page, Text, View, StyleSheet, Font, Image, Svg, Defs, LinearGradient, Stop, Rect, Path, Circle, pdf };

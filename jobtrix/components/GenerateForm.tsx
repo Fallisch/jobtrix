@@ -38,7 +38,7 @@ export default function GenerateForm() {
   const [editedCv, setEditedCv] = useState("");
   const [coverLetterAgreed, setCoverLetterAgreed] = useState(false);
   const [cvAgreed, setCvAgreed] = useState(false);
-  const [selectedTemplate, setSelectedTemplate] = useState<"classic" | "modern" | "traditional" | "accent">("classic");
+  const [selectedTemplate, setSelectedTemplate] = useState<"classic" | "modern" | "traditional" | "accent" | "creative">("classic");
   const [cvStyle, setCvStyle] = useState<"classic" | "american">("classic");
   const [accentColor, setAccentColor] = useState<string>("#1E3A5F");
 
@@ -268,8 +268,20 @@ export default function GenerateForm() {
             >
               {t("templateAccent")}
             </button>
+            <button
+              onClick={() => setSelectedTemplate("creative")}
+              aria-pressed={selectedTemplate === "creative"}
+              aria-label={t("templateCreative")}
+              className={`rounded-full px-4 py-1.5 text-sm font-semibold border transition ${
+                selectedTemplate === "creative"
+                  ? "bg-accent text-white border-accent"
+                  : "border-gray-200 dark:border-gray-700 text-text hover:border-accent hover:text-accent"
+              }`}
+            >
+              {t("templateCreative")}
+            </button>
 
-            {(selectedTemplate === "modern" || selectedTemplate === "accent") && (
+            {(selectedTemplate === "modern" || selectedTemplate === "accent" || selectedTemplate === "creative") && (
               <div className="flex items-center gap-2 ml-2" data-testid="color-palette">
                 <span className="text-sm text-text/50">Farbe:</span>
                 {ACCENT_COLORS.map((color) => (

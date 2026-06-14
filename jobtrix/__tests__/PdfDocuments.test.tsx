@@ -615,3 +615,169 @@ describe("CvDocument – Akzent-Layout cvStyle", () => {
     expect(eduEntries[0]).toHaveTextContent("2018");
   });
 });
+
+describe("CoverLetterDocument – Kreativ-Layout", () => {
+  it("rendert eine Sidebar mit rundem Foto", () => {
+    const profileWithPhoto = { ...profile, photo: "data:image/png;base64,abc123" };
+    render(<CoverLetterDocument coverLetter="Brief" profile={profileWithPhoto} template="creative" />);
+    const sidebar = screen.getByTestId("creative-sidebar");
+    const img = within(sidebar).getByRole("img");
+    expect(img).toHaveAttribute("src", "data:image/png;base64,abc123");
+  });
+
+  it("rendert ohne Crash wenn kein Foto vorhanden", () => {
+    expect(() =>
+      render(<CoverLetterDocument coverLetter="Brief" profile={{ ...profile, photo: null }} template="creative" />)
+    ).not.toThrow();
+    expect(screen.queryByRole("img")).not.toBeInTheDocument();
+  });
+
+  it("Sidebar verwendet Standardfarbe wenn kein accentColor übergeben", () => {
+    render(<CoverLetterDocument coverLetter="Brief" profile={profile} template="creative" />);
+    const sidebar = screen.getByTestId("creative-sidebar");
+    expect(sidebar).toHaveStyle({ backgroundColor: "#1E3A5F" });
+  });
+
+  it("Sidebar verwendet accentColor wenn übergeben", () => {
+    render(<CoverLetterDocument coverLetter="Brief" profile={profile} template="creative" accentColor="#5C1A1A" />);
+    const sidebar = screen.getByTestId("creative-sidebar");
+    expect(sidebar).toHaveStyle({ backgroundColor: "#5C1A1A" });
+  });
+
+  it("zeigt Kontaktdaten mit Icons in der Sidebar", () => {
+    render(<CoverLetterDocument coverLetter="Brief" profile={profile} template="creative" />);
+    const sidebar = screen.getByTestId("creative-sidebar");
+    expect(sidebar).toHaveTextContent("Hauptstraße 5, 10115 Berlin");
+    expect(sidebar).toHaveTextContent("anna@example.de");
+    expect(sidebar).toHaveTextContent("0151 12345678");
+    expect(within(sidebar).getByTestId("creative-icon-location")).toBeInTheDocument();
+    expect(within(sidebar).getByTestId("creative-icon-email")).toBeInTheDocument();
+    expect(within(sidebar).getByTestId("creative-icon-phone")).toBeInTheDocument();
+  });
+
+  it("rendert den Anschreiben-Text einspaltig", () => {
+    render(<CoverLetterDocument coverLetter="Mein individuelles Anschreiben" profile={profile} template="creative" />);
+    expect(screen.getByText("Mein individuelles Anschreiben")).toBeInTheDocument();
+  });
+
+  it("klassisches Layout hat keine Kreativ-Sidebar", () => {
+    render(<CoverLetterDocument coverLetter="Brief" profile={profile} template="classic" />);
+    expect(screen.queryByTestId("creative-sidebar")).not.toBeInTheDocument();
+  });
+});
+
+describe("CvDocument – Kreativ-Layout", () => {
+  const profileWithExperience: ProfileData = {
+    ...profile,
+    experience: [
+      {
+        id: "1",
+        company: "Acme GmbH",
+        position: "Entwickler",
+        period: "01/2020 - 12/2022",
+        tasks: "Backend-Entwicklung\nCode-Reviews",
+      },
+    ],
+  };
+
+  it("rendert Sidebar mit rundem Foto und Namen", () => {
+    const profileWithPhoto = { ...profile, photo: "data:image/png;base64,abc123" };
+    render(<CvDocument cv="CV" profile={profileWithPhoto} template="creative" />);
+    const sidebar = screen.getByTestId("creative-sidebar");
+    const img = within(sidebar).getByRole("img");
+    expect(img).toHaveAttribute("src", "data:image/png;base64,abc123");
+    expect(sidebar).toHaveTextContent("Anna Beispiel");
+  });
+
+  it("rendert ohne Crash wenn kein Foto vorhanden", () => {
+    expect(() =>
+      render(<CvDocument cv="CV" profile={{ ...profile, photo: null }} template="creative" />)
+    ).not.toThrow();
+    expect(screen.queryByRole("img")).not.toBeInTheDocument();
+  });
+
+  it("Sidebar verwendet Standardfarbe wenn kein accentColor übergeben", () => {
+    render(<CvDocument cv="CV" profile={profile} template="creative" />);
+    expect(screen.getByTestId("creative-sidebar")).toHaveStyle({ backgroundColor: "#1E3A5F" });
+  });
+
+  it("Sidebar verwendet accentColor wenn übergeben", () => {
+    render(<CvDocument cv="CV" profile={profile} template="creative" accentColor="#5C1A1A" />);
+    expect(screen.getByTestId("creative-sidebar")).toHaveStyle({ backgroundColor: "#5C1A1A" });
+  });
+
+  it("rendert Berufserfahrung und Ausbildung als getrennte Abschnitte mit Icon-Markern", () => {
+    render(<CvDocument cv="CV" profile={profileWithExperience} template="creative" />);
+    const content = screen.getByTestId("creative-content");
+    const headings = within(content).getAllByText(/^(Berufserfahrung|Ausbildung)$/);
+    expect(headings[0]).toHaveTextContent("Berufserfahrung");
+    expect(headings[1]).toHaveTextContent("Ausbildung");
+
+    const expEntry = screen.getByTestId("creative-exp-entry");
+    expect(within(expEntry).getByTestId("creative-icon-briefcase")).toBeInTheDocument();
+    expect(expEntry).toHaveTextContent("01/2020 - 12/2022");
+    expect(expEntry).toHaveTextContent("Acme GmbH");
+    expect(expEntry).toHaveTextContent("Entwickler");
+    expect(expEntry).toHaveTextContent("Backend-Entwicklung");
+    expect(expEntry).toHaveTextContent("Code-Reviews");
+
+    const eduEntry = screen.getByTestId("creative-edu-entry");
+    expect(within(eduEntry).getByTestId("creative-icon-graduation")).toBeInTheDocument();
+    expect(eduEntry).toHaveTextContent("2018");
+    expect(eduEntry).toHaveTextContent("M.Sc.");
+    expect(eduEntry).toHaveTextContent("HU Berlin");
+  });
+
+  it("zeigt keine Berufserfahrung-Sektion wenn keine Einträge vorhanden sind", () => {
+    render(<CvDocument cv="CV" profile={profile} template="creative" />);
+    expect(screen.queryByText("Berufserfahrung")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("creative-exp-entry")).not.toBeInTheDocument();
+  });
+
+  it("rendert Qualifikationen und Interessen mit Icons als Fortschrittsbalken in der Sidebar", () => {
+    render(<CvDocument cv="CV" profile={profile} template="creative" />);
+    const sidebar = screen.getByTestId("creative-sidebar");
+    const quals = within(sidebar).getByTestId("creative-cv-quals");
+    expect(quals).toHaveTextContent("Python");
+    expect(within(quals).getAllByTestId("creative-icon-star").length).toBeGreaterThan(0);
+    const interests = within(sidebar).getByTestId("creative-cv-interests");
+    expect(interests).toHaveTextContent("Datenanalyse");
+    expect(within(interests).getAllByTestId("creative-icon-heart").length).toBeGreaterThan(0);
+    expect(screen.getAllByTestId("skill-bar-fill")).toHaveLength(3);
+  });
+
+  it("klassisches Layout hat keine Kreativ-Sidebar", () => {
+    render(<CvDocument cv="CV" profile={profile} template="classic" />);
+    expect(screen.queryByTestId("creative-sidebar")).not.toBeInTheDocument();
+  });
+});
+
+describe("CvDocument – Kreativ-Layout cvStyle", () => {
+  const profileMulti: ProfileData = {
+    ...profile,
+    education: [
+      { id: "1", institution: "HTW Berlin", degree: "B.Sc.", year: "2014" },
+      { id: "2", institution: "HU Berlin", degree: "M.Sc.", year: "2018" },
+    ],
+    experience: [
+      { id: "1", company: "Firma A", position: "Junior Entwickler", period: "2018 - 2020", tasks: "Aufgabe A" },
+      { id: "2", company: "Firma B", position: "Senior Entwickler", period: "2020 - 2023", tasks: "Aufgabe B" },
+    ],
+  };
+
+  it("sortiert Berufserfahrung und Ausbildung bei cvStyle classic chronologisch", () => {
+    render(<CvDocument cv="CV" profile={profileMulti} template="creative" cvStyle="classic" />);
+    const expEntries = screen.getAllByTestId("creative-exp-entry");
+    const eduEntries = screen.getAllByTestId("creative-edu-entry");
+    expect(expEntries[0]).toHaveTextContent("Firma A");
+    expect(eduEntries[0]).toHaveTextContent("2014");
+  });
+
+  it("sortiert Berufserfahrung und Ausbildung bei cvStyle american jeweils eigenständig antichronologisch", () => {
+    render(<CvDocument cv="CV" profile={profileMulti} template="creative" cvStyle="american" />);
+    const expEntries = screen.getAllByTestId("creative-exp-entry");
+    const eduEntries = screen.getAllByTestId("creative-edu-entry");
+    expect(expEntries[0]).toHaveTextContent("Firma B");
+    expect(eduEntries[0]).toHaveTextContent("2018");
+  });
+});

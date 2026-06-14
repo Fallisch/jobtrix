@@ -1,5 +1,5 @@
 import React from "react";
-import { Document, Page, Text, View, StyleSheet, Image, Svg, Defs, LinearGradient, Stop, Rect } from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet, Image, Svg, Defs, LinearGradient, Stop, Rect, Path } from "@react-pdf/renderer";
 import { ProfileData, SkillItem, ExperienceEntry, EducationEntry } from "@/lib/profile-storage";
 
 const ACCENT = "#2F80ED";
@@ -544,6 +544,169 @@ const styles = StyleSheet.create({
   accentParagraph: {
     marginBottom: 7,
   },
+
+  // ── Creative template (Icon-Seitenleiste, rundes Foto) ──────────────────────
+  creativePage: {
+    fontFamily: "Helvetica",
+    fontSize: 10,
+    color: "#1a1a1a",
+    lineHeight: 1.4,
+    flexDirection: "row",
+  },
+  creativeSidebar: {
+    width: "34%",
+    minHeight: "100%",
+    paddingVertical: 28,
+    paddingHorizontal: 20,
+    alignItems: "center",
+  },
+  creativeSidebarPhoto: {
+    width: 84,
+    height: 84,
+    borderRadius: 42,
+    marginBottom: 12,
+    objectFit: "cover",
+  },
+  creativeSidebarName: {
+    fontSize: 14,
+    fontFamily: "Helvetica-Bold",
+    color: "#ffffff",
+    textAlign: "center",
+    letterSpacing: 0.5,
+    marginBottom: 16,
+  },
+  creativeSidebarSection: {
+    width: "100%",
+    marginTop: 14,
+  },
+  creativeSidebarSectionTitle: {
+    fontSize: 9,
+    fontFamily: "Helvetica-Bold",
+    color: "#ffffff",
+    textTransform: "uppercase",
+    letterSpacing: 1.5,
+    marginBottom: 8,
+  },
+  creativeContactRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 6,
+  },
+  creativeContactIcon: {
+    width: 11,
+    height: 11,
+    marginRight: 6,
+  },
+  creativeContactText: {
+    fontSize: 8.5,
+    color: "#f1f5f9",
+  },
+  creativeSkillItem: {
+    width: "100%",
+    marginBottom: 8,
+  },
+  creativeSkillLabelRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 3,
+  },
+  creativeSkillIcon: {
+    width: 10,
+    height: 10,
+    marginRight: 5,
+  },
+  creativeSkillLabel: {
+    fontSize: 8.5,
+    color: "#ffffff",
+  },
+  creativeSkillBarBg: {
+    height: 4,
+    backgroundColor: "#475569",
+    borderRadius: 2,
+  },
+  creativeSkillBarFill: {
+    height: 4,
+    backgroundColor: "#ffffff",
+    borderRadius: 2,
+  },
+  creativeMain: {
+    width: "66%",
+    paddingVertical: 32,
+    paddingHorizontal: 28,
+  },
+  creativeMainName: {
+    fontSize: 22,
+    fontFamily: "Helvetica-Bold",
+    color: "#1a1a1a",
+    marginBottom: 16,
+  },
+  creativeSectionHeading: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 14,
+    marginBottom: 8,
+  },
+  creativeSectionHeadingIcon: {
+    width: 14,
+    height: 14,
+    marginRight: 6,
+  },
+  creativeSectionHeadingText: {
+    fontSize: 11,
+    fontFamily: "Helvetica-Bold",
+    letterSpacing: 0.3,
+  },
+  creativeTimelineEntry: {
+    flexDirection: "row",
+    marginBottom: 10,
+  },
+  creativeTimelineIcon: {
+    width: 13,
+    height: 13,
+    marginTop: 1,
+    marginRight: 8,
+  },
+  creativeTimelineContent: {
+    flex: 1,
+  },
+  creativeTimelinePeriod: {
+    fontSize: 8.5,
+    color: "#6b7280",
+    marginBottom: 1,
+  },
+  creativeTimelineTitle: {
+    fontSize: 10,
+    fontFamily: "Helvetica-Bold",
+  },
+  creativeTimelineSubtitle: {
+    fontSize: 9,
+    color: "#374151",
+  },
+  creativeTimelineTask: {
+    fontSize: 8.5,
+    color: "#374151",
+    marginTop: 2,
+    marginLeft: 21,
+  },
+  creativeLetterBody: {
+    width: "66%",
+    paddingVertical: 32,
+    paddingHorizontal: 28,
+  },
+  creativeSectionHeadingLetter: {
+    fontSize: 10.5,
+    fontFamily: "Helvetica-Bold",
+    color: ACCENT,
+    letterSpacing: 0.5,
+    marginTop: 14,
+    marginBottom: 3,
+    paddingBottom: 3,
+    borderBottomWidth: 0.75,
+    borderBottomColor: "#d1d5db",
+  },
+  creativeParagraph: {
+    marginBottom: 7,
+  },
 });
 
 function isAllCapsHeading(line: string): boolean {
@@ -556,16 +719,18 @@ function isAllCapsHeading(line: string): boolean {
   );
 }
 
-function renderTextBlocks(text: string, variant: "classic" | "modern" | "traditional" | "accent" = "classic") {
+function renderTextBlocks(text: string, variant: "classic" | "modern" | "traditional" | "accent" | "creative" = "classic") {
   const headingStyle =
     variant === "modern" ? styles.modernSectionHeading
     : variant === "traditional" ? styles.traditionalSectionHeading
     : variant === "accent" ? styles.accentSectionHeadingLetter
+    : variant === "creative" ? styles.creativeSectionHeadingLetter
     : styles.sectionHeading;
   const paragraphStyle =
     variant === "modern" ? styles.modernParagraph
     : variant === "traditional" ? styles.traditionalParagraph
     : variant === "accent" ? styles.accentParagraph
+    : variant === "creative" ? styles.creativeParagraph
     : styles.paragraph;
 
   const blocks = text.split(/\n{2,}/);
@@ -741,10 +906,134 @@ function splitTasks(tasks: string): string[] {
     .filter((line) => line.length > 0);
 }
 
+type CreativeIconKind = "location" | "email" | "phone" | "star" | "heart" | "briefcase" | "graduation";
+
+const CREATIVE_ICON_CONFIG: Record<CreativeIconKind, { paths: string[]; rect?: { x: number; y: number; width: number; height: number; rx: number } }> = {
+  location: { paths: ["M8 1C5.24 1 3 3.24 3 6c0 3.5 5 9 5 9s5-5.5 5-9c0-2.76-2.24-5-5-5zm0 7a2 2 0 110-4 2 2 0 010 4z"] },
+  email: { paths: ["M2 4l6 5 6-5"], rect: { x: 1, y: 3, width: 14, height: 10, rx: 1 } },
+  phone: { paths: ["M3 2c-.5 0-1 .4-1 1 0 6 5 11 11 11 .5 0 1-.4 1-1v-2.4c0-.4-.3-.8-.7-.9l-2.4-.6c-.3-.1-.7 0-.9.3l-.8 1c-1.6-.9-2.9-2.2-3.8-3.8l1-.8c.3-.2.4-.6.3-.9L6.1 2.7C6 2.3 5.6 2 5.2 2H3z"] },
+  star: { paths: ["M8 1l2.2 4.6 5 .7-3.6 3.5.9 5L8 12.4l-4.5 2.4.9-5L0.8 6.3l5-.7z"] },
+  heart: { paths: ["M8 14s-6-4-6-8c0-2 1.5-3.5 3.5-3.5C7 2.5 8 4 8 4s1-1.5 2.5-1.5C12.5 2.5 14 4 14 6c0 4-6 8-6 8z"] },
+  briefcase: { paths: ["M5.5 5.5V4c0-.6.4-1 1-1h3c.6 0 1 .4 1 1v1.5"], rect: { x: 2, y: 5.5, width: 12, height: 8, rx: 1 } },
+  graduation: { paths: ["M8 2L1 6l7 4 7-4-7-4zM4 8.5V12l4 2 4-2V8.5L8 10.5 4 8.5z"] },
+};
+
+function CreativeIcon({ kind, color = "#ffffff", size = 11 }: { kind: CreativeIconKind; color?: string; size?: number }) {
+  const { paths, rect } = CREATIVE_ICON_CONFIG[kind];
+  return (
+    <Svg viewBox="0 0 16 16" style={{ width: size, height: size }} {...{ "data-testid": `creative-icon-${kind}` }}>
+      {rect ? <Rect x={rect.x} y={rect.y} width={rect.width} height={rect.height} rx={rect.rx} fill="none" stroke={color} strokeWidth={1.3} /> : null}
+      {paths.map((d, i) => (
+        <Path key={i} d={d} fill="none" stroke={color} strokeWidth={1.3} strokeLinecap="round" strokeLinejoin="round" />
+      ))}
+    </Svg>
+  );
+}
+
+function CreativeSkillBar({ label, value, kind }: SkillItem & { kind: CreativeIconKind }) {
+  return (
+    <View style={styles.creativeSkillItem}>
+      <View style={styles.creativeSkillLabelRow}>
+        <View style={styles.creativeSkillIcon}>
+          <CreativeIcon kind={kind} size={10} />
+        </View>
+        <Text style={styles.creativeSkillLabel}>{label}</Text>
+      </View>
+      <View style={styles.creativeSkillBarBg}>
+        <View
+          style={{ ...styles.creativeSkillBarFill, width: `${value}%` }}
+          {...{ "data-testid": "skill-bar-fill" }}
+        />
+      </View>
+    </View>
+  );
+}
+
+function CreativeSidebar({
+  profile,
+  accentColor,
+  children,
+}: {
+  profile: ProfileData;
+  accentColor: string;
+  children?: React.ReactNode;
+}) {
+  return (
+    <View style={{ ...styles.creativeSidebar, backgroundColor: accentColor }} {...{ "data-testid": "creative-sidebar" }}>
+      {profile.photo ? (
+        <Image src={profile.photo} style={styles.creativeSidebarPhoto} />
+      ) : null}
+      <Text style={styles.creativeSidebarName}>{profile.name}</Text>
+
+      <View style={styles.creativeSidebarSection}>
+        <Text style={styles.creativeSidebarSectionTitle}>Kontakt</Text>
+        {profile.address ? (
+          <View style={styles.creativeContactRow}>
+            <View style={styles.creativeContactIcon}>
+              <CreativeIcon kind="location" size={11} />
+            </View>
+            <Text style={styles.creativeContactText}>{profile.address}</Text>
+          </View>
+        ) : null}
+        {profile.email ? (
+          <View style={styles.creativeContactRow}>
+            <View style={styles.creativeContactIcon}>
+              <CreativeIcon kind="email" size={11} />
+            </View>
+            <Text style={styles.creativeContactText}>{profile.email}</Text>
+          </View>
+        ) : null}
+        {profile.phone ? (
+          <View style={styles.creativeContactRow}>
+            <View style={styles.creativeContactIcon}>
+              <CreativeIcon kind="phone" size={11} />
+            </View>
+            <Text style={styles.creativeContactText}>{profile.phone}</Text>
+          </View>
+        ) : null}
+      </View>
+
+      {children}
+    </View>
+  );
+}
+
+function CreativeTimelineEntry({
+  period,
+  title,
+  subtitle,
+  tasks,
+  icon,
+  testId,
+}: {
+  period: string;
+  title: string;
+  subtitle: string;
+  tasks?: string[];
+  icon: CreativeIconKind;
+  testId: string;
+}) {
+  return (
+    <View style={styles.creativeTimelineEntry} {...{ "data-testid": testId }}>
+      <View style={styles.creativeTimelineIcon}>
+        <CreativeIcon kind={icon} color="#374151" size={13} />
+      </View>
+      <View style={styles.creativeTimelineContent}>
+        <Text style={styles.creativeTimelinePeriod}>{period}</Text>
+        <Text style={styles.creativeTimelineTitle}>{title}</Text>
+        <Text style={styles.creativeTimelineSubtitle}>{subtitle}</Text>
+        {tasks?.map((line, j) => (
+          <Text key={j} style={styles.creativeTimelineTask}>• {line}</Text>
+        ))}
+      </View>
+    </View>
+  );
+}
+
 interface CoverLetterDocumentProps {
   coverLetter: string;
   profile: ProfileData;
-  template?: "classic" | "modern" | "traditional" | "accent";
+  template?: "classic" | "modern" | "traditional" | "accent" | "creative";
   accentColor?: string;
 }
 
@@ -802,6 +1091,18 @@ export function CoverLetterDocument({ coverLetter, profile, template = "classic"
     );
   }
 
+  if (template === "creative") {
+    const color = accentColor ?? SIDEBAR_BG;
+    return (
+      <Document>
+        <Page size="A4" style={styles.creativePage}>
+          <CreativeSidebar profile={profile} accentColor={color} />
+          <View style={styles.creativeLetterBody}>{renderTextBlocks(coverLetter, "creative")}</View>
+        </Page>
+      </Document>
+    );
+  }
+
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -820,7 +1121,7 @@ export function CoverLetterDocument({ coverLetter, profile, template = "classic"
 interface CvDocumentProps {
   cv: string;
   profile: ProfileData;
-  template?: "classic" | "modern" | "traditional" | "accent";
+  template?: "classic" | "modern" | "traditional" | "accent" | "creative";
   cvStyle?: "classic" | "american";
   accentColor?: string;
 }
@@ -1092,6 +1393,83 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
                 </View>
               )}
             </View>
+          </View>
+        </Page>
+      </Document>
+    );
+  }
+
+  if (template === "creative") {
+    const color = accentColor ?? SIDEBAR_BG;
+    const education: EducationEntry[] = cvStyle === "american" ? [...profile.education].reverse() : profile.education;
+    const experience: ExperienceEntry[] = cvStyle === "american" ? [...profile.experience].reverse() : profile.experience;
+    return (
+      <Document>
+        <Page size="A4" style={styles.creativePage}>
+          <CreativeSidebar profile={profile} accentColor={color}>
+            {profile.qualifications?.length > 0 && (
+              <View style={styles.creativeSidebarSection} {...{ "data-testid": "creative-cv-quals" }}>
+                <Text style={styles.creativeSidebarSectionTitle}>Qualifikationen</Text>
+                {profile.qualifications.map((q, i) => (
+                  <CreativeSkillBar key={i} label={q.label} value={q.value} kind="star" />
+                ))}
+              </View>
+            )}
+            {profile.interests?.length > 0 && (
+              <View style={styles.creativeSidebarSection} {...{ "data-testid": "creative-cv-interests" }}>
+                <Text style={styles.creativeSidebarSectionTitle}>Persönliche Interessen</Text>
+                {profile.interests.map((interest, i) => (
+                  <CreativeSkillBar key={i} label={interest.label} value={interest.value} kind="heart" />
+                ))}
+              </View>
+            )}
+          </CreativeSidebar>
+
+          <View style={styles.creativeMain} {...{ "data-testid": "creative-content" }}>
+            <Text style={styles.creativeMainName}>{profile.name}</Text>
+
+            {experience?.length > 0 && (
+              <>
+                <View style={styles.creativeSectionHeading}>
+                  <View style={styles.creativeSectionHeadingIcon}>
+                    <CreativeIcon kind="briefcase" color={color} size={14} />
+                  </View>
+                  <Text style={{ ...styles.creativeSectionHeadingText, color }}>Berufserfahrung</Text>
+                </View>
+                {experience.map((exp, i) => (
+                  <CreativeTimelineEntry
+                    key={i}
+                    period={exp.period}
+                    title={exp.company}
+                    subtitle={exp.position}
+                    tasks={splitTasks(exp.tasks)}
+                    icon="briefcase"
+                    testId="creative-exp-entry"
+                  />
+                ))}
+              </>
+            )}
+
+            {education?.length > 0 && (
+              <>
+                <View style={styles.creativeSectionHeading}>
+                  <View style={styles.creativeSectionHeadingIcon}>
+                    <CreativeIcon kind="graduation" color={color} size={14} />
+                  </View>
+                  <Text style={{ ...styles.creativeSectionHeadingText, color }}>Ausbildung</Text>
+                </View>
+                {education.map((edu, i) => (
+                  <CreativeTimelineEntry
+                    key={i}
+                    period={edu.year}
+                    title={edu.degree}
+                    subtitle={edu.institution}
+                    icon="graduation"
+                    testId="creative-edu-entry"
+                  />
+                ))}
+              </>
+            )}
           </View>
         </Page>
       </Document>

@@ -39,6 +39,16 @@ test.describe("Template-Auswahl – QA (Issue #8)", () => {
     await expect(templateSection.getByRole("button", { name: "Modern", exact: true })).toBeVisible();
   });
 
+  test("AC: Layout 'Kreativ' ist auswählbar und zeigt Akzentfarben-Palette", async ({ page }) => {
+    const templateSection = page.getByText("Layout:").locator("xpath=..");
+    const creativeBtn = templateSection.getByRole("button", { name: "Kreativ", exact: true });
+    await expect(creativeBtn).toBeVisible();
+
+    await creativeBtn.click();
+    await expect(creativeBtn).toHaveAttribute("aria-pressed", "true");
+    await expect(page.getByTestId("color-palette")).toBeVisible();
+  });
+
   test("AC: Klassisch ist standardmäßig aktiv (aria-pressed=true)", async ({ page }) => {
     const templateSection = page.getByText("Layout:").locator("xpath=..");
     const klassischBtn = templateSection.getByRole("button", { name: "Klassisch", exact: true });

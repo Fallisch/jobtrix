@@ -7,7 +7,7 @@ export interface GenerateRequest {
   contactPerson?: string;
   profile: ProfileData;
   cvStyle?: "classic" | "american";
-  template?: "classic" | "modern" | "traditional" | "accent";
+  template?: "classic" | "modern" | "traditional" | "accent" | "creative";
   accentColor?: string;
 }
 
