@@ -25,6 +25,15 @@ export interface JobSearchResult {
   url: string;
 }
 
+function isHttpUrl(value: string): boolean {
+  try {
+    const parsed = new URL(value);
+    return parsed.protocol === "http:" || parsed.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
 async function fetchDescription(refnr: string, apiKey: string): Promise<string | null> {
   try {
     const encoded = Buffer.from(refnr).toString("base64");
@@ -73,7 +82,7 @@ export async function GET(request: NextRequest) {
         const location = item.arbeitsort?.ort ?? "";
         const refnr = item.refnr ?? "";
 
-        if (item.externeUrl) {
+        if (item.externeUrl && isHttpUrl(item.externeUrl)) {
           return { title, company, location, description: null, url: item.externeUrl };
         }
 

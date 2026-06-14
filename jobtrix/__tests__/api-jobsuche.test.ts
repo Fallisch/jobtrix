@@ -104,6 +104,42 @@ describe("GET /api/jobsuche", () => {
     expect((global.fetch as jest.Mock).mock.calls.some((c) => String(c[0]).includes("/jobdetails/"))).toBe(false);
   });
 
+  it("ignoriert externeUrl mit unsicherem URL-Schema (z. B. javascript:) und liefert stattdessen einen arbeitsagentur.de-Link", async () => {
+    (global.fetch as jest.Mock).mockImplementation((url: string) => {
+      if (url.includes("/jobs?")) {
+        return Promise.resolve({
+          ok: true,
+          json: () =>
+            Promise.resolve({
+              stellenangebote: [
+                {
+                  titel: "Böser Treffer",
+                  arbeitgeber: "Evil Inc",
+                  arbeitsort: { ort: "Berlin" },
+                  refnr: "99999-999",
+                  externeUrl: "javascript:alert(1)",
+                },
+              ],
+            }),
+        });
+      }
+      if (url.includes("/jobdetails/")) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ stellenangebotsBeschreibung: "Beschreibung" }),
+        });
+      }
+      return Promise.resolve({ ok: false });
+    });
+
+    const res = await GET(makeRequest({ was: "Entwickler", wo: "Berlin" }));
+    const data = await res.json();
+
+    expect(res.status).toBe(200);
+    expect(data.results[0].url).toMatch(/^https:\/\/www\.arbeitsagentur\.de\//);
+    expect(data.results[0].url).not.toContain("javascript:");
+  });
+
   it("liefert leere Trefferliste wenn keine Stellenangebote vorhanden sind", async () => {
     (global.fetch as jest.Mock).mockResolvedValue({
       ok: true,
