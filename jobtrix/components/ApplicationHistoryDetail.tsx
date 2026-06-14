@@ -51,7 +51,7 @@ export default function ApplicationHistoryDetail({ id }: { id: string }) {
       </Link>
 
       <div className="flex items-center justify-between gap-4">
-        <h1 className="text-3xl font-bold text-primary">
+        <h1 className="text-3xl font-bold text-primary dark:text-accent">
           {entry.jobTitle ?? t("untitled")}
           {entry.companyName ? ` – ${entry.companyName}` : ""}
         </h1>
@@ -74,12 +74,12 @@ export default function ApplicationHistoryDetail({ id }: { id: string }) {
           downloadCoverLetterPdf(entry.coverLetter, entry.profileSnapshot, entry.template, accentColor);
           downloadCvPdf(entry.cv, entry.profileSnapshot, entry.template, cvStyle, accentColor);
         }}
-        className="rounded-full px-4 py-2 text-sm font-semibold border border-gray-200 text-text hover:border-accent hover:text-accent transition"
+        className="rounded-full px-4 py-2 text-sm font-semibold border border-gray-200 dark:border-gray-700 text-text hover:border-accent hover:text-accent transition"
       >
         {t("pdfButton")}
       </button>
 
-      <div role="tablist" className="flex gap-2 border-b border-gray-200">
+      <div role="tablist" className="flex gap-2 border-b border-gray-200 dark:border-gray-700">
         <button
           type="button"
           role="tab"
@@ -116,22 +116,22 @@ export default function ApplicationHistoryDetail({ id }: { id: string }) {
       </div>
 
       {activeTab === "coverLetter" && (
-        <section className="bg-white rounded-xl shadow p-5 space-y-2">
-          <h2 className="font-semibold text-primary">{t("coverLetterTitle")}</h2>
+        <section className="bg-white dark:bg-surface rounded-xl shadow p-5 space-y-2">
+          <h2 className="font-semibold text-primary dark:text-accent">{t("coverLetterTitle")}</h2>
           <p className="text-sm text-text/80 whitespace-pre-wrap">{entry.coverLetter}</p>
         </section>
       )}
 
       {activeTab === "cv" && (
-        <section className="bg-white rounded-xl shadow p-5 space-y-2">
-          <h2 className="font-semibold text-primary">{t("cvTitle")}</h2>
+        <section className="bg-white dark:bg-surface rounded-xl shadow p-5 space-y-2">
+          <h2 className="font-semibold text-primary dark:text-accent">{t("cvTitle")}</h2>
           <p className="text-sm text-text/80 whitespace-pre-wrap">{entry.cv}</p>
         </section>
       )}
 
       {activeTab === "email" && (
-        <section className="bg-white rounded-xl shadow p-5 space-y-2">
-          <h2 className="font-semibold text-primary">{t("emailDraftTitle")}</h2>
+        <section className="bg-white dark:bg-surface rounded-xl shadow p-5 space-y-2">
+          <h2 className="font-semibold text-primary dark:text-accent">{t("emailDraftTitle")}</h2>
           <div>
             <span className="text-sm font-medium text-text/60">{t("emailSubjectLabel")}</span>
             <p className="text-sm text-text/80">{entry.emailSubject}</p>

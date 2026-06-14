@@ -37,9 +37,9 @@ export default function EmailDraft({ subject, body }: EmailDraftProps) {
 
   return (
     <section data-testid="email-draft-section">
-      <h2 className="text-xl font-semibold text-primary mb-2">{t("emailDraftTitle")}</h2>
+      <h2 className="text-xl font-semibold text-primary dark:text-accent mb-2">{t("emailDraftTitle")}</h2>
 
-      <div className="rounded-xl border border-gray-200 bg-white p-4 space-y-1">
+      <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface p-4 space-y-1">
         <span className="text-xs font-medium text-text/60">{t("emailSubjectLabel")}</span>
         <div className="flex items-center justify-between gap-4">
           <p className="text-sm text-text">{subject}</p>
@@ -47,7 +47,7 @@ export default function EmailDraft({ subject, body }: EmailDraftProps) {
         </div>
       </div>
 
-      <div className="mt-4 rounded-xl border border-gray-200 bg-white p-4 space-y-2">
+      <div className="mt-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface p-4 space-y-2">
         <div className="flex items-center justify-between gap-4">
           <span className="text-xs font-medium text-text/60">{t("emailBodyLabel")}</span>
           <CopyButton value={body} label={t("copyBody")} testId="copy-body-button" />

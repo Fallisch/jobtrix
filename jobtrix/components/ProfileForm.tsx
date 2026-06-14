@@ -182,10 +182,10 @@ export default function ProfileForm() {
 
   return (
     <form onSubmit={handleSubmit} className="max-w-2xl mx-auto px-4 py-8 space-y-6">
-      <h1 className="text-2xl font-bold text-primary">{t("title")}</h1>
+      <h1 className="text-2xl font-bold text-primary dark:text-accent">{t("title")}</h1>
 
       {access?.package === "limited" && access.validUntil && (
-        <p className="text-sm text-text/70 bg-surface border border-gray-200 rounded-md px-3 py-2">
+        <p className="text-sm text-text/70 bg-surface border border-gray-200 dark:border-gray-700 rounded-md px-3 py-2">
           {t("accessValidUntil", {
             date: new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeZone: "UTC" }).format(
               new Date(access.validUntil)
@@ -204,10 +204,10 @@ export default function ProfileForm() {
           type="text"
           value={data.name}
           onChange={(e) => set("name", e.target.value)}
-          className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+          className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
           aria-label={t("nameLabel")}
         />
-        {errors.name && <p className="text-red-600 text-sm mt-1">{t(`errors.${errors.name}`)}</p>}
+        {errors.name && <p className="text-red-600 dark:text-red-400 text-sm mt-1">{t(`errors.${errors.name}`)}</p>}
       </div>
 
       {/* Adresse */}
@@ -220,7 +220,7 @@ export default function ProfileForm() {
           type="text"
           value={data.address}
           onChange={(e) => set("address", e.target.value)}
-          className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+          className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
           aria-label={t("addressLabel")}
         />
       </div>
@@ -235,7 +235,7 @@ export default function ProfileForm() {
           type="email"
           value={data.email}
           onChange={(e) => set("email", e.target.value)}
-          className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+          className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
           aria-label={t("emailLabel")}
         />
       </div>
@@ -250,7 +250,7 @@ export default function ProfileForm() {
           type="tel"
           value={data.phone}
           onChange={(e) => set("phone", e.target.value)}
-          className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+          className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
           aria-label={t("phoneLabel")}
         />
       </div>
@@ -265,7 +265,7 @@ export default function ProfileForm() {
           type="date"
           value={data.birthdate}
           onChange={(e) => set("birthdate", e.target.value)}
-          className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+          className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
           aria-label={t("birthdateLabel")}
         />
       </div>
@@ -301,15 +301,15 @@ export default function ProfileForm() {
 
       {/* Ausbildung */}
       <div>
-        <h2 className="text-lg font-semibold text-primary mb-2">{t("educationTitle")}</h2>
+        <h2 className="text-lg font-semibold text-primary dark:text-accent mb-2">{t("educationTitle")}</h2>
         {data.education.map((edu) => (
-          <div key={edu.id} className="border border-gray-200 rounded-md p-3 mb-3 space-y-2">
+          <div key={edu.id} className="border border-gray-200 dark:border-gray-700 rounded-md p-3 mb-3 space-y-2">
             <input
               type="text"
               placeholder={t("institutionPlaceholder")}
               value={edu.institution}
               onChange={(e) => updateEdu(edu.id, "institution", e.target.value)}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
             />
             <div className="flex gap-2">
               <input
@@ -317,20 +317,20 @@ export default function ProfileForm() {
                 placeholder={t("degreePlaceholder")}
                 value={edu.degree}
                 onChange={(e) => updateEdu(edu.id, "degree", e.target.value)}
-                className="flex-1 border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+                className="flex-1 border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
               />
               <input
                 type="text"
                 placeholder={t("yearPlaceholder")}
                 value={edu.year}
                 onChange={(e) => updateEdu(edu.id, "year", e.target.value)}
-                className="w-24 border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+                className="w-24 border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
               />
             </div>
             <button
               type="button"
               onClick={() => removeEdu(edu.id)}
-              className="text-sm text-red-500 hover:text-red-700"
+              className="text-sm text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
               aria-label={t("remove")}
             >
               {t("remove")}
@@ -338,7 +338,7 @@ export default function ProfileForm() {
           </div>
         ))}
         {errors.education && (
-          <p className="text-red-600 text-sm mt-1">{t(`errors.${errors.education}`)}</p>
+          <p className="text-red-600 dark:text-red-400 text-sm mt-1">{t(`errors.${errors.education}`)}</p>
         )}
         <button
           type="button"
@@ -352,15 +352,15 @@ export default function ProfileForm() {
 
       {/* Berufserfahrung */}
       <div>
-        <h2 className="text-lg font-semibold text-primary mb-2">{t("experienceTitle")}</h2>
+        <h2 className="text-lg font-semibold text-primary dark:text-accent mb-2">{t("experienceTitle")}</h2>
         {data.experience.map((exp) => (
-          <div key={exp.id} className="border border-gray-200 rounded-md p-3 mb-3 space-y-2">
+          <div key={exp.id} className="border border-gray-200 dark:border-gray-700 rounded-md p-3 mb-3 space-y-2">
             <input
               type="text"
               placeholder={t("companyPlaceholder")}
               value={exp.company}
               onChange={(e) => updateExp(exp.id, "company", e.target.value)}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
             />
             <div className="flex gap-2">
               <input
@@ -368,14 +368,14 @@ export default function ProfileForm() {
                 placeholder={t("positionPlaceholder")}
                 value={exp.position}
                 onChange={(e) => updateExp(exp.id, "position", e.target.value)}
-                className="flex-1 border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+                className="flex-1 border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
               />
               <input
                 type="text"
                 placeholder={t("periodPlaceholder")}
                 value={exp.period}
                 onChange={(e) => updateExp(exp.id, "period", e.target.value)}
-                className="w-32 border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+                className="w-32 border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
               />
             </div>
             <textarea
@@ -383,12 +383,12 @@ export default function ProfileForm() {
               value={exp.tasks}
               onChange={(e) => updateExp(exp.id, "tasks", e.target.value)}
               rows={3}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
             />
             <button
               type="button"
               onClick={() => removeExp(exp.id)}
-              className="text-sm text-red-500 hover:text-red-700"
+              className="text-sm text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
               aria-label={t("remove")}
             >
               {t("remove")}
@@ -407,7 +407,7 @@ export default function ProfileForm() {
 
       {/* Qualifikationen */}
       <div>
-        <h2 className="text-lg font-semibold text-primary mb-2">{t("qualificationsTitle")}</h2>
+        <h2 className="text-lg font-semibold text-primary dark:text-accent mb-2">{t("qualificationsTitle")}</h2>
         <div className="flex gap-2 mb-2">
           <input
             type="text"
@@ -420,12 +420,12 @@ export default function ProfileForm() {
                 addQualification(qualInput);
               }
             }}
-            className="flex-1 border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+            className="flex-1 border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
           />
           <button
             type="button"
             onClick={() => addQualification(qualInput)}
-            className="px-3 py-2 bg-surface border border-gray-300 rounded-md text-sm hover:bg-gray-100"
+            className="px-3 py-2 bg-surface border border-gray-300 dark:border-gray-600 rounded-md text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
           >
             {t("add")}
           </button>
@@ -454,7 +454,7 @@ export default function ProfileForm() {
                 aria-label={q.label}
                 className="w-32 accent-accent"
               />
-              <span className="text-xs text-gray-500">{q.value}%</span>
+              <span className="text-xs text-gray-500 dark:text-gray-400">{q.value}%</span>
             </div>
           ))}
         </div>
@@ -462,7 +462,7 @@ export default function ProfileForm() {
 
       {/* Persönliche Interessen */}
       <div>
-        <h2 className="text-lg font-semibold text-primary mb-2">{t("interestsTitle")}</h2>
+        <h2 className="text-lg font-semibold text-primary dark:text-accent mb-2">{t("interestsTitle")}</h2>
         <div className="flex gap-2 mb-2">
           <input
             type="text"
@@ -475,12 +475,12 @@ export default function ProfileForm() {
                 addInterest(interestInput);
               }
             }}
-            className="flex-1 border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+            className="flex-1 border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
           />
           <button
             type="button"
             onClick={() => addInterest(interestInput)}
-            className="px-3 py-2 bg-surface border border-gray-300 rounded-md text-sm hover:bg-gray-100"
+            className="px-3 py-2 bg-surface border border-gray-300 dark:border-gray-600 rounded-md text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
           >
             {t("addInterest")}
           </button>
@@ -509,14 +509,14 @@ export default function ProfileForm() {
                 aria-label={s.label}
                 className="w-32 accent-accent"
               />
-              <span className="text-xs text-gray-500">{s.value}%</span>
+              <span className="text-xs text-gray-500 dark:text-gray-400">{s.value}%</span>
             </div>
           ))}
         </div>
       </div>
 
       {/* Speichern */}
-      {saveError && <p className="text-red-600 text-sm">{saveError}</p>}
+      {saveError && <p className="text-red-600 dark:text-red-400 text-sm">{saveError}</p>}
       <button
         type="submit"
         className="w-full bg-primary text-white py-3 rounded-full font-semibold hover:brightness-110 transition"

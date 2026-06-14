@@ -94,7 +94,7 @@ export default function GenerateForm() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8 space-y-6">
-      <h1 className="text-3xl font-bold text-primary">{t("title")}</h1>
+      <h1 className="text-3xl font-bold text-primary dark:text-accent">{t("title")}</h1>
 
       <div className="space-y-4">
         <div>
@@ -106,7 +106,7 @@ export default function GenerateForm() {
             value={jobPosting}
             onChange={(e) => setJobPosting(e.target.value)}
             rows={8}
-            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent resize-y"
+            className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-3 text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent resize-y"
             placeholder={t("jobPostingPlaceholder")}
             aria-label={t("jobPostingLabel")}
           />
@@ -121,7 +121,7 @@ export default function GenerateForm() {
             type="text"
             value={jobTitle}
             onChange={(e) => setJobTitle(e.target.value)}
-            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent"
+            className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-3 text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent"
             placeholder={t("optional")}
             aria-label={t("jobTitleLabel")}
           />
@@ -137,7 +137,7 @@ export default function GenerateForm() {
               type="text"
               value={companyName}
               onChange={(e) => setCompanyName(e.target.value)}
-              className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-3 text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent"
               placeholder={t("optional")}
               aria-label={t("companyNameLabel")}
             />
@@ -151,7 +151,7 @@ export default function GenerateForm() {
               type="text"
               value={contactPerson}
               onChange={(e) => setContactPerson(e.target.value)}
-              className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-3 text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent"
               placeholder={t("optional")}
               aria-label={t("contactPersonLabel")}
             />
@@ -176,7 +176,7 @@ export default function GenerateForm() {
               className={`rounded-full px-3.5 py-1.5 text-sm font-semibold border transition ${
                 cvStyle === "classic"
                   ? "bg-accent text-white border-accent"
-                  : "border-gray-200 text-text hover:border-accent hover:text-accent"
+                  : "border-gray-200 dark:border-gray-700 text-text hover:border-accent hover:text-accent"
               }`}
             >
               {t("cvStyleClassic")}
@@ -189,7 +189,7 @@ export default function GenerateForm() {
               className={`rounded-full px-3.5 py-1.5 text-sm font-semibold border transition ${
                 cvStyle === "american"
                   ? "bg-accent text-white border-accent"
-                  : "border-gray-200 text-text hover:border-accent hover:text-accent"
+                  : "border-gray-200 dark:border-gray-700 text-text hover:border-accent hover:text-accent"
               }`}
             >
               {t("cvStyleAmerican")}
@@ -199,19 +199,19 @@ export default function GenerateForm() {
       </div>
 
       {loading && (
-        <div data-testid="loading-animation" className="rounded-2xl bg-gray-100 p-8 flex flex-col items-center gap-4">
+        <div data-testid="loading-animation" className="rounded-2xl bg-gray-100 dark:bg-gray-800 p-8 flex flex-col items-center gap-4">
           <div
             data-testid="loading-spinner"
             className="animate-spin h-14 w-14 rounded-full border-4 border-accent/20 border-t-accent flex items-center justify-center"
           >
-            <span className="text-xs font-bold text-primary">J</span>
+            <span className="text-xs font-bold text-primary dark:text-accent">J</span>
           </div>
           <p className="text-sm text-text/60">{t("loading")}</p>
         </div>
       )}
 
       {error && (
-        <div role="alert" className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-red-700 text-sm">
+        <div role="alert" className="rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 px-4 py-3 text-red-700 dark:text-red-300 text-sm">
           {error}
         </div>
       )}
@@ -227,7 +227,7 @@ export default function GenerateForm() {
               className={`rounded-full px-4 py-1.5 text-sm font-semibold border transition ${
                 selectedTemplate === "classic"
                   ? "bg-accent text-white border-accent"
-                  : "border-gray-200 text-text hover:border-accent hover:text-accent"
+                  : "border-gray-200 dark:border-gray-700 text-text hover:border-accent hover:text-accent"
               }`}
             >
               {t("templateClassic")}
@@ -239,7 +239,7 @@ export default function GenerateForm() {
               className={`rounded-full px-4 py-1.5 text-sm font-semibold border transition ${
                 selectedTemplate === "modern"
                   ? "bg-accent text-white border-accent"
-                  : "border-gray-200 text-text hover:border-accent hover:text-accent"
+                  : "border-gray-200 dark:border-gray-700 text-text hover:border-accent hover:text-accent"
               }`}
             >
               {t("templateModern")}
@@ -251,7 +251,7 @@ export default function GenerateForm() {
               className={`rounded-full px-4 py-1.5 text-sm font-semibold border transition ${
                 selectedTemplate === "traditional"
                   ? "bg-accent text-white border-accent"
-                  : "border-gray-200 text-text hover:border-accent hover:text-accent"
+                  : "border-gray-200 dark:border-gray-700 text-text hover:border-accent hover:text-accent"
               }`}
             >
               {t("templateTraditional")}
@@ -263,7 +263,7 @@ export default function GenerateForm() {
               className={`rounded-full px-4 py-1.5 text-sm font-semibold border transition ${
                 selectedTemplate === "accent"
                   ? "bg-accent text-white border-accent"
-                  : "border-gray-200 text-text hover:border-accent hover:text-accent"
+                  : "border-gray-200 dark:border-gray-700 text-text hover:border-accent hover:text-accent"
               }`}
             >
               {t("templateAccent")}
@@ -281,7 +281,7 @@ export default function GenerateForm() {
                     aria-pressed={accentColor === color}
                     className={`w-6 h-6 rounded-full border-2 transition-all hover:scale-110 ${
                       accentColor === color
-                        ? "border-white ring-2 ring-offset-1 ring-gray-400 scale-110"
+                        ? "border-white ring-2 ring-offset-1 ring-gray-400 dark:ring-offset-background scale-110"
                         : "border-transparent"
                     }`}
                     style={{ backgroundColor: color }}
@@ -290,9 +290,9 @@ export default function GenerateForm() {
               </div>
             )}
           </div>
-          <section className="rounded-2xl border border-gray-200 bg-white overflow-hidden">
-            <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-100 bg-surface">
-              <h2 className="text-base font-semibold text-primary">{t("coverLetterTitle")}</h2>
+          <section className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface overflow-hidden">
+            <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-100 dark:border-gray-700 bg-surface">
+              <h2 className="text-base font-semibold text-primary dark:text-accent">{t("coverLetterTitle")}</h2>
               <button
                 onClick={() => {
                   const profile = loadProfile();
@@ -325,15 +325,15 @@ export default function GenerateForm() {
                 checked={coverLetterAgreed}
                 onChange={(e) => setCoverLetterAgreed(e.target.checked)}
                 data-testid="cover-letter-agree-checkbox"
-                className="h-4 w-4 rounded border-gray-300 text-accent focus:ring-accent"
+                className="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-accent focus:ring-accent"
               />
               {t("confirmReadAgree")}
             </label>
           </section>
 
-          <section className="rounded-2xl border border-gray-200 bg-white overflow-hidden">
-            <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-100 bg-surface">
-              <h2 className="text-base font-semibold text-primary">{t("cvTitle")}</h2>
+          <section className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface overflow-hidden">
+            <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-100 dark:border-gray-700 bg-surface">
+              <h2 className="text-base font-semibold text-primary dark:text-accent">{t("cvTitle")}</h2>
               <button
                 onClick={() => {
                   const profile = loadProfile();
@@ -366,7 +366,7 @@ export default function GenerateForm() {
                 checked={cvAgreed}
                 onChange={(e) => setCvAgreed(e.target.checked)}
                 data-testid="cv-agree-checkbox"
-                className="h-4 w-4 rounded border-gray-300 text-accent focus:ring-accent"
+                className="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-accent focus:ring-accent"
               />
               {t("confirmReadAgree")}
             </label>

@@ -53,10 +53,10 @@ export default function ApplicationHistoryList() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8 space-y-6">
-      <h1 className="text-3xl font-bold text-primary">{t("title")}</h1>
+      <h1 className="text-3xl font-bold text-primary dark:text-accent">{t("title")}</h1>
 
       {entries.length === 0 ? (
-        <div className="bg-white rounded-xl shadow p-6 text-center space-y-3">
+        <div className="bg-white dark:bg-surface rounded-xl shadow p-6 text-center space-y-3">
           <p className="text-text/70">{t("emptyState")}</p>
           <Link href={`/${locale}/generate`} className="text-accent font-semibold hover:underline">
             {t("emptyStateLink")}
@@ -65,9 +65,9 @@ export default function ApplicationHistoryList() {
       ) : (
         <div className="space-y-4">
           {entries.map((entry) => (
-            <div key={entry.id} className="bg-white rounded-xl shadow p-5 space-y-2">
+            <div key={entry.id} className="bg-white dark:bg-surface rounded-xl shadow p-5 space-y-2">
               <div className="flex items-center justify-between gap-4">
-                <h2 className="font-semibold text-primary">
+                <h2 className="font-semibold text-primary dark:text-accent">
                   {entry.jobTitle ?? t("untitled")}
                   {entry.companyName ? ` – ${entry.companyName}` : ""}
                 </h2>
@@ -97,14 +97,14 @@ export default function ApplicationHistoryList() {
                     downloadCoverLetterPdf(entry.coverLetter, entry.profileSnapshot, entry.template, accentColor);
                     downloadCvPdf(entry.cv, entry.profileSnapshot, entry.template, cvStyle, accentColor);
                   }}
-                  className="rounded-full px-4 py-2 text-sm font-semibold border border-gray-200 text-text hover:border-accent hover:text-accent transition"
+                  className="rounded-full px-4 py-2 text-sm font-semibold border border-gray-200 dark:border-gray-700 text-text hover:border-accent hover:text-accent transition"
                 >
                   {t("pdfButton")}
                 </button>
                 <button
                   type="button"
                   onClick={() => handleDelete(entry.id)}
-                  className="rounded-full px-4 py-2 text-sm font-semibold border border-gray-200 text-red-600 hover:border-red-600 hover:bg-red-50 transition"
+                  className="rounded-full px-4 py-2 text-sm font-semibold border border-gray-200 dark:border-gray-700 text-red-600 dark:text-red-400 hover:border-red-600 dark:hover:border-red-500 hover:bg-red-50 dark:hover:bg-red-950/40 transition"
                 >
                   {t("deleteButton")}
                 </button>
