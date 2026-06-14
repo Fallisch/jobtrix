@@ -69,6 +69,23 @@ test.describe("Issue #44 – Jobsuche über Arbeitsagentur-API", () => {
     );
   });
 
+  test("AC: Umkreis-Auswahl hat Standardwert 25 km und gewählter Wert wird an die Jobsuche übergeben", async ({ page }) => {
+    let requestedUrl = "";
+    await page.route("**/api/jobsuche**", (route) => {
+      requestedUrl = route.request().url();
+      return route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(JOB_RESULTS) });
+    });
+
+    await expect(page.getByRole("combobox", { name: "Umkreis (km)" })).toHaveValue("25");
+
+    await page.getByRole("combobox", { name: "Umkreis (km)" }).selectOption("50");
+    await page.getByRole("textbox", { name: "Berufsfeld" }).fill("Softwareentwickler");
+    await page.getByRole("button", { name: "Suchen" }).click();
+
+    await expect(page.getByText("Softwareentwickler (m/w/d)")).toBeVisible();
+    expect(requestedUrl).toContain("umkreis=50");
+  });
+
   test("AC: Treffer ohne Beschreibung öffnet Originalanzeige in neuem Tab, Feld 'Stellenanzeige' bleibt unverändert", async ({ page, context }) => {
     await page.route("**/api/jobsuche**", (route) =>
       route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(JOB_RESULTS) })

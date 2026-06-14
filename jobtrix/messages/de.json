@@ -125,6 +125,7 @@
     "jobSearchFieldPlaceholder": "z. B. Softwareentwickler",
     "jobSearchLocationLabel": "Ort",
     "jobSearchLocationPlaceholder": "z. B. Berlin",
+    "jobSearchRadiusLabel": "Umkreis (km)",
     "jobSearchButton": "Suchen",
     "jobSearchSearching": "Suche läuft …",
     "jobSearchNoResults": "Keine Treffer gefunden.",

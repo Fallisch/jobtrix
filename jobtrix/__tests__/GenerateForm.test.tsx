@@ -804,6 +804,25 @@ describe("GenerateForm", () => {
       expect(screen.getByRole("button", { name: /jobSearchButton/i })).toBeInTheDocument();
     });
 
+    it("rendert ein Umkreis-Auswahlfeld mit Standardwert 25 km und übergibt den gewählten Wert an die Jobsuche", async () => {
+      mockJobSearch([]);
+
+      render(<GenerateForm />);
+      const radiusSelect = screen.getByRole("combobox", { name: /jobSearchRadiusLabel/i });
+      expect(radiusSelect).toHaveValue("25");
+
+      await userEvent.selectOptions(radiusSelect, "50");
+      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchFieldLabel/i }), "Entwickler");
+      fireEvent.click(screen.getByRole("button", { name: /jobSearchButton/i }));
+
+      await waitFor(() => {
+        expect(screen.getByText(/jobSearchNoResults/i)).toBeInTheDocument();
+      });
+
+      const jobsucheCall = (global.fetch as jest.Mock).mock.calls.find((c) => String(c[0]).startsWith("/api/jobsuche"));
+      expect(jobsucheCall![0]).toContain("umkreis=50");
+    });
+
     it("zeigt Trefferliste mit Titel, Firma, Ort und Link 'Original ansehen' nach Suche", async () => {
       mockJobSearch([
         { title: "Softwareentwickler", company: "Acme GmbH", location: "Berlin", description: "Beschreibungstext", url: "https://example.com/job/1" },

@@ -189,4 +189,28 @@ describe("GET /api/jobsuche", () => {
     const headers = call[1]?.headers as Record<string, string>;
     expect(headers["X-API-Key"]).toBe("jobboerse-jobsuche");
   });
+
+  it("übergibt den umkreis-Parameter an die Arbeitsagentur-API, wenn er angegeben ist", async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({ stellenangebote: [] }),
+    });
+
+    await GET(makeRequest({ was: "Entwickler", wo: "Berlin", umkreis: "50" }));
+
+    const call = (global.fetch as jest.Mock).mock.calls[0];
+    expect(String(call[0])).toContain("umkreis=50");
+  });
+
+  it("übergibt keinen umkreis-Parameter, wenn er nicht angegeben ist", async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({ stellenangebote: [] }),
+    });
+
+    await GET(makeRequest({ was: "Entwickler", wo: "Berlin" }));
+
+    const call = (global.fetch as jest.Mock).mock.calls[0];
+    expect(String(call[0])).not.toContain("umkreis");
+  });
 });

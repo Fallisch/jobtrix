@@ -57,12 +57,14 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const was = searchParams.get("was") ?? "";
   const wo = searchParams.get("wo") ?? "";
+  const umkreis = searchParams.get("umkreis") ?? "";
   const apiKey = process.env.ARBEITSAGENTUR_API_KEY || DEFAULT_API_KEY;
 
   try {
     const params = new URLSearchParams();
     if (was) params.set("was", was);
     if (wo) params.set("wo", wo);
+    if (umkreis) params.set("umkreis", umkreis);
 
     const res = await fetch(`${API_BASE}/jobs?${params.toString()}`, {
       headers: { "X-API-Key": apiKey },

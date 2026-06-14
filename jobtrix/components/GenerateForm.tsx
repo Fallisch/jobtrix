@@ -51,6 +51,7 @@ export default function GenerateForm() {
   const [accentColor, setAccentColor] = useState<string>("#1E3A5F");
   const [jobSearchField, setJobSearchField] = useState("");
   const [jobSearchLocation, setJobSearchLocation] = useState("");
+  const [jobSearchRadius, setJobSearchRadius] = useState("25");
   const [jobSearchLoading, setJobSearchLoading] = useState(false);
   const [jobSearchPerformed, setJobSearchPerformed] = useState(false);
   const [jobResults, setJobResults] = useState<JobSearchResult[]>([]);
@@ -112,6 +113,7 @@ export default function GenerateForm() {
       const params = new URLSearchParams();
       if (jobSearchField.trim()) params.set("was", jobSearchField.trim());
       if (jobSearchLocation.trim()) params.set("wo", jobSearchLocation.trim());
+      if (jobSearchRadius) params.set("umkreis", jobSearchRadius);
 
       const res = await fetch(`/api/jobsuche?${params.toString()}`);
       const data = await res.json();
@@ -138,7 +140,7 @@ export default function GenerateForm() {
       <div className="space-y-4">
         <div className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface p-4 space-y-3">
           <h2 className="text-sm font-semibold text-text">{t("jobSearchTitle")}</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_auto] gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_auto_auto] gap-3">
             <input
               id="jobSearchField"
               type="text"
@@ -157,6 +159,21 @@ export default function GenerateForm() {
               aria-label={t("jobSearchLocationLabel")}
               className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-2.5 text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent"
             />
+            <select
+              id="jobSearchRadius"
+              value={jobSearchRadius}
+              onChange={(e) => setJobSearchRadius(e.target.value)}
+              aria-label={t("jobSearchRadiusLabel")}
+              className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-2.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-accent"
+            >
+              <option value="0">0 km</option>
+              <option value="5">5 km</option>
+              <option value="10">10 km</option>
+              <option value="25">25 km</option>
+              <option value="50">50 km</option>
+              <option value="100">100 km</option>
+              <option value="200">200 km</option>
+            </select>
             <button
               type="button"
               onClick={handleJobSearch}
