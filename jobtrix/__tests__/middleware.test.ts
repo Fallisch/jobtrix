@@ -70,4 +70,16 @@ describe("middleware Route-Schutz", () => {
     const res = await middleware(makeRequest("/de/datenschutz"));
     expect(res.headers.get("location")).toBeFalsy();
   });
+
+  it("lässt /de/agb ohne Session durch", async () => {
+    mockedGetToken.mockResolvedValue(null);
+    const res = await middleware(makeRequest("/de/agb"));
+    expect(res.headers.get("location")).toBeFalsy();
+  });
+
+  it("lässt /de/hilfe ohne Session durch", async () => {
+    mockedGetToken.mockResolvedValue(null);
+    const res = await middleware(makeRequest("/de/hilfe"));
+    expect(res.headers.get("location")).toBeFalsy();
+  });
 });

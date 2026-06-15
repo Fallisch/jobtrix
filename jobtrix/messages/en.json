@@ -225,6 +225,38 @@
     "cookiesHeading": "Cookies",
     "cookiesBody": "We use only technically necessary cookies (e.g. for your login session). No tracking takes place, so no cookie consent banner is required."
   },
+  "agb": {
+    "title": "Terms and Conditions",
+    "subjectHeading": "Subject of the Contract",
+    "subjectBody": "JobTRIX provides AI-powered creation of individual application documents (cover letter and resume) based on the profile data you provide and a job posting.",
+    "packagesHeading": "Packages",
+    "packagesBody": "After a free trial generation, a limited-time package with unlimited generations for a fixed period, as well as a lifetime package with permanent access including all future updates, are available. Current prices and durations can be found on the \"Pricing\" page.",
+    "paymentHeading": "Payment Processing",
+    "paymentBody": "Payment processing for paid packages is handled by the payment provider Stripe via credit card or SEPA direct debit. By completing the purchase, you enter into a payment obligation towards JobTRIX.",
+    "withdrawalHeading": "Right of Withdrawal",
+    "withdrawalBody": "As the generated application documents are digital content not delivered on a physical medium, your statutory right of withdrawal expires prematurely as soon as JobTRIX has begun performing the contract and you have expressly consented to this early performance and confirmed your awareness of the resulting loss of the right of withdrawal.",
+    "liabilityHeading": "Disclaimer for AI-Generated Content",
+    "liabilityBody": "Content created using AI is generated automatically based on your input. No guarantee is given as to the accuracy, completeness, or suitability of the generated content for any particular purpose. You are required to review the generated content yourself before use and adjust it if necessary.",
+    "usageRightsHeading": "Usage Rights to Generated Content",
+    "usageRightsBody": "You may use, edit, and distribute the application documents created with your account without restriction for your own application purposes.",
+    "termsHeading": "Term, Termination, Changes, Applicable Law",
+    "termsBody": "[Placeholder: Details on the contract term, termination options, changes to these Terms, and the applicable law will follow in a later phase]"
+  },
+  "help": {
+    "title": "Help",
+    "applicationQuestion": "How do I create an application?",
+    "applicationAnswer": "First, create your profile. Then use the job search to find a suitable position or insert a job posting manually. JobTRIX then generates your cover letter and resume, which you can download as a PDF or send directly by email.",
+    "packagesQuestion": "What packages are available and what do they cost?",
+    "packagesAnswer": "You get one free trial generation. After that, a limited-time package and a lifetime package are available. Current prices and durations can be found on the \"Pricing\" page.",
+    "jobSearchQuestion": "How does the job search including radius search work?",
+    "jobSearchAnswer": "The job search lets you search for job postings from the German Federal Employment Agency. With the radius search, you can also specify a location and a radius to find jobs near you.",
+    "layoutQuestion": "How do I change the PDF layout, resume style, and dark mode?",
+    "layoutAnswer": "In the generation form, you can select the PDF layout and resume style. You can toggle dark mode using the switch in the header.",
+    "accountQuestion": "How do I export my data or delete my account?",
+    "accountAnswer": "In the \"Account & Privacy\" section of your profile, you can download your data or delete your account.",
+    "supportQuestion": "How can I reach support?",
+    "supportAnswer": "If you have questions, you can reach us by email at [Placeholder: support@example.com]."
+  },
   "pricing": {
     "title": "Access to JobTRIX",
     "subtitle": "Your free trial generation has already been used. Choose a package to create more applications.",

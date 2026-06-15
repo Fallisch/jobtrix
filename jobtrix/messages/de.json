@@ -225,6 +225,38 @@
     "cookiesHeading": "Cookies",
     "cookiesBody": "Wir verwenden ausschließlich technisch notwendige Cookies (z. B. für deine Anmelde-Session). Es findet kein Tracking statt, daher ist kein Cookie-Consent-Banner erforderlich."
   },
+  "agb": {
+    "title": "AGB",
+    "subjectHeading": "Vertragsgegenstand",
+    "subjectBody": "JobTRIX bietet die KI-gestützte Erstellung individueller Bewerbungsunterlagen (Anschreiben und Lebenslauf) auf Basis der von dir hinterlegten Profildaten und einer Stellenanzeige.",
+    "packagesHeading": "Pakete",
+    "packagesBody": "Nach einer kostenlosen Probegenerierung stehen ein zeitlich begrenzter Zugang mit unbegrenzten Generierungen für einen festen Zeitraum sowie ein Lifetime-Zugang mit dauerhaftem Zugriff inklusive aller zukünftigen Updates zur Verfügung. Aktuelle Preise und Laufzeiten findest du auf der Seite \"Preise\".",
+    "paymentHeading": "Zahlungsabwicklung",
+    "paymentBody": "Die Zahlungsabwicklung für kostenpflichtige Pakete erfolgt über den Zahlungsdienstleister Stripe per Kreditkarte oder SEPA-Lastschrift. Mit Abschluss des Kaufvorgangs gehst du eine Zahlungsverpflichtung gegenüber JobTRIX ein.",
+    "withdrawalHeading": "Widerrufsrecht",
+    "withdrawalBody": "Da es sich bei den generierten Bewerbungsunterlagen um digitale Inhalte handelt, die nicht auf einem körperlichen Datenträger geliefert werden, erlischt dein gesetzliches Widerrufsrecht vorzeitig, sobald JobTRIX mit der Ausführung des Vertrags begonnen hat und du dieser vorzeitigen Ausführung ausdrücklich zugestimmt sowie deine Kenntnis vom Erlöschen des Widerrufsrechts bestätigt hast.",
+    "liabilityHeading": "Haftungsausschluss für KI-generierte Inhalte",
+    "liabilityBody": "Die mittels KI erstellten Inhalte werden automatisiert auf Basis deiner Eingaben generiert. Für die inhaltliche Richtigkeit, Vollständigkeit und Eignung für einen bestimmten Zweck wird keine Gewähr übernommen. Du bist verpflichtet, die generierten Inhalte vor Verwendung selbst zu prüfen und ggf. anzupassen.",
+    "usageRightsHeading": "Nutzungsrechte an generierten Inhalten",
+    "usageRightsBody": "Die mit deinem Konto erstellten Bewerbungsunterlagen darfst du uneingeschränkt für deine eigenen Bewerbungszwecke nutzen, bearbeiten und weiterverbreiten.",
+    "termsHeading": "Laufzeit, Kündigung, Änderungen, anwendbares Recht",
+    "termsBody": "[Platzhalter: Angaben zur Vertragslaufzeit, Kündigungsmöglichkeiten, Änderungen dieser AGB sowie zum anwendbaren Recht folgen in einer späteren Phase]"
+  },
+  "help": {
+    "title": "Hilfe",
+    "applicationQuestion": "Wie erstelle ich eine Bewerbung?",
+    "applicationAnswer": "Lege zunächst dein Profil an. Suche dann über die Jobsuche nach einer passenden Stelle oder füge eine Stellenanzeige manuell ein. Anschließend generiert JobTRIX dein Anschreiben und deinen Lebenslauf, die du als PDF herunterladen oder direkt per E-Mail versenden kannst.",
+    "packagesQuestion": "Welche Pakete gibt es und was kosten sie?",
+    "packagesAnswer": "Du hast eine kostenlose Probegenerierung. Danach stehen ein zeitlich begrenztes Paket und ein Lifetime-Paket zur Verfügung. Aktuelle Preise und Laufzeiten findest du auf der Seite \"Preise\".",
+    "jobSearchQuestion": "Wie funktioniert die Jobsuche inklusive Umkreissuche?",
+    "jobSearchAnswer": "Über die Jobsuche kannst du nach Stellenanzeigen der Bundesagentur für Arbeit suchen. Mit der Umkreissuche kannst du zusätzlich einen Ort und einen Radius angeben, um Stellen in deiner Nähe zu finden.",
+    "layoutQuestion": "Wie wechsle ich PDF-Layout, Lebenslauf-Stil und Dark Mode?",
+    "layoutAnswer": "Im Generierungsformular kannst du das PDF-Layout und den Lebenslauf-Stil auswählen. Den Dark Mode kannst du über den Schalter im Header umschalten.",
+    "accountQuestion": "Wie exportiere ich meine Daten oder lösche ich mein Konto?",
+    "accountAnswer": "Im Bereich \"Konto & Datenschutz\" in deinem Profil kannst du deine Daten als Datei herunterladen oder dein Konto löschen.",
+    "supportQuestion": "Wie erreiche ich den Support?",
+    "supportAnswer": "Bei Fragen erreichst du uns per E-Mail unter [Platzhalter: support@example.com]."
+  },
   "pricing": {
     "title": "Zugang zu JobTRIX",
     "subtitle": "Deine kostenlose Probegenerierung wurde bereits genutzt. Wähle ein Paket, um weitere Bewerbungen zu erstellen.",
