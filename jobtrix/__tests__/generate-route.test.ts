@@ -12,7 +12,10 @@ const baseRequest = {
       { id: "2", institution: "HTW Berlin", degree: "M.Sc.", year: "2018" },
     ],
     experience: [],
-    qualifications: ["TypeScript", "React"],
+    qualifications: [
+      { label: "TypeScript", value: 60 },
+      { label: "React", value: 60 },
+    ],
     interests: [],
     email: "",
     phone: "",

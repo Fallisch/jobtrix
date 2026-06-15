@@ -71,8 +71,21 @@ export async function POST(req: NextRequest) {
 
   const profile = await prisma.userProfile.upsert({
     where: { userId: session.user.id },
-    create: { userId: session.user.id, ...data },
-    update: { ...data },
+    create: {
+      userId: session.user.id,
+      ...data,
+      education: data.education as object,
+      experience: data.experience as object,
+      qualifications: data.qualifications as object,
+      interests: data.interests as object,
+    },
+    update: {
+      ...data,
+      education: data.education as object,
+      experience: data.experience as object,
+      qualifications: data.qualifications as object,
+      interests: data.interests as object,
+    },
   });
 
   return NextResponse.json(toProfileData(profile));

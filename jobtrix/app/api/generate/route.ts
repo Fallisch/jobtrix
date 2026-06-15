@@ -26,7 +26,7 @@ function cleanSection(section: string, label: string): string {
 }
 
 function parseResponse(text: string): { emailSubject: string; coverLetter: string; cv: string } {
-  const markers = [...text.matchAll(SECTION_MARKER)];
+  const markers = Array.from(text.matchAll(SECTION_MARKER));
   const betreff = markers.find((m) => m[1].toUpperCase() === "BETREFF");
   const anschreiben = markers.find((m) => m[1].toUpperCase() === "ANSCHREIBEN");
   const lebenslauf = markers.find((m) => m[1].toUpperCase() === "LEBENSLAUF");

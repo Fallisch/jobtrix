@@ -3,6 +3,8 @@ import { validateProfile, ProfileData } from "@/lib/profile-storage";
 const valid: ProfileData = {
   name: "Max Mustermann",
   address: "",
+  email: "",
+  phone: "",
   birthdate: "",
   photo: null,
   education: [{ id: "1", institution: "TU Berlin", degree: "B.Sc.", year: "2015" }],

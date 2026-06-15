@@ -94,7 +94,7 @@ describe("Header", () => {
       data: { user: {}, expires: "" },
       status: "authenticated",
       update: jest.fn(),
-    } as ReturnType<typeof useSession>);
+    } as unknown as ReturnType<typeof useSession>);
 
     render(<Header locale="de" />);
     const link = screen.getByRole("link", { name: "Bewerbung starten" });
@@ -106,7 +106,7 @@ describe("Header", () => {
       data: { user: {}, expires: "" },
       status: "authenticated",
       update: jest.fn(),
-    } as ReturnType<typeof useSession>);
+    } as unknown as ReturnType<typeof useSession>);
 
     render(<Header locale="de" />);
     const link = screen.getByRole("link", { name: "Bewerbungshistorie" });
@@ -118,7 +118,7 @@ describe("Header", () => {
       data: { user: {}, expires: "" },
       status: "authenticated",
       update: jest.fn(),
-    } as ReturnType<typeof useSession>);
+    } as unknown as ReturnType<typeof useSession>);
 
     render(<Header locale="de" />);
     expect(screen.getByRole("button", { name: "Abmelden" })).toBeInTheDocument();
@@ -129,7 +129,7 @@ describe("Header", () => {
       data: { user: {}, expires: "" },
       status: "authenticated",
       update: jest.fn(),
-    } as ReturnType<typeof useSession>);
+    } as unknown as ReturnType<typeof useSession>);
 
     render(<Header locale="de" />);
     await userEvent.click(screen.getByRole("button", { name: "Abmelden" }));

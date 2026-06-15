@@ -84,7 +84,7 @@ describe("RegisterForm", () => {
       ok: true,
       json: async () => ({ id: "user-1", email: "test@example.com" }),
     });
-    mockedSignIn.mockResolvedValue({ error: undefined, status: 200, ok: true, url: null });
+    mockedSignIn.mockResolvedValue({ error: null, status: 200, ok: true, url: null });
 
     render(<RegisterForm />);
 

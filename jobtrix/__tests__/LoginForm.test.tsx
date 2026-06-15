@@ -65,7 +65,7 @@ describe("LoginForm", () => {
   });
 
   it("meldet erfolgreich an und leitet zu /profile weiter", async () => {
-    mockedSignIn.mockResolvedValue({ error: undefined, status: 200, ok: true, url: null });
+    mockedSignIn.mockResolvedValue({ error: null, status: 200, ok: true, url: null });
 
     render(<LoginForm />);
 
