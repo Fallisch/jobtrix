@@ -198,16 +198,17 @@
     "impressumLink": "Impressum",
     "datenschutzLink": "Datenschutz",
     "agbLink": "AGB",
-    "hilfeLink": "Hilfe"
+    "hilfeLink": "Hilfe",
+    "pricingLink": "Preise"
   },
   "impressum": {
     "title": "Impressum",
     "providerHeading": "Angaben gemäß § 5 TMG",
-    "providerBody": "[Platzhalter: Firmenname]\n[Platzhalter: Straße und Hausnummer]\n[Platzhalter: PLZ und Ort]",
-    "representativeHeading": "Vertretungsberechtigte Person",
-    "representativeBody": "[Platzhalter: Name der vertretungsberechtigten Person]",
+    "providerBody": "Faltrix GbR\nAm Schulberg 10\n09569 Oederan",
+    "representativeHeading": "Vertretungsberechtigte Personen",
+    "representativeBody": "Falk Schieck\nPatrick Matthes",
     "contactHeading": "Kontakt",
-    "contactBody": "E-Mail: [Platzhalter: kontakt@example.com]",
+    "contactBody": "Telefon: 01726071910\nE-Mail: [Platzhalter: kontakt@example.com]",
     "vatHeading": "Umsatzsteuer-ID",
     "vatBody": "[Platzhalter: USt-IdNr. gemäß § 27a UStG]"
   },
@@ -215,7 +216,7 @@
     "title": "Datenschutzerklärung",
     "intro": "Diese Datenschutzerklärung informiert dich darüber, welche personenbezogenen Daten bei der Nutzung von JobTRIX verarbeitet werden und zu welchem Zweck.",
     "responsibleHeading": "Verantwortlicher",
-    "responsibleBody": "[Platzhalter: Firmenname]\n[Platzhalter: Straße und Hausnummer]\n[Platzhalter: PLZ und Ort]\nE-Mail: [Platzhalter: kontakt@example.com]",
+    "responsibleBody": "Faltrix GbR\nAm Schulberg 10\n09569 Oederan\nE-Mail: [Platzhalter: kontakt@example.com]",
     "authHeading": "Registrierung, Login & Session",
     "authBody": "Für Registrierung und Login verwenden wir NextAuth. Dabei werden deine E-Mail-Adresse und ein gehashtes Passwort gespeichert. Für angemeldete Sitzungen wird ein Session-Token verwendet.",
     "profileHeading": "Profildaten",

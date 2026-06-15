@@ -198,16 +198,17 @@
     "impressumLink": "Imprint",
     "datenschutzLink": "Privacy Policy",
     "agbLink": "Terms",
-    "hilfeLink": "Help"
+    "hilfeLink": "Help",
+    "pricingLink": "Pricing"
   },
   "impressum": {
     "title": "Imprint",
     "providerHeading": "Information according to § 5 TMG",
-    "providerBody": "[Placeholder: Company name]\n[Placeholder: Street and house number]\n[Placeholder: Postal code and city]",
-    "representativeHeading": "Authorized Representative",
-    "representativeBody": "[Placeholder: Name of the authorized representative]",
+    "providerBody": "Faltrix GbR\nAm Schulberg 10\n09569 Oederan",
+    "representativeHeading": "Authorized Representatives",
+    "representativeBody": "Falk Schieck\nPatrick Matthes",
     "contactHeading": "Contact",
-    "contactBody": "Email: [Placeholder: kontakt@example.com]",
+    "contactBody": "Phone: 01726071910\nEmail: [Placeholder: kontakt@example.com]",
     "vatHeading": "VAT ID",
     "vatBody": "[Placeholder: VAT ID according to § 27a UStG]"
   },
@@ -215,7 +216,7 @@
     "title": "Privacy Policy",
     "intro": "This privacy policy informs you which personal data is processed when using JobTRIX and for what purpose.",
     "responsibleHeading": "Data Controller",
-    "responsibleBody": "[Placeholder: Company name]\n[Placeholder: Street and house number]\n[Placeholder: Postal code and city]\nEmail: [Placeholder: kontakt@example.com]",
+    "responsibleBody": "Faltrix GbR\nAm Schulberg 10\n09569 Oederan\nEmail: [Placeholder: kontakt@example.com]",
     "authHeading": "Registration, Login & Session",
     "authBody": "We use NextAuth for registration and login. Your email address and a hashed password are stored. An authenticated session uses a session token.",
     "profileHeading": "Profile Data",

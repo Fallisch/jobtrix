@@ -42,7 +42,7 @@ export default async function LocaleLayout({
     <NextIntlClientProvider messages={messages}>
       <AuthSessionProvider>
         <Header locale={locale} />
-        <main>{children}</main>
+        <main className="flex-1">{children}</main>
         <Footer locale={locale} />
         <InstallBanner />
       </AuthSessionProvider>

@@ -33,10 +33,10 @@ describe("ImpressumContent", () => {
 
     expect(screen.getByRole("heading", { level: 1, name: "Impressum" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /§ 5 TMG/i })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /vertretungsberechtigte person/i })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /vertretungsberechtigte personen/i })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /kontakt/i })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /umsatzsteuer-id/i })).toBeInTheDocument();
-    expect(screen.getByText(/platzhalter: firmenname/i)).toBeInTheDocument();
+    expect(screen.getByText(/faltrix gbr/i)).toBeInTheDocument();
   });
 
   it("zeigt die Überschrift auf Englisch an", () => {

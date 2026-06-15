@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html suppressHydrationWarning className={inter.variable}>
-      <body className="bg-background text-text font-sans antialiased min-h-screen">
+      <body className="bg-background text-text font-sans antialiased min-h-screen flex flex-col">
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>

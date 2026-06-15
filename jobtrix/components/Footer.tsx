@@ -21,6 +21,9 @@ export default function Footer({ locale }: { locale: string }) {
         <Link href={`/${locale}/hilfe`} className="text-white/80 hover:text-white transition-colors">
           {t("hilfeLink")}
         </Link>
+        <Link href={`/${locale}/pricing`} className="text-white/80 hover:text-white transition-colors">
+          {t("pricingLink")}
+        </Link>
       </div>
     </footer>
   );
