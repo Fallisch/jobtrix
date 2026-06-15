@@ -179,6 +179,11 @@
       "minEducation": "Mindestens ein Ausbildungseintrag erforderlich"
     }
   },
+  "account": {
+    "title": "Konto & Datenschutz",
+    "exportButton": "Meine Daten herunterladen",
+    "exportError": "Daten konnten nicht exportiert werden. Bitte versuche es erneut."
+  },
   "pricing": {
     "title": "Zugang zu JobTRIX",
     "subtitle": "Deine kostenlose Probegenerierung wurde bereits genutzt. Wähle ein Paket, um weitere Bewerbungen zu erstellen.",

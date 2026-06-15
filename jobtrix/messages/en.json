@@ -179,6 +179,11 @@
       "minEducation": "At least one education entry is required"
     }
   },
+  "account": {
+    "title": "Account & Privacy",
+    "exportButton": "Download my data",
+    "exportError": "Could not export your data. Please try again."
+  },
   "pricing": {
     "title": "Access to JobTRIX",
     "subtitle": "Your free trial generation has already been used. Choose a package to create more applications.",
