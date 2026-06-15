@@ -58,4 +58,16 @@ describe("middleware Route-Schutz", () => {
     const res = await middleware(makeRequest("/de/login"));
     expect(res.headers.get("location")).toBeFalsy();
   });
+
+  it("lässt /de/impressum ohne Session durch", async () => {
+    mockedGetToken.mockResolvedValue(null);
+    const res = await middleware(makeRequest("/de/impressum"));
+    expect(res.headers.get("location")).toBeFalsy();
+  });
+
+  it("lässt /de/datenschutz ohne Session durch", async () => {
+    mockedGetToken.mockResolvedValue(null);
+    const res = await middleware(makeRequest("/de/datenschutz"));
+    expect(res.headers.get("location")).toBeFalsy();
+  });
 });

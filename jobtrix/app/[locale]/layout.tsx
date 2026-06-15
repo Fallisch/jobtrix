@@ -4,6 +4,7 @@ import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import InstallBanner from "@/components/InstallBanner";
 import AuthSessionProvider from "@/components/AuthSessionProvider";
 
@@ -42,6 +43,7 @@ export default async function LocaleLayout({
       <AuthSessionProvider>
         <Header locale={locale} />
         <main>{children}</main>
+        <Footer locale={locale} />
         <InstallBanner />
       </AuthSessionProvider>
     </NextIntlClientProvider>

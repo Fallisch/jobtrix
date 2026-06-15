@@ -184,6 +184,47 @@
     "exportButton": "Download my data",
     "exportError": "Could not export your data. Please try again."
   },
+  "footer": {
+    "impressumLink": "Imprint",
+    "datenschutzLink": "Privacy Policy",
+    "agbLink": "Terms",
+    "hilfeLink": "Help"
+  },
+  "impressum": {
+    "title": "Imprint",
+    "providerHeading": "Information according to § 5 TMG",
+    "providerBody": "[Placeholder: Company name]\n[Placeholder: Street and house number]\n[Placeholder: Postal code and city]",
+    "representativeHeading": "Authorized Representative",
+    "representativeBody": "[Placeholder: Name of the authorized representative]",
+    "contactHeading": "Contact",
+    "contactBody": "Email: [Placeholder: kontakt@example.com]",
+    "vatHeading": "VAT ID",
+    "vatBody": "[Placeholder: VAT ID according to § 27a UStG]"
+  },
+  "datenschutz": {
+    "title": "Privacy Policy",
+    "intro": "This privacy policy informs you which personal data is processed when using JobTRIX and for what purpose.",
+    "responsibleHeading": "Data Controller",
+    "responsibleBody": "[Placeholder: Company name]\n[Placeholder: Street and house number]\n[Placeholder: Postal code and city]\nEmail: [Placeholder: kontakt@example.com]",
+    "authHeading": "Registration, Login & Session",
+    "authBody": "We use NextAuth for registration and login. Your email address and a hashed password are stored. An authenticated session uses a session token.",
+    "profileHeading": "Profile Data",
+    "profileBody": "The data you enter in your profile (e.g. name, address, education, work experience, qualifications, interests and photo) is stored to generate your application documents.",
+    "aiHeading": "AI-Powered Generation",
+    "aiBody": "To generate cover letters and resumes, your profile data and the job posting are sent to the Anthropic Claude API.",
+    "jobSearchHeading": "Job Search",
+    "jobSearchBody": "For the job search including radius search we use the job search API of the German Federal Employment Agency (Bundesagentur für Arbeit). Your search terms and location data are sent to this API.",
+    "paymentHeading": "Payment Processing",
+    "paymentBody": "Payments for paid packages are processed via Stripe. Payment data is processed directly by Stripe and is not stored by us.",
+    "emailHeading": "Email Delivery",
+    "emailBody": "We use the email service provider Brevo to send application emails as well as account-related emails (e.g. password reset).",
+    "hostingHeading": "Hosting",
+    "hostingBody": "[Placeholder: Hosting provider details will follow in a later phase]",
+    "retentionHeading": "Retention Period & Your Rights",
+    "retentionBody": "Your data is stored as long as your account exists. In the \"Account & Privacy\" section of your profile you can download your data or delete your account at any time.",
+    "cookiesHeading": "Cookies",
+    "cookiesBody": "We use only technically necessary cookies (e.g. for your login session). No tracking takes place, so no cookie consent banner is required."
+  },
   "pricing": {
     "title": "Access to JobTRIX",
     "subtitle": "Your free trial generation has already been used. Choose a package to create more applications.",

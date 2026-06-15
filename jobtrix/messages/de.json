@@ -184,6 +184,47 @@
     "exportButton": "Meine Daten herunterladen",
     "exportError": "Daten konnten nicht exportiert werden. Bitte versuche es erneut."
   },
+  "footer": {
+    "impressumLink": "Impressum",
+    "datenschutzLink": "Datenschutz",
+    "agbLink": "AGB",
+    "hilfeLink": "Hilfe"
+  },
+  "impressum": {
+    "title": "Impressum",
+    "providerHeading": "Angaben gemäß § 5 TMG",
+    "providerBody": "[Platzhalter: Firmenname]\n[Platzhalter: Straße und Hausnummer]\n[Platzhalter: PLZ und Ort]",
+    "representativeHeading": "Vertretungsberechtigte Person",
+    "representativeBody": "[Platzhalter: Name der vertretungsberechtigten Person]",
+    "contactHeading": "Kontakt",
+    "contactBody": "E-Mail: [Platzhalter: kontakt@example.com]",
+    "vatHeading": "Umsatzsteuer-ID",
+    "vatBody": "[Platzhalter: USt-IdNr. gemäß § 27a UStG]"
+  },
+  "datenschutz": {
+    "title": "Datenschutzerklärung",
+    "intro": "Diese Datenschutzerklärung informiert dich darüber, welche personenbezogenen Daten bei der Nutzung von JobTRIX verarbeitet werden und zu welchem Zweck.",
+    "responsibleHeading": "Verantwortlicher",
+    "responsibleBody": "[Platzhalter: Firmenname]\n[Platzhalter: Straße und Hausnummer]\n[Platzhalter: PLZ und Ort]\nE-Mail: [Platzhalter: kontakt@example.com]",
+    "authHeading": "Registrierung, Login & Session",
+    "authBody": "Für Registrierung und Login verwenden wir NextAuth. Dabei werden deine E-Mail-Adresse und ein gehashtes Passwort gespeichert. Für angemeldete Sitzungen wird ein Session-Token verwendet.",
+    "profileHeading": "Profildaten",
+    "profileBody": "Die von dir im Profil eingegebenen Daten (z. B. Name, Adresse, Ausbildung, Berufserfahrung, Qualifikationen, Interessen und Foto) werden gespeichert, um daraus Bewerbungsunterlagen zu erstellen.",
+    "aiHeading": "KI-gestützte Generierung",
+    "aiBody": "Für die Erstellung von Anschreiben und Lebenslauf werden deine Profildaten und die Stellenanzeige an die Anthropic Claude API übermittelt.",
+    "jobSearchHeading": "Jobsuche",
+    "jobSearchBody": "Für die Jobsuche inkl. Umkreissuche nutzen wir die Jobsuche-API der Bundesagentur für Arbeit. Deine Suchbegriffe und Standortangaben werden zur Anfrage an diese API übermittelt.",
+    "paymentHeading": "Zahlungsabwicklung",
+    "paymentBody": "Zahlungen für kostenpflichtige Pakete werden über Stripe abgewickelt. Zahlungsdaten werden direkt von Stripe verarbeitet und nicht von uns gespeichert.",
+    "emailHeading": "E-Mail-Versand",
+    "emailBody": "Für den Versand von Bewerbungs-E-Mails sowie kontobezogenen E-Mails (z. B. Passwort-Reset) nutzen wir den E-Mail-Dienstleister Brevo.",
+    "hostingHeading": "Hosting",
+    "hostingBody": "[Platzhalter: Angaben zum Hosting-Anbieter folgen in einer späteren Phase]",
+    "retentionHeading": "Speicherdauer & deine Rechte",
+    "retentionBody": "Deine Daten werden gespeichert, solange dein Konto besteht. Im Bereich \"Konto & Datenschutz\" in deinem Profil kannst du jederzeit deine Daten herunterladen oder dein Konto löschen.",
+    "cookiesHeading": "Cookies",
+    "cookiesBody": "Wir verwenden ausschließlich technisch notwendige Cookies (z. B. für deine Anmelde-Session). Es findet kein Tracking statt, daher ist kein Cookie-Consent-Banner erforderlich."
+  },
   "pricing": {
     "title": "Zugang zu JobTRIX",
     "subtitle": "Deine kostenlose Probegenerierung wurde bereits genutzt. Wähle ein Paket, um weitere Bewerbungen zu erstellen.",
