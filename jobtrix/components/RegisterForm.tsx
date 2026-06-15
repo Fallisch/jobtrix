@@ -122,7 +122,17 @@ export default function RegisterForm() {
                 onChange={(e) => setTermsAccepted(e.target.checked)}
                 className="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-accent focus:ring-accent"
               />
-              {t("termsLabel")}
+              <span>
+                {t("termsLabelPrefix")}
+                <Link href={`/${locale}/agb`} target="_blank" className="text-accent hover:underline">
+                  {t("termsLabelAgbLink")}
+                </Link>
+                {t("termsLabelMiddle")}
+                <Link href={`/${locale}/datenschutz`} target="_blank" className="text-accent hover:underline">
+                  {t("termsLabelDatenschutzLink")}
+                </Link>
+                {t("termsLabelSuffix")}
+              </span>
             </label>
             {errors.termsAccepted && (
               <p className="text-red-600 dark:text-red-400 text-sm mt-1">{t(`errors.termsAccepted.${errors.termsAccepted}`)}</p>

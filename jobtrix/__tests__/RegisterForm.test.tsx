@@ -102,6 +102,18 @@ describe("RegisterForm", () => {
     await waitFor(() => expect(mockPush).toHaveBeenCalledWith("/de/profile"));
   });
 
+  it("verlinkt AGB und Datenschutzbestimmungen im Zustimmungs-Label, geöffnet in neuem Tab", () => {
+    render(<RegisterForm />);
+
+    const agbLink = screen.getByRole("link", { name: "AGB" });
+    expect(agbLink).toHaveAttribute("href", "/de/agb");
+    expect(agbLink).toHaveAttribute("target", "_blank");
+
+    const datenschutzLink = screen.getByRole("link", { name: "Datenschutzbestimmungen" });
+    expect(datenschutzLink).toHaveAttribute("href", "/de/datenschutz");
+    expect(datenschutzLink).toHaveAttribute("target", "_blank");
+  });
+
   it("zeigt eine Fehlermeldung wenn die E-Mail-Adresse bereits vergeben ist", async () => {
     (global.fetch as jest.Mock).mockResolvedValue({
       ok: false,

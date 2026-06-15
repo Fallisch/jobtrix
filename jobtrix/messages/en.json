@@ -23,7 +23,11 @@
       "emailLabel": "Email",
       "passwordLabel": "Password",
       "passwordConfirmLabel": "Confirm password",
-      "termsLabel": "I accept the terms and conditions and the privacy policy.",
+      "termsLabelPrefix": "I accept the ",
+      "termsLabelAgbLink": "terms and conditions",
+      "termsLabelMiddle": " and the ",
+      "termsLabelDatenschutzLink": "privacy policy",
+      "termsLabelSuffix": ".",
       "submit": "Register",
       "loginLink": "Already have an account? Log in",
       "errors": {

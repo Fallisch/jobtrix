@@ -23,7 +23,11 @@
       "emailLabel": "E-Mail",
       "passwordLabel": "Passwort",
       "passwordConfirmLabel": "Passwort bestätigen",
-      "termsLabel": "Ich akzeptiere die AGB und die Datenschutzbestimmungen.",
+      "termsLabelPrefix": "Ich akzeptiere die ",
+      "termsLabelAgbLink": "AGB",
+      "termsLabelMiddle": " und die ",
+      "termsLabelDatenschutzLink": "Datenschutzbestimmungen",
+      "termsLabelSuffix": ".",
       "submit": "Registrieren",
       "loginLink": "Bereits registriert? Jetzt anmelden",
       "errors": {
