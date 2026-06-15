@@ -186,7 +186,13 @@
   "account": {
     "title": "Konto & Datenschutz",
     "exportButton": "Meine Daten herunterladen",
-    "exportError": "Daten konnten nicht exportiert werden. Bitte versuche es erneut."
+    "exportError": "Daten konnten nicht exportiert werden. Bitte versuche es erneut.",
+    "deleteButton": "Konto löschen",
+    "deleteWarning": "Diese Aktion kann nicht rückgängig gemacht werden. Alle deine Daten werden unwiederbringlich gelöscht.",
+    "deletePasswordLabel": "Aktuelles Passwort",
+    "deleteConfirmButton": "Konto endgültig löschen",
+    "deleteWrongPassword": "Das eingegebene Passwort ist falsch.",
+    "deleteGenericError": "Konto konnte nicht gelöscht werden. Bitte versuche es erneut."
   },
   "footer": {
     "impressumLink": "Impressum",

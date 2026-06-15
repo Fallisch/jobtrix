@@ -2,10 +2,16 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { useParams } from "next/navigation";
+import { signOut } from "next-auth/react";
 
 export default function AccountSettings() {
   const t = useTranslations("account");
+  const { locale } = useParams<{ locale: string }>();
   const [error, setError] = useState<string | null>(null);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deletePassword, setDeletePassword] = useState("");
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   async function handleExport() {
     try {
@@ -27,6 +33,23 @@ export default function AccountSettings() {
     }
   }
 
+  async function handleDeleteAccount() {
+    try {
+      const res = await fetch("/api/account/delete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: deletePassword }),
+      });
+      if (!res.ok) {
+        setDeleteError(t("deleteWrongPassword"));
+        return;
+      }
+      await signOut({ callbackUrl: `/${locale}` });
+    } catch {
+      setDeleteError(t("deleteGenericError"));
+    }
+  }
+
   return (
     <div className="max-w-2xl mx-auto px-4 pb-8 space-y-4">
       <h2 className="text-lg font-semibold text-primary dark:text-accent">{t("title")}</h2>
@@ -38,6 +61,43 @@ export default function AccountSettings() {
       >
         {t("exportButton")}
       </button>
+
+      <div>
+        <button
+          type="button"
+          onClick={() => setDeleteOpen((open) => !open)}
+          className="rounded-full py-2 px-4 text-sm font-semibold border border-gray-200 dark:border-gray-700 text-red-600 dark:text-red-400 hover:border-red-600 dark:hover:border-red-500 hover:bg-red-50 dark:hover:bg-red-950/40 transition"
+        >
+          {t("deleteButton")}
+        </button>
+      </div>
+
+      {deleteOpen && (
+        <div className="rounded-xl border border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-950/40 p-4 space-y-3">
+          <p className="text-sm text-red-700 dark:text-red-300">{t("deleteWarning")}</p>
+          {deleteError && <p className="text-red-600 dark:text-red-400 text-sm">{deleteError}</p>}
+          <div>
+            <label htmlFor="delete-password" className="block text-sm font-medium mb-1">
+              {t("deletePasswordLabel")}
+            </label>
+            <input
+              id="delete-password"
+              type="password"
+              value={deletePassword}
+              onChange={(e) => setDeletePassword(e.target.value)}
+              className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-2.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-accent"
+            />
+          </div>
+          <button
+            type="button"
+            onClick={handleDeleteAccount}
+            disabled={!deletePassword}
+            className="rounded-full py-2 px-4 text-sm font-semibold bg-red-600 text-white hover:bg-red-700 transition disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            {t("deleteConfirmButton")}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

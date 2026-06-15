@@ -2,6 +2,15 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import AccountSettings from "@/components/AccountSettings";
 
+const mockSignOut = jest.fn();
+jest.mock("next-auth/react", () => ({
+  signOut: (...args: unknown[]) => mockSignOut(...args),
+}));
+
+jest.mock("next/navigation", () => ({
+  useParams: () => ({ locale: "de" }),
+}));
+
 const mockLocaleState: { locale: "de" | "en" } = { locale: "de" };
 
 jest.mock("next-intl", () => {
@@ -38,9 +47,25 @@ function mockFetch({ ok = true }: { ok?: boolean } = {}) {
   ) as jest.Mock;
 }
 
+function mockDeleteFetch({ ok = true }: { ok?: boolean } = {}) {
+  global.fetch = jest.fn((url: string) => {
+    if (url === "/api/account/delete") {
+      return Promise.resolve({
+        ok,
+        json: async () => (ok ? { success: true } : { error: "wrong_password" }),
+      } as Response);
+    }
+    return Promise.resolve({
+      ok: true,
+      blob: async () => new Blob(["{}"], { type: "application/json" }),
+    } as Response);
+  }) as jest.Mock;
+}
+
 beforeEach(() => {
   setLocale("de");
   mockFetch();
+  mockSignOut.mockReset();
   global.URL.createObjectURL = jest.fn(() => "blob:mock-url");
   global.URL.revokeObjectURL = jest.fn();
 });
@@ -72,6 +97,68 @@ describe("AccountSettings", () => {
 
     await waitFor(() => {
       expect(screen.getByText(/daten konnten nicht exportiert werden/i)).toBeInTheDocument();
+    });
+  });
+
+  it("öffnet den Bestätigungsbereich mit Passwortfeld beim Klick auf 'Konto löschen'", async () => {
+    const user = userEvent.setup();
+    render(<AccountSettings />);
+
+    expect(screen.queryByLabelText(/aktuelles passwort/i)).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /^konto löschen$/i }));
+
+    expect(screen.getByLabelText(/aktuelles passwort/i)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /konto endgültig löschen/i })).toBeInTheDocument();
+  });
+
+  it("aktiviert 'Konto endgültig löschen' erst nach Eingabe des Passworts", async () => {
+    const user = userEvent.setup();
+    render(<AccountSettings />);
+
+    await user.click(screen.getByRole("button", { name: /^konto löschen$/i }));
+
+    const confirmButton = screen.getByRole("button", { name: /konto endgültig löschen/i });
+    expect(confirmButton).toBeDisabled();
+
+    await user.type(screen.getByLabelText(/aktuelles passwort/i), "mein-passwort");
+
+    expect(confirmButton).toBeEnabled();
+  });
+
+  it("zeigt bei falschem Passwort eine Fehlermeldung und meldet nicht ab", async () => {
+    const user = userEvent.setup();
+    mockDeleteFetch({ ok: false });
+    render(<AccountSettings />);
+
+    await user.click(screen.getByRole("button", { name: /^konto löschen$/i }));
+    await user.type(screen.getByLabelText(/aktuelles passwort/i), "falsches-passwort");
+    await user.click(screen.getByRole("button", { name: /konto endgültig löschen/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText(/passwort ist falsch/i)).toBeInTheDocument();
+    });
+    expect(mockSignOut).not.toHaveBeenCalled();
+  });
+
+  it("löscht das Konto bei korrektem Passwort und meldet den Nutzer ab", async () => {
+    const user = userEvent.setup();
+    mockDeleteFetch({ ok: true });
+    render(<AccountSettings />);
+
+    await user.click(screen.getByRole("button", { name: /^konto löschen$/i }));
+    await user.type(screen.getByLabelText(/aktuelles passwort/i), "richtiges-passwort");
+    await user.click(screen.getByRole("button", { name: /konto endgültig löschen/i }));
+
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalledWith(
+        "/api/account/delete",
+        expect.objectContaining({
+          method: "POST",
+          body: JSON.stringify({ password: "richtiges-passwort" }),
+        })
+      );
+      expect(mockSignOut).toHaveBeenCalledWith({ callbackUrl: "/de" });
     });
   });
 });
