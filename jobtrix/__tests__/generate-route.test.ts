@@ -63,3 +63,29 @@ describe("buildPrompt – Berufserfahrung", () => {
     expect(prompt).toContain("Backend-Entwicklung");
   });
 });
+
+describe("buildPrompt – Initiativbewerbung", () => {
+  it("enthält 'Initiativbewerbung' im Prompt wenn isInitiativbewerbung true", () => {
+    const prompt = buildPrompt({
+      ...baseRequest,
+      isInitiativbewerbung: true,
+      targetCompany: "Musterfirma GmbH",
+    });
+    expect(prompt).toContain("Initiativbewerbung");
+    expect(prompt).toContain("Musterfirma GmbH");
+  });
+
+  it("enthält keinen Stellenanzeige-Abschnitt wenn isInitiativbewerbung true", () => {
+    const prompt = buildPrompt({
+      ...baseRequest,
+      isInitiativbewerbung: true,
+      targetCompany: "Musterfirma GmbH",
+    });
+    expect(prompt).not.toContain("Stellenanzeige:");
+  });
+
+  it("enthält Stellenanzeige wenn isInitiativbewerbung false", () => {
+    const prompt = buildPrompt({ ...baseRequest });
+    expect(prompt).toContain("Stellenanzeige:");
+  });
+});

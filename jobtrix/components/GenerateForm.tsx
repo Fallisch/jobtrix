@@ -49,6 +49,8 @@ export default function GenerateForm() {
   const [selectedTemplate, setSelectedTemplate] = useState<"classic" | "modern" | "traditional" | "accent" | "creative">("classic");
   const [cvStyle, setCvStyle] = useState<"classic" | "american">("classic");
   const [accentColor, setAccentColor] = useState<string>("#1E3A5F");
+  const [isInitiativbewerbung, setIsInitiativbewerbung] = useState(false);
+  const [targetCompany, setTargetCompany] = useState("");
   const [jobSearchField, setJobSearchField] = useState("");
   const [jobSearchLocation, setJobSearchLocation] = useState("");
   const [jobSearchRadius, setJobSearchRadius] = useState("25");
@@ -73,7 +75,7 @@ export default function GenerateForm() {
     })();
   }, []);
 
-  const canGenerate = jobPosting.trim().length > 0 && hasProfile;
+  const canGenerate = hasProfile && (isInitiativbewerbung ? targetCompany.trim().length > 0 : jobPosting.trim().length > 0);
 
   async function handleGenerate() {
     setLoading(true);
@@ -85,7 +87,7 @@ export default function GenerateForm() {
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ jobPosting, jobTitle, companyName, contactPerson, profile, cvStyle, template: selectedTemplate, accentColor }),
+        body: JSON.stringify({ jobPosting, jobTitle, companyName, contactPerson, profile, cvStyle, template: selectedTemplate, accentColor, isInitiativbewerbung, targetCompany }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -218,20 +220,50 @@ export default function GenerateForm() {
           )}
         </div>
 
-        <div>
-          <label htmlFor="jobPosting" className="block text-sm font-medium text-text mb-1">
-            {t("jobPostingLabel")}
-          </label>
-          <textarea
-            id="jobPosting"
-            value={jobPosting}
-            onChange={(e) => setJobPosting(e.target.value)}
-            rows={8}
-            className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-3 text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent resize-y"
-            placeholder={t("jobPostingPlaceholder")}
-            aria-label={t("jobPostingLabel")}
+        <div className="flex items-center gap-3">
+          <input
+            type="checkbox"
+            id="initiativbewerbung"
+            checked={isInitiativbewerbung}
+            onChange={(e) => setIsInitiativbewerbung(e.target.checked)}
+            className="w-4 h-4 accent-accent cursor-pointer"
           />
+          <label htmlFor="initiativbewerbung" className="text-sm font-medium text-text cursor-pointer select-none">
+            {t("initiativbewerbungLabel")}
+          </label>
         </div>
+
+        {isInitiativbewerbung ? (
+          <div>
+            <label htmlFor="targetCompany" className="block text-sm font-medium text-text mb-1">
+              {t("targetCompanyLabel")}
+            </label>
+            <input
+              id="targetCompany"
+              type="text"
+              value={targetCompany}
+              onChange={(e) => setTargetCompany(e.target.value)}
+              placeholder={t("targetCompanyPlaceholder")}
+              aria-label={t("targetCompanyLabel")}
+              className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-3 text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent"
+            />
+          </div>
+        ) : (
+          <div>
+            <label htmlFor="jobPosting" className="block text-sm font-medium text-text mb-1">
+              {t("jobPostingLabel")}
+            </label>
+            <textarea
+              id="jobPosting"
+              value={jobPosting}
+              onChange={(e) => setJobPosting(e.target.value)}
+              rows={8}
+              className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-3 text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent resize-y"
+              placeholder={t("jobPostingPlaceholder")}
+              aria-label={t("jobPostingLabel")}
+            />
+          </div>
+        )}
 
         <div>
           <label htmlFor="jobTitle" className="block text-sm font-medium text-text mb-1">

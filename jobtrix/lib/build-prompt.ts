@@ -9,10 +9,12 @@ export interface GenerateRequest {
   cvStyle?: "classic" | "american";
   template?: "classic" | "modern" | "traditional" | "accent" | "creative";
   accentColor?: string;
+  isInitiativbewerbung?: boolean;
+  targetCompany?: string;
 }
 
 export function buildPrompt(req: GenerateRequest): string {
-  const { jobPosting, companyName, contactPerson, profile, cvStyle } = req;
+  const { jobPosting, companyName, contactPerson, profile, cvStyle, isInitiativbewerbung, targetCompany } = req;
 
   const eduText = profile.education
     .map((e) => `${e.degree} – ${e.institution} (${e.year})`)
@@ -23,10 +25,25 @@ export function buildPrompt(req: GenerateRequest): string {
   const qualText = profile.qualifications.map((q) => q.label).join(", ");
   const interestsText = profile.interests.map((i) => i.label).join(", ");
 
+  const effectiveCompany = isInitiativbewerbung ? targetCompany : companyName;
+
+  const jobSection = isInitiativbewerbung
+    ? `Art der Bewerbung: Initiativbewerbung${targetCompany ? ` bei ${targetCompany}` : ""}
+Erstelle ein allgemeines Anschreiben ohne Bezug auf eine konkrete Stellenanzeige. Das Anschreiben soll die Stärken und Qualifikationen des Bewerbers hervorheben und das Interesse am Unternehmen begründen.`
+    : `Stellenanzeige:\n${jobPosting}`;
+
+  const betreffHinweis = isInitiativbewerbung
+    ? `1. Einen Betreffvorschlag für die Bewerbungs-E-Mail (Format: "Initiativbewerbung – [Name des Bewerbers]")`
+    : `1. Einen Betreffvorschlag für die Bewerbungs-E-Mail (Format: "Bewerbung als [erkannter Stellentitel aus der Stellenanzeige] – [Name des Bewerbers]")`;
+
+  const hauptteilHinweis = isInitiativbewerbung
+    ? `- Hauptteil (Interest & Desire): Hebe die Qualifikationen und Erfahrungen des Bewerbers hervor und zeige, welchen Mehrwert er dem Unternehmen bieten kann – ohne Bezug auf eine konkrete Stelle.`
+    : `- Hauptteil (Interest & Desire): Verknüpfe die Qualifikationen und Erfahrungen des Bewerbers konkret mit den Anforderungen aus der Stellenanzeige und zeige den Mehrwert für das Unternehmen – keine reine Aufzählung von Eigenschaften.`;
+
   return `Du bist ein Karriereberater und erstellst professionelle deutsche Bewerbungsunterlagen.
 
 Erstelle auf Basis der folgenden Daten:
-1. Einen Betreffvorschlag für die Bewerbungs-E-Mail (Format: "Bewerbung als [erkannter Stellentitel aus der Stellenanzeige] – [Name des Bewerbers]")
+${betreffHinweis}
 2. Ein professionelles deutsches Anschreiben
 3. Einen strukturierten deutschen Lebenslauf
 
@@ -39,11 +56,10 @@ ${eduText}
 ${profile.experience.length > 0 ? `Berufserfahrung:\n${expText}\n` : ""}Qualifikationen: ${qualText}
 ${profile.interests.length > 0 ? `Persönliche Interessen: ${interestsText}` : ""}
 
-${companyName ? `Unternehmen: ${companyName}` : ""}
+${effectiveCompany ? `Unternehmen: ${effectiveCompany}` : ""}
 ${contactPerson ? `Ansprechpartner: ${contactPerson}` : ""}
 
-Stellenanzeige:
-${jobPosting}
+${jobSection}
 
 ${cvStyle === "american" ? "Sortiere Berufserfahrung und Ausbildung antichronologisch – neuester Eintrag zuerst.\n\n" : ""}Schreibstil – halte diese Regeln strikt ein:
 - Verwende eine natürliche, leicht unregelmäßige Satzstruktur: variiere Satzlänge und Satzbau bewusst, mische kurze Sätze mit längeren.
@@ -55,7 +71,7 @@ ${cvStyle === "american" ? "Sortiere Berufserfahrung und Ausbildung antichronolo
 
 Aufbau des Anschreibens (AIDA-Prinzip) – halte diese Struktur ein:
 - Einstieg (Attention): Kein Standardeinstieg wie „Mit großem Interesse habe ich Ihre Stellenanzeige gelesen" oder „Hiermit bewerbe ich mich auf die Position als..." – starte mit einem konkreten, individuellen Aufhänger zu Unternehmen, Aufgabe oder eigener Motivation.
-- Hauptteil (Interest & Desire): Verknüpfe die Qualifikationen und Erfahrungen des Bewerbers konkret mit den Anforderungen aus der Stellenanzeige und zeige den Mehrwert für das Unternehmen – keine reine Aufzählung von Eigenschaften.
+${hauptteilHinweis}
 - Schluss (Action): Selbstbewusster, individueller Abschluss mit konkretem nächsten Schritt (siehe Regel zu Schlussfloskeln oben).
 
 Wichtig: Schreibe Anschreiben und Lebenslauf in reinem Klartext ohne Markdown-Formatierung –
