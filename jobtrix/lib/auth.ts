@@ -3,8 +3,16 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import type { NextAuthOptions, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "@/lib/prisma";
+import { checkRateLimit } from "@/lib/rate-limit";
 
-export async function verifyCredentials(email: string, password: string): Promise<User | null> {
+export async function verifyCredentials(
+  email: string,
+  password: string,
+  ip = "unknown"
+): Promise<User | null> {
+  const key = `login:${email}`;
+  if (!(await checkRateLimit(key))) return null;
+
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user) return null;
 

@@ -2,8 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { generateResetToken } from "@/lib/reset-token";
 import { sendPasswordResetEmail } from "@/lib/email";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 
 export async function POST(request: NextRequest) {
+  const ip = getClientIp(request);
+  if (!(await checkRateLimit(`forgot-password:${ip}`))) {
+    return NextResponse.json({ error: "tooManyRequests" }, { status: 429 });
+  }
+
   const { email } = (await request.json()) as { email?: string };
 
   if (email) {

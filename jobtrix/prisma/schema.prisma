@@ -114,3 +114,10 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
+
+model RateLimitEntry {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  windowStart DateTime @default(now())
+  attempts    Int      @default(0)
+}
