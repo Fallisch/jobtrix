@@ -385,7 +385,7 @@ describe("ProfileForm", () => {
   });
 
   describe("Sprachpräfix nach Speichern (Issue #25)", () => {
-    it("navigiert nach erfolgreichem Speichern unter /en/profile zu /en", async () => {
+    it("navigiert nach erfolgreichem Speichern unter /en/profile zu /en/generate", async () => {
       setLocale("en");
       const user = userEvent.setup();
       render(<ProfileForm />);
@@ -395,11 +395,11 @@ describe("ProfileForm", () => {
       await user.click(screen.getByRole("button", { name: /^save$/i }));
 
       await waitFor(() => {
-        expect(mockPush).toHaveBeenCalledWith("/en");
+        expect(mockPush).toHaveBeenCalledWith("/en/generate");
       });
     });
 
-    it("navigiert nach erfolgreichem Speichern unter /de/profile zu /de", async () => {
+    it("navigiert nach erfolgreichem Speichern unter /de/profile zu /de/generate", async () => {
       const user = userEvent.setup();
       render(<ProfileForm />);
 
@@ -408,7 +408,7 @@ describe("ProfileForm", () => {
       await user.click(screen.getByRole("button", { name: /speichern/i }));
 
       await waitFor(() => {
-        expect(mockPush).toHaveBeenCalledWith("/de");
+        expect(mockPush).toHaveBeenCalledWith("/de/generate");
       });
     });
   });

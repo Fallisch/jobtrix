@@ -191,7 +191,7 @@ export default function ProfileForm() {
       }
       setSaveError(null);
       sessionStorage.removeItem("profile-draft");
-      router.push(`/${locale}`);
+      router.push(`/${locale}/generate`);
     } catch {
       setSaveError(t("saveError"));
     }
