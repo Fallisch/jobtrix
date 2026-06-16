@@ -7,7 +7,37 @@
   "home": {
     "headline": "Applications in minutes",
     "subline": "Create your profile, paste a job listing – JobTRIX automatically generates your cover letter and CV.",
-    "cta": "Register for free"
+    "cta": "Register for free",
+    "howItWorks": {
+      "title": "How it works",
+      "step1Title": "Create your profile",
+      "step1Desc": "Enter your details once – education, experience, qualifications.",
+      "step2Title": "Find a job",
+      "step2Desc": "Use the built-in job search or paste a job listing directly.",
+      "step3Title": "Generate your application",
+      "step3Desc": "JobTRIX creates your cover letter and CV – ready to download."
+    },
+    "features": {
+      "title": "What JobTRIX can do",
+      "pdf": "5 professional PDF layouts",
+      "pdfDesc": "Classic, Modern, Traditional, Accent and Creative – for every occasion.",
+      "ai": "AI-generated cover letter",
+      "aiDesc": "Tailored to the job listing, created in seconds.",
+      "email": "Email draft included",
+      "emailDesc": "Ready to send – subject and body are generated automatically.",
+      "jobSearch": "Job search via Federal Employment Agency",
+      "jobSearchDesc": "Find job listings directly in the tool and import them."
+    },
+    "pricingTeaser": {
+      "title": "Simple pricing, no subscription",
+      "desc": "One free trial generation – then choose between a limited-time plan or a lifetime package.",
+      "link": "View all prices"
+    },
+    "finalCta": {
+      "title": "Start your next application now",
+      "desc": "Done in minutes. Try it for free.",
+      "cta": "Register for free"
+    }
   },
   "nav": {
     "profile": "Profile",

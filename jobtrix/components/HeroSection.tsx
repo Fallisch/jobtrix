@@ -13,6 +13,7 @@ interface HeroSectionProps {
 export default function HeroSection({ locale, headline, subline, cta }: HeroSectionProps) {
   return (
     <motion.section
+      data-testid="hero"
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}

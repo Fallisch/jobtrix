@@ -7,7 +7,37 @@
   "home": {
     "headline": "Bewerbungen in Minuten",
     "subline": "Profil anlegen, Stellenanzeige einfügen – JobTRIX generiert dein Anschreiben und deinen Lebenslauf automatisch.",
-    "cta": "Kostenlos registrieren"
+    "cta": "Kostenlos registrieren",
+    "howItWorks": {
+      "title": "Wie es funktioniert",
+      "step1Title": "Profil anlegen",
+      "step1Desc": "Trage einmalig deine Daten ein – Ausbildung, Berufserfahrung, Qualifikationen.",
+      "step2Title": "Stelle suchen",
+      "step2Desc": "Nutze die integrierte Jobsuche oder füge eine Stellenanzeige direkt ein.",
+      "step3Title": "Bewerbung generieren",
+      "step3Desc": "JobTRIX erstellt Anschreiben und Lebenslauf – fertig zum Download."
+    },
+    "features": {
+      "title": "Was JobTRIX kann",
+      "pdf": "5 professionelle PDF-Layouts",
+      "pdfDesc": "Klassisch, Modern, Traditionell, Akzent und Kreativ – für jeden Anlass.",
+      "ai": "KI-generiertes Anschreiben",
+      "aiDesc": "Individuell auf die Stellenanzeige zugeschnitten, in Sekunden.",
+      "email": "E-Mail-Entwurf inklusive",
+      "emailDesc": "Direkt versandfertig – Betreff und Text werden automatisch erstellt.",
+      "jobSearch": "Jobsuche via Bundesagentur",
+      "jobSearchDesc": "Stellenanzeigen direkt im Tool finden und übernehmen."
+    },
+    "pricingTeaser": {
+      "title": "Einfache Preise, kein Abo",
+      "desc": "Eine kostenlose Probegenerierung – danach wähle zwischen einem zeitlich begrenzten Zugang oder dem Lifetime-Paket.",
+      "link": "Alle Preise ansehen"
+    },
+    "finalCta": {
+      "title": "Starte jetzt deine nächste Bewerbung",
+      "desc": "In wenigen Minuten fertig. Kostenlos ausprobieren.",
+      "cta": "Kostenlos registrieren"
+    }
   },
   "nav": {
     "profile": "Profil",
