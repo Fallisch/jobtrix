@@ -84,6 +84,7 @@ beforeEach(() => {
   setLocale("de");
   mockFetch();
   mockPush.mockClear();
+  sessionStorage.clear();
 });
 
 describe("ProfileForm", () => {

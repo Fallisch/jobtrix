@@ -53,18 +53,30 @@ export default function ProfileForm() {
   const photoInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    fetch("/api/profile")
-      .then((res) => (res.ok ? (res.json() as Promise<ProfileData>) : null))
-      .then((profile) => {
-        // Skip if the user already started editing while the request was in flight,
-        // so a late response can't overwrite their changes.
-        if (!profile || interactedRef.current) return;
+    const draft = sessionStorage.getItem("profile-draft");
+    if (draft) {
+      try {
+        const parsed = JSON.parse(draft) as ProfileData;
         setData({
-          ...profile,
-          education: profile.education.length > 0 ? profile.education : [makeEduEntry()],
+          ...parsed,
+          education: parsed.education.length > 0 ? parsed.education : [makeEduEntry()],
         });
-      })
-      .catch(() => {});
+        interactedRef.current = true;
+      } catch {
+        sessionStorage.removeItem("profile-draft");
+      }
+    } else {
+      fetch("/api/profile")
+        .then((res) => (res.ok ? (res.json() as Promise<ProfileData>) : null))
+        .then((profile) => {
+          if (!profile || interactedRef.current) return;
+          setData({
+            ...profile,
+            education: profile.education.length > 0 ? profile.education : [makeEduEntry()],
+          });
+        })
+        .catch(() => {});
+    }
 
     fetch("/api/access")
       .then((res) => (res.ok ? (res.json() as Promise<AccessState>) : null))
@@ -76,7 +88,11 @@ export default function ProfileForm() {
 
   function mutate(updater: (d: ProfileData) => ProfileData) {
     interactedRef.current = true;
-    setData(updater);
+    setData((prev) => {
+      const next = updater(prev);
+      sessionStorage.setItem("profile-draft", JSON.stringify(next));
+      return next;
+    });
   }
 
   function set<K extends keyof ProfileData>(key: K, value: ProfileData[K]) {
@@ -174,6 +190,7 @@ export default function ProfileForm() {
         return;
       }
       setSaveError(null);
+      sessionStorage.removeItem("profile-draft");
       router.push(`/${locale}`);
     } catch {
       setSaveError(t("saveError"));
@@ -383,6 +400,7 @@ export default function ProfileForm() {
               value={exp.tasks}
               onChange={(e) => updateExp(exp.id, "tasks", e.target.value)}
               rows={3}
+              spellCheck={false}
               className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
             />
             <button
