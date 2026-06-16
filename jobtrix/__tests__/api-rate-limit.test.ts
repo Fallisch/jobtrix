@@ -13,6 +13,14 @@ jest.mock("@/lib/email", () => ({
   sendPasswordResetEmail: jest.fn().mockResolvedValue(undefined),
 }));
 
+beforeAll(() => {
+  process.env.ENABLE_RATE_LIMIT_IN_TESTS = "1";
+});
+
+afterAll(() => {
+  delete process.env.ENABLE_RATE_LIMIT_IN_TESTS;
+});
+
 function testIp(label: string) {
   return `test-rl-${label}-${Date.now()}-${Math.random()}`;
 }

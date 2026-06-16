@@ -9,6 +9,13 @@ export const RATE_LIMIT_WINDOW_MS = process.env.RATE_LIMIT_WINDOW_MS
   : 15 * 60 * 1000;
 
 export async function checkRateLimit(key: string): Promise<boolean> {
+  if (
+    process.env.NODE_ENV === "test" &&
+    process.env.ENABLE_RATE_LIMIT_IN_TESTS !== "1"
+  ) {
+    return true;
+  }
+
   const now = Date.now();
   const entry = await prisma.rateLimitEntry.findUnique({ where: { key } });
 
