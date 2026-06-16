@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: jobtrix
+          POSTGRES_PASSWORD: jobtrix
+          POSTGRES_DB: jobtrix
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql://jobtrix:jobtrix@localhost:5432/jobtrix
+      NEXTAUTH_URL: http://localhost:3000
+      NEXTAUTH_SECRET: ci-test-secret-not-for-production-use-0123456789
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+
+    defaults:
+      run:
+        working-directory: jobtrix
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Node.js einrichten
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: jobtrix/package-lock.json
+
+      - name: Abhängigkeiten installieren
+        run: npm ci
+
+      - name: Prisma-Migrationen anwenden
+        run: npx prisma migrate deploy
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Jest-Tests
+        run: npm test
+
+      - name: Playwright-Browser installieren
+        run: npx playwright install --with-deps chromium
+
+      - name: App bauen
+        run: npm run build
+
+      - name: E2E-Tests (Playwright)
+        run: npm run test:e2e
+
+      - name: Playwright-Report hochladen (bei Fehler)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: jobtrix/playwright-report/
+          retention-days: 7
