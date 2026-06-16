@@ -62,7 +62,7 @@ describe("POST /api/checkout", () => {
     const args = mockSessionsCreate.mock.calls[0][0];
     expect(args.mode).toBe("payment");
     expect(args.payment_method_types).toEqual(expect.arrayContaining(["card", "sepa_debit", "paypal"]));
-    expect(args.line_items[0].price_data.unit_amount).toBe(1299);
+    expect(args.line_items[0].price_data.unit_amount).toBe(1999);
     expect(args.client_reference_id).toBe("user-1");
     expect(args.success_url).toMatch(/\/pricing\?status=success$/);
     expect(args.cancel_url).toMatch(/\/pricing\?status=cancelled$/);
@@ -79,7 +79,7 @@ describe("POST /api/checkout", () => {
     expect(data.url).toBe("https://checkout.stripe.com/test-session-lifetime");
 
     const args = mockSessionsCreate.mock.calls[0][0];
-    expect(args.line_items[0].price_data.unit_amount).toBe(3499);
+    expect(args.line_items[0].price_data.unit_amount).toBe(7999);
     expect(args.metadata).toMatchObject({ userId: "user-1", package: "lifetime" });
   });
 });

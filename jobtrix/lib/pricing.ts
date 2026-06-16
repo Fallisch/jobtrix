@@ -6,11 +6,11 @@ export interface PricingConfig {
 export function getPricingConfig(): PricingConfig {
   return {
     limited: {
-      priceEur: Number(process.env.PRICE_LIMITED_EUR ?? "12.99"),
+      priceEur: Number(process.env.PRICE_LIMITED_EUR ?? "19.99"),
       durationDays: Number(process.env.PRICE_LIMITED_DURATION_DAYS ?? "30"),
     },
     lifetime: {
-      priceEur: Number(process.env.PRICE_LIFETIME_EUR ?? "34.99"),
+      priceEur: Number(process.env.PRICE_LIFETIME_EUR ?? "79.99"),
     },
   };
 }
