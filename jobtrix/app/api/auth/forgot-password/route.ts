@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { generateResetToken } from "@/lib/reset-token";
 import { sendPasswordResetEmail } from "@/lib/email";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
+import { forgotPasswordSchema } from "@/lib/validation-schemas";
 
 export async function POST(request: NextRequest) {
   const ip = getClientIp(request);
@@ -10,16 +11,19 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "tooManyRequests" }, { status: 429 });
   }
 
-  const { email } = (await request.json()) as { email?: string };
+  const body = await request.json();
+  const parsed = forgotPasswordSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json({ error: "invalidInput" }, { status: 400 });
+  }
 
-  if (email) {
-    const user = await prisma.user.findUnique({ where: { email } });
-    if (user) {
-      const token = generateResetToken(user.id, user.passwordHash);
-      const baseUrl = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
-      const resetUrl = `${baseUrl}/de/reset-password?token=${token}`;
-      await sendPasswordResetEmail({ to: user.email, resetUrl });
-    }
+  const { email } = parsed.data;
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (user) {
+    const token = generateResetToken(user.id, user.passwordHash);
+    const baseUrl = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
+    const resetUrl = `${baseUrl}/de/reset-password?token=${token}`;
+    await sendPasswordResetEmail({ to: user.email, resetUrl });
   }
 
   return NextResponse.json({ ok: true });

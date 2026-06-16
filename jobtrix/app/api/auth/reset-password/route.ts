@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { decodeResetTokenUserId, verifyResetToken } from "@/lib/reset-token";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
+import { resetPasswordSchema } from "@/lib/validation-schemas";
 
 export async function POST(request: NextRequest) {
   const ip = getClientIp(request);
@@ -10,11 +11,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "tooManyRequests" }, { status: 429 });
   }
 
-  const { token, password } = (await request.json()) as { token?: string; password?: string };
-
-  if (!token || !password) {
+  const body = await request.json();
+  const parsed = resetPasswordSchema.safeParse(body);
+  if (!parsed.success) {
     return NextResponse.json({ error: "invalid_input" }, { status: 400 });
   }
+  const { token, password } = parsed.data;
 
   const userId = decodeResetTokenUserId(token);
   const user = userId ? await prisma.user.findUnique({ where: { id: userId } }) : null;

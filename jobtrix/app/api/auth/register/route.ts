@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
+import { registerSchema } from "@/lib/validation-schemas";
 
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
@@ -9,11 +10,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "tooManyRequests" }, { status: 429 });
   }
 
-  const { email, password } = (await req.json()) as { email?: string; password?: string };
-
-  if (!email || !password) {
+  const body = await req.json();
+  const parsed = registerSchema.safeParse(body);
+  if (!parsed.success) {
     return NextResponse.json({ error: "invalidInput" }, { status: 400 });
   }
+  const { email, password } = parsed.data;
 
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {

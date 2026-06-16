@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ProfileData, validateProfile } from "@/lib/profile-storage";
+import { profileSchema } from "@/lib/validation-schemas";
 
 const emptyProfile: ProfileData = {
   name: "",
@@ -63,7 +64,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
-  const data = (await req.json()) as ProfileData;
+  const body = await req.json();
+  const zodResult = profileSchema.safeParse(body);
+  if (!zodResult.success) {
+    return NextResponse.json({ error: "invalidInput" }, { status: 400 });
+  }
+  const data = zodResult.data as ProfileData;
   const errors = validateProfile(data);
   if (Object.keys(errors).length > 0) {
     return NextResponse.json({ errors }, { status: 400 });
