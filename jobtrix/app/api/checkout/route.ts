@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "");
   const checkoutSession = await stripe.checkout.sessions.create({
     mode: "payment",
-    payment_method_types: ["card", "sepa_debit"],
+    payment_method_types: ["card", "sepa_debit", "paypal"],
     line_items: [
       {
         price_data: {
