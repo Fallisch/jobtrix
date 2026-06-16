@@ -159,7 +159,7 @@
     "jobSearchFieldLabel": "Berufsfeld",
     "jobSearchFieldPlaceholder": "z. B. Softwareentwickler",
     "jobSearchLocationLabel": "Ort",
-    "jobSearchLocationPlaceholder": "z. B. Berlin",
+    "jobSearchLocationPlaceholder": "PLZ oder Ort, z. B. 08340",
     "jobSearchRadiusLabel": "Umkreis (km)",
     "jobSearchButton": "Suchen",
     "jobSearchSearching": "Suche läuft …",
