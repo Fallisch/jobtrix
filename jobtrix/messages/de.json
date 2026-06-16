@@ -230,7 +230,7 @@
     "emailHeading": "E-Mail-Versand",
     "emailBody": "Für den Versand von Bewerbungs-E-Mails sowie kontobezogenen E-Mails (z. B. Passwort-Reset) nutzen wir den E-Mail-Dienstleister Brevo.",
     "hostingHeading": "Hosting",
-    "hostingBody": "[Platzhalter: Angaben zum Hosting-Anbieter folgen in einer späteren Phase]",
+    "hostingBody": "Die App wird auf Servern von Render (https://render.com) in der EU-Region Frankfurt gehostet. Die Datenbank wird bei Supabase (https://supabase.com) in der EU-Region betrieben. DNS, CDN und WAF werden über Cloudflare (https://cloudflare.com) mit globalem Edge-Netzwerk bereitgestellt; Cloudflare speichert dabei keine Inhaltsdaten dauerhaft. Mit allen Dienstleistern bestehen Auftragsverarbeitungsverträge (AVV) gemäß Art. 28 DSGVO.",
     "retentionHeading": "Speicherdauer & deine Rechte",
     "retentionBody": "Deine Daten werden gespeichert, solange dein Konto besteht. Im Bereich \"Konto & Datenschutz\" in deinem Profil kannst du jederzeit deine Daten herunterladen oder dein Konto löschen.",
     "cookiesHeading": "Cookies",

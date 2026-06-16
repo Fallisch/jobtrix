@@ -230,7 +230,7 @@
     "emailHeading": "Email Delivery",
     "emailBody": "We use the email service provider Brevo to send application emails as well as account-related emails (e.g. password reset).",
     "hostingHeading": "Hosting",
-    "hostingBody": "[Placeholder: Hosting provider details will follow in a later phase]",
+    "hostingBody": "The app is hosted on Render (https://render.com) servers in the EU region Frankfurt. The database is operated by Supabase (https://supabase.com) in the EU region. DNS, CDN and WAF are provided via Cloudflare (https://cloudflare.com) using a global edge network; Cloudflare does not permanently store any content data. Data processing agreements (DPA) in accordance with Art. 28 GDPR are in place with all service providers.",
     "retentionHeading": "Retention Period & Your Rights",
     "retentionBody": "Your data is stored as long as your account exists. In the \"Account & Privacy\" section of your profile you can download your data or delete your account at any time.",
     "cookiesHeading": "Cookies",
