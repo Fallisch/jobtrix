@@ -45,7 +45,9 @@
     "applicationHistory": "Bewerbungshistorie",
     "logout": "Abmelden",
     "toggleToDark": "Zu Dunkelmodus wechseln",
-    "toggleToLight": "Zu Hellmodus wechseln"
+    "toggleToLight": "Zu Hellmodus wechseln",
+    "modeLight": "Hell",
+    "modeDark": "Dunkel"
   },
   "auth": {
     "register": {

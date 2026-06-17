@@ -45,7 +45,9 @@
     "applicationHistory": "Application history",
     "logout": "Logout",
     "toggleToDark": "Switch to dark mode",
-    "toggleToLight": "Switch to light mode"
+    "toggleToLight": "Switch to light mode",
+    "modeLight": "Light",
+    "modeDark": "Dark"
   },
   "auth": {
     "register": {

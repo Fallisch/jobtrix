@@ -138,4 +138,20 @@ describe("ThemeToggle", () => {
 
     expect(global.fetch).not.toHaveBeenCalled();
   });
+
+  it("zeigt im Hellmodus das sichtbare Textlabel 'Hell'", () => {
+    render(<ThemeToggle />);
+    expect(screen.getByText("Hell")).toBeInTheDocument();
+  });
+
+  it("zeigt im Dunkelmodus das sichtbare Textlabel 'Dunkel'", () => {
+    mockedUseTheme.mockReturnValue({
+      theme: "dark",
+      resolvedTheme: "dark",
+      setTheme,
+    } as unknown as ReturnType<typeof useTheme>);
+
+    render(<ThemeToggle />);
+    expect(screen.getByText("Dunkel")).toBeInTheDocument();
+  });
 });

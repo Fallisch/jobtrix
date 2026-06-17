@@ -43,12 +43,13 @@ export default function ThemeToggle() {
 
   const isDark = mounted && resolvedTheme === "dark";
   const label = isDark ? t("toggleToLight") : t("toggleToDark");
+  const modeLabel = isDark ? t("modeDark") : t("modeLight");
 
   return (
     <button
       onClick={toggleTheme}
       aria-label={label}
-      className="text-white/80 hover:text-white transition-colors"
+      className="flex items-center gap-1.5 bg-white/10 rounded-full px-3 py-1 text-white/80 hover:text-white hover:bg-white/20 transition-colors"
     >
       {isDark ? (
         <svg
@@ -72,6 +73,7 @@ export default function ThemeToggle() {
           <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
         </svg>
       )}
+      <span className="text-sm font-medium">{modeLabel}</span>
     </button>
   );
 }
