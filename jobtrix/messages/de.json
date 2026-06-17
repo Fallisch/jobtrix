@@ -174,9 +174,9 @@
     "templateTraditional": "Traditionell",
     "templateAccent": "Akzent",
     "templateCreative": "Kreativ",
-    "cvStyleLabel": "Lebenslauf-Stil",
-    "cvStyleClassic": "Klassisch",
-    "cvStyleAmerican": "Amerikanisch",
+    "cvStyleLabel": "Reihenfolge Einträge",
+    "cvStyleClassic": "Ältestes zuerst",
+    "cvStyleAmerican": "Neuestes zuerst (Empfohlen)",
     "confirmReadAgree": "Ich habe den Text gelesen und bin damit einverstanden"
   },
   "profile": {

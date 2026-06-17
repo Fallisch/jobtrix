@@ -174,9 +174,9 @@
     "templateTraditional": "Traditional",
     "templateAccent": "Accent",
     "templateCreative": "Creative",
-    "cvStyleLabel": "CV style",
-    "cvStyleClassic": "Classic",
-    "cvStyleAmerican": "American",
+    "cvStyleLabel": "Entry order",
+    "cvStyleClassic": "Oldest first",
+    "cvStyleAmerican": "Newest first (Recommended)",
     "confirmReadAgree": "I have read the text and agree to it"
   },
   "profile": {
