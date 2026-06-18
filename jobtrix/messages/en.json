@@ -171,6 +171,8 @@
     "jobSearchButton": "Search",
     "jobSearchSearching": "Searching …",
     "jobSearchNoResults": "No results found.",
+    "jobSearchExternalBadge": "External provider",
+    "jobSearchExternalHint": "The job description was opened on the external site. You can copy the text from there and paste it into the field here.",
     "jobSearchViewOriginal": "View original",
     "templateLabel": "Layout",
     "templateClassic": "Classic",

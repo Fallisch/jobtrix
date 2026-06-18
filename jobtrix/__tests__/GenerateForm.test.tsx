@@ -944,6 +944,56 @@ describe("GenerateForm", () => {
       expect(jobsucheCall![0]).toContain("arbeitgeber=SAP");
     });
 
+    it("kennzeichnet externe Ergebnisse visuell mit einem Badge", async () => {
+      mockJobSearch([
+        { title: "BA-Stelle", company: "Intern GmbH", location: "Berlin", description: "Beschreibung", url: "https://example.com/job/1" },
+        { title: "Externe Stelle", company: "External GmbH", location: "Hamburg", description: null, url: "https://example.com/job/2" },
+      ]);
+
+      render(<GenerateForm />);
+      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchFieldLabel/i }), "Entwickler");
+      fireEvent.click(screen.getByRole("button", { name: /jobSearchButton/i }));
+      await waitFor(() => screen.getByText("BA-Stelle"));
+
+      const externalResult = screen.getByTestId("job-result-1").closest("[data-testid^='job-result-container-']") ?? screen.getByTestId("job-result-1").parentElement!;
+      expect(externalResult.querySelector("[data-testid='external-badge']")).toBeInTheDocument();
+
+      const internalResult = screen.getByTestId("job-result-0").closest("[data-testid^='job-result-container-']") ?? screen.getByTestId("job-result-0").parentElement!;
+      expect(internalResult.querySelector("[data-testid='external-badge']")).not.toBeInTheDocument();
+    });
+
+    it("zeigt Hinweis nach Klick auf externes Ergebnis, dass Stellenbeschreibung manuell kopiert werden kann", async () => {
+      const openSpy = jest.spyOn(window, "open").mockImplementation(() => null);
+      mockJobSearch([
+        { title: "Externe Stelle", company: "External GmbH", location: "Hamburg", description: null, url: "https://example.com/job/2" },
+      ]);
+
+      render(<GenerateForm />);
+      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchFieldLabel/i }), "Developer");
+      fireEvent.click(screen.getByRole("button", { name: /jobSearchButton/i }));
+      await waitFor(() => screen.getByText("Externe Stelle"));
+
+      fireEvent.click(screen.getByTestId("job-result-0"));
+
+      expect(screen.getByText(/jobSearchExternalHint/i)).toBeInTheDocument();
+      openSpy.mockRestore();
+    });
+
+    it("zeigt keinen Hinweis nach Klick auf BA-eigenes Ergebnis", async () => {
+      mockJobSearch([
+        { title: "BA-Stelle", company: "Intern GmbH", location: "Berlin", description: "Beschreibung", url: "https://example.com/job/1" },
+      ]);
+
+      render(<GenerateForm />);
+      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchFieldLabel/i }), "Entwickler");
+      fireEvent.click(screen.getByRole("button", { name: /jobSearchButton/i }));
+      await waitFor(() => screen.getByText("BA-Stelle"));
+
+      fireEvent.click(screen.getByTestId("job-result-0"));
+
+      expect(screen.queryByText(/jobSearchExternalHint/i)).not.toBeInTheDocument();
+    });
+
     it("manuelles Einfügen in 'Stellenanzeige' bleibt nach einer Jobsuche möglich", async () => {
       mockJobSearch([
         { title: "Softwareentwickler", company: "Acme GmbH", location: "Berlin", description: "Beschreibung", url: "https://example.com/job/1" },

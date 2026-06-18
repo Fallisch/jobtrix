@@ -59,6 +59,7 @@ export default function GenerateForm() {
   const [jobSearchLoading, setJobSearchLoading] = useState(false);
   const [jobSearchPerformed, setJobSearchPerformed] = useState(false);
   const [jobResults, setJobResults] = useState<JobSearchResult[]>([]);
+  const [externalHintVisible, setExternalHintVisible] = useState(false);
 
   useEffect(() => {
     setHasProfile(loadProfile() !== null);
@@ -133,8 +134,10 @@ export default function GenerateForm() {
   function handleJobResultClick(result: JobSearchResult) {
     if (result.description) {
       setJobPosting(result.description);
+      setExternalHintVisible(false);
     } else {
       window.open(result.url, "_blank");
+      setExternalHintVisible(true);
     }
   }
 
@@ -203,9 +206,13 @@ export default function GenerateForm() {
               <p className="text-sm text-text/60">{t("jobSearchNoResults")}</p>
             ) : (
               <div className="space-y-2">
+                {externalHintVisible && (
+                  <p className="text-sm text-amber-600 dark:text-amber-400">{t("jobSearchExternalHint")}</p>
+                )}
                 {jobResults.map((result, i) => (
                   <div
                     key={i}
+                    data-testid={`job-result-container-${i}`}
                     className="rounded-xl border border-gray-200 dark:border-gray-700 px-4 py-3 flex items-start justify-between gap-3"
                   >
                     <button
@@ -214,7 +221,12 @@ export default function GenerateForm() {
                       onClick={() => handleJobResultClick(result)}
                       className="text-left flex-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
                     >
-                      <p className="font-semibold text-text">{result.title}</p>
+                      <p className="font-semibold text-text">
+                        {result.title}
+                        {!result.description && (
+                          <span data-testid="external-badge" className="ml-2 inline-flex items-center text-xs font-medium text-amber-600 dark:text-amber-400">↗ {t("jobSearchExternalBadge")}</span>
+                        )}
+                      </p>
                       <p className="text-sm text-text/60">{result.company} · {result.location}</p>
                     </button>
                     <a

@@ -171,6 +171,8 @@
     "jobSearchButton": "Suchen",
     "jobSearchSearching": "Suche läuft …",
     "jobSearchNoResults": "Keine Treffer gefunden.",
+    "jobSearchExternalBadge": "Externer Anbieter",
+    "jobSearchExternalHint": "Die Stellenbeschreibung wurde auf der externen Seite geöffnet. Du kannst den Text von dort kopieren und hier ins Feld einfügen.",
     "jobSearchViewOriginal": "Original ansehen",
     "templateLabel": "Layout",
     "templateClassic": "Klassisch",
