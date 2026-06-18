@@ -69,6 +69,7 @@ model ApplicationHistoryEntry {
   emailSubject    String
   coverLetter     String   @db.Text
   cv              String   @db.Text
+  emailBody       String?  @db.Text
   profileSnapshot Json
   template        String   @default("classic")
   accentColor     String?

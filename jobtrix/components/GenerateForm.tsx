@@ -20,6 +20,7 @@ interface GenerateResult {
   coverLetter: string;
   cv: string;
   emailSubject: string;
+  emailBody: string;
 }
 
 interface JobSearchResult {
@@ -537,7 +538,7 @@ export default function GenerateForm() {
             </label>
           </section>
 
-          <EmailDraft subject={result.emailSubject} body={editedCoverLetter} />
+          <EmailDraft subject={result.emailSubject} body={result.emailBody ?? editedCoverLetter} />
         </div>
       )}
     </div>

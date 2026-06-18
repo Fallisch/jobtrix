@@ -86,3 +86,29 @@ describe("buildPrompt – Berufserfahrung", () => {
     expect(prompt).not.toContain("Berufserfahrung:");
   });
 });
+
+describe("buildPrompt – E-Mail-Sektion", () => {
+  it("enthält E-MAIL als vierte Ausgabesektion im Antwortformat", () => {
+    const prompt = buildPrompt({ jobPosting: "Stelle als Entwickler", profile: baseProfile });
+    expect(prompt).toMatch(/BETREFF[\s\S]*ANSCHREIBEN[\s\S]*LEBENSLAUF[\s\S]*E-MAIL/);
+  });
+
+  it("enthält Anweisungen für einen kurzen E-Mail-Text mit Anrede, Stellenbezug, Anhang-Verweis und Grußformel", () => {
+    const prompt = buildPrompt({ jobPosting: "Stelle als Entwickler", profile: baseProfile });
+    expect(prompt).toMatch(/anrede/i);
+    expect(prompt).toMatch(/anh.ng|anlage|beigef.gt/i);
+    expect(prompt).toMatch(/gru.formel|gru./i);
+    expect(prompt).toMatch(/3.{0,5}5 s.tze|kurz/i);
+  });
+
+  it("enthält bei Initiativbewerbung Unternehmensbezug statt Stellenbezug in der E-Mail-Sektion", () => {
+    const prompt = buildPrompt({
+      jobPosting: "",
+      profile: baseProfile,
+      isInitiativbewerbung: true,
+      targetCompany: "Acme GmbH",
+    });
+    expect(prompt).toMatch(/initiativ|unternehmen/i);
+    expect(prompt).toMatch(/E-MAIL/);
+  });
+});

@@ -32,6 +32,10 @@ export function buildPrompt(req: GenerateRequest): string {
 Erstelle ein allgemeines Anschreiben ohne Bezug auf eine konkrete Stellenanzeige. Das Anschreiben soll die Stärken und Qualifikationen des Bewerbers hervorheben und das Interesse am Unternehmen begründen.`
     : `Stellenanzeige:\n${jobPosting}`;
 
+  const emailHinweis = isInitiativbewerbung
+    ? `Der E-Mail-Text soll sich auf das Unternehmen beziehen (Initiativbewerbung), nicht auf eine konkrete Stelle.`
+    : `Der E-Mail-Text soll sich kurz auf die ausgeschriebene Stelle beziehen.`;
+
   const betreffHinweis = isInitiativbewerbung
     ? `1. Einen Betreffvorschlag für die Bewerbungs-E-Mail (Format: "Initiativbewerbung – [Name des Bewerbers]")`
     : `1. Einen Betreffvorschlag für die Bewerbungs-E-Mail (Format: "Bewerbung als [erkannter Stellentitel aus der Stellenanzeige] – [Name des Bewerbers]")`;
@@ -46,6 +50,7 @@ Erstelle auf Basis der folgenden Daten:
 ${betreffHinweis}
 2. Ein professionelles deutsches Anschreiben
 3. Einen strukturierten deutschen Lebenslauf
+4. Einen kurzen E-Mail-Text (3–5 Sätze) für die Bewerbungs-E-Mail
 
 Bewerber:
 Name: ${profile.name}
@@ -74,6 +79,10 @@ Aufbau des Anschreibens (AIDA-Prinzip) – halte diese Struktur ein:
 ${hauptteilHinweis}
 - Schluss (Action): Selbstbewusster, individueller Abschluss mit konkretem nächsten Schritt (siehe Regel zu Schlussfloskeln oben).
 
+Aufbau des E-Mail-Texts:
+- Schreibe genau 3–5 kurze Sätze: höfliche Anrede, ${emailHinweis} Verweis auf die Anhänge (Anschreiben und Lebenslauf), Grußformel mit dem Namen des Bewerbers.
+- Der E-Mail-Text ist KEIN zweites Anschreiben – halte ihn kurz und professionell.
+
 Wichtig: Schreibe Anschreiben und Lebenslauf in reinem Klartext ohne Markdown-Formatierung –
 also ohne Sternchen (**fett**), ohne Raute-Überschriften (#, ##), ohne Tabellen (| ... |) und
 ohne Trennlinien (---). Verwende stattdessen normale Absätze, Zeilenumbrüche und ggf. einfache
@@ -85,5 +94,7 @@ BETREFF: [Betreffzeile hier]
 
 ANSCHREIBEN: [vollständiges Anschreiben hier]
 
-LEBENSLAUF: [vollständiger Lebenslauf hier]`;
+LEBENSLAUF: [vollständiger Lebenslauf hier]
+
+E-MAIL: [kurzer E-Mail-Text hier]`;
 }

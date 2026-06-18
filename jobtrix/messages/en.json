@@ -153,9 +153,9 @@
     "cvTitle": "CV",
     "emailDraftTitle": "Email draft",
     "emailSubjectLabel": "Subject",
-    "emailBodyLabel": "Cover letter",
+    "emailBodyLabel": "Email body",
     "copySubject": "Copy subject",
-    "copyBody": "Copy cover letter",
+    "copyBody": "Copy email body",
     "copied": "Copied ✓",
     "errorGeneric": "Generation failed. Please try again.",
     "coverLetterPdfButton": "Download cover letter as PDF",
@@ -344,6 +344,7 @@
     "cvTitle": "CV",
     "emailDraftTitle": "Email draft",
     "emailSubjectLabel": "Subject",
-    "emailBodyLabel": "Body"
+    "emailBodyLabel": "Email body",
+    "noEmailBody": "No separate email draft available"
   }
 }

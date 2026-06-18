@@ -138,7 +138,9 @@ export default function ApplicationHistoryDetail({ id }: { id: string }) {
           </div>
           <div>
             <span className="text-sm font-medium text-text/60">{t("emailBodyLabel")}</span>
-            <p className="text-sm text-text/80 whitespace-pre-wrap">{entry.coverLetter}</p>
+            <p className="text-sm text-text/80 whitespace-pre-wrap">
+              {entry.emailBody ?? t("noEmailBody")}
+            </p>
           </div>
         </section>
       )}

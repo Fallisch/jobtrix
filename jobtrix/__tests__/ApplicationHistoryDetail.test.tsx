@@ -70,8 +70,9 @@ describe("ApplicationHistoryDetail", () => {
     expect(screen.queryByText("Bewerbung als Senior Developer")).not.toBeInTheDocument();
   });
 
-  it("zeigt nach Klick auf den E-Mail-Entwurf-Tab Betreff und Anschreiben-Text als Entwurf an", async () => {
-    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve(entry) });
+  it("zeigt nach Klick auf den E-Mail-Entwurf-Tab den eigenständigen emailBody an", async () => {
+    const entryWithEmailBody = { ...entry, emailBody: "Anbei meine Bewerbung als kurzer E-Mail-Text." };
+    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve(entryWithEmailBody) });
 
     render(<ApplicationHistoryDetail id="entry-1" />);
 
@@ -79,8 +80,19 @@ describe("ApplicationHistoryDetail", () => {
     fireEvent.click(screen.getByRole("tab", { name: /emailDraftTitle/i }));
 
     expect(screen.getByText("Bewerbung als Senior Developer")).toBeInTheDocument();
-    expect(screen.getByText("Sehr geehrte Damen und Herren")).toBeInTheDocument();
+    expect(screen.getByText("Anbei meine Bewerbung als kurzer E-Mail-Text.")).toBeInTheDocument();
     expect(screen.queryByText("Max Mustermann – Lebenslauf")).not.toBeInTheDocument();
+  });
+
+  it("zeigt Fallback-Hinweis im E-Mail-Tab wenn kein emailBody vorhanden ist", async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve(entry) });
+
+    render(<ApplicationHistoryDetail id="entry-1" />);
+
+    await waitFor(() => screen.getByRole("heading", { level: 1 }));
+    fireEvent.click(screen.getByRole("tab", { name: /emailDraftTitle/i }));
+
+    expect(screen.getByText("noEmailBody")).toBeInTheDocument();
   });
 
   it("zeigt Datum UND Uhrzeit der Erstellung an", async () => {

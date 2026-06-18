@@ -153,9 +153,9 @@
     "cvTitle": "Lebenslauf",
     "emailDraftTitle": "E-Mail-Entwurf",
     "emailSubjectLabel": "Betreff",
-    "emailBodyLabel": "Anschreiben",
+    "emailBodyLabel": "E-Mail-Text",
     "copySubject": "Betreff kopieren",
-    "copyBody": "Anschreiben kopieren",
+    "copyBody": "E-Mail-Text kopieren",
     "copied": "Kopiert ✓",
     "errorGeneric": "Generierung fehlgeschlagen. Bitte versuche es erneut.",
     "coverLetterPdfButton": "Anschreiben als PDF herunterladen",
@@ -344,6 +344,7 @@
     "cvTitle": "Lebenslauf",
     "emailDraftTitle": "E-Mail-Entwurf",
     "emailSubjectLabel": "Betreff",
-    "emailBodyLabel": "Text"
+    "emailBodyLabel": "E-Mail-Text",
+    "noEmailBody": "Kein separater E-Mail-Entwurf verfügbar"
   }
 }

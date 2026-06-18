@@ -15,6 +15,7 @@ export interface ApplicationHistoryEntry {
   emailSubject: string;
   coverLetter: string;
   cv: string;
+  emailBody?: string | null;
   profileSnapshot: ProfileData;
   template: "classic" | "modern" | "traditional" | "accent" | "creative";
   accentColor?: string | null;
