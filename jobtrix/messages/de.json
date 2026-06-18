@@ -163,6 +163,8 @@
     "jobSearchTitle": "Stelle suchen",
     "jobSearchFieldLabel": "Berufsfeld",
     "jobSearchFieldPlaceholder": "z. B. Softwareentwickler",
+    "jobSearchCompanyLabel": "Firmenname",
+    "jobSearchCompanyPlaceholder": "z. B. Siemens",
     "jobSearchLocationLabel": "Ort",
     "jobSearchLocationPlaceholder": "PLZ oder Ort, z. B. 08340",
     "jobSearchRadiusLabel": "Umkreis (km)",

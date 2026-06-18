@@ -892,6 +892,58 @@ describe("GenerateForm", () => {
       expect(screen.queryByRole("alert")).not.toBeInTheDocument();
     });
 
+    it("rendert ein optionales Firmenname-Eingabefeld in der Jobsuche", () => {
+      render(<GenerateForm />);
+      expect(screen.getByRole("textbox", { name: /jobSearchCompanyLabel/i })).toBeInTheDocument();
+    });
+
+    it("übergibt den Firmennamen als arbeitgeber-Parameter an die Jobsuche-API", async () => {
+      mockJobSearch([]);
+
+      render(<GenerateForm />);
+      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchCompanyLabel/i }), "Siemens");
+      fireEvent.click(screen.getByRole("button", { name: /jobSearchButton/i }));
+
+      await waitFor(() => {
+        expect(screen.getByText(/jobSearchNoResults/i)).toBeInTheDocument();
+      });
+
+      const jobsucheCall = (global.fetch as jest.Mock).mock.calls.find((c) => String(c[0]).startsWith("/api/jobsuche"));
+      expect(jobsucheCall![0]).toContain("arbeitgeber=Siemens");
+    });
+
+    it("liefert Ergebnisse bei Suche nur mit Firmenname (ohne Stellentitel)", async () => {
+      mockJobSearch([
+        { title: "Ingenieur", company: "Siemens AG", location: "München", description: "Stelle bei Siemens", url: "https://example.com/job/3" },
+      ]);
+
+      render(<GenerateForm />);
+      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchCompanyLabel/i }), "Siemens");
+      fireEvent.click(screen.getByRole("button", { name: /jobSearchButton/i }));
+
+      await waitFor(() => {
+        expect(screen.getByText("Ingenieur")).toBeInTheDocument();
+      });
+      expect(screen.getByText(/Siemens AG/)).toBeInTheDocument();
+    });
+
+    it("kombiniert Firmenname und Stellentitel korrekt in der Suchanfrage", async () => {
+      mockJobSearch([]);
+
+      render(<GenerateForm />);
+      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchFieldLabel/i }), "Entwickler");
+      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchCompanyLabel/i }), "SAP");
+      fireEvent.click(screen.getByRole("button", { name: /jobSearchButton/i }));
+
+      await waitFor(() => {
+        expect(screen.getByText(/jobSearchNoResults/i)).toBeInTheDocument();
+      });
+
+      const jobsucheCall = (global.fetch as jest.Mock).mock.calls.find((c) => String(c[0]).startsWith("/api/jobsuche"));
+      expect(jobsucheCall![0]).toContain("was=Entwickler");
+      expect(jobsucheCall![0]).toContain("arbeitgeber=SAP");
+    });
+
     it("manuelles Einfügen in 'Stellenanzeige' bleibt nach einer Jobsuche möglich", async () => {
       mockJobSearch([
         { title: "Softwareentwickler", company: "Acme GmbH", location: "Berlin", description: "Beschreibung", url: "https://example.com/job/1" },

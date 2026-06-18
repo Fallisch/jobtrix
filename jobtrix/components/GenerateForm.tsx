@@ -53,6 +53,7 @@ export default function GenerateForm() {
   const [isInitiativbewerbung, setIsInitiativbewerbung] = useState(false);
   const [targetCompany, setTargetCompany] = useState("");
   const [jobSearchField, setJobSearchField] = useState("");
+  const [jobSearchCompany, setJobSearchCompany] = useState("");
   const [jobSearchLocation, setJobSearchLocation] = useState("");
   const [jobSearchRadius, setJobSearchRadius] = useState("25");
   const [jobSearchLoading, setJobSearchLoading] = useState(false);
@@ -115,6 +116,7 @@ export default function GenerateForm() {
     try {
       const params = new URLSearchParams();
       if (jobSearchField.trim()) params.set("was", jobSearchField.trim());
+      if (jobSearchCompany.trim()) params.set("arbeitgeber", jobSearchCompany.trim());
       if (jobSearchLocation.trim()) params.set("wo", jobSearchLocation.trim());
       if (jobSearchRadius) params.set("umkreis", jobSearchRadius);
 
@@ -151,6 +153,15 @@ export default function GenerateForm() {
               onChange={(e) => setJobSearchField(e.target.value)}
               placeholder={t("jobSearchFieldPlaceholder")}
               aria-label={t("jobSearchFieldLabel")}
+              className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-2.5 text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent"
+            />
+            <input
+              id="jobSearchCompany"
+              type="text"
+              value={jobSearchCompany}
+              onChange={(e) => setJobSearchCompany(e.target.value)}
+              placeholder={t("jobSearchCompanyPlaceholder")}
+              aria-label={t("jobSearchCompanyLabel")}
               className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-2.5 text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent"
             />
             <input
