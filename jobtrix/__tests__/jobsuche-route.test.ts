@@ -22,7 +22,7 @@ function makeRequest(params: Record<string, string>) {
 beforeEach(() => mockFetch.mockReset());
 
 describe("GET /api/jobsuche", () => {
-  it("leitet den arbeitgeber-Parameter an die BA-API weiter", async () => {
+  it("sendet den Firmennamen als Teil des was-Parameters an die BA-API", async () => {
     mockFetch.mockResolvedValue({
       ok: true,
       json: () => Promise.resolve({ stellenangebote: [] }),
@@ -34,10 +34,10 @@ describe("GET /api/jobsuche", () => {
       String(c[0]).includes("rest.arbeitsagentur.de")
     );
     expect(baCall).toBeDefined();
-    expect(baCall![0]).toContain("arbeitgeber=Siemens");
+    expect(baCall![0]).toContain("was=Siemens");
   });
 
-  it("kombiniert arbeitgeber mit was und wo korrekt", async () => {
+  it("kombiniert Stellentitel und Firmenname im was-Parameter", async () => {
     mockFetch.mockResolvedValue({
       ok: true,
       json: () => Promise.resolve({ stellenangebote: [] }),
@@ -48,9 +48,8 @@ describe("GET /api/jobsuche", () => {
     const baCall = mockFetch.mock.calls.find((c) =>
       String(c[0]).includes("rest.arbeitsagentur.de")
     );
-    expect(baCall![0]).toContain("was=Entwickler");
+    expect(baCall![0]).toContain("was=Entwickler+SAP");
     expect(baCall![0]).toContain("wo=Berlin");
-    expect(baCall![0]).toContain("arbeitgeber=SAP");
   });
 
   it("funktioniert ohne arbeitgeber-Parameter (Rückwärtskompatibilität)", async () => {
@@ -64,6 +63,7 @@ describe("GET /api/jobsuche", () => {
     const baCall = mockFetch.mock.calls.find((c) =>
       String(c[0]).includes("rest.arbeitsagentur.de")
     );
+    expect(baCall![0]).toContain("was=Entwickler");
     expect(baCall![0]).not.toContain("arbeitgeber");
   });
 });

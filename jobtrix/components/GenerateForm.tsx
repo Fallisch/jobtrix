@@ -148,7 +148,7 @@ export default function GenerateForm() {
       <div className="space-y-4">
         <div className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface p-4 space-y-3">
           <h2 className="text-sm font-semibold text-text">{t("jobSearchTitle")}</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_auto_auto] gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <input
               id="jobSearchField"
               type="text"
@@ -176,29 +176,31 @@ export default function GenerateForm() {
               aria-label={t("jobSearchLocationLabel")}
               className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-2.5 text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent"
             />
-            <select
-              id="jobSearchRadius"
-              value={jobSearchRadius}
-              onChange={(e) => setJobSearchRadius(e.target.value)}
-              aria-label={t("jobSearchRadiusLabel")}
-              className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-2.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-accent"
-            >
-              <option value="0">0 km</option>
-              <option value="5">5 km</option>
-              <option value="10">10 km</option>
-              <option value="25">25 km</option>
-              <option value="50">50 km</option>
-              <option value="100">100 km</option>
-              <option value="200">200 km</option>
-            </select>
-            <button
-              type="button"
-              onClick={handleJobSearch}
-              disabled={jobSearchLoading}
-              className="rounded-xl bg-accent text-white px-5 py-2.5 text-sm font-semibold hover:brightness-110 transition disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              {jobSearchLoading ? t("jobSearchSearching") : t("jobSearchButton")}
-            </button>
+            <div className="flex gap-3">
+              <select
+                id="jobSearchRadius"
+                value={jobSearchRadius}
+                onChange={(e) => setJobSearchRadius(e.target.value)}
+                aria-label={t("jobSearchRadiusLabel")}
+                className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-2.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-accent"
+              >
+                <option value="0">0 km</option>
+                <option value="5">5 km</option>
+                <option value="10">10 km</option>
+                <option value="25">25 km</option>
+                <option value="50">50 km</option>
+                <option value="100">100 km</option>
+                <option value="200">200 km</option>
+              </select>
+              <button
+                type="button"
+                onClick={handleJobSearch}
+                disabled={jobSearchLoading}
+                className="rounded-xl bg-accent text-white px-5 py-2.5 text-sm font-semibold hover:brightness-110 transition disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap"
+              >
+                {jobSearchLoading ? t("jobSearchSearching") : t("jobSearchButton")}
+              </button>
+            </div>
           </div>
 
           {jobSearchPerformed && (

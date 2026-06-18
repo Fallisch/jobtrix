@@ -63,10 +63,10 @@ export async function GET(request: NextRequest) {
 
   try {
     const params = new URLSearchParams();
-    if (was) params.set("was", was);
+    const combinedWas = [was, arbeitgeber].filter(Boolean).join(" ");
+    if (combinedWas) params.set("was", combinedWas);
     if (wo) params.set("wo", wo);
     if (umkreis) params.set("umkreis", umkreis);
-    if (arbeitgeber) params.set("arbeitgeber", arbeitgeber);
 
     const res = await fetch(`${API_BASE}/jobs?${params.toString()}`, {
       headers: { "X-API-Key": apiKey },
