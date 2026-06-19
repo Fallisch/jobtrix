@@ -38,7 +38,6 @@ export type ProfileErrors = Partial<Record<keyof ProfileData, string>>;
 export function validateProfile(data: ProfileData): ProfileErrors {
   const errors: ProfileErrors = {};
   if (!data.name.trim()) errors.name = "required";
-  if (data.education.length === 0) errors.education = "minEducation";
   return errors;
 }
 

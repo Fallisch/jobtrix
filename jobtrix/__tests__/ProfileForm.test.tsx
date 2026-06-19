@@ -116,12 +116,14 @@ describe("ProfileForm", () => {
     });
   });
 
-  it("zeigt Fehlermeldung wenn alle Ausbildungseinträge entfernt wurden", async () => {
+  it("erlaubt Speichern ohne Ausbildungseinträge wenn Name vorhanden", async () => {
+    const user = userEvent.setup();
     render(<ProfileForm />);
     fireEvent.click(screen.getByRole("button", { name: /entfernen/i }));
+    await user.type(screen.getByLabelText(/name/i), "Max Mustermann");
     fireEvent.click(screen.getByRole("button", { name: /speichern/i }));
     await waitFor(() => {
-      expect(screen.getByText(/ausbildungseintrag/i)).toBeInTheDocument();
+      expect(findPostBody()).toBeDefined();
     });
   });
 
@@ -516,12 +518,6 @@ describe("ProfileForm", () => {
       fireEvent.click(screen.getByRole("button", { name: /^save$/i }));
       await waitFor(() => {
         expect(screen.getByText(/^name is required$/i)).toBeInTheDocument();
-      });
-
-      fireEvent.click(screen.getByRole("button", { name: /^remove$/i }));
-      fireEvent.click(screen.getByRole("button", { name: /^save$/i }));
-      await waitFor(() => {
-        expect(screen.getByText(/^at least one education entry is required$/i)).toBeInTheDocument();
       });
     });
 

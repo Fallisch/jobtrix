@@ -374,16 +374,24 @@
     "sortOldest": "Ältestes zuerst"
   },
   "onboarding": {
-    "title": "Willkommen bei JobTRIX!",
-    "subtitle": "Fülle dein Profil aus, damit wir passende Bewerbungen für dich erstellen können.",
-    "nameLabel": "Vollständiger Name *",
-    "emailLabel": "E-Mail (für Bewerbungen)",
-    "phoneLabel": "Telefon",
-    "addressLabel": "Adresse",
-    "birthdateLabel": "Geburtsdatum",
-    "submit": "Profil speichern und loslegen",
-    "errors": {
-      "nameRequired": "Bitte gib deinen Namen ein."
-    }
+    "welcome": "Willkommen bei JobTRIX!",
+    "step1Title": "Wie heißt du?",
+    "step1Placeholder": "Vor- und Nachname",
+    "step1Error": "Bitte gib deinen Namen ein.",
+    "step2Title": "Unter welcher E-Mail bist du erreichbar?",
+    "step2Placeholder": "deine@email.de",
+    "step3Title": "Wie lautet deine Telefonnummer?",
+    "step3Placeholder": "z. B. 0151 12345678",
+    "step4Title": "Wo wohnst du?",
+    "step4Placeholder": "Straße, Hausnummer, PLZ Ort",
+    "step5Title": "Wann bist du geboren?",
+    "step5Day": "Tag",
+    "step5Month": "Monat",
+    "step5Year": "Jahr",
+    "next": "Weiter",
+    "back": "Zurück",
+    "skip": "Überspringen",
+    "finish": "Loslegen!",
+    "stepOf": "Schritt {current} von {total}"
   }
 }

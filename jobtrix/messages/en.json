@@ -374,16 +374,24 @@
     "sortOldest": "Oldest first"
   },
   "onboarding": {
-    "title": "Welcome to JobTRIX!",
-    "subtitle": "Fill in your profile so we can create tailored applications for you.",
-    "nameLabel": "Full name *",
-    "emailLabel": "Email (for applications)",
-    "phoneLabel": "Phone",
-    "addressLabel": "Address",
-    "birthdateLabel": "Date of birth",
-    "submit": "Save profile and get started",
-    "errors": {
-      "nameRequired": "Please enter your name."
-    }
+    "welcome": "Welcome to JobTRIX!",
+    "step1Title": "What is your name?",
+    "step1Placeholder": "First and last name",
+    "step1Error": "Please enter your name.",
+    "step2Title": "What is your email address?",
+    "step2Placeholder": "your@email.com",
+    "step3Title": "What is your phone number?",
+    "step3Placeholder": "e.g. +49 151 12345678",
+    "step4Title": "Where do you live?",
+    "step4Placeholder": "Street, number, ZIP city",
+    "step5Title": "When were you born?",
+    "step5Day": "Day",
+    "step5Month": "Month",
+    "step5Year": "Year",
+    "next": "Next",
+    "back": "Back",
+    "skip": "Skip",
+    "finish": "Let's go!",
+    "stepOf": "Step {current} of {total}"
   }
 }

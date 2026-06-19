@@ -323,19 +323,6 @@ export default function GenerateForm() {
             <span className="text-sm text-text/60">{t("cvStyleLabel")}:</span>
             <button
               type="button"
-              onClick={() => setCvStyle("classic")}
-              aria-pressed={cvStyle === "classic"}
-              aria-label={t("cvStyleClassic")}
-              className={`rounded-full px-3.5 py-1.5 text-sm font-semibold border transition ${
-                cvStyle === "classic"
-                  ? "bg-accent text-white border-accent"
-                  : "border-gray-200 dark:border-gray-700 text-text hover:border-accent hover:text-accent"
-              }`}
-            >
-              {t("cvStyleClassic")}
-            </button>
-            <button
-              type="button"
               onClick={() => setCvStyle("american")}
               aria-pressed={cvStyle === "american"}
               aria-label={t("cvStyleAmerican")}
@@ -346,6 +333,19 @@ export default function GenerateForm() {
               }`}
             >
               {t("cvStyleAmerican")}
+            </button>
+            <button
+              type="button"
+              onClick={() => setCvStyle("classic")}
+              aria-pressed={cvStyle === "classic"}
+              aria-label={t("cvStyleClassic")}
+              className={`rounded-full px-3.5 py-1.5 text-sm font-semibold border transition ${
+                cvStyle === "classic"
+                  ? "bg-accent text-white border-accent"
+                  : "border-gray-200 dark:border-gray-700 text-text hover:border-accent hover:text-accent"
+              }`}
+            >
+              {t("cvStyleClassic")}
             </button>
           </div>
         </div>

@@ -28,14 +28,8 @@ describe("validateProfile", () => {
     expect(errors.name).toBeDefined();
   });
 
-  it("meldet Fehler wenn keine Ausbildungseinträge vorhanden sind", () => {
+  it("akzeptiert leere Ausbildungseinträge", () => {
     const errors = validateProfile({ ...valid, education: [] });
-    expect(errors.education).toBeDefined();
-  });
-
-  it("meldet beide Fehler gleichzeitig", () => {
-    const errors = validateProfile({ ...valid, name: "", education: [] });
-    expect(errors.name).toBeDefined();
-    expect(errors.education).toBeDefined();
+    expect(errors.education).toBeUndefined();
   });
 });
