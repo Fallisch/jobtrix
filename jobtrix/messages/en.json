@@ -69,7 +69,11 @@
         },
         "password": {
           "required": "Password is required",
-          "tooShort": "Password must be at least 8 characters long"
+          "tooShort": "Password must be at least 8 characters long",
+          "missingUppercase": "At least one uppercase letter required",
+          "missingLowercase": "At least one lowercase letter required",
+          "missingDigit": "At least one number required",
+          "missingSpecial": "At least one special character required"
         },
         "passwordConfirm": {
           "mismatch": "Passwords do not match"
@@ -126,7 +130,11 @@
       "errors": {
         "password": {
           "required": "Password is required",
-          "tooShort": "The password must be at least 8 characters long"
+          "tooShort": "The password must be at least 8 characters long",
+          "missingUppercase": "At least one uppercase letter required",
+          "missingLowercase": "At least one lowercase letter required",
+          "missingDigit": "At least one number required",
+          "missingSpecial": "At least one special character required"
         },
         "passwordConfirm": {
           "mismatch": "Passwords do not match"

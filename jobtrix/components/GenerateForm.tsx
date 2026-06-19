@@ -180,6 +180,19 @@ export default function GenerateForm() {
               aria-label={t("jobSearchLocationLabel")}
               className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-2.5 text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent"
             />
+            <select
+              id="workMode"
+              value={workMode}
+              onChange={(e) => setWorkMode(e.target.value as typeof workMode)}
+              aria-label={t("workModeLabel")}
+              className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-2.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-accent"
+            >
+              <option value="">{t("workModeNone")}</option>
+              <option value="remote">{t("workModeRemote")}</option>
+              <option value="homeoffice">{t("workModeHomeoffice")}</option>
+              <option value="hybrid">{t("workModeHybrid")}</option>
+              <option value="onsite">{t("workModeOnsite")}</option>
+            </select>
             <div className="flex gap-3">
               <select
                 id="jobSearchRadius"
@@ -264,25 +277,6 @@ export default function GenerateForm() {
           <label htmlFor="initiativbewerbung" className="text-sm font-medium text-text cursor-pointer select-none">
             {t("initiativbewerbungLabel")}
           </label>
-        </div>
-
-        <div>
-          <label htmlFor="workMode" className="block text-sm font-medium text-text mb-1">
-            {t("workModeLabel")}
-          </label>
-          <select
-            id="workMode"
-            value={workMode}
-            onChange={(e) => setWorkMode(e.target.value as typeof workMode)}
-            aria-label={t("workModeLabel")}
-            className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-2.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-accent"
-          >
-            <option value="">{t("workModeNone")}</option>
-            <option value="remote">{t("workModeRemote")}</option>
-            <option value="homeoffice">{t("workModeHomeoffice")}</option>
-            <option value="hybrid">{t("workModeHybrid")}</option>
-            <option value="onsite">{t("workModeOnsite")}</option>
-          </select>
         </div>
 
         {isInitiativbewerbung ? (

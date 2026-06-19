@@ -1,6 +1,16 @@
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MIN_PASSWORD_LENGTH = 8;
 
+function validatePassword(password: string): string | undefined {
+  if (!password) return "required";
+  if (password.length < MIN_PASSWORD_LENGTH) return "tooShort";
+  if (!/[A-Z]/.test(password)) return "missingUppercase";
+  if (!/[a-z]/.test(password)) return "missingLowercase";
+  if (!/[0-9]/.test(password)) return "missingDigit";
+  if (!/[^A-Za-z0-9]/.test(password)) return "missingSpecial";
+  return undefined;
+}
+
 export interface RegistrationData {
   email: string;
   password: string;
@@ -24,11 +34,8 @@ export function validateRegistration(data: RegistrationData): RegistrationErrors
     errors.email = "invalid";
   }
 
-  if (!data.password) {
-    errors.password = "required";
-  } else if (data.password.length < MIN_PASSWORD_LENGTH) {
-    errors.password = "tooShort";
-  }
+  const pwError = validatePassword(data.password);
+  if (pwError) errors.password = pwError;
 
   if (data.passwordConfirm !== data.password) {
     errors.passwordConfirm = "mismatch";
@@ -93,11 +100,8 @@ export interface ResetPasswordErrors {
 export function validateResetPassword(data: ResetPasswordData): ResetPasswordErrors {
   const errors: ResetPasswordErrors = {};
 
-  if (!data.password) {
-    errors.password = "required";
-  } else if (data.password.length < MIN_PASSWORD_LENGTH) {
-    errors.password = "tooShort";
-  }
+  const pwError = validatePassword(data.password);
+  if (pwError) errors.password = pwError;
 
   if (data.passwordConfirm !== data.password) {
     errors.passwordConfirm = "mismatch";

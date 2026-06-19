@@ -70,7 +70,7 @@ describe("RegisterForm", () => {
     render(<RegisterForm />);
 
     await userEvent.type(screen.getByLabelText("E-Mail"), "test@example.com");
-    await userEvent.type(screen.getByLabelText("Passwort"), "correct-password");
+    await userEvent.type(screen.getByLabelText("Passwort"), "Correct1!");
     await userEvent.type(screen.getByLabelText("Passwort bestätigen"), "anderes-passwort");
     await userEvent.click(screen.getByRole("checkbox"));
     await userEvent.click(screen.getByRole("button", { name: "Registrieren" }));
@@ -89,14 +89,14 @@ describe("RegisterForm", () => {
     render(<RegisterForm />);
 
     await userEvent.type(screen.getByLabelText("E-Mail"), "test@example.com");
-    await userEvent.type(screen.getByLabelText("Passwort"), "correct-password");
-    await userEvent.type(screen.getByLabelText("Passwort bestätigen"), "correct-password");
+    await userEvent.type(screen.getByLabelText("Passwort"), "Correct1!");
+    await userEvent.type(screen.getByLabelText("Passwort bestätigen"), "Correct1!");
     await userEvent.click(screen.getByRole("checkbox"));
     await userEvent.click(screen.getByRole("button", { name: "Registrieren" }));
 
     await waitFor(() => expect(mockedSignIn).toHaveBeenCalledWith("credentials", {
       email: "test@example.com",
-      password: "correct-password",
+      password: "Correct1!",
       redirect: false,
     }));
     await waitFor(() => expect(mockPush).toHaveBeenCalledWith("/de/onboarding"));
@@ -123,8 +123,8 @@ describe("RegisterForm", () => {
     render(<RegisterForm />);
 
     await userEvent.type(screen.getByLabelText("E-Mail"), "test@example.com");
-    await userEvent.type(screen.getByLabelText("Passwort"), "correct-password");
-    await userEvent.type(screen.getByLabelText("Passwort bestätigen"), "correct-password");
+    await userEvent.type(screen.getByLabelText("Passwort"), "Correct1!");
+    await userEvent.type(screen.getByLabelText("Passwort bestätigen"), "Correct1!");
     await userEvent.click(screen.getByRole("checkbox"));
     await userEvent.click(screen.getByRole("button", { name: "Registrieren" }));
 

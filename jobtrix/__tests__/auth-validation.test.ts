@@ -3,8 +3,8 @@ import { validateRegistration, validateLogin, validateForgotPassword, validateRe
 describe("validateRegistration", () => {
   const validData = {
     email: "test@example.com",
-    password: "correct-password",
-    passwordConfirm: "correct-password",
+    password: "Correct1!",
+    passwordConfirm: "Correct1!",
     termsAccepted: true,
   };
 
@@ -28,8 +28,28 @@ describe("validateRegistration", () => {
   });
 
   it("lehnt ein zu kurzes Passwort ab", () => {
-    const errors = validateRegistration({ ...validData, password: "kurz", passwordConfirm: "kurz" });
+    const errors = validateRegistration({ ...validData, password: "Ku1!", passwordConfirm: "Ku1!" });
     expect(errors.password).toBe("tooShort");
+  });
+
+  it("verlangt mindestens einen Großbuchstaben", () => {
+    const errors = validateRegistration({ ...validData, password: "passwort1!", passwordConfirm: "passwort1!" });
+    expect(errors.password).toBe("missingUppercase");
+  });
+
+  it("verlangt mindestens einen Kleinbuchstaben", () => {
+    const errors = validateRegistration({ ...validData, password: "PASSWORT1!", passwordConfirm: "PASSWORT1!" });
+    expect(errors.password).toBe("missingLowercase");
+  });
+
+  it("verlangt mindestens eine Zahl", () => {
+    const errors = validateRegistration({ ...validData, password: "Passwort!", passwordConfirm: "Passwort!" });
+    expect(errors.password).toBe("missingDigit");
+  });
+
+  it("verlangt mindestens ein Sonderzeichen", () => {
+    const errors = validateRegistration({ ...validData, password: "Passwort1", passwordConfirm: "Passwort1" });
+    expect(errors.password).toBe("missingSpecial");
   });
 
   it("verlangt übereinstimmende Passwort-Bestätigung", () => {
@@ -74,7 +94,7 @@ describe("validateForgotPassword", () => {
 });
 
 describe("validateResetPassword", () => {
-  const validData = { password: "correct-password", passwordConfirm: "correct-password" };
+  const validData = { password: "Correct1!", passwordConfirm: "Correct1!" };
 
   it("liefert keine Fehler bei gültigen Daten", () => {
     expect(validateResetPassword(validData)).toEqual({});
@@ -86,8 +106,28 @@ describe("validateResetPassword", () => {
   });
 
   it("lehnt ein zu kurzes Passwort ab", () => {
-    const errors = validateResetPassword({ password: "kurz", passwordConfirm: "kurz" });
+    const errors = validateResetPassword({ password: "Ku1!", passwordConfirm: "Ku1!" });
     expect(errors.password).toBe("tooShort");
+  });
+
+  it("verlangt mindestens einen Großbuchstaben", () => {
+    const errors = validateResetPassword({ password: "passwort1!", passwordConfirm: "passwort1!" });
+    expect(errors.password).toBe("missingUppercase");
+  });
+
+  it("verlangt mindestens einen Kleinbuchstaben", () => {
+    const errors = validateResetPassword({ password: "PASSWORT1!", passwordConfirm: "PASSWORT1!" });
+    expect(errors.password).toBe("missingLowercase");
+  });
+
+  it("verlangt mindestens eine Zahl", () => {
+    const errors = validateResetPassword({ password: "Passwort!", passwordConfirm: "Passwort!" });
+    expect(errors.password).toBe("missingDigit");
+  });
+
+  it("verlangt mindestens ein Sonderzeichen", () => {
+    const errors = validateResetPassword({ password: "Passwort1", passwordConfirm: "Passwort1" });
+    expect(errors.password).toBe("missingSpecial");
   });
 
   it("verlangt übereinstimmende Passwort-Bestätigung", () => {

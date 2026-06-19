@@ -58,7 +58,7 @@ describe("ResetPasswordForm", () => {
   it("zeigt einen Fehler bei nicht uebereinstimmenden Passwoertern", async () => {
     render(<ResetPasswordForm token="gueltiges-token" />);
 
-    await userEvent.type(screen.getByLabelText("Neues Passwort"), "neues-passwort");
+    await userEvent.type(screen.getByLabelText("Neues Passwort"), "NeuesPass1!");
     await userEvent.type(screen.getByLabelText("Passwort bestätigen"), "anderes-passwort");
     await userEvent.click(screen.getByRole("button", { name: "Passwort speichern" }));
 
@@ -74,15 +74,15 @@ describe("ResetPasswordForm", () => {
 
     render(<ResetPasswordForm token="gueltiges-token" />);
 
-    await userEvent.type(screen.getByLabelText("Neues Passwort"), "neues-passwort");
-    await userEvent.type(screen.getByLabelText("Passwort bestätigen"), "neues-passwort");
+    await userEvent.type(screen.getByLabelText("Neues Passwort"), "NeuesPass1!");
+    await userEvent.type(screen.getByLabelText("Passwort bestätigen"), "NeuesPass1!");
     await userEvent.click(screen.getByRole("button", { name: "Passwort speichern" }));
 
     await waitFor(() =>
       expect(global.fetch).toHaveBeenCalledWith("/api/auth/reset-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token: "gueltiges-token", password: "neues-passwort" }),
+        body: JSON.stringify({ token: "gueltiges-token", password: "NeuesPass1!" }),
       })
     );
 
@@ -100,8 +100,8 @@ describe("ResetPasswordForm", () => {
 
     render(<ResetPasswordForm token="abgelaufenes-token" />);
 
-    await userEvent.type(screen.getByLabelText("Neues Passwort"), "neues-passwort");
-    await userEvent.type(screen.getByLabelText("Passwort bestätigen"), "neues-passwort");
+    await userEvent.type(screen.getByLabelText("Neues Passwort"), "NeuesPass1!");
+    await userEvent.type(screen.getByLabelText("Passwort bestätigen"), "NeuesPass1!");
     await userEvent.click(screen.getByRole("button", { name: "Passwort speichern" }));
 
     expect(await screen.findByText("Link ungültig oder abgelaufen")).toBeInTheDocument();
