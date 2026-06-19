@@ -20,6 +20,7 @@ export default async function Home({ params }: Props) {
         headline={t("headline")}
         subline={t("subline")}
         cta={t("cta")}
+        freeBadge={t("freeBadge")}
       />
       <HowItWorksSection
         title={t("howItWorks.title")}

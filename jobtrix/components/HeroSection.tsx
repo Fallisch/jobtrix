@@ -8,9 +8,10 @@ interface HeroSectionProps {
   headline: string;
   subline: string;
   cta: string;
+  freeBadge: string;
 }
 
-export default function HeroSection({ locale, headline, subline, cta }: HeroSectionProps) {
+export default function HeroSection({ locale, headline, subline, cta, freeBadge }: HeroSectionProps) {
   return (
     <motion.section
       data-testid="hero"
@@ -31,6 +32,9 @@ export default function HeroSection({ locale, headline, subline, cta }: HeroSect
       >
         {cta}
       </Link>
+      <p className="mt-4 text-sm font-medium text-accent dark:text-accent/80">
+        {freeBadge}
+      </p>
     </motion.section>
   );
 }
