@@ -48,10 +48,13 @@ jest.mock("next-auth/react", () => ({
 
 const mockedSignIn = jest.mocked(signIn);
 
+global.fetch = jest.fn();
+
 describe("LoginForm", () => {
   beforeEach(() => {
     mockPush.mockClear();
     mockedSignIn.mockReset();
+    (global.fetch as jest.Mock).mockReset();
   });
 
   it("zeigt Validierungsfehler bei leerem Formular", async () => {
@@ -64,8 +67,12 @@ describe("LoginForm", () => {
     expect(mockedSignIn).not.toHaveBeenCalled();
   });
 
-  it("meldet erfolgreich an und leitet zu /profile weiter", async () => {
+  it("leitet nach Login zu /generate weiter wenn Profil vorhanden", async () => {
     mockedSignIn.mockResolvedValue({ error: null, status: 200, ok: true, url: null });
+    (global.fetch as jest.Mock).mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({ name: "Max Mustermann" }),
+    });
 
     render(<LoginForm />);
 
@@ -78,7 +85,23 @@ describe("LoginForm", () => {
       password: "correct-password",
       redirect: false,
     }));
-    await waitFor(() => expect(mockPush).toHaveBeenCalledWith("/de/profile"));
+    await waitFor(() => expect(mockPush).toHaveBeenCalledWith("/de/generate"));
+  });
+
+  it("leitet nach Login zu /onboarding weiter wenn Profil leer", async () => {
+    mockedSignIn.mockResolvedValue({ error: null, status: 200, ok: true, url: null });
+    (global.fetch as jest.Mock).mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({ name: "" }),
+    });
+
+    render(<LoginForm />);
+
+    await userEvent.type(screen.getByLabelText("E-Mail"), "test@example.com");
+    await userEvent.type(screen.getByLabelText("Passwort"), "correct-password");
+    await userEvent.click(screen.getByRole("button", { name: "Anmelden" }));
+
+    await waitFor(() => expect(mockPush).toHaveBeenCalledWith("/de/onboarding"));
   });
 
   it("verlinkt auf die Passwort-vergessen-Seite", () => {

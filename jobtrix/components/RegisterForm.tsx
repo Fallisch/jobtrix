@@ -49,7 +49,7 @@ export default function RegisterForm() {
         return;
       }
 
-      router.push(`/${locale}/profile`);
+      router.push(`/${locale}/onboarding`);
     } catch {
       setSubmitError("generic");
     } finally {

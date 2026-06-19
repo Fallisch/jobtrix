@@ -362,5 +362,18 @@
     "noEmailBody": "No separate email draft available",
     "sortNewest": "Newest first (recommended)",
     "sortOldest": "Oldest first"
+  },
+  "onboarding": {
+    "title": "Welcome to JobTRIX!",
+    "subtitle": "Fill in your profile so we can create tailored applications for you.",
+    "nameLabel": "Full name *",
+    "emailLabel": "Email (for applications)",
+    "phoneLabel": "Phone",
+    "addressLabel": "Address",
+    "birthdateLabel": "Date of birth",
+    "submit": "Save profile and get started",
+    "errors": {
+      "nameRequired": "Please enter your name."
+    }
   }
 }

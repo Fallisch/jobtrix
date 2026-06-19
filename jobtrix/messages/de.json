@@ -362,5 +362,18 @@
     "noEmailBody": "Kein separater E-Mail-Entwurf verfügbar",
     "sortNewest": "Neuestes zuerst (empfohlen)",
     "sortOldest": "Ältestes zuerst"
+  },
+  "onboarding": {
+    "title": "Willkommen bei JobTRIX!",
+    "subtitle": "Fülle dein Profil aus, damit wir passende Bewerbungen für dich erstellen können.",
+    "nameLabel": "Vollständiger Name *",
+    "emailLabel": "E-Mail (für Bewerbungen)",
+    "phoneLabel": "Telefon",
+    "addressLabel": "Adresse",
+    "birthdateLabel": "Geburtsdatum",
+    "submit": "Profil speichern und loslegen",
+    "errors": {
+      "nameRequired": "Bitte gib deinen Namen ein."
+    }
   }
 }

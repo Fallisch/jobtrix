@@ -35,7 +35,15 @@ export default function LoginForm() {
         return;
       }
 
-      router.push(`/${locale}/profile`);
+      const profileRes = await fetch("/api/profile");
+      if (profileRes.ok) {
+        const profile = await profileRes.json();
+        if (!profile.name) {
+          router.push(`/${locale}/onboarding`);
+          return;
+        }
+      }
+      router.push(`/${locale}/generate`);
     } finally {
       setSubmitting(false);
     }

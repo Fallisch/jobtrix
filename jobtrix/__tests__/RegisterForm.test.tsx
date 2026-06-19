@@ -99,7 +99,7 @@ describe("RegisterForm", () => {
       password: "correct-password",
       redirect: false,
     }));
-    await waitFor(() => expect(mockPush).toHaveBeenCalledWith("/de/profile"));
+    await waitFor(() => expect(mockPush).toHaveBeenCalledWith("/de/onboarding"));
   });
 
   it("verlinkt AGB und Datenschutzbestimmungen im Zustimmungs-Label, geöffnet in neuem Tab", () => {
