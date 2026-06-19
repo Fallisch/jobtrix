@@ -54,6 +54,7 @@
       "title": "Registrieren",
       "emailLabel": "E-Mail",
       "passwordLabel": "Passwort",
+      "passwordHint": "Mind. 8 Zeichen, Groß-/Kleinbuchstabe, Zahl, Sonderzeichen",
       "passwordConfirmLabel": "Passwort bestätigen",
       "termsLabelPrefix": "Ich akzeptiere die ",
       "termsLabelAgbLink": "AGB",
@@ -120,6 +121,7 @@
     "resetPassword": {
       "title": "Neues Passwort festlegen",
       "passwordLabel": "Neues Passwort",
+      "passwordHint": "Mind. 8 Zeichen, Groß-/Kleinbuchstabe, Zahl, Sonderzeichen",
       "passwordConfirmLabel": "Passwort bestätigen",
       "submit": "Passwort speichern",
       "successMessage": "Dein Passwort wurde erfolgreich geändert. Du kannst dich jetzt anmelden.",

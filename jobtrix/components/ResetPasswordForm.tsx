@@ -101,6 +101,7 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
                 className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
                 aria-label={t("passwordLabel")}
               />
+              <p className="text-text/50 text-xs mt-1">{t("passwordHint")}</p>
               {errors.password && (
                 <p className="text-red-600 dark:text-red-400 text-sm mt-1">{t(`errors.password.${errors.password}`)}</p>
               )}

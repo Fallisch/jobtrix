@@ -54,6 +54,7 @@
       "title": "Register",
       "emailLabel": "Email",
       "passwordLabel": "Password",
+      "passwordHint": "Min. 8 characters, upper/lowercase, number, special character",
       "passwordConfirmLabel": "Confirm password",
       "termsLabelPrefix": "I accept the ",
       "termsLabelAgbLink": "terms and conditions",
@@ -120,6 +121,7 @@
     "resetPassword": {
       "title": "Set a new password",
       "passwordLabel": "New password",
+      "passwordHint": "Min. 8 characters, upper/lowercase, number, special character",
       "passwordConfirmLabel": "Confirm password",
       "submit": "Save password",
       "successMessage": "Your password has been changed successfully. You can now log in.",
