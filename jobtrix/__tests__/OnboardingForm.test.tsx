@@ -44,7 +44,7 @@ describe("OnboardingForm", () => {
     expect(screen.getByText(/step1Error/i)).toBeInTheDocument();
   });
 
-  it("navigiert durch alle 5 Schritte mit Weiter-Button", async () => {
+  it("navigiert durch alle 10 Schritte mit Weiter-Button", async () => {
     render(<OnboardingForm />);
 
     await userEvent.type(screen.getByRole("textbox", { name: /step1Title/i }), "Max");
@@ -59,6 +59,21 @@ describe("OnboardingForm", () => {
 
     fireEvent.click(screen.getByRole("button", { name: /next/i }));
     expect(screen.getByText(/step5Title/i)).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: /next/i }));
+    expect(screen.getByText(/step6Title/i)).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: /next/i }));
+    expect(screen.getByText(/step7Title/i)).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: /next/i }));
+    expect(screen.getByText(/step8Title/i)).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: /next/i }));
+    expect(screen.getByText(/step9Title/i)).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: /next/i }));
+    expect(screen.getByText(/step10Title/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /finish/i })).toBeInTheDocument();
   });
 
@@ -77,11 +92,9 @@ describe("OnboardingForm", () => {
     render(<OnboardingForm />);
 
     await userEvent.type(screen.getByRole("textbox", { name: /step1Title/i }), "Max Mustermann");
-    fireEvent.click(screen.getByRole("button", { name: /next/i }));
-
-    fireEvent.click(screen.getByRole("button", { name: /next/i }));
-    fireEvent.click(screen.getByRole("button", { name: /next/i }));
-    fireEvent.click(screen.getByRole("button", { name: /next/i }));
+    for (let i = 0; i < 9; i++) {
+      fireEvent.click(screen.getByRole("button", { name: /next/i }));
+    }
 
     fireEvent.click(screen.getByRole("button", { name: /finish/i }));
 
