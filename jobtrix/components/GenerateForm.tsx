@@ -146,7 +146,12 @@ export default function GenerateForm() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8 space-y-6">
+    <div className="max-w-3xl mx-auto px-4 py-8 space-y-6 relative">
+      {adoptedHintVisible && (
+        <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 bg-green-600 text-white px-6 py-3 rounded-full shadow-lg text-sm font-semibold animate-bounce">
+          {t("jobSearchAdoptedHint")}
+        </div>
+      )}
       <h1 className="text-3xl font-bold text-primary dark:text-accent">{t("title")}</h1>
 
       <div className="space-y-4">
@@ -225,9 +230,6 @@ export default function GenerateForm() {
               <p className="text-sm text-text/60">{t("jobSearchNoResults")}</p>
             ) : (
               <div className="space-y-2">
-                {adoptedHintVisible && (
-                  <p className="text-sm text-green-600 dark:text-green-400">{t("jobSearchAdoptedHint")}</p>
-                )}
                 {externalHintVisible && (
                   <p className="text-sm text-amber-600 dark:text-amber-400">{t("jobSearchExternalHint")}</p>
                 )}
