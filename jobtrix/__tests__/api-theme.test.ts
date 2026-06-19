@@ -48,14 +48,14 @@ describe("GET/POST /api/theme", () => {
     expect(res.status).toBe(401);
   });
 
-  it("liefert Default 'system', wenn noch keine Präferenz gespeichert wurde", async () => {
+  it("liefert null, wenn noch keine Präferenz gespeichert wurde", async () => {
     mockedGetServerSession.mockResolvedValue({ user: { id: userId }, expires: "" });
 
     const res = await GET();
     const data = await res.json();
 
     expect(res.status).toBe(200);
-    expect(data.themePreference).toBe("system");
+    expect(data.themePreference).toBeNull();
   });
 
   it("speichert eine Präferenz per POST und liefert sie per GET zurück", async () => {

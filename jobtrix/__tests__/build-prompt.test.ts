@@ -101,6 +101,16 @@ describe("buildPrompt – E-Mail-Sektion", () => {
     expect(prompt).toMatch(/3.{0,5}5 s.tze|kurz/i);
   });
 
+  it("enthält Arbeitsform-Hinweis im Prompt wenn workMode ausgewählt ist", () => {
+    const prompt = buildPrompt({ jobPosting: "Stelle als Entwickler", profile: baseProfile, workMode: "remote" });
+    expect(prompt).toMatch(/remote/i);
+  });
+
+  it("enthält keinen Arbeitsform-Hinweis wenn workMode nicht gesetzt ist", () => {
+    const prompt = buildPrompt({ jobPosting: "Stelle als Entwickler", profile: baseProfile });
+    expect(prompt).not.toMatch(/arbeitsform|bevorzugte.*remote|bevorzugte.*hybrid/i);
+  });
+
   it("enthält bei Initiativbewerbung Unternehmensbezug statt Stellenbezug in der E-Mail-Sektion", () => {
     const prompt = buildPrompt({
       jobPosting: "",

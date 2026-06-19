@@ -69,7 +69,7 @@ export default function Header({ locale }: { locale: string }) {
             className="text-sm font-medium text-white/50 hover:text-white transition-colors uppercase tracking-wide"
             aria-label={`Switch to ${other === "de" ? "Deutsch" : "English"}`}
           >
-            {other}
+            {locale}
           </button>
           <ThemeToggle />
         </nav>

@@ -139,6 +139,19 @@ describe("ThemeToggle", () => {
     expect(global.fetch).not.toHaveBeenCalled();
   });
 
+  it("überschreibt die lokale Theme-Auswahl nicht wenn keine Server-Präferenz gespeichert ist", async () => {
+    mockSession("authenticated");
+    (global.fetch as jest.Mock).mockResolvedValue({
+      ok: true,
+      json: async () => ({ themePreference: null }),
+    });
+
+    render(<ThemeToggle />);
+
+    await waitFor(() => expect(global.fetch).toHaveBeenCalledWith("/api/theme"));
+    expect(setTheme).not.toHaveBeenCalled();
+  });
+
   it("zeigt im Hellmodus das sichtbare Textlabel 'Hell'", () => {
     render(<ThemeToggle />);
     expect(screen.getByText("Hell")).toBeInTheDocument();

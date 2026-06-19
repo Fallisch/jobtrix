@@ -12,7 +12,7 @@ export async function GET() {
   }
 
   const profile = await prisma.userProfile.findUnique({ where: { userId: session.user.id } });
-  return NextResponse.json({ themePreference: profile?.themePreference ?? "system" });
+  return NextResponse.json({ themePreference: profile?.themePreference ?? null });
 }
 
 export async function POST(req: NextRequest) {

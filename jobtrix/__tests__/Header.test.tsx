@@ -137,6 +137,18 @@ describe("Header", () => {
     expect(mockedSignOut).toHaveBeenCalledWith({ callbackUrl: "/de" });
   });
 
+  it("zeigt die aktive Sprache im Sprachumschalter an (DE wenn Deutsch aktiv)", () => {
+    render(<Header locale="de" />);
+    const btn = screen.getByRole("button", { name: /english/i });
+    expect(btn).toHaveTextContent("de");
+  });
+
+  it("zeigt die aktive Sprache im Sprachumschalter an (EN wenn Englisch aktiv)", () => {
+    render(<Header locale="en" />);
+    const btn = screen.getByRole("button", { name: /deutsch/i });
+    expect(btn).toHaveTextContent("en");
+  });
+
   it("zeigt den Dark-Mode-Umschalter an", () => {
     render(<Header locale="de" />);
     expect(screen.getByRole("button", { name: "Zu Dunkelmodus wechseln" })).toBeInTheDocument();

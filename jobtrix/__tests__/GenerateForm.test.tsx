@@ -44,19 +44,11 @@ describe("GenerateForm", () => {
       expect(screen.getByRole("textbox", { name: JOB_POSTING })).toBeInTheDocument();
     });
 
-    it("rendert optionales Feld für Stellentitel", () => {
+    it("rendert keine Felder für Jobtitel, Firmenname oder Ansprechpartner", () => {
       render(<GenerateForm />);
-      expect(screen.getByRole("textbox", { name: JOB_TITLE })).toBeInTheDocument();
-    });
-
-    it("rendert optionales Feld für Firmenname", () => {
-      render(<GenerateForm />);
-      expect(screen.getByRole("textbox", { name: COMPANY_NAME })).toBeInTheDocument();
-    });
-
-    it("rendert optionales Feld für Ansprechpartner", () => {
-      render(<GenerateForm />);
-      expect(screen.getByRole("textbox", { name: CONTACT_PERSON })).toBeInTheDocument();
+      expect(screen.queryByRole("textbox", { name: JOB_TITLE })).not.toBeInTheDocument();
+      expect(screen.queryByRole("textbox", { name: COMPANY_NAME })).not.toBeInTheDocument();
+      expect(screen.queryByRole("textbox", { name: CONTACT_PERSON })).not.toBeInTheDocument();
     });
   });
 
@@ -732,54 +724,90 @@ describe("GenerateForm", () => {
       expect(cvCheckbox).not.toBe(coverLetterCheckbox);
     });
 
-    it("'Anschreiben als PDF' ist deaktiviert bis die Checkbox angehakt wird", async () => {
+    it("hebt die Checkbox hervor wenn PDF-Button ohne Haken geklickt wird", async () => {
       await generate();
       const pdfButton = screen.getByRole("button", { name: /coverLetterPdfButton/i });
-      expect(pdfButton).toBeDisabled();
+      fireEvent.click(pdfButton);
 
-      fireEvent.click(screen.getByTestId("cover-letter-agree-checkbox"));
-
-      expect(pdfButton).toBeEnabled();
+      const checkbox = screen.getByTestId("cover-letter-agree-checkbox");
+      expect(checkbox.closest("label")).toHaveClass("ring-2");
     });
 
-    it("'Lebenslauf als PDF' ist deaktiviert bis die Checkbox angehakt wird", async () => {
+    it("entfernt die Hervorhebung wenn die Checkbox angehakt wird", async () => {
+      await generate();
+      const pdfButton = screen.getByRole("button", { name: /coverLetterPdfButton/i });
+      fireEvent.click(pdfButton);
+
+      const checkbox = screen.getByTestId("cover-letter-agree-checkbox");
+      fireEvent.click(checkbox);
+
+      expect(checkbox.closest("label")).not.toHaveClass("ring-2");
+    });
+
+    it("hebt die Lebenslauf-Checkbox hervor wenn Lebenslauf-PDF-Button ohne Haken geklickt wird", async () => {
       await generate();
       const pdfButton = screen.getByRole("button", { name: /cvPdfButton/i });
-      expect(pdfButton).toBeDisabled();
+      fireEvent.click(pdfButton);
 
-      fireEvent.click(screen.getByTestId("cv-agree-checkbox"));
-
-      expect(pdfButton).toBeEnabled();
+      const checkbox = screen.getByTestId("cv-agree-checkbox");
+      expect(checkbox.closest("label")).toHaveClass("ring-2");
     });
 
-    it("setzt Checkbox und PDF-Button zurück, wenn der Anschreiben-Text nach dem Anhaken bearbeitet wird", async () => {
+    it("setzt Checkbox zurück wenn der Anschreiben-Text nach dem Anhaken bearbeitet wird", async () => {
       await generate();
 
       const checkbox = screen.getByTestId("cover-letter-agree-checkbox");
-      const pdfButton = screen.getByRole("button", { name: /coverLetterPdfButton/i });
       fireEvent.click(checkbox);
-      expect(pdfButton).toBeEnabled();
+      expect(checkbox).toBeChecked();
 
       const textarea = screen.getByDisplayValue("Brief");
       await userEvent.type(textarea, " zusätzlich");
 
       expect(checkbox).not.toBeChecked();
-      expect(pdfButton).toBeDisabled();
     });
 
-    it("setzt Checkbox und PDF-Button zurück, wenn der Lebenslauf-Text nach dem Anhaken bearbeitet wird", async () => {
+    it("setzt Checkbox zurück wenn der Lebenslauf-Text nach dem Anhaken bearbeitet wird", async () => {
       await generate();
 
       const checkbox = screen.getByTestId("cv-agree-checkbox");
-      const pdfButton = screen.getByRole("button", { name: /cvPdfButton/i });
       fireEvent.click(checkbox);
-      expect(pdfButton).toBeEnabled();
+      expect(checkbox).toBeChecked();
 
       const textarea = screen.getByDisplayValue("CV");
       await userEvent.type(textarea, " zusätzlich");
 
       expect(checkbox).not.toBeChecked();
-      expect(pdfButton).toBeDisabled();
+    });
+  });
+
+  describe("Arbeitsform-Auswahl", () => {
+    beforeEach(() => {
+      localStorage.setItem("jobtrix_profile", JSON.stringify(mockProfile));
+    });
+
+    it("zeigt ein Auswahlfeld für die Arbeitsform mit Standard 'Egal'", () => {
+      render(<GenerateForm />);
+      const select = screen.getByRole("combobox", { name: /workModeLabel/i });
+      expect(select).toBeInTheDocument();
+      expect(select).toHaveValue("");
+    });
+
+    it("sendet die gewählte Arbeitsform an /api/generate", async () => {
+      (global.fetch as jest.Mock).mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ coverLetter: "Brief", cv: "CV", emailSubject: "Betr" }),
+      });
+
+      render(<GenerateForm />);
+      await userEvent.selectOptions(screen.getByRole("combobox", { name: /workModeLabel/i }), "remote");
+      await userEvent.type(screen.getByRole("textbox", { name: JOB_POSTING }), "Stelle");
+      fireEvent.click(screen.getByRole("button", { name: GENERATE_BTN }));
+
+      await waitFor(() => screen.getByDisplayValue("Brief"));
+
+      const lastCall = (global.fetch as jest.Mock).mock.calls.at(-1) as [string, RequestInit];
+      const body = JSON.parse(lastCall[1].body as string);
+      expect(body.workMode).toBe("remote");
     });
   });
 
@@ -976,6 +1004,38 @@ describe("GenerateForm", () => {
       fireEvent.click(screen.getByTestId("job-result-0"));
 
       expect(screen.getByText(/jobSearchExternalHint/i)).toBeInTheDocument();
+      openSpy.mockRestore();
+    });
+
+    it("zeigt Übernahme-Hinweis nach Klick auf BA-eigenes Ergebnis mit Beschreibung", async () => {
+      mockJobSearch([
+        { title: "BA-Stelle", company: "Intern GmbH", location: "Berlin", description: "Beschreibung", url: "https://example.com/job/1" },
+      ]);
+
+      render(<GenerateForm />);
+      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchFieldLabel/i }), "Entwickler");
+      fireEvent.click(screen.getByRole("button", { name: /jobSearchButton/i }));
+      await waitFor(() => screen.getByText("BA-Stelle"));
+
+      fireEvent.click(screen.getByTestId("job-result-0"));
+
+      expect(screen.getByText(/jobSearchAdoptedHint/i)).toBeInTheDocument();
+    });
+
+    it("zeigt keinen Übernahme-Hinweis bei externem Ergebnis (nur den externen Hinweis)", async () => {
+      const openSpy = jest.spyOn(window, "open").mockImplementation(() => null);
+      mockJobSearch([
+        { title: "Externe Stelle", company: "External GmbH", location: "Hamburg", description: null, url: "https://example.com/job/2" },
+      ]);
+
+      render(<GenerateForm />);
+      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchFieldLabel/i }), "Developer");
+      fireEvent.click(screen.getByRole("button", { name: /jobSearchButton/i }));
+      await waitFor(() => screen.getByText("Externe Stelle"));
+
+      fireEvent.click(screen.getByTestId("job-result-0"));
+
+      expect(screen.queryByText(/jobSearchAdoptedHint/i)).not.toBeInTheDocument();
       openSpy.mockRestore();
     });
 

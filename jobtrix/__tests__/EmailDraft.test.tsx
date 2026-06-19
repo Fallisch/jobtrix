@@ -24,6 +24,31 @@ describe("EmailDraft", () => {
     ).toBeInTheDocument();
   });
 
+  it("zeigt einen 'E-Mail versenden'-Button der einen mailto-Link öffnet", () => {
+    render(<EmailDraft subject="Bewerbung als Dev" body="Sehr geehrte Damen" />);
+    const link = screen.getByRole("link", { name: /sendEmailButton/i });
+    expect(link).toHaveAttribute("href", expect.stringContaining("mailto:"));
+    expect(link).toHaveAttribute("href", expect.stringContaining("subject=Bewerbung"));
+    expect(link).toHaveAttribute("href", expect.stringContaining("body="));
+  });
+
+  it("zeigt eine Bestätigungs-Checkbox und der Send-Button ist erst nach Abhaken klickbar", () => {
+    render(<EmailDraft subject="Betreff" body="Text" />);
+    const checkbox = screen.getByTestId("email-confirm-checkbox");
+    const link = screen.getByRole("link", { name: /sendEmailButton/i });
+
+    expect(link).toHaveAttribute("aria-disabled", "true");
+
+    fireEvent.click(checkbox);
+
+    expect(link).toHaveAttribute("aria-disabled", "false");
+  });
+
+  it("zeigt einen Hinweis, dass Anhänge manuell beigefügt werden müssen", () => {
+    render(<EmailDraft subject="Betreff" body="Text" />);
+    expect(screen.getByText(/sendEmailAttachmentHint/i)).toBeInTheDocument();
+  });
+
   describe("Kopieren in die Zwischenablage", () => {
     it("kopiert den Betreff und zeigt danach kurz 'Kopiert ✓' im Button an", async () => {
       render(<EmailDraft subject="Bewerbung als Entwickler – Max Mustermann" body="Anschreiben-Text" />);

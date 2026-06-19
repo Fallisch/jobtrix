@@ -36,9 +36,6 @@ export default function GenerateForm() {
   const router = useRouter();
   const { locale } = useParams<{ locale: string }>();
   const [jobPosting, setJobPosting] = useState("");
-  const [jobTitle, setJobTitle] = useState("");
-  const [companyName, setCompanyName] = useState("");
-  const [contactPerson, setContactPerson] = useState("");
   const [hasProfile, setHasProfile] = useState(false);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<GenerateResult | null>(null);
@@ -47,9 +44,12 @@ export default function GenerateForm() {
   const [editedCv, setEditedCv] = useState("");
   const [coverLetterAgreed, setCoverLetterAgreed] = useState(false);
   const [cvAgreed, setCvAgreed] = useState(false);
+  const [coverLetterHighlight, setCoverLetterHighlight] = useState(false);
+  const [cvHighlight, setCvHighlight] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<"classic" | "modern" | "traditional" | "accent" | "creative">("classic");
   const [cvStyle, setCvStyle] = useState<"classic" | "american">("classic");
   const [accentColor, setAccentColor] = useState<string>("#1E3A5F");
+  const [workMode, setWorkMode] = useState<"" | "remote" | "homeoffice" | "hybrid" | "onsite">("");
   const [isInitiativbewerbung, setIsInitiativbewerbung] = useState(false);
   const [targetCompany, setTargetCompany] = useState("");
   const [jobSearchField, setJobSearchField] = useState("");
@@ -60,6 +60,7 @@ export default function GenerateForm() {
   const [jobSearchPerformed, setJobSearchPerformed] = useState(false);
   const [jobResults, setJobResults] = useState<JobSearchResult[]>([]);
   const [externalHintVisible, setExternalHintVisible] = useState(false);
+  const [adoptedHintVisible, setAdoptedHintVisible] = useState(false);
 
   useEffect(() => {
     setHasProfile(loadProfile() !== null);
@@ -90,7 +91,7 @@ export default function GenerateForm() {
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ jobPosting, jobTitle, companyName, contactPerson, profile, cvStyle, template: selectedTemplate, accentColor, isInitiativbewerbung, targetCompany }),
+        body: JSON.stringify({ jobPosting, profile, cvStyle, template: selectedTemplate, accentColor, isInitiativbewerbung, targetCompany, ...(workMode ? { workMode } : {}) }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -135,9 +136,12 @@ export default function GenerateForm() {
     if (result.description) {
       setJobPosting(result.description);
       setExternalHintVisible(false);
+      setAdoptedHintVisible(true);
+      setTimeout(() => setAdoptedHintVisible(false), 4000);
     } else {
       window.open(result.url, "_blank");
       setExternalHintVisible(true);
+      setAdoptedHintVisible(false);
     }
   }
 
@@ -208,6 +212,9 @@ export default function GenerateForm() {
               <p className="text-sm text-text/60">{t("jobSearchNoResults")}</p>
             ) : (
               <div className="space-y-2">
+                {adoptedHintVisible && (
+                  <p className="text-sm text-green-600 dark:text-green-400">{t("jobSearchAdoptedHint")}</p>
+                )}
                 {externalHintVisible && (
                   <p className="text-sm text-amber-600 dark:text-amber-400">{t("jobSearchExternalHint")}</p>
                 )}
@@ -259,6 +266,25 @@ export default function GenerateForm() {
           </label>
         </div>
 
+        <div>
+          <label htmlFor="workMode" className="block text-sm font-medium text-text mb-1">
+            {t("workModeLabel")}
+          </label>
+          <select
+            id="workMode"
+            value={workMode}
+            onChange={(e) => setWorkMode(e.target.value as typeof workMode)}
+            aria-label={t("workModeLabel")}
+            className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-2.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-accent"
+          >
+            <option value="">{t("workModeNone")}</option>
+            <option value="remote">{t("workModeRemote")}</option>
+            <option value="homeoffice">{t("workModeHomeoffice")}</option>
+            <option value="hybrid">{t("workModeHybrid")}</option>
+            <option value="onsite">{t("workModeOnsite")}</option>
+          </select>
+        </div>
+
         {isInitiativbewerbung ? (
           <div>
             <label htmlFor="targetCompany" className="block text-sm font-medium text-text mb-1">
@@ -290,52 +316,6 @@ export default function GenerateForm() {
             />
           </div>
         )}
-
-        <div>
-          <label htmlFor="jobTitle" className="block text-sm font-medium text-text mb-1">
-            {t("jobTitleLabel")}
-          </label>
-          <input
-            id="jobTitle"
-            type="text"
-            value={jobTitle}
-            onChange={(e) => setJobTitle(e.target.value)}
-            className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-3 text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent"
-            placeholder={t("optional")}
-            aria-label={t("jobTitleLabel")}
-          />
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label htmlFor="companyName" className="block text-sm font-medium text-text mb-1">
-              {t("companyNameLabel")}
-            </label>
-            <input
-              id="companyName"
-              type="text"
-              value={companyName}
-              onChange={(e) => setCompanyName(e.target.value)}
-              className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-3 text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent"
-              placeholder={t("optional")}
-              aria-label={t("companyNameLabel")}
-            />
-          </div>
-          <div>
-            <label htmlFor="contactPerson" className="block text-sm font-medium text-text mb-1">
-              {t("contactPersonLabel")}
-            </label>
-            <input
-              id="contactPerson"
-              type="text"
-              value={contactPerson}
-              onChange={(e) => setContactPerson(e.target.value)}
-              className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-3 text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent"
-              placeholder={t("optional")}
-              aria-label={t("contactPersonLabel")}
-            />
-          </div>
-        </div>
 
         <div className="flex flex-wrap items-center gap-3">
           <button
@@ -486,11 +466,15 @@ export default function GenerateForm() {
               <h2 className="text-base font-semibold text-primary dark:text-accent">{t("coverLetterTitle")}</h2>
               <button
                 onClick={() => {
+                  if (!coverLetterAgreed) {
+                    setCoverLetterHighlight(true);
+                    document.querySelector<HTMLInputElement>('[data-testid="cover-letter-agree-checkbox"]')?.focus();
+                    return;
+                  }
                   const profile = loadProfile();
                   if (profile) downloadCoverLetterPdf(editedCoverLetter, profile, selectedTemplate, accentColor);
                 }}
-                disabled={!coverLetterAgreed}
-                className="inline-flex items-center gap-1.5 rounded-full border border-accent text-accent px-3.5 py-1.5 text-sm font-semibold hover:bg-accent hover:text-white transition disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-accent"
+                className={`inline-flex items-center gap-1.5 rounded-full border border-accent text-accent px-3.5 py-1.5 text-sm font-semibold hover:bg-accent hover:text-white transition ${!coverLetterAgreed ? "opacity-40" : ""}`}
                 aria-label={t("coverLetterPdfButton")}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
@@ -510,11 +494,14 @@ export default function GenerateForm() {
               className="w-full px-5 py-4 text-sm text-text bg-transparent focus:outline-none resize-y"
               aria-label={t("coverLetterTitle")}
             />
-            <label className="flex items-center gap-2 px-5 pb-4 text-sm text-text/70">
+            <label className={`flex items-center gap-2 px-5 pb-4 text-sm text-text/70 rounded ${coverLetterHighlight ? "ring-2 ring-red-500" : ""}`}>
               <input
                 type="checkbox"
                 checked={coverLetterAgreed}
-                onChange={(e) => setCoverLetterAgreed(e.target.checked)}
+                onChange={(e) => {
+                  setCoverLetterAgreed(e.target.checked);
+                  if (e.target.checked) setCoverLetterHighlight(false);
+                }}
                 data-testid="cover-letter-agree-checkbox"
                 className="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-accent focus:ring-accent"
               />
@@ -527,11 +514,15 @@ export default function GenerateForm() {
               <h2 className="text-base font-semibold text-primary dark:text-accent">{t("cvTitle")}</h2>
               <button
                 onClick={() => {
+                  if (!cvAgreed) {
+                    setCvHighlight(true);
+                    document.querySelector<HTMLInputElement>('[data-testid="cv-agree-checkbox"]')?.focus();
+                    return;
+                  }
                   const profile = loadProfile();
                   if (profile) downloadCvPdf(editedCv, profile, selectedTemplate, cvStyle, accentColor);
                 }}
-                disabled={!cvAgreed}
-                className="inline-flex items-center gap-1.5 rounded-full border border-accent text-accent px-3.5 py-1.5 text-sm font-semibold hover:bg-accent hover:text-white transition disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-accent"
+                className={`inline-flex items-center gap-1.5 rounded-full border border-accent text-accent px-3.5 py-1.5 text-sm font-semibold hover:bg-accent hover:text-white transition ${!cvAgreed ? "opacity-40" : ""}`}
                 aria-label={t("cvPdfButton")}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
@@ -551,11 +542,14 @@ export default function GenerateForm() {
               className="w-full px-5 py-4 text-sm text-text bg-transparent focus:outline-none resize-y"
               aria-label={t("cvTitle")}
             />
-            <label className="flex items-center gap-2 px-5 pb-4 text-sm text-text/70">
+            <label className={`flex items-center gap-2 px-5 pb-4 text-sm text-text/70 rounded ${cvHighlight ? "ring-2 ring-red-500" : ""}`}>
               <input
                 type="checkbox"
                 checked={cvAgreed}
-                onChange={(e) => setCvAgreed(e.target.checked)}
+                onChange={(e) => {
+                  setCvAgreed(e.target.checked);
+                  if (e.target.checked) setCvHighlight(false);
+                }}
                 data-testid="cv-agree-checkbox"
                 className="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-accent focus:ring-accent"
               />

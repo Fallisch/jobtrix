@@ -11,10 +11,19 @@ export interface GenerateRequest {
   accentColor?: string;
   isInitiativbewerbung?: boolean;
   targetCompany?: string;
+  workMode?: "remote" | "homeoffice" | "hybrid" | "onsite";
 }
 
 export function buildPrompt(req: GenerateRequest): string {
-  const { jobPosting, companyName, contactPerson, profile, cvStyle, isInitiativbewerbung, targetCompany } = req;
+  const { jobPosting, companyName, contactPerson, profile, cvStyle, isInitiativbewerbung, targetCompany, workMode } = req;
+
+  const workModeLabels: Record<string, string> = {
+    remote: "Remote",
+    homeoffice: "Homeoffice",
+    hybrid: "Hybrid",
+    onsite: "Vor Ort",
+  };
+  const workModeHint = workMode ? `\nBevorzugte Arbeitsform: ${workModeLabels[workMode]}. Erwähne diese Präferenz passend im Anschreiben.` : "";
 
   const eduText = profile.education
     .map((e) => `${e.degree} – ${e.institution} (${e.year})`)
@@ -64,7 +73,7 @@ ${profile.interests.length > 0 ? `Persönliche Interessen: ${interestsText}` : "
 ${effectiveCompany ? `Unternehmen: ${effectiveCompany}` : ""}
 ${contactPerson ? `Ansprechpartner: ${contactPerson}` : ""}
 
-${jobSection}
+${jobSection}${workModeHint}
 
 ${cvStyle === "american" ? "Sortiere Berufserfahrung und Ausbildung antichronologisch – neuester Eintrag zuerst.\n\n" : ""}Schreibstil – halte diese Regeln strikt ein:
 - Verwende eine natürliche, leicht unregelmäßige Satzstruktur: variiere Satzlänge und Satzbau bewusst, mische kurze Sätze mit längeren.

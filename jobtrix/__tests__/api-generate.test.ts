@@ -162,6 +162,16 @@ describe("POST /api/generate", () => {
     expect(res.status).toBe(500);
     expect(data).toHaveProperty("error");
   });
+
+  it("markiert die kostenlose Generierung nicht als verbraucht wenn die API fehlschlägt", async () => {
+    mockCreate.mockRejectedValue(new Error("API Timeout"));
+
+    const res = await POST(makeRequest({ jobPosting: "Stelle", profile }));
+
+    expect(res.status).toBe(500);
+    const access = await prisma.access.findUnique({ where: { userId } });
+    expect(access?.freeGenerationUsed ?? false).toBe(false);
+  });
 });
 
 describe("Zugangskontrolle", () => {

@@ -34,6 +34,9 @@ function CopyButton({ value, label, testId }: { value: string; label: string; te
 
 export default function EmailDraft({ subject, body }: EmailDraftProps) {
   const t = useTranslations("generate");
+  const [emailConfirmed, setEmailConfirmed] = useState(false);
+
+  const mailtoHref = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
   return (
     <section data-testid="email-draft-section">
@@ -53,6 +56,33 @@ export default function EmailDraft({ subject, body }: EmailDraftProps) {
           <CopyButton value={body} label={t("copyBody")} testId="copy-body-button" />
         </div>
         <p className="whitespace-pre-wrap text-sm text-text">{body}</p>
+      </div>
+
+      <div className="mt-4 space-y-3">
+        <p className="text-sm text-text/60">{t("sendEmailAttachmentHint")}</p>
+        <label className="flex items-center gap-2 text-sm text-text/70">
+          <input
+            type="checkbox"
+            checked={emailConfirmed}
+            onChange={(e) => setEmailConfirmed(e.target.checked)}
+            data-testid="email-confirm-checkbox"
+            className="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-accent focus:ring-accent"
+          />
+          {t("sendEmailConfirm")}
+        </label>
+        <a
+          href={mailtoHref}
+          aria-label={t("sendEmailButton")}
+          aria-disabled={!emailConfirmed}
+          onClick={(e) => { if (!emailConfirmed) e.preventDefault(); }}
+          className={`inline-flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-semibold transition ${
+            emailConfirmed
+              ? "bg-accent text-white hover:brightness-110"
+              : "bg-accent/40 text-white/60 cursor-not-allowed"
+          }`}
+        >
+          {t("sendEmailButton")}
+        </a>
       </div>
     </section>
   );

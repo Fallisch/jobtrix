@@ -20,14 +20,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: decision.reason }, { status: 402 });
   }
 
-  if (decision.markFreeGenerationUsed) {
-    await prisma.access.upsert({
-      where: { userId },
-      create: { userId, freeGenerationUsed: true },
-      update: { freeGenerationUsed: true },
-    });
-  }
-
   try {
     const body = (await request.json()) as GenerateRequest;
     const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
@@ -44,6 +36,14 @@ export async function POST(request: NextRequest) {
       .join("");
 
     const { emailSubject, coverLetter, cv, emailBody } = parseResponse(text);
+
+    if (decision.markFreeGenerationUsed) {
+      await prisma.access.upsert({
+        where: { userId },
+        create: { userId, freeGenerationUsed: true },
+        update: { freeGenerationUsed: true },
+      });
+    }
 
     await prisma.applicationHistoryEntry.create({
       data: {

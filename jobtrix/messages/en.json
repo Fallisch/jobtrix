@@ -147,6 +147,12 @@
     "initiativbewerbungLabel": "Speculative application",
     "targetCompanyLabel": "Target company",
     "targetCompanyPlaceholder": "e.g. Acme Corp",
+    "workModeLabel": "Work mode",
+    "workModeNone": "Any",
+    "workModeRemote": "Remote",
+    "workModeHomeoffice": "Home office",
+    "workModeHybrid": "Hybrid",
+    "workModeOnsite": "On-site",
     "generateButton": "Generate application",
     "loading": "Your application is being created …",
     "coverLetterTitle": "Cover letter",
@@ -157,6 +163,9 @@
     "copySubject": "Copy subject",
     "copyBody": "Copy email body",
     "copied": "Copied ✓",
+    "sendEmailButton": "Send email",
+    "sendEmailConfirm": "I have read the text",
+    "sendEmailAttachmentHint": "Cover letter and CV must be attached manually.",
     "errorGeneric": "Generation failed. Please try again.",
     "coverLetterPdfButton": "Download cover letter as PDF",
     "cvPdfButton": "Download CV as PDF",
@@ -172,6 +181,7 @@
     "jobSearchSearching": "Searching …",
     "jobSearchNoResults": "No results found.",
     "jobSearchExternalBadge": "External provider",
+    "jobSearchAdoptedHint": "Job description has been imported",
     "jobSearchExternalHint": "The job description was opened on the external site. You can copy the text from there and paste it into the field here.",
     "jobSearchViewOriginal": "View original",
     "templateLabel": "Layout",
@@ -349,6 +359,8 @@
     "emailDraftTitle": "Email draft",
     "emailSubjectLabel": "Subject",
     "emailBodyLabel": "Email body",
-    "noEmailBody": "No separate email draft available"
+    "noEmailBody": "No separate email draft available",
+    "sortNewest": "Newest first (recommended)",
+    "sortOldest": "Oldest first"
   }
 }

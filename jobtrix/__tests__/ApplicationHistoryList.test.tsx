@@ -176,6 +176,38 @@ describe("ApplicationHistoryList", () => {
     expect(global.fetch).toHaveBeenLastCalledWith("/api/application-history/entry-2", { method: "DELETE" });
   });
 
+  it("zeigt Sortier-Buttons 'Neuestes zuerst' und 'Ältestes zuerst' an", async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve(entries) });
+
+    render(<ApplicationHistoryList />);
+
+    await waitFor(() => screen.getByText(/Senior Developer/));
+    expect(screen.getByRole("button", { name: /sortNewest/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /sortOldest/i })).toBeInTheDocument();
+  });
+
+  it("sortiert standardmäßig nach 'Neuestes zuerst' und der Button ist hervorgehoben", async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve(entries) });
+
+    render(<ApplicationHistoryList />);
+
+    await waitFor(() => screen.getByText(/Senior Developer/));
+    expect(screen.getByRole("button", { name: /sortNewest/i })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("button", { name: /sortOldest/i })).toHaveAttribute("aria-pressed", "false");
+  });
+
+  it("sortiert aufsteigend nach Datum wenn 'Ältestes zuerst' geklickt wird", async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve(entries) });
+
+    render(<ApplicationHistoryList />);
+
+    await waitFor(() => screen.getByText(/Senior Developer/));
+    fireEvent.click(screen.getByRole("button", { name: /sortOldest/i }));
+
+    const headings = screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent);
+    expect(headings.indexOf("Junior Developer")).toBeLessThan(headings.indexOf("Senior Developer – Acme GmbH"));
+  });
+
   it("entfernt einen Eintrag nicht, wenn die Bestätigung abgelehnt wird", async () => {
     (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve(entries) });
     jest.spyOn(window, "confirm").mockReturnValue(false);

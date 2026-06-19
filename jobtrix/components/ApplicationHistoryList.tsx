@@ -33,6 +33,7 @@ export default function ApplicationHistoryList() {
   const t = useTranslations("applicationHistory");
   const { locale } = useParams<{ locale: string }>();
   const [entries, setEntries] = useState<ApplicationHistoryEntry[] | null>(null);
+  const [sortOrder, setSortOrder] = useState<"newest" | "oldest">("newest");
 
   useEffect(() => {
     fetch("/api/application-history")
@@ -56,6 +57,35 @@ export default function ApplicationHistoryList() {
     <div className="max-w-3xl mx-auto px-4 py-8 space-y-6">
       <h1 className="text-3xl font-bold text-primary dark:text-accent">{t("title")}</h1>
 
+      {entries.length > 0 && (
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={() => setSortOrder("newest")}
+            aria-pressed={sortOrder === "newest"}
+            className={`rounded-full px-4 py-2 text-sm font-semibold border transition ${
+              sortOrder === "newest"
+                ? "bg-accent text-white border-accent"
+                : "border-gray-200 dark:border-gray-700 text-text hover:border-accent hover:text-accent"
+            }`}
+          >
+            {t("sortNewest")}
+          </button>
+          <button
+            type="button"
+            onClick={() => setSortOrder("oldest")}
+            aria-pressed={sortOrder === "oldest"}
+            className={`rounded-full px-4 py-2 text-sm font-semibold border transition ${
+              sortOrder === "oldest"
+                ? "bg-accent text-white border-accent"
+                : "border-gray-200 dark:border-gray-700 text-text hover:border-accent hover:text-accent"
+            }`}
+          >
+            {t("sortOldest")}
+          </button>
+        </div>
+      )}
+
       {entries.length === 0 ? (
         <div className="bg-white dark:bg-surface rounded-xl shadow p-6 text-center space-y-3">
           <p className="text-text/70">{t("emptyState")}</p>
@@ -65,7 +95,10 @@ export default function ApplicationHistoryList() {
         </div>
       ) : (
         <div className="space-y-4">
-          {entries.map((entry) => (
+          {[...entries].sort((a, b) => {
+            const diff = new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+            return sortOrder === "oldest" ? -diff : diff;
+          }).map((entry) => (
             <div key={entry.id} className="bg-white dark:bg-surface rounded-xl shadow p-5 space-y-2">
               <div className="flex items-center justify-between gap-4">
                 <h2 className="font-semibold text-primary dark:text-accent">
