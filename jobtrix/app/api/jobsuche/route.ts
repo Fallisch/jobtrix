@@ -59,11 +59,12 @@ export async function GET(request: NextRequest) {
   const wo = searchParams.get("wo") ?? "";
   const umkreis = searchParams.get("umkreis") ?? "";
   const arbeitgeber = searchParams.get("arbeitgeber") ?? "";
+  const branche = searchParams.get("branche") ?? "";
   const apiKey = process.env.ARBEITSAGENTUR_API_KEY || DEFAULT_API_KEY;
 
   try {
     const params = new URLSearchParams();
-    const combinedWas = [was, arbeitgeber].filter(Boolean).join(" ");
+    const combinedWas = [was, arbeitgeber, branche].filter(Boolean).join(" ");
     if (combinedWas) params.set("was", combinedWas);
     if (wo) params.set("wo", wo);
     if (umkreis) params.set("umkreis", umkreis);

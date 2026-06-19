@@ -6,6 +6,7 @@ import { useRouter, useParams } from "next/navigation";
 import { loadProfile, saveProfile } from "@/lib/profile-storage";
 import EmailDraft from "@/components/EmailDraft";
 import { downloadCoverLetterPdf, downloadCvPdf } from "@/lib/download-pdf";
+import LayoutPreview from "@/components/LayoutPreview";
 
 const ACCENT_COLORS = [
   "#1E3A5F",
@@ -54,6 +55,7 @@ export default function GenerateForm() {
   const [targetCompany, setTargetCompany] = useState("");
   const [jobSearchField, setJobSearchField] = useState("");
   const [jobSearchCompany, setJobSearchCompany] = useState("");
+  const [jobSearchBranche, setJobSearchBranche] = useState("");
   const [jobSearchLocation, setJobSearchLocation] = useState("");
   const [jobSearchRadius, setJobSearchRadius] = useState("25");
   const [jobSearchLoading, setJobSearchLoading] = useState(false);
@@ -119,6 +121,7 @@ export default function GenerateForm() {
       const params = new URLSearchParams();
       if (jobSearchField.trim()) params.set("was", jobSearchField.trim());
       if (jobSearchCompany.trim()) params.set("arbeitgeber", jobSearchCompany.trim());
+      if (jobSearchBranche.trim()) params.set("branche", jobSearchBranche.trim());
       if (jobSearchLocation.trim()) params.set("wo", jobSearchLocation.trim());
       if (jobSearchRadius) params.set("umkreis", jobSearchRadius);
 
@@ -174,6 +177,15 @@ export default function GenerateForm() {
               onChange={(e) => setJobSearchCompany(e.target.value)}
               placeholder={t("jobSearchCompanyPlaceholder")}
               aria-label={t("jobSearchCompanyLabel")}
+              className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-2.5 text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent"
+            />
+            <input
+              id="jobSearchBranche"
+              type="text"
+              value={jobSearchBranche}
+              onChange={(e) => setJobSearchBranche(e.target.value)}
+              placeholder={t("jobSearchBranchePlaceholder")}
+              aria-label={t("jobSearchBrancheLabel")}
               className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-2.5 text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent"
             />
             <input
@@ -373,71 +385,31 @@ export default function GenerateForm() {
 
       {result && (
         <div className="space-y-4">
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-text">{t("templateLabel")}:</span>
-            <button
-              onClick={() => setSelectedTemplate("classic")}
-              aria-pressed={selectedTemplate === "classic"}
-              aria-label={t("templateClassic")}
-              className={`rounded-full px-4 py-1.5 text-sm font-semibold border transition ${
-                selectedTemplate === "classic"
-                  ? "bg-accent text-white border-accent"
-                  : "border-gray-200 dark:border-gray-700 text-text hover:border-accent hover:text-accent"
-              }`}
-            >
-              {t("templateClassic")}
-            </button>
-            <button
-              onClick={() => setSelectedTemplate("modern")}
-              aria-pressed={selectedTemplate === "modern"}
-              aria-label={t("templateModern")}
-              className={`rounded-full px-4 py-1.5 text-sm font-semibold border transition ${
-                selectedTemplate === "modern"
-                  ? "bg-accent text-white border-accent"
-                  : "border-gray-200 dark:border-gray-700 text-text hover:border-accent hover:text-accent"
-              }`}
-            >
-              {t("templateModern")}
-            </button>
-            <button
-              onClick={() => setSelectedTemplate("traditional")}
-              aria-pressed={selectedTemplate === "traditional"}
-              aria-label={t("templateTraditional")}
-              className={`rounded-full px-4 py-1.5 text-sm font-semibold border transition ${
-                selectedTemplate === "traditional"
-                  ? "bg-accent text-white border-accent"
-                  : "border-gray-200 dark:border-gray-700 text-text hover:border-accent hover:text-accent"
-              }`}
-            >
-              {t("templateTraditional")}
-            </button>
-            <button
-              onClick={() => setSelectedTemplate("accent")}
-              aria-pressed={selectedTemplate === "accent"}
-              aria-label={t("templateAccent")}
-              className={`rounded-full px-4 py-1.5 text-sm font-semibold border transition ${
-                selectedTemplate === "accent"
-                  ? "bg-accent text-white border-accent"
-                  : "border-gray-200 dark:border-gray-700 text-text hover:border-accent hover:text-accent"
-              }`}
-            >
-              {t("templateAccent")}
-            </button>
-            <button
-              onClick={() => setSelectedTemplate("creative")}
-              aria-pressed={selectedTemplate === "creative"}
-              aria-label={t("templateCreative")}
-              className={`rounded-full px-4 py-1.5 text-sm font-semibold border transition ${
-                selectedTemplate === "creative"
-                  ? "bg-accent text-white border-accent"
-                  : "border-gray-200 dark:border-gray-700 text-text hover:border-accent hover:text-accent"
-              }`}
-            >
-              {t("templateCreative")}
-            </button>
+          <div>
+            <span className="text-sm font-medium text-text block mb-2">{t("templateLabel")}:</span>
+            <div className="flex flex-wrap gap-3">
+              {(["classic", "modern", "traditional", "accent", "creative"] as const).map((tmpl) => (
+                <button
+                  key={tmpl}
+                  onClick={() => setSelectedTemplate(tmpl)}
+                  aria-pressed={selectedTemplate === tmpl}
+                  aria-label={t(`template${tmpl.charAt(0).toUpperCase()}${tmpl.slice(1)}` as "templateClassic")}
+                  className={`flex flex-col items-center gap-1.5 rounded-xl p-2 border-2 transition ${
+                    selectedTemplate === tmpl
+                      ? "border-accent bg-accent/5"
+                      : "border-transparent hover:border-accent/30"
+                  }`}
+                >
+                  <LayoutPreview template={tmpl} />
+                  <span className={`text-xs font-semibold ${selectedTemplate === tmpl ? "text-accent" : "text-text/70"}`}>
+                    {t(`template${tmpl.charAt(0).toUpperCase()}${tmpl.slice(1)}` as "templateClassic")}
+                  </span>
+                </button>
+              ))}
+            </div>
 
             {(selectedTemplate === "modern" || selectedTemplate === "accent" || selectedTemplate === "creative") && (
-              <div className="flex items-center gap-2 ml-2" data-testid="color-palette">
+              <div className="flex items-center gap-2 mt-2" data-testid="color-palette">
                 <span className="text-sm text-text/50">Farbe:</span>
                 {ACCENT_COLORS.map((color) => (
                   <button

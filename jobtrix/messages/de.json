@@ -190,6 +190,8 @@
     "jobSearchFieldPlaceholder": "z. B. Softwareentwickler",
     "jobSearchCompanyLabel": "Firmenname",
     "jobSearchCompanyPlaceholder": "z. B. Siemens",
+    "jobSearchBrancheLabel": "Branche",
+    "jobSearchBranchePlaceholder": "z. B. IT, Industrie, Gesundheit",
     "jobSearchLocationLabel": "Ort",
     "jobSearchLocationPlaceholder": "PLZ oder Ort, z. B. 08340",
     "jobSearchRadiusLabel": "Umkreis (km)",
