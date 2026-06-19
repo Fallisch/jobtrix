@@ -551,7 +551,15 @@ export default function GenerateForm() {
             </label>
           </section>
 
-          <EmailDraft subject={result.emailSubject} body={result.emailBody ?? editedCoverLetter} />
+          <EmailDraft
+            subject={result.emailSubject}
+            body={result.emailBody ?? editedCoverLetter}
+            coverLetter={editedCoverLetter}
+            cv={editedCv}
+            template={selectedTemplate}
+            cvStyle={cvStyle}
+            accentColor={accentColor}
+          />
         </div>
       )}
     </div>
