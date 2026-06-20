@@ -7,7 +7,7 @@ import { loadProfile, saveProfile } from "@/lib/profile-storage";
 import EmailDraft from "@/components/EmailDraft";
 import { downloadCoverLetterPdf, downloadCvPdf } from "@/lib/download-pdf";
 import LayoutPreview from "@/components/LayoutPreview";
-import PdfPreviewModal from "@/components/PdfPreviewModal";
+import { openPdfPreview } from "@/components/PdfPreviewModal";
 import React from "react";
 import { CoverLetterDocument, CvDocument } from "@/lib/pdf-documents";
 
@@ -63,7 +63,6 @@ export default function GenerateForm() {
   const [jobResults, setJobResults] = useState<JobSearchResult[]>([]);
   const [externalHintVisible, setExternalHintVisible] = useState(false);
   const [adoptedHintVisible, setAdoptedHintVisible] = useState(false);
-  const [previewDoc, setPreviewDoc] = useState<React.ReactElement | null>(null);
 
   useEffect(() => {
     setHasProfile(loadProfile() !== null);
@@ -406,7 +405,7 @@ export default function GenerateForm() {
                 <button
                   onClick={() => {
                     const profile = loadProfile();
-                    if (profile) setPreviewDoc(React.createElement(CoverLetterDocument, { coverLetter: editedCoverLetter, profile, template: selectedTemplate, accentColor }));
+                    if (profile) openPdfPreview(React.createElement(CoverLetterDocument, { coverLetter: editedCoverLetter, profile, template: selectedTemplate, accentColor }));
                   }}
                   className="rounded-full border border-gray-300 dark:border-gray-600 text-text/60 px-3.5 py-1.5 text-sm font-semibold hover:border-accent hover:text-accent transition"
                   aria-label={t("pdfPreviewButton")}
@@ -466,7 +465,7 @@ export default function GenerateForm() {
                 <button
                   onClick={() => {
                     const profile = loadProfile();
-                    if (profile) setPreviewDoc(React.createElement(CvDocument, { cv: editedCv, profile, template: selectedTemplate, cvStyle, accentColor }));
+                    if (profile) openPdfPreview(React.createElement(CvDocument, { cv: editedCv, profile, template: selectedTemplate, cvStyle, accentColor }));
                   }}
                   className="rounded-full border border-gray-300 dark:border-gray-600 text-text/60 px-3.5 py-1.5 text-sm font-semibold hover:border-accent hover:text-accent transition"
                   aria-label={t("pdfPreviewButton")}
@@ -530,9 +529,6 @@ export default function GenerateForm() {
             documentsConfirmed={coverLetterAgreed && cvAgreed}
           />
         </div>
-      )}
-      {previewDoc && (
-        <PdfPreviewModal document={previewDoc} onClose={() => setPreviewDoc(null)} />
       )}
     </div>
   );

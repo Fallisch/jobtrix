@@ -1,8 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import React from "react";
 import { useTranslations } from "next-intl";
 import { loadProfile } from "@/lib/profile-storage";
+import { openPdfPreview } from "@/components/PdfPreviewModal";
+import { CoverLetterDocument, CvDocument } from "@/lib/pdf-documents";
 
 interface EmailDraftProps {
   subject: string;
@@ -160,8 +163,32 @@ export default function EmailDraft({ subject, body, coverLetter, cv, template, c
                 <div className="rounded-lg bg-white dark:bg-surface border border-gray-200 dark:border-gray-700 p-3">
                   <p className="whitespace-pre-wrap text-sm text-text">{body}</p>
                 </div>
-                <p className="text-xs text-text/50">{t("sendEmailPreviewAttachments")}</p>
-                <div className="flex gap-3">
+                <div className="space-y-2">
+                  <p className="text-xs font-medium text-text/60">{t("sendEmailPreviewAttachments")}:</p>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const profile = loadProfile();
+                        if (profile) openPdfPreview(React.createElement(CoverLetterDocument, { coverLetter, profile, template, accentColor }));
+                      }}
+                      className="rounded-full border border-accent text-accent px-4 py-1.5 text-sm font-semibold hover:bg-accent hover:text-white transition"
+                    >
+                      {t("sendEmailPreviewCoverLetter")}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const profile = loadProfile();
+                        if (profile) openPdfPreview(React.createElement(CvDocument, { cv, profile, template, cvStyle, accentColor }));
+                      }}
+                      className="rounded-full border border-accent text-accent px-4 py-1.5 text-sm font-semibold hover:bg-accent hover:text-white transition"
+                    >
+                      {t("sendEmailPreviewCv")}
+                    </button>
+                  </div>
+                </div>
+                <div className="flex gap-3 pt-1">
                   <button
                     type="button"
                     onClick={() => setShowPreview(false)}

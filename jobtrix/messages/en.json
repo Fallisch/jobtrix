@@ -186,6 +186,8 @@
     "sendEmailPreviewTitle": "Preview of your email",
     "sendEmailPreviewTo": "To",
     "sendEmailPreviewAttachments": "Attachments: anschreiben.pdf, lebenslauf.pdf",
+    "sendEmailPreviewCoverLetter": "Review cover letter",
+    "sendEmailPreviewCv": "Review CV",
     "sendEmailPreviewCancel": "Cancel",
     "sendEmailConfirmSend": "Send now",
     "errorGeneric": "Generation failed. Please try again.",

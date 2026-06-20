@@ -186,6 +186,8 @@
     "sendEmailPreviewTitle": "Vorschau deiner E-Mail",
     "sendEmailPreviewTo": "An",
     "sendEmailPreviewAttachments": "Anhänge: anschreiben.pdf, lebenslauf.pdf",
+    "sendEmailPreviewCoverLetter": "Anschreiben prüfen",
+    "sendEmailPreviewCv": "Lebenslauf prüfen",
     "sendEmailPreviewCancel": "Abbrechen",
     "sendEmailConfirmSend": "Jetzt absenden",
     "errorGeneric": "Generierung fehlgeschlagen. Bitte versuche es erneut.",
