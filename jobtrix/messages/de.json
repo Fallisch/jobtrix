@@ -295,7 +295,7 @@
     "paymentHeading": "Zahlungsabwicklung",
     "paymentBody": "Zahlungen für kostenpflichtige Pakete werden über Stripe abgewickelt. Zahlungsdaten werden direkt von Stripe verarbeitet und nicht von uns gespeichert.",
     "emailHeading": "E-Mail-Versand",
-    "emailBody": "Für den Versand von Bewerbungs-E-Mails sowie kontobezogenen E-Mails (z. B. Passwort-Reset) nutzen wir den E-Mail-Dienstleister Brevo.",
+    "emailBody": "Für den Versand von Bewerbungs-E-Mails sowie kontobezogenen E-Mails (z. B. Passwort-Reset) nutzen wir den E-Mail-Dienstleister Resend.",
     "hostingHeading": "Hosting",
     "hostingBody": "Die App wird auf Servern von Render (https://render.com) in der EU-Region Frankfurt gehostet. Die Datenbank wird bei Supabase (https://supabase.com) in der EU-Region betrieben. DNS, CDN und WAF werden über Cloudflare (https://cloudflare.com) mit globalem Edge-Netzwerk bereitgestellt; Cloudflare speichert dabei keine Inhaltsdaten dauerhaft. Mit allen Dienstleistern bestehen Auftragsverarbeitungsverträge (AVV) gemäß Art. 28 DSGVO.",
     "retentionHeading": "Speicherdauer & deine Rechte",

@@ -5,6 +5,7 @@ import { authOptions } from "@/lib/auth";
 import { pdf } from "@react-pdf/renderer";
 import { CoverLetterDocument, CvDocument } from "@/lib/pdf-documents";
 import { ProfileData } from "@/lib/profile-storage";
+import { sendApplicationEmail } from "@/lib/email";
 
 interface SendEmailBody {
   to: string;
@@ -24,8 +25,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
-  const apiKey = process.env.BREVO_API_KEY;
-  if (!apiKey) {
+  if (!process.env.RESEND_API_KEY) {
     return NextResponse.json({ error: "email_not_configured" }, { status: 500 });
   }
 
@@ -58,28 +58,18 @@ export async function POST(req: NextRequest) {
     const coverLetterBase64 = Buffer.from(await coverLetterBlob.arrayBuffer()).toString("base64");
     const cvBase64 = Buffer.from(await cvBlob.arrayBuffer()).toString("base64");
 
-    const senderEmail = process.env.BREVO_SENDER_EMAIL ?? "noreply@jobtrix.app";
+    const replyTo = data.profile.email || session.user.email || "";
 
-    const res = await fetch("https://api.brevo.com/v3/smtp/email", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "api-key": apiKey,
-      },
-      body: JSON.stringify({
-        sender: { email: senderEmail, name: "JobTRIX" },
-        to: [{ email: data.to }],
-        replyTo: { email: data.profile.email || session.user.email || senderEmail },
-        subject: data.subject,
-        textContent: data.body,
-        attachment: [
-          { content: coverLetterBase64, name: "anschreiben.pdf" },
-          { content: cvBase64, name: "lebenslauf.pdf" },
-        ],
-      }),
+    const ok = await sendApplicationEmail({
+      to: data.to,
+      replyTo,
+      subject: data.subject,
+      text: data.body,
+      coverLetterBase64,
+      cvBase64,
     });
 
-    if (!res.ok) {
+    if (!ok) {
       return NextResponse.json({ error: "send_failed" }, { status: 502 });
     }
 

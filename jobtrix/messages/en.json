@@ -295,7 +295,7 @@
     "paymentHeading": "Payment Processing",
     "paymentBody": "Payments for paid packages are processed via Stripe. Payment data is processed directly by Stripe and is not stored by us.",
     "emailHeading": "Email Delivery",
-    "emailBody": "We use the email service provider Brevo to send application emails as well as account-related emails (e.g. password reset).",
+    "emailBody": "We use the email service provider Resend to send application emails as well as account-related emails (e.g. password reset).",
     "hostingHeading": "Hosting",
     "hostingBody": "The app is hosted on Render (https://render.com) servers in the EU region Frankfurt. The database is operated by Supabase (https://supabase.com) in the EU region. DNS, CDN and WAF are provided via Cloudflare (https://cloudflare.com) using a global edge network; Cloudflare does not permanently store any content data. Data processing agreements (DPA) in accordance with Art. 28 GDPR are in place with all service providers.",
     "retentionHeading": "Retention Period & Your Rights",
