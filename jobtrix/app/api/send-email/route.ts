@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
         profile: data.profile,
         template: data.template,
         accentColor: data.accentColor,
-      })
+      }) as unknown as React.ReactElement
     ).toBlob();
 
     const cvBlob = await pdf(
@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
         template: data.template,
         cvStyle: data.cvStyle,
         accentColor: data.accentColor,
-      })
+      }) as unknown as React.ReactElement
     ).toBlob();
 
     const coverLetterBase64 = Buffer.from(await coverLetterBlob.arrayBuffer()).toString("base64");
