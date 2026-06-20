@@ -7,13 +7,15 @@ import { checkRateLimit } from "@/lib/rate-limit";
 
 export async function verifyCredentials(
   email: string,
-  password: string,
-  ip = "unknown"
+  password: string
 ): Promise<User | null> {
-  const key = `login:${email}`;
+  const normalizedEmail = email.toLowerCase();
+  const key = `login:${normalizedEmail}`;
   if (!(await checkRateLimit(key))) return null;
 
-  const user = await prisma.user.findUnique({ where: { email } });
+  const user = await prisma.user.findFirst({
+    where: { email: { equals: normalizedEmail, mode: "insensitive" } },
+  });
   if (!user) return null;
 
   const isValid = await bcrypt.compare(password, user.passwordHash);

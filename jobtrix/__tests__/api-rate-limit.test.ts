@@ -162,9 +162,9 @@ describe("Rate-Limiting Auth-Endpunkte", () => {
 
     it("blockiert nach N+1 fehlgeschlagenen Login-Versuchen", async () => {
       for (let i = 0; i < RATE_LIMIT_MAX; i++) {
-        await verifyCredentials(loginEmail, "wrong-password", loginIp);
+        await verifyCredentials(loginEmail, "wrong-password");
       }
-      const result = await verifyCredentials(loginEmail, "Password1!", loginIp);
+      const result = await verifyCredentials(loginEmail, "Password1!");
       expect(result).toBeNull();
     });
 
@@ -176,14 +176,14 @@ describe("Rate-Limiting Auth-Endpunkte", () => {
 
       try {
         for (let i = 0; i < RATE_LIMIT_MAX; i++) {
-          await verifyCredentials(email2, "wrong-password", loginIp + "-2");
+          await verifyCredentials(email2, "wrong-password");
         }
         const key = `login:${email2}`;
         await prisma.rateLimitEntry.update({
           where: { key },
           data: { windowStart: new Date(Date.now() - RATE_LIMIT_WINDOW_MS - 1000) },
         });
-        const result = await verifyCredentials(email2, "Password1!", loginIp + "-2");
+        const result = await verifyCredentials(email2, "Password1!");
         expect(result).not.toBeNull();
       } finally {
         await prisma.user.deleteMany({ where: { email: email2 } });
