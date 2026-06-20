@@ -48,14 +48,11 @@ export default function GenerateForm() {
   const [coverLetterHighlight, setCoverLetterHighlight] = useState(false);
   const [cvHighlight, setCvHighlight] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<"classic" | "modern" | "traditional" | "accent" | "creative">("classic");
-  const [cvStyle, setCvStyle] = useState<"classic" | "american">("classic");
+  const [cvStyle, setCvStyle] = useState<"classic" | "american">("american");
   const [accentColor, setAccentColor] = useState<string>("#1E3A5F");
-  const [workMode, setWorkMode] = useState<"" | "remote" | "homeoffice" | "hybrid" | "onsite">("");
   const [isInitiativbewerbung, setIsInitiativbewerbung] = useState(false);
   const [targetCompany, setTargetCompany] = useState("");
-  const [jobSearchField, setJobSearchField] = useState("");
-  const [jobSearchCompany, setJobSearchCompany] = useState("");
-  const [jobSearchBranche, setJobSearchBranche] = useState("");
+  const [jobSearchQuery, setJobSearchQuery] = useState("");
   const [jobSearchLocation, setJobSearchLocation] = useState("");
   const [jobSearchRadius, setJobSearchRadius] = useState("25");
   const [jobSearchLoading, setJobSearchLoading] = useState(false);
@@ -93,7 +90,7 @@ export default function GenerateForm() {
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ jobPosting, profile, cvStyle, template: selectedTemplate, accentColor, isInitiativbewerbung, targetCompany, ...(workMode ? { workMode } : {}) }),
+        body: JSON.stringify({ jobPosting, profile, cvStyle, template: selectedTemplate, accentColor, isInitiativbewerbung, targetCompany }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -119,9 +116,7 @@ export default function GenerateForm() {
     setJobSearchPerformed(true);
     try {
       const params = new URLSearchParams();
-      if (jobSearchField.trim()) params.set("was", jobSearchField.trim());
-      if (jobSearchCompany.trim()) params.set("arbeitgeber", jobSearchCompany.trim());
-      if (jobSearchBranche.trim()) params.set("branche", jobSearchBranche.trim());
+      if (jobSearchQuery.trim()) params.set("was", jobSearchQuery.trim());
       if (jobSearchLocation.trim()) params.set("wo", jobSearchLocation.trim());
       if (jobSearchRadius) params.set("umkreis", jobSearchRadius);
 
@@ -160,33 +155,16 @@ export default function GenerateForm() {
       <div className="space-y-4">
         <div className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface p-4 space-y-3">
           <h2 className="text-sm font-semibold text-text">{t("jobSearchTitle")}</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="space-y-3">
             <input
-              id="jobSearchField"
+              id="jobSearchQuery"
               type="text"
-              value={jobSearchField}
-              onChange={(e) => setJobSearchField(e.target.value)}
-              placeholder={t("jobSearchFieldPlaceholder")}
-              aria-label={t("jobSearchFieldLabel")}
-              className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-2.5 text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent"
-            />
-            <input
-              id="jobSearchCompany"
-              type="text"
-              value={jobSearchCompany}
-              onChange={(e) => setJobSearchCompany(e.target.value)}
-              placeholder={t("jobSearchCompanyPlaceholder")}
-              aria-label={t("jobSearchCompanyLabel")}
-              className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-2.5 text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent"
-            />
-            <input
-              id="jobSearchBranche"
-              type="text"
-              value={jobSearchBranche}
-              onChange={(e) => setJobSearchBranche(e.target.value)}
-              placeholder={t("jobSearchBranchePlaceholder")}
-              aria-label={t("jobSearchBrancheLabel")}
-              className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-2.5 text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent"
+              value={jobSearchQuery}
+              onChange={(e) => setJobSearchQuery(e.target.value)}
+              placeholder={t("jobSearchQueryPlaceholder")}
+              aria-label={t("jobSearchQueryLabel")}
+              className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-3 text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent"
+              onKeyDown={(e) => e.key === "Enter" && handleJobSearch()}
             />
             <input
               id="jobSearchLocation"
@@ -197,26 +175,14 @@ export default function GenerateForm() {
               aria-label={t("jobSearchLocationLabel")}
               className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-2.5 text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent"
             />
-            <select
-              id="workMode"
-              value={workMode}
-              onChange={(e) => setWorkMode(e.target.value as typeof workMode)}
-              aria-label={t("workModeLabel")}
-              className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-2.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-accent"
-            >
-              <option value="">{t("workModeNone")}</option>
-              <option value="remote">{t("workModeRemote")}</option>
-              <option value="homeoffice">{t("workModeHomeoffice")}</option>
-              <option value="hybrid">{t("workModeHybrid")}</option>
-              <option value="onsite">{t("workModeOnsite")}</option>
-            </select>
-            <div className="flex gap-3">
+            <div className="flex items-center gap-3">
+              <span className="text-sm text-text/60 whitespace-nowrap">{t("jobSearchRadiusLabel")}:</span>
               <select
                 id="jobSearchRadius"
                 value={jobSearchRadius}
                 onChange={(e) => setJobSearchRadius(e.target.value)}
                 aria-label={t("jobSearchRadiusLabel")}
-                className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-2.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-accent"
+                className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-2.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-accent"
               >
                 <option value="0">0 km</option>
                 <option value="5">5 km</option>
@@ -533,6 +499,7 @@ export default function GenerateForm() {
             template={selectedTemplate}
             cvStyle={cvStyle}
             accentColor={accentColor}
+            documentsConfirmed={coverLetterAgreed && cvAgreed}
           />
         </div>
       )}

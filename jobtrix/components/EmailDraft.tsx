@@ -12,6 +12,7 @@ interface EmailDraftProps {
   template: "classic" | "modern" | "traditional" | "accent" | "creative";
   cvStyle: "classic" | "american";
   accentColor?: string;
+  documentsConfirmed: boolean;
 }
 
 const FEEDBACK_DURATION_MS = 2000;
@@ -38,15 +39,18 @@ function CopyButton({ value, label, testId }: { value: string; label: string; te
   );
 }
 
-export default function EmailDraft({ subject, body, coverLetter, cv, template, cvStyle, accentColor }: EmailDraftProps) {
+export default function EmailDraft({ subject, body, coverLetter, cv, template, cvStyle, accentColor, documentsConfirmed }: EmailDraftProps) {
   const t = useTranslations("generate");
   const [recipient, setRecipient] = useState("");
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [sendError, setSendError] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
+
+  const canSend = documentsConfirmed && !!recipient && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recipient);
 
   async function handleSend() {
-    if (!recipient || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recipient)) return;
+    if (!canSend) return;
 
     const profile = loadProfile();
     if (!profile) return;
@@ -73,6 +77,7 @@ export default function EmailDraft({ subject, body, coverLetter, cv, template, c
 
       if (res.ok) {
         setSent(true);
+        setShowPreview(false);
       } else {
         setSendError(true);
       }
@@ -113,29 +118,67 @@ export default function EmailDraft({ subject, body, coverLetter, cv, template, c
           </div>
         ) : (
           <>
+            {!documentsConfirmed && (
+              <p className="text-sm text-amber-600 dark:text-amber-400" data-testid="confirm-hint">
+                {t("sendEmailConfirmHint")}
+              </p>
+            )}
+
             <div className="flex gap-2">
               <input
                 type="email"
                 value={recipient}
                 onChange={(e) => setRecipient(e.target.value)}
                 placeholder={t("sendEmailRecipientPlaceholder")}
-                className="flex-1 border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+                disabled={!documentsConfirmed}
+                className="flex-1 border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-40"
                 aria-label={t("sendEmailRecipientLabel")}
                 data-testid="recipient-input"
               />
               <button
                 type="button"
-                onClick={handleSend}
-                disabled={sending || !recipient}
+                onClick={() => setShowPreview(true)}
+                disabled={!canSend}
                 className="bg-accent text-white px-6 py-2.5 rounded-full font-semibold text-sm hover:brightness-110 transition disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap"
                 data-testid="send-email-button"
               >
-                {sending ? t("sendEmailSending") : t("sendEmailButton")}
+                {t("sendEmailPreviewButton")}
               </button>
             </div>
             <p className="text-xs text-text/50">{t("sendEmailInfo")}</p>
             {sendError && (
               <p className="text-sm text-red-600 dark:text-red-400" role="alert">{t("sendEmailError")}</p>
+            )}
+
+            {showPreview && (
+              <div className="rounded-xl border-2 border-accent bg-accent/5 p-4 space-y-3" data-testid="email-preview">
+                <h3 className="text-sm font-semibold text-accent">{t("sendEmailPreviewTitle")}</h3>
+                <div className="text-sm text-text space-y-1">
+                  <p><span className="font-medium text-text/60">{t("sendEmailPreviewTo")}:</span> {recipient}</p>
+                  <p><span className="font-medium text-text/60">{t("emailSubjectLabel")}:</span> {subject}</p>
+                </div>
+                <div className="rounded-lg bg-white dark:bg-surface border border-gray-200 dark:border-gray-700 p-3">
+                  <p className="whitespace-pre-wrap text-sm text-text">{body}</p>
+                </div>
+                <p className="text-xs text-text/50">{t("sendEmailPreviewAttachments")}</p>
+                <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setShowPreview(false)}
+                    className="text-sm text-text/60 hover:text-text transition"
+                  >
+                    {t("sendEmailPreviewCancel")}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleSend}
+                    disabled={sending}
+                    className="bg-accent text-white px-6 py-2.5 rounded-full font-semibold text-sm hover:brightness-110 transition disabled:opacity-40"
+                  >
+                    {sending ? t("sendEmailSending") : t("sendEmailConfirmSend")}
+                  </button>
+                </div>
+              </div>
             )}
           </>
         )}

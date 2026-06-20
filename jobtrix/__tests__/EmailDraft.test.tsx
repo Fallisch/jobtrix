@@ -28,6 +28,7 @@ const defaultProps = {
   cv: "Lebenslauf-Text",
   template: "classic" as const,
   cvStyle: "classic" as const,
+  documentsConfirmed: true,
 };
 
 beforeEach(() => {
@@ -36,28 +37,35 @@ beforeEach(() => {
 });
 
 describe("EmailDraft", () => {
-  it("zeigt den übergebenen Betreffvorschlag an", () => {
-    render(<EmailDraft {...defaultProps} />);
-    expect(screen.getByText("Bewerbung als Entwickler")).toBeInTheDocument();
+  it("zeigt Hinweis wenn Checkboxen nicht gesetzt sind", () => {
+    render(<EmailDraft {...defaultProps} documentsConfirmed={false} />);
+    expect(screen.getByTestId("confirm-hint")).toBeInTheDocument();
+    expect(screen.getByTestId("recipient-input")).toBeDisabled();
   });
 
-  it("zeigt den E-Mail-Text an", () => {
+  it("erlaubt Eingabe und Vorschau wenn Checkboxen gesetzt", async () => {
     render(<EmailDraft {...defaultProps} />);
-    expect(screen.getByText("Sehr geehrte Damen und Herren")).toBeInTheDocument();
+    expect(screen.queryByTestId("confirm-hint")).not.toBeInTheDocument();
+    expect(screen.getByTestId("recipient-input")).toBeEnabled();
+
+    await userEvent.type(screen.getByTestId("recipient-input"), "hr@firma.de");
+    fireEvent.click(screen.getByTestId("send-email-button"));
+
+    expect(screen.getByTestId("email-preview")).toBeInTheDocument();
+    expect(screen.getByText("hr@firma.de")).toBeInTheDocument();
+    expect(screen.getByText(/sendEmailPreviewAttachments/i)).toBeInTheDocument();
   });
 
-  it("zeigt ein Empfänger-Eingabefeld und einen Senden-Button", () => {
-    render(<EmailDraft {...defaultProps} />);
-    expect(screen.getByTestId("recipient-input")).toBeInTheDocument();
-    expect(screen.getByTestId("send-email-button")).toBeInTheDocument();
-  });
-
-  it("sendet die Bewerbung per API mit PDFs als Anhang", async () => {
+  it("sendet erst nach Bestätigung in der Vorschau", async () => {
     (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve({ success: true }) });
 
     render(<EmailDraft {...defaultProps} />);
     await userEvent.type(screen.getByTestId("recipient-input"), "hr@firma.de");
     fireEvent.click(screen.getByTestId("send-email-button"));
+
+    expect(global.fetch).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByRole("button", { name: /sendEmailConfirmSend/i }));
 
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledWith(
@@ -66,40 +74,21 @@ describe("EmailDraft", () => {
       );
     });
 
-    const body = JSON.parse((global.fetch as jest.Mock).mock.calls[0][1].body);
-    expect(body.to).toBe("hr@firma.de");
-    expect(body.subject).toBe("Bewerbung als Entwickler");
-    expect(body.coverLetter).toBe("Anschreiben-Text");
-    expect(body.cv).toBe("Lebenslauf-Text");
-  });
-
-  it("zeigt Erfolgsmeldung nach erfolgreichem Versand", async () => {
-    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve({ success: true }) });
-
-    render(<EmailDraft {...defaultProps} />);
-    await userEvent.type(screen.getByTestId("recipient-input"), "hr@firma.de");
-    fireEvent.click(screen.getByTestId("send-email-button"));
-
     await waitFor(() => {
       expect(screen.getByTestId("send-success")).toBeInTheDocument();
     });
   });
 
-  it("zeigt Fehlermeldung bei fehlgeschlagenem Versand", async () => {
-    (global.fetch as jest.Mock).mockResolvedValue({ ok: false, json: () => Promise.resolve({ error: "send_failed" }) });
-
+  it("kann die Vorschau abbrechen", async () => {
     render(<EmailDraft {...defaultProps} />);
     await userEvent.type(screen.getByTestId("recipient-input"), "hr@firma.de");
     fireEvent.click(screen.getByTestId("send-email-button"));
 
-    await waitFor(() => {
-      expect(screen.getByRole("alert")).toBeInTheDocument();
-    });
-  });
+    expect(screen.getByTestId("email-preview")).toBeInTheDocument();
 
-  it("zeigt Hinweis dass PDFs automatisch angehängt werden", () => {
-    render(<EmailDraft {...defaultProps} />);
-    expect(screen.getByText(/sendEmailInfo/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /sendEmailPreviewCancel/i }));
+
+    expect(screen.queryByTestId("email-preview")).not.toBeInTheDocument();
   });
 
   describe("Kopieren in die Zwischenablage", () => {

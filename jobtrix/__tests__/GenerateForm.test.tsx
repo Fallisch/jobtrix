@@ -261,41 +261,23 @@ describe("GenerateForm", () => {
       expect(body.template).toBe("modern");
     });
 
-    it("zeigt Lebenslauf-Stil-Auswahl mit Klassisch als Standard", () => {
+    it("zeigt Lebenslauf-Stil-Auswahl mit Neuestes zuerst als Standard", () => {
       render(<GenerateForm />);
       const classicBtn = screen.getByRole("button", { name: /cvStyleClassic/i });
       const americanBtn = screen.getByRole("button", { name: /cvStyleAmerican/i });
       expect(classicBtn).toBeInTheDocument();
       expect(americanBtn).toBeInTheDocument();
-      expect(classicBtn).toHaveAttribute("aria-pressed", "true");
-      expect(americanBtn).toHaveAttribute("aria-pressed", "false");
+      expect(americanBtn).toHaveAttribute("aria-pressed", "true");
+      expect(classicBtn).toHaveAttribute("aria-pressed", "false");
     });
 
-    it("sendet cvStyle classic standardmäßig beim Generieren", async () => {
+    it("sendet cvStyle american standardmäßig beim Generieren", async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
         json: () => Promise.resolve({ coverLetter: "Brief", cv: "CV", emailSubject: "Betr" }),
       });
 
       render(<GenerateForm />);
-      await userEvent.type(screen.getByRole("textbox", { name: JOB_POSTING }), "Stelle");
-      fireEvent.click(screen.getByRole("button", { name: GENERATE_BTN }));
-
-      await waitFor(() => screen.getByDisplayValue("Brief"));
-
-      const lastCall = (global.fetch as jest.Mock).mock.calls.at(-1) as [string, RequestInit];
-      const body = JSON.parse(lastCall[1].body as string);
-      expect(body.cvStyle).toBe("classic");
-    });
-
-    it("sendet cvStyle american wenn Amerikanisch ausgewählt", async () => {
-      (global.fetch as jest.Mock).mockResolvedValue({
-        ok: true,
-        json: () => Promise.resolve({ coverLetter: "Brief", cv: "CV", emailSubject: "Betr" }),
-      });
-
-      render(<GenerateForm />);
-      fireEvent.click(screen.getByRole("button", { name: /cvStyleAmerican/i }));
       await userEvent.type(screen.getByRole("textbox", { name: JOB_POSTING }), "Stelle");
       fireEvent.click(screen.getByRole("button", { name: GENERATE_BTN }));
 
@@ -304,6 +286,24 @@ describe("GenerateForm", () => {
       const lastCall = (global.fetch as jest.Mock).mock.calls.at(-1) as [string, RequestInit];
       const body = JSON.parse(lastCall[1].body as string);
       expect(body.cvStyle).toBe("american");
+    });
+
+    it("sendet cvStyle classic wenn Klassisch ausgewählt", async () => {
+      (global.fetch as jest.Mock).mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ coverLetter: "Brief", cv: "CV", emailSubject: "Betr" }),
+      });
+
+      render(<GenerateForm />);
+      fireEvent.click(screen.getByRole("button", { name: /cvStyleClassic/i }));
+      await userEvent.type(screen.getByRole("textbox", { name: JOB_POSTING }), "Stelle");
+      fireEvent.click(screen.getByRole("button", { name: GENERATE_BTN }));
+
+      await waitFor(() => screen.getByDisplayValue("Brief"));
+
+      const lastCall = (global.fetch as jest.Mock).mock.calls.at(-1) as [string, RequestInit];
+      const body = JSON.parse(lastCall[1].body as string);
+      expect(body.cvStyle).toBe("classic");
     });
 
     it("zeigt Farbpalette mit mindestens 5 Optionen wenn Modern-Template aktiv", async () => {
@@ -780,36 +780,6 @@ describe("GenerateForm", () => {
     });
   });
 
-  describe("Arbeitsform-Auswahl", () => {
-    beforeEach(() => {
-      localStorage.setItem("jobtrix_profile", JSON.stringify(mockProfile));
-    });
-
-    it("zeigt ein Auswahlfeld für die Arbeitsform mit Standard 'Egal'", () => {
-      render(<GenerateForm />);
-      const select = screen.getByRole("combobox", { name: /workModeLabel/i });
-      expect(select).toBeInTheDocument();
-      expect(select).toHaveValue("");
-    });
-
-    it("sendet die gewählte Arbeitsform an /api/generate", async () => {
-      (global.fetch as jest.Mock).mockResolvedValue({
-        ok: true,
-        json: () => Promise.resolve({ coverLetter: "Brief", cv: "CV", emailSubject: "Betr" }),
-      });
-
-      render(<GenerateForm />);
-      await userEvent.selectOptions(screen.getByRole("combobox", { name: /workModeLabel/i }), "remote");
-      await userEvent.type(screen.getByRole("textbox", { name: JOB_POSTING }), "Stelle");
-      fireEvent.click(screen.getByRole("button", { name: GENERATE_BTN }));
-
-      await waitFor(() => screen.getByDisplayValue("Brief"));
-
-      const lastCall = (global.fetch as jest.Mock).mock.calls.at(-1) as [string, RequestInit];
-      const body = JSON.parse(lastCall[1].body as string);
-      expect(body.workMode).toBe("remote");
-    });
-  });
 
   describe("Stelle suchen", () => {
     beforeEach(() => {
@@ -827,7 +797,7 @@ describe("GenerateForm", () => {
 
     it("rendert Eingabefelder für Berufsfeld und Ort sowie einen Such-Button", () => {
       render(<GenerateForm />);
-      expect(screen.getByRole("textbox", { name: /jobSearchFieldLabel/i })).toBeInTheDocument();
+      expect(screen.getByRole("textbox", { name: /jobSearchQueryLabel/i })).toBeInTheDocument();
       expect(screen.getByRole("textbox", { name: /jobSearchLocationLabel/i })).toBeInTheDocument();
       expect(screen.getByRole("button", { name: /jobSearchButton/i })).toBeInTheDocument();
     });
@@ -840,7 +810,7 @@ describe("GenerateForm", () => {
       expect(radiusSelect).toHaveValue("25");
 
       await userEvent.selectOptions(radiusSelect, "50");
-      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchFieldLabel/i }), "Entwickler");
+      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchQueryLabel/i }), "Entwickler");
       fireEvent.click(screen.getByRole("button", { name: /jobSearchButton/i }));
 
       await waitFor(() => {
@@ -857,7 +827,7 @@ describe("GenerateForm", () => {
       ]);
 
       render(<GenerateForm />);
-      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchFieldLabel/i }), "Entwickler");
+      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchQueryLabel/i }), "Entwickler");
       await userEvent.type(screen.getByRole("textbox", { name: /jobSearchLocationLabel/i }), "Berlin");
       fireEvent.click(screen.getByRole("button", { name: /jobSearchButton/i }));
 
@@ -879,7 +849,7 @@ describe("GenerateForm", () => {
       ]);
 
       render(<GenerateForm />);
-      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchFieldLabel/i }), "Entwickler");
+      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchQueryLabel/i }), "Entwickler");
       fireEvent.click(screen.getByRole("button", { name: /jobSearchButton/i }));
       await waitFor(() => screen.getByText("Softwareentwickler"));
 
@@ -895,7 +865,7 @@ describe("GenerateForm", () => {
       ]);
 
       render(<GenerateForm />);
-      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchFieldLabel/i }), "Developer");
+      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchQueryLabel/i }), "Developer");
       fireEvent.click(screen.getByRole("button", { name: /jobSearchButton/i }));
       await waitFor(() => screen.getByText("Frontend Developer"));
 
@@ -911,65 +881,13 @@ describe("GenerateForm", () => {
       mockJobSearch([]);
 
       render(<GenerateForm />);
-      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchFieldLabel/i }), "Astronaut");
+      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchQueryLabel/i }), "Astronaut");
       fireEvent.click(screen.getByRole("button", { name: /jobSearchButton/i }));
 
       await waitFor(() => {
         expect(screen.getByText(/jobSearchNoResults/i)).toBeInTheDocument();
       });
       expect(screen.queryByRole("alert")).not.toBeInTheDocument();
-    });
-
-    it("rendert ein optionales Firmenname-Eingabefeld in der Jobsuche", () => {
-      render(<GenerateForm />);
-      expect(screen.getByRole("textbox", { name: /jobSearchCompanyLabel/i })).toBeInTheDocument();
-    });
-
-    it("übergibt den Firmennamen als arbeitgeber-Parameter an die Jobsuche-API", async () => {
-      mockJobSearch([]);
-
-      render(<GenerateForm />);
-      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchCompanyLabel/i }), "Siemens");
-      fireEvent.click(screen.getByRole("button", { name: /jobSearchButton/i }));
-
-      await waitFor(() => {
-        expect(screen.getByText(/jobSearchNoResults/i)).toBeInTheDocument();
-      });
-
-      const jobsucheCall = (global.fetch as jest.Mock).mock.calls.find((c) => String(c[0]).startsWith("/api/jobsuche"));
-      expect(jobsucheCall![0]).toContain("arbeitgeber=Siemens");
-    });
-
-    it("liefert Ergebnisse bei Suche nur mit Firmenname (ohne Stellentitel)", async () => {
-      mockJobSearch([
-        { title: "Ingenieur", company: "Siemens AG", location: "München", description: "Stelle bei Siemens", url: "https://example.com/job/3" },
-      ]);
-
-      render(<GenerateForm />);
-      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchCompanyLabel/i }), "Siemens");
-      fireEvent.click(screen.getByRole("button", { name: /jobSearchButton/i }));
-
-      await waitFor(() => {
-        expect(screen.getByText("Ingenieur")).toBeInTheDocument();
-      });
-      expect(screen.getByText(/Siemens AG/)).toBeInTheDocument();
-    });
-
-    it("kombiniert Firmenname und Stellentitel korrekt in der Suchanfrage", async () => {
-      mockJobSearch([]);
-
-      render(<GenerateForm />);
-      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchFieldLabel/i }), "Entwickler");
-      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchCompanyLabel/i }), "SAP");
-      fireEvent.click(screen.getByRole("button", { name: /jobSearchButton/i }));
-
-      await waitFor(() => {
-        expect(screen.getByText(/jobSearchNoResults/i)).toBeInTheDocument();
-      });
-
-      const jobsucheCall = (global.fetch as jest.Mock).mock.calls.find((c) => String(c[0]).startsWith("/api/jobsuche"));
-      expect(jobsucheCall![0]).toContain("was=Entwickler");
-      expect(jobsucheCall![0]).toContain("arbeitgeber=SAP");
     });
 
     it("kennzeichnet externe Ergebnisse visuell mit einem Badge", async () => {
@@ -979,7 +897,7 @@ describe("GenerateForm", () => {
       ]);
 
       render(<GenerateForm />);
-      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchFieldLabel/i }), "Entwickler");
+      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchQueryLabel/i }), "Entwickler");
       fireEvent.click(screen.getByRole("button", { name: /jobSearchButton/i }));
       await waitFor(() => screen.getByText("BA-Stelle"));
 
@@ -997,7 +915,7 @@ describe("GenerateForm", () => {
       ]);
 
       render(<GenerateForm />);
-      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchFieldLabel/i }), "Developer");
+      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchQueryLabel/i }), "Developer");
       fireEvent.click(screen.getByRole("button", { name: /jobSearchButton/i }));
       await waitFor(() => screen.getByText("Externe Stelle"));
 
@@ -1013,7 +931,7 @@ describe("GenerateForm", () => {
       ]);
 
       render(<GenerateForm />);
-      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchFieldLabel/i }), "Entwickler");
+      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchQueryLabel/i }), "Entwickler");
       fireEvent.click(screen.getByRole("button", { name: /jobSearchButton/i }));
       await waitFor(() => screen.getByText("BA-Stelle"));
 
@@ -1029,7 +947,7 @@ describe("GenerateForm", () => {
       ]);
 
       render(<GenerateForm />);
-      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchFieldLabel/i }), "Developer");
+      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchQueryLabel/i }), "Developer");
       fireEvent.click(screen.getByRole("button", { name: /jobSearchButton/i }));
       await waitFor(() => screen.getByText("Externe Stelle"));
 
@@ -1045,7 +963,7 @@ describe("GenerateForm", () => {
       ]);
 
       render(<GenerateForm />);
-      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchFieldLabel/i }), "Entwickler");
+      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchQueryLabel/i }), "Entwickler");
       fireEvent.click(screen.getByRole("button", { name: /jobSearchButton/i }));
       await waitFor(() => screen.getByText("BA-Stelle"));
 
