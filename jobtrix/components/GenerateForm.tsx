@@ -7,6 +7,9 @@ import { loadProfile, saveProfile } from "@/lib/profile-storage";
 import EmailDraft from "@/components/EmailDraft";
 import { downloadCoverLetterPdf, downloadCvPdf } from "@/lib/download-pdf";
 import LayoutPreview from "@/components/LayoutPreview";
+import PdfPreviewModal from "@/components/PdfPreviewModal";
+import React from "react";
+import { CoverLetterDocument, CvDocument } from "@/lib/pdf-documents";
 
 const ACCENT_COLORS = [
   "#1E3A5F",
@@ -60,6 +63,7 @@ export default function GenerateForm() {
   const [jobResults, setJobResults] = useState<JobSearchResult[]>([]);
   const [externalHintVisible, setExternalHintVisible] = useState(false);
   const [adoptedHintVisible, setAdoptedHintVisible] = useState(false);
+  const [previewDoc, setPreviewDoc] = useState<React.ReactElement | null>(null);
 
   useEffect(() => {
     setHasProfile(loadProfile() !== null);
@@ -398,25 +402,37 @@ export default function GenerateForm() {
           <section className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface overflow-hidden">
             <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-100 dark:border-gray-700 bg-surface">
               <h2 className="text-base font-semibold text-primary dark:text-accent">{t("coverLetterTitle")}</h2>
-              <button
-                onClick={() => {
-                  if (!coverLetterAgreed) {
-                    setCoverLetterHighlight(true);
-                    document.querySelector<HTMLInputElement>('[data-testid="cover-letter-agree-checkbox"]')?.focus();
-                    return;
-                  }
-                  const profile = loadProfile();
-                  if (profile) downloadCoverLetterPdf(editedCoverLetter, profile, selectedTemplate, accentColor);
-                }}
-                className={`inline-flex items-center gap-1.5 rounded-full border border-accent text-accent px-3.5 py-1.5 text-sm font-semibold hover:bg-accent hover:text-white transition ${!coverLetterAgreed ? "opacity-40" : ""}`}
-                aria-label={t("coverLetterPdfButton")}
-              >
+              <div className="flex gap-2">
+                <button
+                  onClick={() => {
+                    const profile = loadProfile();
+                    if (profile) setPreviewDoc(React.createElement(CoverLetterDocument, { coverLetter: editedCoverLetter, profile, template: selectedTemplate, accentColor }));
+                  }}
+                  className="rounded-full border border-gray-300 dark:border-gray-600 text-text/60 px-3.5 py-1.5 text-sm font-semibold hover:border-accent hover:text-accent transition"
+                  aria-label={t("pdfPreviewButton")}
+                >
+                  {t("pdfPreviewButton")}
+                </button>
+                <button
+                  onClick={() => {
+                    if (!coverLetterAgreed) {
+                      setCoverLetterHighlight(true);
+                      document.querySelector<HTMLInputElement>('[data-testid="cover-letter-agree-checkbox"]')?.focus();
+                      return;
+                    }
+                    const profile = loadProfile();
+                    if (profile) downloadCoverLetterPdf(editedCoverLetter, profile, selectedTemplate, accentColor);
+                  }}
+                  className={`inline-flex items-center gap-1.5 rounded-full border border-accent text-accent px-3.5 py-1.5 text-sm font-semibold hover:bg-accent hover:text-white transition ${!coverLetterAgreed ? "opacity-40" : ""}`}
+                  aria-label={t("coverLetterPdfButton")}
+                >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
                   <path d="M10.75 2.75a.75.75 0 0 0-1.5 0v8.614L6.295 8.235a.75.75 0 1 0-1.09 1.03l4.25 4.5a.75.75 0 0 0 1.09 0l4.25-4.5a.75.75 0 0 0-1.09-1.03l-2.955 3.129V2.75Z" />
                   <path d="M3.5 12.75a.75.75 0 0 0-1.5 0v2.5A2.75 2.75 0 0 0 4.75 18h10.5A2.75 2.75 0 0 0 18 15.25v-2.5a.75.75 0 0 0-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5Z" />
                 </svg>
                 PDF
-              </button>
+                </button>
+              </div>
             </div>
             <textarea
               value={editedCoverLetter}
@@ -446,25 +462,37 @@ export default function GenerateForm() {
           <section className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface overflow-hidden">
             <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-100 dark:border-gray-700 bg-surface">
               <h2 className="text-base font-semibold text-primary dark:text-accent">{t("cvTitle")}</h2>
-              <button
-                onClick={() => {
-                  if (!cvAgreed) {
-                    setCvHighlight(true);
-                    document.querySelector<HTMLInputElement>('[data-testid="cv-agree-checkbox"]')?.focus();
-                    return;
-                  }
-                  const profile = loadProfile();
-                  if (profile) downloadCvPdf(editedCv, profile, selectedTemplate, cvStyle, accentColor);
-                }}
-                className={`inline-flex items-center gap-1.5 rounded-full border border-accent text-accent px-3.5 py-1.5 text-sm font-semibold hover:bg-accent hover:text-white transition ${!cvAgreed ? "opacity-40" : ""}`}
-                aria-label={t("cvPdfButton")}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
-                  <path d="M10.75 2.75a.75.75 0 0 0-1.5 0v8.614L6.295 8.235a.75.75 0 1 0-1.09 1.03l4.25 4.5a.75.75 0 0 0 1.09 0l4.25-4.5a.75.75 0 0 0-1.09-1.03l-2.955 3.129V2.75Z" />
-                  <path d="M3.5 12.75a.75.75 0 0 0-1.5 0v2.5A2.75 2.75 0 0 0 4.75 18h10.5A2.75 2.75 0 0 0 18 15.25v-2.5a.75.75 0 0 0-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5Z" />
-                </svg>
-                PDF
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => {
+                    const profile = loadProfile();
+                    if (profile) setPreviewDoc(React.createElement(CvDocument, { cv: editedCv, profile, template: selectedTemplate, cvStyle, accentColor }));
+                  }}
+                  className="rounded-full border border-gray-300 dark:border-gray-600 text-text/60 px-3.5 py-1.5 text-sm font-semibold hover:border-accent hover:text-accent transition"
+                  aria-label={t("pdfPreviewButton")}
+                >
+                  {t("pdfPreviewButton")}
+                </button>
+                <button
+                  onClick={() => {
+                    if (!cvAgreed) {
+                      setCvHighlight(true);
+                      document.querySelector<HTMLInputElement>('[data-testid="cv-agree-checkbox"]')?.focus();
+                      return;
+                    }
+                    const profile = loadProfile();
+                    if (profile) downloadCvPdf(editedCv, profile, selectedTemplate, cvStyle, accentColor);
+                  }}
+                  className={`inline-flex items-center gap-1.5 rounded-full border border-accent text-accent px-3.5 py-1.5 text-sm font-semibold hover:bg-accent hover:text-white transition ${!cvAgreed ? "opacity-40" : ""}`}
+                  aria-label={t("cvPdfButton")}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
+                    <path d="M10.75 2.75a.75.75 0 0 0-1.5 0v8.614L6.295 8.235a.75.75 0 1 0-1.09 1.03l4.25 4.5a.75.75 0 0 0 1.09 0l4.25-4.5a.75.75 0 0 0-1.09-1.03l-2.955 3.129V2.75Z" />
+                    <path d="M3.5 12.75a.75.75 0 0 0-1.5 0v2.5A2.75 2.75 0 0 0 4.75 18h10.5A2.75 2.75 0 0 0 18 15.25v-2.5a.75.75 0 0 0-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5Z" />
+                  </svg>
+                  PDF
+                </button>
+              </div>
             </div>
             <textarea
               value={editedCv}
@@ -502,6 +530,9 @@ export default function GenerateForm() {
             documentsConfirmed={coverLetterAgreed && cvAgreed}
           />
         </div>
+      )}
+      {previewDoc && (
+        <PdfPreviewModal document={previewDoc} onClose={() => setPreviewDoc(null)} />
       )}
     </div>
   );
