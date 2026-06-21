@@ -7,6 +7,8 @@ const intlMiddleware = createMiddleware(routing);
 
 const protectedPaths = ["/profile", "/generate", "/application-history"];
 
+const publicPaths = ["/", "/impressum", "/datenschutz", "/agb", "/hilfe", "/pricing"];
+
 function getLocaleAndPath(pathname: string): { locale: string; path: string } {
   const segments = pathname.split("/").filter(Boolean);
   const [first, ...rest] = segments;
@@ -20,9 +22,19 @@ function isProtectedPath(path: string): boolean {
   return protectedPaths.some((p) => path === p || path.startsWith(`${p}/`));
 }
 
+function isPublicPath(path: string): boolean {
+  return publicPaths.some((p) => path === p);
+}
+
 export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const { locale, path } = getLocaleAndPath(pathname);
+
+  if (process.env.MAINTENANCE_MODE === "true" && !isPublicPath(path)) {
+    const url = request.nextUrl.clone();
+    url.pathname = `/${locale}`;
+    return NextResponse.redirect(url);
+  }
 
   if (isProtectedPath(path)) {
     const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
