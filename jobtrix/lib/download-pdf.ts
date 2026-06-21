@@ -16,13 +16,13 @@ async function triggerDownload(element: React.ReactElement, filename: string) {
 export async function downloadCoverLetterPdf(coverLetter: string, profile: ProfileData, template: "classic" | "modern" | "traditional" | "accent" | "creative" = "classic", accentColor?: string) {
   await triggerDownload(
     React.createElement(CoverLetterDocument, { coverLetter, profile, template, accentColor }),
-    "anschreiben.pdf"
+    "Anschreiben.pdf"
   );
 }
 
 export async function downloadCvPdf(cv: string, profile: ProfileData, template: "classic" | "modern" | "traditional" | "accent" | "creative" = "classic", cvStyle: "classic" | "american" = "classic", accentColor?: string) {
   await triggerDownload(
     React.createElement(CvDocument, { cv, profile, template, cvStyle, accentColor }),
-    "lebenslauf.pdf"
+    "Lebenslauf.pdf"
   );
 }

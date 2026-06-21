@@ -56,11 +56,16 @@ export async function sendApplicationEmail({ to, replyTo, subject, text, coverLe
       subject,
       text,
       attachments: [
-        { filename: "anschreiben.pdf", content: coverLetterBase64 },
-        { filename: "lebenslauf.pdf", content: cvBase64 },
+        { filename: "Anschreiben.pdf", content: coverLetterBase64 },
+        { filename: "Lebenslauf.pdf", content: cvBase64 },
       ],
     }),
   });
+
+  if (!res.ok) {
+    const body = await res.text();
+    console.error("[Resend] Fehler:", res.status, body);
+  }
 
   return res.ok;
 }
