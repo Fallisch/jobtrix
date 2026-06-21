@@ -176,7 +176,7 @@
     "copied": "Copied ✓",
     "sendEmailTitle": "Send application by email",
     "sendEmailRecipientLabel": "Recipient email",
-    "sendEmailRecipientPlaceholder": "application@company.com",
+    "sendEmailRecipientPlaceholder": "application@company.com or your own address to review",
     "sendEmailPreviewButton": "Prepare email",
     "sendEmailSending": "Sending …",
     "sendEmailSuccess": "Email sent successfully! Cover letter and CV are attached as PDF.",
