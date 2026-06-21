@@ -43,10 +43,10 @@ describe("Deployment-Guide", () => {
     expect(content()).toMatch(/prisma migrate deploy/);
   });
 
-  it("alle 10 Prisma-Migrationen sind im Repository vorhanden", () => {
+  it("alle 11 Prisma-Migrationen sind im Repository vorhanden", () => {
     const migrations = fs
       .readdirSync(MIGRATIONS_PATH)
       .filter((d) => !d.endsWith(".toml"));
-    expect(migrations.length).toBe(10);
+    expect(migrations.length).toBe(11);
   });
 });

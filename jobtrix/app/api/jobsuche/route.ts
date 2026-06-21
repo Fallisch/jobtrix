@@ -4,11 +4,15 @@ import { authOptions } from "@/lib/auth";
 import { checkRateLimit } from "@/lib/rate-limit";
 
 const API_BASE = "https://rest.arbeitsagentur.de/jobboerse/jobsuche-service/pc/v4";
+const FETCH_TIMEOUT_MS = 15_000;
 
-// Öffentlich bekannter Default-API-Key der offiziellen BA-Jobsuche-App.
-// Die inoffizielle API erfordert keine eigene Registrierung, kann sich aber
-// jederzeit ändern – daher über ARBEITSAGENTUR_API_KEY konfigurierbar.
 const DEFAULT_API_KEY = "jobboerse-jobsuche";
+
+function fetchWithTimeout(url: string, options: RequestInit): Promise<Response> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+  return fetch(url, { ...options, signal: controller.signal }).finally(() => clearTimeout(timer));
+}
 
 interface ArbeitsagenturJob {
   titel?: string;
@@ -38,12 +42,13 @@ function isHttpUrl(value: string): boolean {
 async function fetchDescription(refnr: string, apiKey: string): Promise<string | null> {
   try {
     const encoded = Buffer.from(refnr).toString("base64");
-    const res = await fetch(`${API_BASE}/jobdetails/${encoded}`, {
+    const res = await fetchWithTimeout(`${API_BASE}/jobdetails/${encoded}`, {
       headers: { "X-API-Key": apiKey },
     });
     if (!res.ok) return null;
     const data = await res.json();
-    return data?.stellenangebotsBeschreibung ?? null;
+    const raw = data?.stellenangebotsBeschreibung ?? null;
+    return typeof raw === "string" ? raw.replace(/<[^>]*>/g, "") : null;
   } catch {
     return null;
   }
@@ -74,7 +79,7 @@ export async function GET(request: NextRequest) {
     if (wo) params.set("wo", wo);
     if (umkreis) params.set("umkreis", umkreis);
 
-    const res = await fetch(`${API_BASE}/jobs?${params.toString()}`, {
+    const res = await fetchWithTimeout(`${API_BASE}/jobs?${params.toString()}`, {
       headers: { "X-API-Key": apiKey },
     });
 

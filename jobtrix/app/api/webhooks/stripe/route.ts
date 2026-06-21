@@ -16,6 +16,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "invalid_signature" }, { status: 400 });
   }
 
+  const existing = await prisma.processedWebhookEvent.findUnique({ where: { eventId: event.id } });
+  if (existing) {
+    return NextResponse.json({ received: true });
+  }
+
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as Stripe.Checkout.Session;
     const userId = session.metadata?.userId;
@@ -39,6 +44,8 @@ export async function POST(request: NextRequest) {
       });
     }
   }
+
+  await prisma.processedWebhookEvent.create({ data: { eventId: event.id } });
 
   return NextResponse.json({ received: true });
 }

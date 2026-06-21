@@ -3,6 +3,8 @@ import Stripe from "stripe";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { getPricingConfig } from "@/lib/pricing";
+import { prisma } from "@/lib/prisma";
+import { checkAccess } from "@/lib/access";
 
 const PACKAGE_NAMES: Record<"limited" | "lifetime", string> = {
   limited: "JobTRIX – Zeitlich begrenzter Zugang",
@@ -18,6 +20,12 @@ export async function POST(request: NextRequest) {
   const { package: pkg } = (await request.json()) as { package?: string };
   if (pkg !== "limited" && pkg !== "lifetime") {
     return NextResponse.json({ error: "invalid_package" }, { status: 400 });
+  }
+
+  const access = await prisma.access.findUnique({ where: { userId: session.user.id } });
+  const decision = checkAccess(access);
+  if (decision.allowed && !decision.markFreeGenerationUsed) {
+    return NextResponse.json({ error: "already_has_access" }, { status: 409 });
   }
 
   const config = getPricingConfig();

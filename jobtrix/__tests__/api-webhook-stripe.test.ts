@@ -31,6 +31,7 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
+  await prisma.processedWebhookEvent.deleteMany({ where: { eventId: { startsWith: "evt_" } } });
   await prisma.access.deleteMany({ where: { userId } });
   await prisma.user.delete({ where: { id: userId } });
   await prisma.$disconnect();
@@ -38,6 +39,7 @@ afterAll(async () => {
 
 beforeEach(async () => {
   mockConstructEvent.mockReset();
+  await prisma.processedWebhookEvent.deleteMany({ where: { eventId: { startsWith: "evt_" } } });
   await prisma.access.deleteMany({ where: { userId } });
 });
 
@@ -54,6 +56,7 @@ describe("POST /api/webhooks/stripe", () => {
 
   it("aktiviert Lifetime-Zugang bei checkout.session.completed mit package=lifetime", async () => {
     mockConstructEvent.mockReturnValue({
+      id: "evt_lifetime_test",
       type: "checkout.session.completed",
       data: {
         object: {
@@ -75,6 +78,7 @@ describe("POST /api/webhooks/stripe", () => {
 
   it("aktiviert zeitlich begrenzten Zugang bei package=limited mit validUntil in der Zukunft", async () => {
     mockConstructEvent.mockReturnValue({
+      id: "evt_limited_test",
       type: "checkout.session.completed",
       data: {
         object: {
@@ -97,6 +101,7 @@ describe("POST /api/webhooks/stripe", () => {
 
   it("ignoriert andere Event-Typen ohne den Zugang zu veraendern", async () => {
     mockConstructEvent.mockReturnValue({
+      id: "evt_other_test",
       type: "payment_intent.created",
       data: { object: {} },
     });

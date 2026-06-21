@@ -1,4 +1,11 @@
 const RESEND_API = "https://api.resend.com/emails";
+const FETCH_TIMEOUT_MS = 15_000;
+
+function fetchWithTimeout(url: string, options: RequestInit): Promise<Response> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+  return fetch(url, { ...options, signal: controller.signal }).finally(() => clearTimeout(timer));
+}
 
 function getConfig() {
   const apiKey = process.env.RESEND_API_KEY;
@@ -15,7 +22,7 @@ export async function sendPasswordResetEmail({ to, resetUrl }: SendPasswordReset
   const { apiKey, from } = getConfig();
   if (!apiKey) return;
 
-  await fetch(RESEND_API, {
+  await fetchWithTimeout(RESEND_API, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -55,7 +62,7 @@ export async function sendApplicationEmail({ to, replyTo, subject, text, coverLe
     ? `"${applicantName.replace(/[<>,;\r\n"]/g, "").trim()} via JobTRIX" <${fromEmail}>`
     : from;
 
-  const res = await fetch(RESEND_API, {
+  const res = await fetchWithTimeout(RESEND_API, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

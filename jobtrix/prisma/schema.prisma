@@ -122,3 +122,9 @@ model RateLimitEntry {
   windowStart DateTime @default(now())
   attempts    Int      @default(0)
 }
+
+model ProcessedWebhookEvent {
+  id          String   @id @default(cuid())
+  eventId     String   @unique
+  processedAt DateTime @default(now())
+}
