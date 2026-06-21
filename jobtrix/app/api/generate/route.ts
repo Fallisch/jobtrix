@@ -33,6 +33,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "invalidInput" }, { status: 400 });
     }
     const body = parsed.data as GenerateRequest;
+    if (!process.env.ANTHROPIC_API_KEY) {
+      return NextResponse.json({ error: "ai_not_configured" }, { status: 503 });
+    }
     const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
     const message = await client.messages.create({
@@ -74,7 +77,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ emailSubject, coverLetter, cv, emailBody });
   } catch (err) {
-    console.error("[/api/generate] Fehler:", err);
+    console.error("[/api/generate] Fehler:", err instanceof Error ? err.message : "unknown");
     return NextResponse.json({ error: "Generierung fehlgeschlagen. Bitte versuche es erneut." }, { status: 500 });
   }
 }

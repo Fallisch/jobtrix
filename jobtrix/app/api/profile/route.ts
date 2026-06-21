@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ProfileData, validateProfile } from "@/lib/profile-storage";
 import { profileSchema } from "@/lib/validation-schemas";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 const emptyProfile: ProfileData = {
   name: "",
@@ -62,6 +63,10 @@ export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  }
+
+  if (!(await checkRateLimit(`profile:${session.user.id}`, 20))) {
+    return NextResponse.json({ error: "tooManyRequests" }, { status: 429 });
   }
 
   const body = await req.json();

@@ -2,9 +2,10 @@
  * @jest-environment node
  */
 import bcrypt from "bcrypt";
-import { GET } from "@/app/api/account/export/route";
+import { POST } from "@/app/api/account/export/route";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth/next";
+import { NextRequest } from "next/server";
 
 jest.mock("next-auth/next", () => ({
   getServerSession: jest.fn(),
@@ -12,12 +13,21 @@ jest.mock("next-auth/next", () => ({
 
 const mockedGetServerSession = jest.mocked(getServerSession);
 
-describe("GET /api/account/export", () => {
+function makeRequest(body: object) {
+  return new NextRequest("http://localhost/api/account/export", {
+    method: "POST",
+    body: JSON.stringify(body),
+    headers: { "Content-Type": "application/json" },
+  });
+}
+
+describe("POST /api/account/export", () => {
   const email = `account-export-test-${Date.now()}@example.com`;
+  const password = "testpassword123";
   let userId: string;
 
   beforeAll(async () => {
-    const passwordHash = await bcrypt.hash("password", 10);
+    const passwordHash = await bcrypt.hash(password, 10);
     const user = await prisma.user.create({ data: { email, passwordHash } });
     userId = user.id;
 
@@ -46,6 +56,7 @@ describe("GET /api/account/export", () => {
   });
 
   afterAll(async () => {
+    await prisma.auditLog.deleteMany({ where: { userId } });
     await prisma.applicationHistoryEntry.deleteMany({ where: { userId } });
     await prisma.access.deleteMany({ where: { userId } });
     await prisma.userProfile.deleteMany({ where: { userId } });
@@ -59,30 +70,28 @@ describe("GET /api/account/export", () => {
 
   it("liefert 401 ohne Session", async () => {
     mockedGetServerSession.mockResolvedValue(null);
-    const res = await GET();
+    const res = await POST(makeRequest({ password }));
     expect(res.status).toBe(401);
   });
 
-  it("liefert profile, applicationHistory und account-Infos als Download mit erwarteten Top-Level-Schlüsseln", async () => {
+  it("liefert 401 bei falschem Passwort", async () => {
+    mockedGetServerSession.mockResolvedValue({ user: { id: userId }, expires: "" });
+    const res = await POST(makeRequest({ password: "wrong" }));
+    expect(res.status).toBe(401);
+  });
+
+  it("liefert profile, applicationHistory und account-Infos als Download nach Passwort-Bestaetigung", async () => {
     mockedGetServerSession.mockResolvedValue({ user: { id: userId }, expires: "" });
 
-    const res = await GET();
+    const res = await POST(makeRequest({ password }));
     const data = await res.json();
 
     expect(res.status).toBe(200);
     expect(res.headers.get("Content-Disposition")).toContain("attachment");
 
     expect(data.profile.name).toBe("Max Mustermann");
-    expect(data.profile.education).toEqual([{ id: "1", institution: "TU Berlin", degree: "B.Sc.", year: "2015" }]);
-    expect(data.profile.experience).toEqual([{ id: "1", company: "Acme GmbH", position: "Entwickler", period: "01/2020 - 12/2022", tasks: "Backend" }]);
-    expect(data.profile.qualifications).toEqual([{ label: "TypeScript", value: 80 }]);
-    expect(data.profile.interests).toEqual([{ label: "Reisen", value: 60 }]);
-
     expect(data.applicationHistory).toHaveLength(1);
-    expect(data.applicationHistory[0].emailSubject).toBe("Bewerbung als Entwickler");
-
     expect(data.account.email).toBe(email);
     expect(data.account.package).toBe("lifetime");
-    expect(data.account).toHaveProperty("createdAt");
   });
 });

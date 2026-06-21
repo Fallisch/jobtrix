@@ -8,6 +8,7 @@ import { ProfileData } from "@/lib/profile-storage";
 import { sendApplicationEmail } from "@/lib/email";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { sendEmailSchema } from "@/lib/validation-schemas";
+import { logAudit } from "@/lib/audit";
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -69,9 +70,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "send_failed" }, { status: 502 });
     }
 
+    await logAudit("email_sent", { userId: session.user.id, detail: `to:${data.to}` });
+
     return NextResponse.json({ success: true });
   } catch (err) {
-    console.error("[/api/send-email] Fehler:", err);
+    console.error("[/api/send-email] Fehler:", err instanceof Error ? err.message : "unknown");
     return NextResponse.json({ error: "send_failed" }, { status: 500 });
   }
 }

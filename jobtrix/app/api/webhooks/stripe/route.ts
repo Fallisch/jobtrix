@@ -2,16 +2,21 @@ import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { prisma } from "@/lib/prisma";
 import { getPricingConfig } from "@/lib/pricing";
+import { logAudit } from "@/lib/audit";
 
 export async function POST(request: NextRequest) {
+  if (!process.env.STRIPE_SECRET_KEY || !process.env.STRIPE_WEBHOOK_SECRET) {
+    return NextResponse.json({ error: "not_configured" }, { status: 503 });
+  }
+
   const body = await request.text();
   const signature = request.headers.get("stripe-signature") ?? "";
 
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "");
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
   let event: Stripe.Event;
   try {
-    event = stripe.webhooks.constructEvent(body, signature, process.env.STRIPE_WEBHOOK_SECRET ?? "");
+    event = stripe.webhooks.constructEvent(body, signature, process.env.STRIPE_WEBHOOK_SECRET);
   } catch {
     return NextResponse.json({ error: "invalid_signature" }, { status: 400 });
   }
@@ -46,6 +51,7 @@ export async function POST(request: NextRequest) {
   }
 
   await prisma.processedWebhookEvent.create({ data: { eventId: event.id } });
+  await logAudit("webhook_processed", { detail: `${event.type}:${event.id}` });
 
   return NextResponse.json({ received: true });
 }

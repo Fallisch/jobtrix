@@ -4,6 +4,7 @@ import type { NextAuthOptions, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { logAudit } from "@/lib/audit";
 
 export async function verifyCredentials(
   email: string,
@@ -16,10 +17,16 @@ export async function verifyCredentials(
   const user = await prisma.user.findFirst({
     where: { email: { equals: normalizedEmail, mode: "insensitive" } },
   });
-  if (!user) return null;
+  if (!user) {
+    await logAudit("login_failed", { detail: `unknown_email:${normalizedEmail}` });
+    return null;
+  }
 
   const isValid = await bcrypt.compare(password, user.passwordHash);
-  if (!isValid) return null;
+  if (!isValid) {
+    await logAudit("login_failed", { userId: user.id, detail: "wrong_password" });
+    return null;
+  }
 
   return { id: user.id, email: user.email, name: user.name };
 }
@@ -31,7 +38,7 @@ export const authOptions: NextAuthOptions = {
     // Der aktuelle Zugang-Status wird stattdessen im session-Callback bei
     // jeder Anfrage live aus der Datenbank gelesen.
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60,
+    maxAge: 7 * 24 * 60 * 60,
   },
   providers: [
     CredentialsProvider({

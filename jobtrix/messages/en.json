@@ -261,6 +261,8 @@
   "account": {
     "title": "Account & Privacy",
     "exportButton": "Download my data",
+    "exportPasswordHint": "Please confirm your password to download your data.",
+    "exportConfirmButton": "Download data",
     "exportError": "Could not export your data. Please try again.",
     "deleteButton": "Delete account",
     "deleteWarning": "This action cannot be undone. All your data will be permanently deleted.",

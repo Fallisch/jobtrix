@@ -25,12 +25,15 @@ const email = `webhook-test-${Date.now()}@example.com`;
 let userId: string;
 
 beforeAll(async () => {
+  process.env.STRIPE_SECRET_KEY = "sk_test_fake";
+  process.env.STRIPE_WEBHOOK_SECRET = "whsec_test_fake";
   const passwordHash = await bcrypt.hash("password", 10);
   const user = await prisma.user.create({ data: { email, passwordHash } });
   userId = user.id;
 });
 
 afterAll(async () => {
+  await prisma.auditLog.deleteMany({ where: { action: "webhook_processed" } });
   await prisma.processedWebhookEvent.deleteMany({ where: { eventId: { startsWith: "evt_" } } });
   await prisma.access.deleteMany({ where: { userId } });
   await prisma.user.delete({ where: { id: userId } });

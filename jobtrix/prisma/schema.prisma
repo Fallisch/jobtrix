@@ -128,3 +128,16 @@ model ProcessedWebhookEvent {
   eventId     String   @unique
   processedAt DateTime @default(now())
 }
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String
+  detail    String?
+  ip        String?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+}

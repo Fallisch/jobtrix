@@ -38,10 +38,11 @@ function setLocale(locale: "de" | "en") {
   mockLocaleState.locale = locale;
 }
 
-function mockFetch({ ok = true }: { ok?: boolean } = {}) {
+function mockFetch({ ok = true, status = ok ? 200 : 401 }: { ok?: boolean; status?: number } = {}) {
   global.fetch = jest.fn(() =>
     Promise.resolve({
       ok,
+      status,
       blob: async () => new Blob(["{}"], { type: "application/json" }),
     } as Response)
   ) as jest.Mock;
@@ -76,27 +77,40 @@ describe("AccountSettings", () => {
     expect(screen.getByRole("heading", { name: /konto & datenschutz/i })).toBeInTheDocument();
   });
 
-  it("löst beim Klick auf 'Meine Daten herunterladen' einen Request an /api/account/export und einen Download aus", async () => {
+  it("oeffnet Passwort-Panel und loest nach Eingabe einen POST-Request an /api/account/export aus", async () => {
     const user = userEvent.setup();
     render(<AccountSettings />);
 
     await user.click(screen.getByRole("button", { name: /meine daten herunterladen/i }));
 
+    expect(screen.getByText(/bitte bestätige dein passwort/i)).toBeInTheDocument();
+
+    await user.type(screen.getByLabelText(/aktuelles passwort/i), "mein-passwort");
+    await user.click(screen.getByRole("button", { name: /^daten herunterladen$/i }));
+
     await waitFor(() => {
-      expect(global.fetch).toHaveBeenCalledWith("/api/account/export");
+      expect(global.fetch).toHaveBeenCalledWith(
+        "/api/account/export",
+        expect.objectContaining({
+          method: "POST",
+          body: JSON.stringify({ password: "mein-passwort" }),
+        })
+      );
       expect(global.URL.createObjectURL).toHaveBeenCalled();
     });
   });
 
-  it("zeigt eine Fehlermeldung, wenn der Export fehlschlägt", async () => {
+  it("zeigt eine Fehlermeldung, wenn der Export fehlschlaegt", async () => {
     const user = userEvent.setup();
     mockFetch({ ok: false });
     render(<AccountSettings />);
 
     await user.click(screen.getByRole("button", { name: /meine daten herunterladen/i }));
+    await user.type(screen.getByLabelText(/aktuelles passwort/i), "mein-passwort");
+    await user.click(screen.getByRole("button", { name: /^daten herunterladen$/i }));
 
     await waitFor(() => {
-      expect(screen.getByText(/daten konnten nicht exportiert werden/i)).toBeInTheDocument();
+      expect(screen.getByText(/passwort ist falsch/i)).toBeInTheDocument();
     });
   });
 

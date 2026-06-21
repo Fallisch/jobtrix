@@ -18,6 +18,10 @@ import { NextRequest } from "next/server";
 
 const mockedGetServerSession = jest.mocked(getServerSession);
 
+beforeAll(() => {
+  process.env.STRIPE_SECRET_KEY = "sk_test_fake";
+});
+
 function makeRequest(body: object) {
   return new NextRequest("http://localhost/api/checkout", {
     method: "POST",

@@ -27,4 +27,9 @@ export const SECURITY_HEADERS: SecurityHeader[] = [
     value: "max-age=63072000; includeSubDomains; preload",
   },
   { key: "Content-Security-Policy", value: csp },
+  {
+    key: "Permissions-Policy",
+    value: "camera=(), microphone=(), geolocation=(), interest-cohort=()",
+  },
+  { key: "X-DNS-Prefetch-Control", value: "off" },
 ];
