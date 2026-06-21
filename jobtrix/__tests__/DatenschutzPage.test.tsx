@@ -28,7 +28,7 @@ function setLocale(locale: "de" | "en") {
 describe("DatenschutzContent", () => {
   beforeEach(() => setLocale("de"));
 
-  it("zeigt die Überschrift und alle zehn Abschnitte auf Deutsch an", () => {
+  it("zeigt die Überschrift und alle Abschnitte auf Deutsch an", () => {
     render(<DatenschutzContent />);
 
     expect(screen.getByRole("heading", { level: 1, name: "Datenschutzerklärung" })).toBeInTheDocument();
@@ -42,7 +42,10 @@ describe("DatenschutzContent", () => {
       /zahlungsabwicklung/i,
       /e-mail-versand/i,
       /hosting/i,
+      /sicherheitsprotokollierung/i,
       /speicherdauer/i,
+      /deine rechte/i,
+      /beschwerderecht/i,
       /cookies/i,
     ];
 

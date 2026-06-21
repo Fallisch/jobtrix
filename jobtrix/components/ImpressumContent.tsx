@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 
-const sections = ["provider", "representative", "contact", "vat"] as const;
+const sections = ["provider", "representative", "contact", "vat", "dispute"] as const;
 
 export default function ImpressumContent() {
   const t = useTranslations("impressum");

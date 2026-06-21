@@ -11,7 +11,10 @@ const sections = [
   "payment",
   "email",
   "hosting",
+  "audit",
   "retention",
+  "rights",
+  "complaint",
   "cookies",
 ] as const;
 

@@ -141,3 +141,11 @@ model AuditLog {
   @@index([action])
   @@index([createdAt])
 }
+
+model ArchivedPayment {
+  id              String        @id @default(cuid())
+  stripePaymentId String
+  package         AccessPackage
+  createdAt       DateTime      @default(now())
+  deletedAt       DateTime      @default(now())
+}

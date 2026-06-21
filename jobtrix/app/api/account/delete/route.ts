@@ -24,6 +24,18 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "wrong_password" }, { status: 401 });
   }
 
+  const access = await prisma.access.findUnique({
+    where: { userId: session.user.id },
+  });
+  if (access?.stripePaymentId && access.package !== "none") {
+    await prisma.archivedPayment.create({
+      data: {
+        stripePaymentId: access.stripePaymentId,
+        package: access.package,
+      },
+    });
+  }
+
   await prisma.user.delete({ where: { id: session.user.id } });
   await logAudit("account_deleted", { userId: session.user.id });
 

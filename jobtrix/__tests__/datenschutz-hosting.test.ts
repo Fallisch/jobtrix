@@ -4,8 +4,8 @@
 import deMessages from "../messages/de.json";
 import enMessages from "../messages/en.json";
 
-const deHosting = (deMessages as Record<string, Record<string, string>>).datenschutz.hostingBody;
-const enHosting = (enMessages as Record<string, Record<string, string>>).datenschutz.hostingBody;
+const deHosting = (deMessages as unknown as Record<string, Record<string, string>>).datenschutz.hostingBody;
+const enHosting = (enMessages as unknown as Record<string, Record<string, string>>).datenschutz.hostingBody;
 
 describe("Datenschutzerklärung – Hosting-Abschnitt", () => {
   describe("DE (messages/de.json)", () => {
