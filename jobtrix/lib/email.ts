@@ -59,7 +59,7 @@ export async function sendApplicationEmail({ to, replyTo, subject, text, coverLe
     body: JSON.stringify({
       from,
       to,
-      reply_to: applicantName ? `${applicantName} <${replyTo}>` : replyTo,
+      reply_to: applicantName ? `"${applicantName.replace(/[<>,;\r\n"]/g, "").trim()}" <${replyTo}>` : replyTo,
       subject,
       text,
       attachments: [
