@@ -6,18 +6,8 @@ import { pdf } from "@react-pdf/renderer";
 import { CoverLetterDocument, CvDocument } from "@/lib/pdf-documents";
 import { ProfileData } from "@/lib/profile-storage";
 import { sendApplicationEmail } from "@/lib/email";
-
-interface SendEmailBody {
-  to: string;
-  subject: string;
-  body: string;
-  coverLetter: string;
-  cv: string;
-  profile: ProfileData;
-  template: "classic" | "modern" | "traditional" | "accent" | "creative";
-  cvStyle: "classic" | "american";
-  accentColor?: string;
-}
+import { checkRateLimit } from "@/lib/rate-limit";
+import { sendEmailSchema } from "@/lib/validation-schemas";
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -25,15 +15,20 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
+  if (!(await checkRateLimit(`send-email:${session.user.id}`, 5))) {
+    return NextResponse.json({ error: "tooManyRequests" }, { status: 429 });
+  }
+
   if (!process.env.RESEND_API_KEY) {
     return NextResponse.json({ error: "email_not_configured" }, { status: 500 });
   }
 
-  const data = (await req.json()) as SendEmailBody;
-
-  if (!data.to || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.to)) {
-    return NextResponse.json({ error: "invalid_recipient" }, { status: 400 });
+  const raw = await req.json();
+  const parsed = sendEmailSchema.safeParse(raw);
+  if (!parsed.success) {
+    return NextResponse.json({ error: "invalidInput" }, { status: 400 });
   }
+  const data = parsed.data as typeof parsed.data & { profile: ProfileData };
 
   try {
     const coverLetterBlob = await pdf(

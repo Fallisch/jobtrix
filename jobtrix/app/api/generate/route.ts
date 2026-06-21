@@ -6,6 +6,8 @@ import { prisma } from "@/lib/prisma";
 import { checkAccess } from "@/lib/access";
 import { buildPrompt, GenerateRequest } from "@/lib/build-prompt";
 import { parseResponse } from "./parse-response";
+import { checkRateLimit } from "@/lib/rate-limit";
+import { generateRequestSchema } from "@/lib/validation-schemas";
 
 export async function POST(request: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -14,6 +16,10 @@ export async function POST(request: NextRequest) {
   }
   const userId = session.user.id;
 
+  if (!(await checkRateLimit(`generate:${userId}`, 10))) {
+    return NextResponse.json({ error: "tooManyRequests" }, { status: 429 });
+  }
+
   const access = await prisma.access.findUnique({ where: { userId } });
   const decision = checkAccess(access);
   if (!decision.allowed) {
@@ -21,7 +27,12 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const body = (await request.json()) as GenerateRequest;
+    const raw = await request.json();
+    const parsed = generateRequestSchema.safeParse(raw);
+    if (!parsed.success) {
+      return NextResponse.json({ error: "invalidInput" }, { status: 400 });
+    }
+    const body = parsed.data as GenerateRequest;
     const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
     const message = await client.messages.create({

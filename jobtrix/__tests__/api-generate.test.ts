@@ -270,7 +270,7 @@ describe("Bewerbungshistorie", () => {
     expect(entries[0].emailSubject).toBe("Bewerbung als Senior Developer – Max Mustermann");
     expect(entries[0].coverLetter).toBe("Sehr geehrte Damen und Herren");
     expect(entries[0].cv).toBe("Max Mustermann – Lebenslauf");
-    expect(entries[0].profileSnapshot).toEqual(profile);
+    expect(entries[0].profileSnapshot).toEqual(expect.objectContaining(profile));
   });
 
   it("speichert das beim Generieren gewählte PDF-Layout 'modern' im Historie-Eintrag", async () => {

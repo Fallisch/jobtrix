@@ -8,7 +8,7 @@ export const RATE_LIMIT_WINDOW_MS = process.env.RATE_LIMIT_WINDOW_MS
   ? parseInt(process.env.RATE_LIMIT_WINDOW_MS, 10)
   : 15 * 60 * 1000;
 
-export async function checkRateLimit(key: string): Promise<boolean> {
+export async function checkRateLimit(key: string, max: number = RATE_LIMIT_MAX): Promise<boolean> {
   if (
     process.env.NODE_ENV === "test" &&
     process.env.ENABLE_RATE_LIMIT_IN_TESTS !== "1"
@@ -34,7 +34,7 @@ export async function checkRateLimit(key: string): Promise<boolean> {
     return true;
   }
 
-  if (entry.attempts >= RATE_LIMIT_MAX) {
+  if (entry.attempts >= max) {
     return false;
   }
 

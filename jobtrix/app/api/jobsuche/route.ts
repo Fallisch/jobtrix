@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 const API_BASE = "https://rest.arbeitsagentur.de/jobboerse/jobsuche-service/pc/v4";
 
@@ -52,6 +53,10 @@ export async function GET(request: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  }
+
+  if (!(await checkRateLimit(`jobsuche:${session.user.id}`, 30))) {
+    return NextResponse.json({ error: "tooManyRequests" }, { status: 429 });
   }
 
   const { searchParams } = new URL(request.url);
