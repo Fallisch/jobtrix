@@ -28,6 +28,9 @@ const SECURITY_HEADERS = [
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  env: {
+    MAINTENANCE_MODE: process.env.MAINTENANCE_MODE || "false",
+  },
   async headers() {
     return [{ source: "/(.*)", headers: SECURITY_HEADERS }];
   },
