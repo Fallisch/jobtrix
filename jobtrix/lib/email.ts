@@ -50,6 +50,11 @@ export async function sendApplicationEmail({ to, replyTo, subject, text, coverLe
   const { apiKey, from } = getConfig();
   if (!apiKey) return false;
 
+  const fromEmail = from.replace(/.*<(.+)>/, "$1").replace(/[<>]/g, "");
+  const senderFrom = applicantName
+    ? `"${applicantName.replace(/[<>,;\r\n"]/g, "").trim()} via JobTRIX" <${fromEmail}>`
+    : from;
+
   const res = await fetch(RESEND_API, {
     method: "POST",
     headers: {
@@ -57,7 +62,7 @@ export async function sendApplicationEmail({ to, replyTo, subject, text, coverLe
       Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
-      from,
+      from: senderFrom,
       to,
       reply_to: applicantName ? `"${applicantName.replace(/[<>,;\r\n"]/g, "").trim()}" <${replyTo}>` : replyTo,
       subject,
