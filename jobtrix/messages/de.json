@@ -283,15 +283,15 @@
     "representativeHeading": "Vertretungsberechtigte Personen",
     "representativeBody": "Falk Schieck\nPatrick Matthes",
     "contactHeading": "Kontakt",
-    "contactBody": "Telefon: 01726071910\nE-Mail: [Platzhalter: kontakt@example.com]",
-    "vatHeading": "Umsatzsteuer-ID",
-    "vatBody": "[Platzhalter: USt-IdNr. gemäß § 27a UStG]"
+    "contactBody": "Telefon: 01726071910\nE-Mail: faltrixgbr@gmail.com",
+    "vatHeading": "Steuernummer",
+    "vatBody": "Steuernummer: 220/153/00012\nKleinunternehmer gemäß § 19 UStG – es wird keine Umsatzsteuer ausgewiesen."
   },
   "datenschutz": {
     "title": "Datenschutzerklärung",
     "intro": "Diese Datenschutzerklärung informiert dich darüber, welche personenbezogenen Daten bei der Nutzung von JobTRIX verarbeitet werden und zu welchem Zweck.",
     "responsibleHeading": "Verantwortlicher",
-    "responsibleBody": "Faltrix GbR\nAm Schulberg 10\n09569 Oederan\nE-Mail: [Platzhalter: kontakt@example.com]",
+    "responsibleBody": "Faltrix GbR\nAm Schulberg 10\n09569 Oederan\nE-Mail: faltrixgbr@gmail.com",
     "authHeading": "Registrierung, Login & Session",
     "authBody": "Für Registrierung und Login verwenden wir NextAuth. Dabei werden deine E-Mail-Adresse und ein gehashtes Passwort gespeichert. Für angemeldete Sitzungen wird ein Session-Token verwendet.",
     "profileHeading": "Profildaten",

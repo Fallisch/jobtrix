@@ -283,15 +283,15 @@
     "representativeHeading": "Authorized Representatives",
     "representativeBody": "Falk Schieck\nPatrick Matthes",
     "contactHeading": "Contact",
-    "contactBody": "Phone: 01726071910\nEmail: [Placeholder: kontakt@example.com]",
-    "vatHeading": "VAT ID",
-    "vatBody": "[Placeholder: VAT ID according to § 27a UStG]"
+    "contactBody": "Phone: 01726071910\nEmail: faltrixgbr@gmail.com",
+    "vatHeading": "Tax Number",
+    "vatBody": "Tax number: 220/153/00012\nSmall business according to § 19 UStG – no VAT is charged."
   },
   "datenschutz": {
     "title": "Privacy Policy",
     "intro": "This privacy policy informs you which personal data is processed when using JobTRIX and for what purpose.",
     "responsibleHeading": "Data Controller",
-    "responsibleBody": "Faltrix GbR\nAm Schulberg 10\n09569 Oederan\nEmail: [Placeholder: kontakt@example.com]",
+    "responsibleBody": "Faltrix GbR\nAm Schulberg 10\n09569 Oederan\nEmail: faltrixgbr@gmail.com",
     "authHeading": "Registration, Login & Session",
     "authBody": "We use NextAuth for registration and login. Your email address and a hashed password are stored. An authenticated session uses a session token.",
     "profileHeading": "Profile Data",
