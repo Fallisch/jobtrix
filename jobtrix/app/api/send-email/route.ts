@@ -67,6 +67,7 @@ export async function POST(req: NextRequest) {
       text: data.body,
       coverLetterBase64,
       cvBase64,
+      applicantName: data.profile.name,
     });
 
     if (!ok) {

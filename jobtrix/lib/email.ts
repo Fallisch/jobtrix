@@ -37,9 +37,16 @@ interface SendApplicationEmailParams {
   text: string;
   coverLetterBase64: string;
   cvBase64: string;
+  applicantName?: string;
 }
 
-export async function sendApplicationEmail({ to, replyTo, subject, text, coverLetterBase64, cvBase64 }: SendApplicationEmailParams): Promise<boolean> {
+function buildFilename(prefix: string, name?: string): string {
+  if (!name) return `${prefix}.pdf`;
+  const sanitized = name.trim().replace(/\s+/g, "_").replace(/[^a-zA-ZäöüÄÖÜß_-]/g, "");
+  return sanitized ? `${prefix}_${sanitized}.pdf` : `${prefix}.pdf`;
+}
+
+export async function sendApplicationEmail({ to, replyTo, subject, text, coverLetterBase64, cvBase64, applicantName }: SendApplicationEmailParams): Promise<boolean> {
   const { apiKey, from } = getConfig();
   if (!apiKey) return false;
 
@@ -56,8 +63,8 @@ export async function sendApplicationEmail({ to, replyTo, subject, text, coverLe
       subject,
       text,
       attachments: [
-        { filename: "Anschreiben.pdf", content: coverLetterBase64 },
-        { filename: "Lebenslauf.pdf", content: cvBase64 },
+        { filename: buildFilename("Anschreiben", applicantName), content: coverLetterBase64 },
+        { filename: buildFilename("Lebenslauf", applicantName), content: cvBase64 },
       ],
     }),
   });
