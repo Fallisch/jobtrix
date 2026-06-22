@@ -6,11 +6,11 @@ const withNextIntl = createNextIntlPlugin();
 // Werte identisch zu lib/security-headers.ts — muss dort gepflegt werden.
 const CSP = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com",
+  "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://static.cloudflareinsights.com",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com",
   "img-src 'self' data: blob:",
-  "connect-src 'self' https://cloudflareinsights.com",
+  "connect-src 'self' data: https://cloudflareinsights.com",
   "frame-src https://checkout.stripe.com",
   "worker-src 'self' blob:",
   "frame-ancestors 'none'",
