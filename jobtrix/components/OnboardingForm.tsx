@@ -133,7 +133,7 @@ export default function OnboardingForm() {
 
   const progress = (step / TOTAL_STEPS) * 100;
 
-  const inputClass = "w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-accent";
+  const inputClass = "w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-xl px-4 py-3 text-base min-h-[44px] focus:outline-none focus:ring-2 focus:ring-accent";
   const inputCenterClass = `${inputClass} text-center text-lg`;
 
   return (
@@ -372,10 +372,10 @@ export default function OnboardingForm() {
               {step > 1 && (
                 <button type="button" onClick={handleSkip} className="text-sm text-text/50 hover:text-text transition">{t("skip")}</button>
               )}
-              <button type="button" onClick={handleNext} className="bg-accent text-white px-8 py-2.5 rounded-full font-semibold hover:brightness-110 transition">{t("next")}</button>
+              <button type="button" onClick={handleNext} className="bg-accent text-white px-8 py-2.5 rounded-full font-semibold hover:brightness-110 transition min-h-[44px]">{t("next")}</button>
             </div>
           ) : (
-            <button type="button" onClick={handleFinish} disabled={submitting} className="bg-accent text-white px-8 py-2.5 rounded-full font-semibold hover:brightness-110 transition disabled:opacity-40">{t("finish")}</button>
+            <button type="button" onClick={handleFinish} disabled={submitting} className="bg-accent text-white px-8 py-2.5 rounded-full font-semibold hover:brightness-110 transition min-h-[44px] disabled:opacity-40">{t("finish")}</button>
           )}
         </div>
       </div>

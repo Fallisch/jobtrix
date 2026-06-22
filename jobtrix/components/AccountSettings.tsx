@@ -85,7 +85,7 @@ export default function AccountSettings() {
               type="password"
               value={exportPassword}
               onChange={(e) => setExportPassword(e.target.value)}
-              className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-2.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-2.5 text-base min-h-[44px] text-text focus:outline-none focus:ring-2 focus:ring-accent"
             />
           </div>
           <button
@@ -122,7 +122,7 @@ export default function AccountSettings() {
               type="password"
               value={deletePassword}
               onChange={(e) => setDeletePassword(e.target.value)}
-              className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-2.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-2.5 text-base min-h-[44px] text-text focus:outline-none focus:ring-2 focus:ring-accent"
             />
           </div>
           <button

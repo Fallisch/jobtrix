@@ -74,7 +74,7 @@ export default function RegisterForm() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 min-h-[44px] text-base focus:outline-none focus:ring-2 focus:ring-accent"
               aria-label={t("emailLabel")}
             />
             {errors.email && (
@@ -92,7 +92,7 @@ export default function RegisterForm() {
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-accent"
+                className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 pr-10 min-h-[44px] text-base focus:outline-none focus:ring-2 focus:ring-accent"
                 aria-label={t("passwordLabel")}
               />
               <button
@@ -124,7 +124,7 @@ export default function RegisterForm() {
                 type={showPasswordConfirm ? "text" : "password"}
                 value={passwordConfirm}
                 onChange={(e) => setPasswordConfirm(e.target.value)}
-                className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-accent"
+                className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 pr-10 min-h-[44px] text-base focus:outline-none focus:ring-2 focus:ring-accent"
                 aria-label={t("passwordConfirmLabel")}
               />
               <button

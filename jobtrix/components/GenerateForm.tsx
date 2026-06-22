@@ -316,7 +316,7 @@ export default function GenerateForm() {
           <button
             onClick={handleGenerateClick}
             disabled={!canGenerate || loading}
-            className="w-full sm:w-auto bg-accent text-white px-8 py-3 rounded-full font-semibold text-base hover:brightness-110 transition disabled:opacity-40 disabled:cursor-not-allowed"
+            className="w-full sm:w-auto bg-accent text-white px-8 py-3 rounded-full font-semibold text-base hover:brightness-110 transition disabled:opacity-40 disabled:cursor-not-allowed min-h-[44px]"
           >
             {t("generateButton")}
           </button>

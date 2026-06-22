@@ -64,7 +64,7 @@ export default function LoginForm() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 min-h-[44px] text-base focus:outline-none focus:ring-2 focus:ring-accent"
               aria-label={t("emailLabel")}
             />
             {errors.email && (
@@ -81,7 +81,7 @@ export default function LoginForm() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 min-h-[44px] text-base focus:outline-none focus:ring-2 focus:ring-accent"
               aria-label={t("passwordLabel")}
             />
             {errors.password && (
@@ -103,7 +103,7 @@ export default function LoginForm() {
           <button
             type="submit"
             disabled={submitting}
-            className="w-full bg-accent text-white px-8 py-3 rounded-full font-semibold text-base hover:brightness-110 transition disabled:opacity-40 disabled:cursor-not-allowed"
+            className="w-full bg-accent text-white px-8 py-3 rounded-full font-semibold text-base hover:brightness-110 transition disabled:opacity-40 disabled:cursor-not-allowed min-h-[44px]"
           >
             {t("submit")}
           </button>

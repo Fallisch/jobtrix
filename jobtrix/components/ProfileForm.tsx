@@ -203,7 +203,7 @@ export default function ProfileForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-2xl mx-auto px-4 py-8 space-y-6">
+    <form onSubmit={handleSubmit} className="max-w-2xl mx-auto px-4 py-8 space-y-6 text-base">
       <h1 className="text-2xl font-bold text-primary dark:text-accent">{t("title")}</h1>
 
       {access?.package === "limited" && access.validUntil && (
@@ -226,7 +226,7 @@ export default function ProfileForm() {
           type="text"
           value={data.name}
           onChange={(e) => set("name", e.target.value)}
-          className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+          className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 min-h-[44px] text-base focus:outline-none focus:ring-2 focus:ring-accent"
           aria-label={t("nameLabel")}
         />
         {errors.name && <p className="text-red-600 dark:text-red-400 text-sm mt-1">{t(`errors.${errors.name}`)}</p>}
@@ -242,7 +242,7 @@ export default function ProfileForm() {
           type="text"
           value={data.address}
           onChange={(e) => { set("address", e.target.value); setAddressError(validateLocation(e.target.value)); }}
-          className={`w-full border dark:bg-surface rounded-md px-3 py-2 focus:outline-none focus:ring-2${addressError ? " border-red-500 ring-red-500" : " border-gray-300 dark:border-gray-600 focus:ring-accent"}`}
+          className={`w-full border dark:bg-surface rounded-md px-3 py-2 min-h-[44px] text-base focus:outline-none focus:ring-2${addressError ? " border-red-500 ring-red-500" : " border-gray-300 dark:border-gray-600 focus:ring-accent"}`}
           aria-label={t("addressLabel")}
         />
         {addressError && <p className="text-red-600 dark:text-red-400 text-sm mt-1">{tErr(addressError)}</p>}
@@ -258,7 +258,7 @@ export default function ProfileForm() {
           type="email"
           value={data.email}
           onChange={(e) => set("email", e.target.value)}
-          className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+          className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 min-h-[44px] text-base focus:outline-none focus:ring-2 focus:ring-accent"
           aria-label={t("emailLabel")}
         />
       </div>
@@ -273,7 +273,7 @@ export default function ProfileForm() {
           type="tel"
           value={data.phone}
           onChange={(e) => { set("phone", e.target.value); setPhoneError(validatePhone(e.target.value)); }}
-          className={`w-full border dark:bg-surface rounded-md px-3 py-2 focus:outline-none focus:ring-2${phoneError ? " border-red-500 ring-red-500" : " border-gray-300 dark:border-gray-600 focus:ring-accent"}`}
+          className={`w-full border dark:bg-surface rounded-md px-3 py-2 min-h-[44px] text-base focus:outline-none focus:ring-2${phoneError ? " border-red-500 ring-red-500" : " border-gray-300 dark:border-gray-600 focus:ring-accent"}`}
           aria-label={t("phoneLabel")}
         />
         {phoneError && <p className="text-red-600 dark:text-red-400 text-sm mt-1">{tErr(phoneError)}</p>}
@@ -289,7 +289,7 @@ export default function ProfileForm() {
           type="date"
           value={data.birthdate}
           onChange={(e) => set("birthdate", e.target.value)}
-          className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+          className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 min-h-[44px] text-base focus:outline-none focus:ring-2 focus:ring-accent"
           aria-label={t("birthdateLabel")}
         />
       </div>
