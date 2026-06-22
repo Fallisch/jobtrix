@@ -16,6 +16,8 @@ model User {
   image         String?
   emailVerified DateTime?
 
+  hasSeenWelcome Boolean @default(false)
+
   accounts Account[]
   sessions Session[]
   profile  UserProfile?

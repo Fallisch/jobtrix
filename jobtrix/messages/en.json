@@ -436,6 +436,21 @@
     "sortNewest": "Newest first (recommended)",
     "sortOldest": "Oldest first"
   },
+  "welcome": {
+    "slide1Title": "Welcome to JobTRIX",
+    "slide1Text": "Create applications in minutes — cover letter, CV and email at the push of a button.",
+    "slide2Title": "Create your profile",
+    "slide2Text": "Your data is the basis for every application. Set it up once, use it again and again.",
+    "slide3Title": "Search or enter a job",
+    "slide3Text": "JobTRIX finds suitable positions for you or you can paste a job posting directly.",
+    "slide4Title": "Generate application",
+    "slide4Text": "Cover letter, CV and email draft are created automatically.",
+    "slide5Title": "Send it",
+    "slide5Text": "Send directly from your email app — with downloaded PDFs as attachments.",
+    "skip": "Skip",
+    "next": "Next",
+    "done": "Let's go!"
+  },
   "onboarding": {
     "welcome": "Welcome to JobTRIX!",
     "step1Title": "What is your name?",

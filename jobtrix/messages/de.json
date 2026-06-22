@@ -436,6 +436,21 @@
     "sortNewest": "Neuestes zuerst (empfohlen)",
     "sortOldest": "Ältestes zuerst"
   },
+  "welcome": {
+    "slide1Title": "Willkommen bei JobTRIX",
+    "slide1Text": "Bewerbungen erstellen in Minuten — Anschreiben, Lebenslauf und E-Mail auf Knopfdruck.",
+    "slide2Title": "Profil anlegen",
+    "slide2Text": "Deine Daten sind die Basis für jede Bewerbung. Einmal anlegen, immer wieder nutzen.",
+    "slide3Title": "Stelle suchen oder eingeben",
+    "slide3Text": "JobTRIX findet passende Stellen für dich oder du fügst eine Stellenanzeige direkt ein.",
+    "slide4Title": "Bewerbung generieren",
+    "slide4Text": "Anschreiben, Lebenslauf und E-Mail-Entwurf werden automatisch erstellt.",
+    "slide5Title": "Versenden",
+    "slide5Text": "Direkt aus deinem E-Mail-Programm verschicken — mit heruntergeladenen PDFs als Anhang.",
+    "skip": "Überspringen",
+    "next": "Weiter",
+    "done": "Los geht's!"
+  },
   "onboarding": {
     "welcome": "Willkommen bei JobTRIX!",
     "step1Title": "Wie heißt du?",

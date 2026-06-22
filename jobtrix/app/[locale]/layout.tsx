@@ -6,6 +6,7 @@ import { routing } from "@/i18n/routing";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import InstallBanner from "@/components/InstallBanner";
+import WelcomeGate from "@/components/WelcomeGate";
 import AuthSessionProvider from "@/components/AuthSessionProvider";
 
 export const metadata: Metadata = {
@@ -45,6 +46,7 @@ export default async function LocaleLayout({
         <main className="flex-1">{children}</main>
         <Footer locale={locale} />
         <InstallBanner />
+        <WelcomeGate />
       </AuthSessionProvider>
     </NextIntlClientProvider>
   );
