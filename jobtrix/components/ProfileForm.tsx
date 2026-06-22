@@ -11,6 +11,7 @@ import {
   validateProfile,
 } from "@/lib/profile-storage";
 import { compressImage } from "@/lib/image-compress";
+import { validatePhone, validateLocation, validateYearRange } from "@/lib/validation";
 
 function makeEduEntry(): EducationEntry {
   return { id: crypto.randomUUID(), institution: "", degree: "", year: "" };
@@ -49,8 +50,12 @@ export default function ProfileForm() {
   const [qualInput, setQualInput] = useState("");
   const [interestInput, setInterestInput] = useState("");
   const [access, setAccess] = useState<AccessState | null>(null);
+  const [phoneError, setPhoneError] = useState<string | null>(null);
+  const [addressError, setAddressError] = useState<string | null>(null);
+  const [yearErrors, setYearErrors] = useState<Record<string, string | null>>({});
   const interactedRef = useRef(false);
   const photoInputRef = useRef<HTMLInputElement>(null);
+  const tErr = useTranslations("profile.errors");
 
   useEffect(() => {
     const draft = sessionStorage.getItem("profile-draft");
@@ -236,10 +241,11 @@ export default function ProfileForm() {
           id="address"
           type="text"
           value={data.address}
-          onChange={(e) => set("address", e.target.value)}
-          className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+          onChange={(e) => { set("address", e.target.value); setAddressError(validateLocation(e.target.value)); }}
+          className={`w-full border dark:bg-surface rounded-md px-3 py-2 focus:outline-none focus:ring-2${addressError ? " border-red-500 ring-red-500" : " border-gray-300 dark:border-gray-600 focus:ring-accent"}`}
           aria-label={t("addressLabel")}
         />
+        {addressError && <p className="text-red-600 dark:text-red-400 text-sm mt-1">{tErr(addressError)}</p>}
       </div>
 
       {/* E-Mail */}
@@ -266,10 +272,11 @@ export default function ProfileForm() {
           id="phone"
           type="tel"
           value={data.phone}
-          onChange={(e) => set("phone", e.target.value)}
-          className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+          onChange={(e) => { set("phone", e.target.value); setPhoneError(validatePhone(e.target.value)); }}
+          className={`w-full border dark:bg-surface rounded-md px-3 py-2 focus:outline-none focus:ring-2${phoneError ? " border-red-500 ring-red-500" : " border-gray-300 dark:border-gray-600 focus:ring-accent"}`}
           aria-label={t("phoneLabel")}
         />
+        {phoneError && <p className="text-red-600 dark:text-red-400 text-sm mt-1">{tErr(phoneError)}</p>}
       </div>
 
       {/* Geburtsdatum */}
@@ -340,10 +347,13 @@ export default function ProfileForm() {
                 type="text"
                 placeholder={t("yearPlaceholder")}
                 value={edu.year}
-                onChange={(e) => updateEdu(edu.id, "year", e.target.value)}
-                className="w-24 border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+                onChange={(e) => { updateEdu(edu.id, "year", e.target.value); setYearErrors((prev) => ({ ...prev, [edu.id]: validateYearRange(e.target.value) })); }}
+                className={`w-24 border dark:bg-surface rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2${yearErrors[edu.id] ? " border-red-500 ring-red-500" : " border-gray-300 dark:border-gray-600 focus:ring-accent"}`}
               />
             </div>
+            {yearErrors[edu.id] && (
+              <p className="text-red-600 dark:text-red-400 text-xs mt-1">{tErr(yearErrors[edu.id]!)}</p>
+            )}
             <button
               type="button"
               onClick={() => removeEdu(edu.id)}
@@ -391,10 +401,13 @@ export default function ProfileForm() {
                 type="text"
                 placeholder={t("periodPlaceholder")}
                 value={exp.period}
-                onChange={(e) => updateExp(exp.id, "period", e.target.value)}
-                className="w-32 border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+                onChange={(e) => { updateExp(exp.id, "period", e.target.value); setYearErrors((prev) => ({ ...prev, [exp.id]: validateYearRange(e.target.value) })); }}
+                className={`w-32 border dark:bg-surface rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2${yearErrors[exp.id] ? " border-red-500 ring-red-500" : " border-gray-300 dark:border-gray-600 focus:ring-accent"}`}
               />
             </div>
+            {yearErrors[exp.id] && (
+              <p className="text-red-600 dark:text-red-400 text-xs mt-1">{tErr(yearErrors[exp.id]!)}</p>
+            )}
             <textarea
               placeholder={t("tasksPlaceholder")}
               value={exp.tasks}

@@ -6,6 +6,7 @@ import { useRouter, useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { compressImage } from "@/lib/image-compress";
 import { EducationEntry, ExperienceEntry, SkillItem } from "@/lib/profile-storage";
+import { validateBirthdate, validatePhone, validateLocation, validateYearRange } from "@/lib/validation";
 
 const TOTAL_STEPS = 10;
 
@@ -41,7 +42,12 @@ export default function OnboardingForm() {
   const [qualInput, setQualInput] = useState("");
   const [interestInput, setInterestInput] = useState("");
   const [nameError, setNameError] = useState(false);
+  const [phoneError, setPhoneError] = useState<string | null>(null);
+  const [addressError, setAddressError] = useState<string | null>(null);
+  const [birthdateError, setBirthdateError] = useState<string | null>(null);
+  const [yearErrors, setYearErrors] = useState<Record<string, string | null>>({});
   const [submitting, setSubmitting] = useState(false);
+  const tErr = useTranslations("onboarding.errors");
 
   function handleNext() {
     if (step === 1 && !name.trim()) {
@@ -193,13 +199,16 @@ export default function OnboardingForm() {
               <input
                 type="tel"
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                onChange={(e) => { setPhone(e.target.value); setPhoneError(validatePhone(e.target.value)); }}
                 placeholder={t("step3Placeholder")}
                 autoFocus
-                className={inputCenterClass}
+                className={`${inputCenterClass}${phoneError ? " border-red-500 ring-red-500" : ""}`}
                 aria-label={t("step3Title")}
                 onKeyDown={(e) => e.key === "Enter" && handleNext()}
               />
+              {phoneError && (
+                <p className="text-red-600 dark:text-red-400 text-sm text-center">{tErr(phoneError)}</p>
+              )}
             </div>
           )}
 
@@ -209,13 +218,16 @@ export default function OnboardingForm() {
               <input
                 type="text"
                 value={address}
-                onChange={(e) => setAddress(e.target.value)}
+                onChange={(e) => { setAddress(e.target.value); setAddressError(validateLocation(e.target.value)); }}
                 placeholder={t("step4Placeholder")}
                 autoFocus
-                className={inputCenterClass}
+                className={`${inputCenterClass}${addressError ? " border-red-500 ring-red-500" : ""}`}
                 aria-label={t("step4Title")}
                 onKeyDown={(e) => e.key === "Enter" && handleNext()}
               />
+              {addressError && (
+                <p className="text-red-600 dark:text-red-400 text-sm text-center">{tErr(addressError)}</p>
+              )}
             </div>
           )}
 
@@ -223,10 +235,13 @@ export default function OnboardingForm() {
             <div className="space-y-3">
               <h2 className="text-lg font-semibold text-text text-center">{t("step5Title")}</h2>
               <div className="flex gap-3 justify-center">
-                <input type="number" min="1" max="31" value={birthDay} onChange={(e) => setBirthDay(e.target.value)} placeholder={t("step5Day")} autoFocus className="w-20 border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-xl px-3 py-3 text-center text-lg focus:outline-none focus:ring-2 focus:ring-accent" aria-label={t("step5Day")} />
-                <input type="number" min="1" max="12" value={birthMonth} onChange={(e) => setBirthMonth(e.target.value)} placeholder={t("step5Month")} className="w-24 border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-xl px-3 py-3 text-center text-lg focus:outline-none focus:ring-2 focus:ring-accent" aria-label={t("step5Month")} />
-                <input type="number" min="1920" max="2020" value={birthYear} onChange={(e) => setBirthYear(e.target.value)} placeholder={t("step5Year")} className="w-28 border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-xl px-3 py-3 text-center text-lg focus:outline-none focus:ring-2 focus:ring-accent" aria-label={t("step5Year")} />
+                <input type="number" min="1" max="31" value={birthDay} onChange={(e) => { setBirthDay(e.target.value); setBirthdateError(validateBirthdate(e.target.value, birthMonth, birthYear)); }} placeholder={t("step5Day")} autoFocus className={`w-20 border dark:bg-surface rounded-xl px-3 py-3 text-center text-lg focus:outline-none focus:ring-2${birthdateError ? " border-red-500 ring-red-500" : " border-gray-300 dark:border-gray-600 focus:ring-accent"}`} aria-label={t("step5Day")} />
+                <input type="number" min="1" max="12" value={birthMonth} onChange={(e) => { setBirthMonth(e.target.value); setBirthdateError(validateBirthdate(birthDay, e.target.value, birthYear)); }} placeholder={t("step5Month")} className={`w-24 border dark:bg-surface rounded-xl px-3 py-3 text-center text-lg focus:outline-none focus:ring-2${birthdateError ? " border-red-500 ring-red-500" : " border-gray-300 dark:border-gray-600 focus:ring-accent"}`} aria-label={t("step5Month")} />
+                <input type="number" min="1920" max="2020" value={birthYear} onChange={(e) => { setBirthYear(e.target.value); setBirthdateError(validateBirthdate(birthDay, birthMonth, e.target.value)); }} placeholder={t("step5Year")} className={`w-28 border dark:bg-surface rounded-xl px-3 py-3 text-center text-lg focus:outline-none focus:ring-2${birthdateError ? " border-red-500 ring-red-500" : " border-gray-300 dark:border-gray-600 focus:ring-accent"}`} aria-label={t("step5Year")} />
               </div>
+              {birthdateError && (
+                <p className="text-red-600 dark:text-red-400 text-sm text-center">{tErr(birthdateError)}</p>
+              )}
             </div>
           )}
 
@@ -254,8 +269,11 @@ export default function OnboardingForm() {
                   <input type="text" placeholder={t("step7Institution")} value={edu.institution} onChange={(e) => updateEdu(edu.id, "institution", e.target.value)} className={inputClass} />
                   <div className="flex gap-2">
                     <input type="text" placeholder={t("step7Degree")} value={edu.degree} onChange={(e) => updateEdu(edu.id, "degree", e.target.value)} className={`flex-1 ${inputClass}`} />
-                    <input type="text" placeholder={t("step7Year")} value={edu.year} onChange={(e) => updateEdu(edu.id, "year", e.target.value)} className={`w-20 ${inputClass}`} />
+                    <input type="text" placeholder={t("step7Year")} value={edu.year} onChange={(e) => { updateEdu(edu.id, "year", e.target.value); setYearErrors((prev) => ({ ...prev, [edu.id]: validateYearRange(e.target.value) })); }} className={`w-20 ${inputClass}${yearErrors[edu.id] ? " border-red-500" : ""}`} />
                   </div>
+                  {yearErrors[edu.id] && (
+                    <p className="text-red-600 dark:text-red-400 text-xs">{tErr(yearErrors[edu.id]!)}</p>
+                  )}
                   {education.length > 1 && (
                     <button type="button" onClick={() => setEducation((prev) => prev.filter((e) => e.id !== edu.id))} className="text-xs text-red-500 hover:text-red-700">{t("step7Remove")}</button>
                   )}
@@ -276,8 +294,11 @@ export default function OnboardingForm() {
                   <input type="text" placeholder={t("step8Company")} value={exp.company} onChange={(e) => updateExp(exp.id, "company", e.target.value)} className={inputClass} />
                   <div className="flex gap-2">
                     <input type="text" placeholder={t("step8Position")} value={exp.position} onChange={(e) => updateExp(exp.id, "position", e.target.value)} className={`flex-1 ${inputClass}`} />
-                    <input type="text" placeholder={t("step8Period")} value={exp.period} onChange={(e) => updateExp(exp.id, "period", e.target.value)} className={`w-36 ${inputClass}`} />
+                    <input type="text" placeholder={t("step8Period")} value={exp.period} onChange={(e) => { updateExp(exp.id, "period", e.target.value); setYearErrors((prev) => ({ ...prev, [exp.id]: validateYearRange(e.target.value) })); }} className={`w-36 ${inputClass}${yearErrors[exp.id] ? " border-red-500" : ""}`} />
                   </div>
+                  {yearErrors[exp.id] && (
+                    <p className="text-red-600 dark:text-red-400 text-xs">{tErr(yearErrors[exp.id]!)}</p>
+                  )}
                   <textarea placeholder={t("step8Tasks")} value={exp.tasks} onChange={(e) => updateExp(exp.id, "tasks", e.target.value)} rows={2} className={inputClass} />
                   <button type="button" onClick={() => setExperience((prev) => prev.filter((e) => e.id !== exp.id))} className="text-xs text-red-500 hover:text-red-700">{t("step8Remove")}</button>
                 </div>

@@ -255,7 +255,14 @@
     "remove": "Entfernen",
     "errors": {
       "required": "Name ist erforderlich",
-      "minEducation": "Mindestens ein Ausbildungseintrag erforderlich"
+      "minEducation": "Mindestens ein Ausbildungseintrag erforderlich",
+      "birthdateIncomplete": "Bitte alle drei Felder ausfüllen (Tag, Monat, Jahr)",
+      "birthdateInvalid": "Ungültiges Datum – bitte prüfe Tag, Monat und Jahr",
+      "birthdateYearRange": "Geburtsjahr muss zwischen 1920 und 2015 liegen",
+      "phoneInvalid": "Ungültige Telefonnummer – mindestens 6 Ziffern, optional +, Leerzeichen und Bindestriche",
+      "locationInvalid": "Bitte gib einen gültigen Ort ein (keine reinen Zahlen)",
+      "yearRangeInvalid": "Bitte im Format JJJJ oder JJJJ - JJJJ eingeben",
+      "yearRangeOutOfBounds": "Jahreszahl muss zwischen 1950 und 2030 liegen"
     }
   },
   "account": {
@@ -440,6 +447,15 @@
     "back": "Zurück",
     "skip": "Überspringen",
     "finish": "Loslegen!",
-    "stepOf": "Schritt {current} von {total}"
+    "stepOf": "Schritt {current} von {total}",
+    "errors": {
+      "birthdateIncomplete": "Bitte alle drei Felder ausfüllen (Tag, Monat, Jahr)",
+      "birthdateInvalid": "Ungültiges Datum – bitte prüfe Tag, Monat und Jahr",
+      "birthdateYearRange": "Geburtsjahr muss zwischen 1920 und 2015 liegen",
+      "phoneInvalid": "Ungültige Telefonnummer – mindestens 6 Ziffern",
+      "locationInvalid": "Bitte gib einen gültigen Ort ein (keine reinen Zahlen)",
+      "yearRangeInvalid": "Bitte im Format JJJJ oder JJJJ - JJJJ eingeben",
+      "yearRangeOutOfBounds": "Jahreszahl muss zwischen 1950 und 2030 liegen"
+    }
   }
 }

@@ -255,7 +255,14 @@
     "remove": "Remove",
     "errors": {
       "required": "Name is required",
-      "minEducation": "At least one education entry is required"
+      "minEducation": "At least one education entry is required",
+      "birthdateIncomplete": "Please fill in all three fields (day, month, year)",
+      "birthdateInvalid": "Invalid date – please check day, month and year",
+      "birthdateYearRange": "Birth year must be between 1920 and 2015",
+      "phoneInvalid": "Invalid phone number – at least 6 digits, optional +, spaces and hyphens",
+      "locationInvalid": "Please enter a valid location (no pure numbers)",
+      "yearRangeInvalid": "Please use format \"YYYY\" or \"YYYY - YYYY\"",
+      "yearRangeOutOfBounds": "Year must be between 1950 and 2030"
     }
   },
   "account": {
@@ -440,6 +447,15 @@
     "back": "Back",
     "skip": "Skip",
     "finish": "Let's go!",
-    "stepOf": "Step {current} of {total}"
+    "stepOf": "Step {current} of {total}",
+    "errors": {
+      "birthdateIncomplete": "Please fill in all three fields (day, month, year)",
+      "birthdateInvalid": "Invalid date – please check day, month and year",
+      "birthdateYearRange": "Birth year must be between 1920 and 2015",
+      "phoneInvalid": "Invalid phone number – at least 6 digits",
+      "locationInvalid": "Please enter a valid location (no pure numbers)",
+      "yearRangeInvalid": "Please use format \"YYYY\" or \"YYYY - YYYY\"",
+      "yearRangeOutOfBounds": "Year must be between 1950 and 2030"
+    }
   }
 }
