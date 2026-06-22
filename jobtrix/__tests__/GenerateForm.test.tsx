@@ -20,7 +20,7 @@ const mockProfile = {
   birthdate: "1990-01-01",
   photo: null,
   education: [{ id: "1", institution: "TU Berlin", degree: "B.Sc.", year: "2015" }],
-  qualifications: [],
+  qualifications: [{ label: "TypeScript", value: 80 }],
   interests: [],
 };
 
@@ -395,7 +395,7 @@ describe("GenerateForm", () => {
       photo: null,
       education: [{ id: "1", institution: "HU Berlin", degree: "M.Sc.", year: "2018" }],
       experience: [{ id: "1", company: "Acme GmbH", position: "Entwickler", period: "01/2020 - 12/2022", tasks: "Backend" }],
-      qualifications: [],
+      qualifications: [{ label: "TypeScript", value: 80 }],
       interests: [],
     };
 
@@ -429,9 +429,9 @@ describe("GenerateForm", () => {
                 phone: "",
                 birthdate: "",
                 photo: null,
-                education: [],
+                education: [{ id: "1", institution: "TU", degree: "B.Sc.", year: "2020" }],
                 experience: [],
-                qualifications: [],
+                qualifications: [{ label: "JS", value: 60 }],
                 interests: [],
               }),
           });
