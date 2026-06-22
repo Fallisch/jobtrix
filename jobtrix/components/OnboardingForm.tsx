@@ -126,7 +126,9 @@ export default function OnboardingForm() {
       });
 
       if (res.ok) {
-        router.push(`/${locale}/generate`);
+        window.location.href = `/${locale}/generate`;
+      } else if (res.status === 401) {
+        window.location.href = `/${locale}/login`;
       }
     } finally {
       setSubmitting(false);

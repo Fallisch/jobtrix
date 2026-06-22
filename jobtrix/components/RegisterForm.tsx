@@ -51,8 +51,7 @@ export default function RegisterForm() {
         return;
       }
 
-      router.refresh();
-      router.push(`/${locale}/onboarding`);
+      window.location.href = `/${locale}/onboarding`;
     } catch {
       setSubmitError("generic");
     } finally {
