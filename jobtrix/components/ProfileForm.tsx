@@ -12,6 +12,7 @@ import {
 } from "@/lib/profile-storage";
 import { compressImage } from "@/lib/image-compress";
 import { validatePhone, validateLocation, validateYearRange } from "@/lib/validation";
+import InfoTooltip from "@/components/InfoTooltip";
 
 function makeEduEntry(): EducationEntry {
   return { id: crypto.randomUUID(), institution: "", degree: "", year: "" };
@@ -56,6 +57,7 @@ export default function ProfileForm() {
   const interactedRef = useRef(false);
   const photoInputRef = useRef<HTMLInputElement>(null);
   const tErr = useTranslations("profile.errors");
+  const tHint = useTranslations("profile.hints");
 
   useEffect(() => {
     const draft = sessionStorage.getItem("profile-draft");
@@ -218,9 +220,12 @@ export default function ProfileForm() {
 
       {/* Name */}
       <div>
-        <label htmlFor="name" className="block text-sm font-medium mb-1">
-          {t("nameLabel")}
-        </label>
+        <div className="flex items-center gap-1 mb-1">
+          <label htmlFor="name" className="text-sm font-medium">
+            {t("nameLabel")}
+          </label>
+          <InfoTooltip text={tHint("name")} />
+        </div>
         <input
           id="name"
           type="text"
@@ -325,7 +330,7 @@ export default function ProfileForm() {
 
       {/* Ausbildung */}
       <div>
-        <h2 className="text-lg font-semibold text-primary dark:text-accent mb-2">{t("educationTitle")}</h2>
+        <h2 className="text-lg font-semibold text-primary dark:text-accent mb-2">{t("educationTitle")}<InfoTooltip text={tHint("education")} /></h2>
         {data.education.map((edu) => (
           <div key={edu.id} className="border border-gray-200 dark:border-gray-700 rounded-md p-3 mb-3 space-y-2">
             <input
@@ -379,7 +384,7 @@ export default function ProfileForm() {
 
       {/* Berufserfahrung */}
       <div>
-        <h2 className="text-lg font-semibold text-primary dark:text-accent mb-2">{t("experienceTitle")}</h2>
+        <h2 className="text-lg font-semibold text-primary dark:text-accent mb-2">{t("experienceTitle")}<InfoTooltip text={tHint("experience")} /></h2>
         {data.experience.map((exp) => (
           <div key={exp.id} className="border border-gray-200 dark:border-gray-700 rounded-md p-3 mb-3 space-y-2">
             <input
@@ -438,7 +443,7 @@ export default function ProfileForm() {
 
       {/* Qualifikationen */}
       <div>
-        <h2 className="text-lg font-semibold text-primary dark:text-accent mb-2">{t("qualificationsTitle")}</h2>
+        <h2 className="text-lg font-semibold text-primary dark:text-accent mb-2">{t("qualificationsTitle")}<InfoTooltip text={tHint("qualifications")} /></h2>
         <div className="flex gap-2 mb-2">
           <input
             type="text"
@@ -493,7 +498,7 @@ export default function ProfileForm() {
 
       {/* Persönliche Interessen */}
       <div>
-        <h2 className="text-lg font-semibold text-primary dark:text-accent mb-2">{t("interestsTitle")}</h2>
+        <h2 className="text-lg font-semibold text-primary dark:text-accent mb-2">{t("interestsTitle")}<InfoTooltip text={tHint("interests")} /></h2>
         <div className="flex gap-2 mb-2">
           <input
             type="text"

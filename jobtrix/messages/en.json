@@ -220,6 +220,12 @@
     "cvStyleClassic": "Oldest first",
     "cvStyleAmerican": "Newest first (Recommended)",
     "confirmReadAgree": "I have read the text and agree to it",
+    "hints": {
+      "jobPosting": "Paste the full job posting text here.",
+      "initiativbewerbung": "Application without a specific job posting — just enter the target company.",
+      "cvStyle": "Newest first (American style) is the standard at most companies today.",
+      "template": "Choose the layout that best fits your industry."
+    },
     "sendGuideTitle": "Almost done!",
     "sendGuideStep1": "Your application documents have been downloaded",
     "sendGuideStep2": "Your email app is opening now",
@@ -266,6 +272,17 @@
     "accessValidUntil": "Your time-limited access is valid until {date}.",
     "addEducation": "Add education",
     "remove": "Remove",
+    "hints": {
+      "name": "Your full name as it will appear on your CV.",
+      "address": "Your current address for the CV.",
+      "birthdate": "Your date of birth — shown on the CV.",
+      "phone": "Phone number with area code.",
+      "photo": "A professional application photo (optional).",
+      "education": "School, university or training with degree and year.",
+      "experience": "Work positions with company, role and period.",
+      "qualifications": "Skills and knowledge.",
+      "interests": "Personal hobbies and interests."
+    },
     "errors": {
       "required": "Name is required",
       "minEducation": "At least one education entry is required",
@@ -461,6 +478,17 @@
     "skip": "Skip",
     "finish": "Let's go!",
     "stepOf": "Step {current} of {total}",
+    "hints": {
+      "name": "Your full name as it will appear on your CV.",
+      "address": "Your current address for the CV.",
+      "birthdate": "Your date of birth in day/month/year format.",
+      "phone": "Phone number with area code, e.g. +49 151 12345678.",
+      "photo": "A professional application photo (optional).",
+      "education": "School, university or training with degree and year.",
+      "experience": "Work positions with company, role and period.",
+      "qualifications": "Skills and knowledge, e.g. programming languages or tools.",
+      "interests": "Personal hobbies and interests for the CV."
+    },
     "errors": {
       "birthdateIncomplete": "Please fill in all three fields (day, month, year)",
       "birthdateInvalid": "Invalid date – please check day, month and year",

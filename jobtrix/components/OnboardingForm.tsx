@@ -7,6 +7,7 @@ import { useSession } from "next-auth/react";
 import { compressImage } from "@/lib/image-compress";
 import { EducationEntry, ExperienceEntry, SkillItem } from "@/lib/profile-storage";
 import { validateBirthdate, validatePhone, validateLocation, validateYearRange } from "@/lib/validation";
+import InfoTooltip from "@/components/InfoTooltip";
 
 const TOTAL_STEPS = 10;
 
@@ -48,6 +49,7 @@ export default function OnboardingForm() {
   const [yearErrors, setYearErrors] = useState<Record<string, string | null>>({});
   const [submitting, setSubmitting] = useState(false);
   const tErr = useTranslations("onboarding.errors");
+  const tHint = useTranslations("onboarding.hints");
 
   function handleNext() {
     if (step === 1 && !name.trim()) {
@@ -160,7 +162,7 @@ export default function OnboardingForm() {
         <div className="min-h-[180px] flex flex-col justify-center">
           {step === 1 && (
             <div className="space-y-3">
-              <h2 className="text-lg font-semibold text-text text-center">{t("step1Title")}</h2>
+              <h2 className="text-lg font-semibold text-text text-center">{t("step1Title")}<InfoTooltip text={tHint("name")} /></h2>
               <input
                 type="text"
                 value={name}
@@ -195,7 +197,7 @@ export default function OnboardingForm() {
 
           {step === 3 && (
             <div className="space-y-3">
-              <h2 className="text-lg font-semibold text-text text-center">{t("step3Title")}</h2>
+              <h2 className="text-lg font-semibold text-text text-center">{t("step3Title")}<InfoTooltip text={tHint("phone")} /></h2>
               <input
                 type="tel"
                 value={phone}
@@ -214,7 +216,7 @@ export default function OnboardingForm() {
 
           {step === 4 && (
             <div className="space-y-3">
-              <h2 className="text-lg font-semibold text-text text-center">{t("step4Title")}</h2>
+              <h2 className="text-lg font-semibold text-text text-center">{t("step4Title")}<InfoTooltip text={tHint("address")} /></h2>
               <input
                 type="text"
                 value={address}
@@ -233,7 +235,7 @@ export default function OnboardingForm() {
 
           {step === 5 && (
             <div className="space-y-3">
-              <h2 className="text-lg font-semibold text-text text-center">{t("step5Title")}</h2>
+              <h2 className="text-lg font-semibold text-text text-center">{t("step5Title")}<InfoTooltip text={tHint("birthdate")} /></h2>
               <div className="flex gap-3 justify-center">
                 <input type="number" min="1" max="31" value={birthDay} onChange={(e) => { setBirthDay(e.target.value); setBirthdateError(validateBirthdate(e.target.value, birthMonth, birthYear)); }} placeholder={t("step5Day")} autoFocus className={`w-20 border dark:bg-surface rounded-xl px-3 py-3 text-center text-lg focus:outline-none focus:ring-2${birthdateError ? " border-red-500 ring-red-500" : " border-gray-300 dark:border-gray-600 focus:ring-accent"}`} aria-label={t("step5Day")} />
                 <input type="number" min="1" max="12" value={birthMonth} onChange={(e) => { setBirthMonth(e.target.value); setBirthdateError(validateBirthdate(birthDay, e.target.value, birthYear)); }} placeholder={t("step5Month")} className={`w-24 border dark:bg-surface rounded-xl px-3 py-3 text-center text-lg focus:outline-none focus:ring-2${birthdateError ? " border-red-500 ring-red-500" : " border-gray-300 dark:border-gray-600 focus:ring-accent"}`} aria-label={t("step5Month")} />
@@ -263,7 +265,7 @@ export default function OnboardingForm() {
 
           {step === 7 && (
             <div className="space-y-3">
-              <h2 className="text-lg font-semibold text-text text-center">{t("step7Title")}</h2>
+              <h2 className="text-lg font-semibold text-text text-center">{t("step7Title")}<InfoTooltip text={tHint("education")} /></h2>
               {education.map((edu) => (
                 <div key={edu.id} className="border border-gray-200 dark:border-gray-700 rounded-xl p-3 space-y-2">
                   <input type="text" placeholder={t("step7Institution")} value={edu.institution} onChange={(e) => updateEdu(edu.id, "institution", e.target.value)} className={inputClass} />
@@ -285,7 +287,7 @@ export default function OnboardingForm() {
 
           {step === 8 && (
             <div className="space-y-3">
-              <h2 className="text-lg font-semibold text-text text-center">{t("step8Title")}</h2>
+              <h2 className="text-lg font-semibold text-text text-center">{t("step8Title")}<InfoTooltip text={tHint("experience")} /></h2>
               {experience.length === 0 && (
                 <p className="text-sm text-text/50 text-center">{t("skip")}</p>
               )}
@@ -309,7 +311,7 @@ export default function OnboardingForm() {
 
           {step === 9 && (
             <div className="space-y-3">
-              <h2 className="text-lg font-semibold text-text text-center">{t("step9Title")}</h2>
+              <h2 className="text-lg font-semibold text-text text-center">{t("step9Title")}<InfoTooltip text={tHint("qualifications")} /></h2>
               <div className="flex gap-2">
                 <input
                   type="text"

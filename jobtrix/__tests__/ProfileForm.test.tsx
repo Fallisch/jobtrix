@@ -468,7 +468,7 @@ describe("ProfileForm", () => {
     it("zeigt die Ausbildungs-Sektion auf Englisch", async () => {
       render(<ProfileForm />);
       await waitFor(() => {});
-      expect(screen.getByRole("heading", { name: /^education \*$/i })).toBeInTheDocument();
+      expect(screen.getByRole("heading", { name: /education \*/i })).toBeInTheDocument();
       expect(screen.getByPlaceholderText(/^degree$/i)).toBeInTheDocument();
       expect(screen.getByPlaceholderText(/^year$/i)).toBeInTheDocument();
       expect(screen.getByRole("button", { name: /^remove$/i })).toBeInTheDocument();
@@ -480,7 +480,7 @@ describe("ProfileForm", () => {
       render(<ProfileForm />);
       await waitFor(() => {});
 
-      expect(screen.getByRole("heading", { name: /^work experience$/i })).toBeInTheDocument();
+      expect(screen.getByRole("heading", { name: /work experience/i })).toBeInTheDocument();
       const addButton = screen.getByRole("button", { name: /^add work experience$/i });
       expect(addButton).toBeInTheDocument();
 
@@ -494,10 +494,10 @@ describe("ProfileForm", () => {
     it("zeigt Qualifikationen und Interessen auf Englisch", async () => {
       render(<ProfileForm />);
       await waitFor(() => {});
-      expect(screen.getByRole("heading", { name: /^qualifications$/i })).toBeInTheDocument();
+      expect(screen.getByRole("heading", { name: /qualifications/i })).toBeInTheDocument();
       expect(screen.getByPlaceholderText(/^e\.g\. typescript$/i)).toBeInTheDocument();
       expect(screen.getByRole("button", { name: /^add$/i })).toBeInTheDocument();
-      expect(screen.getByRole("heading", { name: /^personal interests$/i })).toBeInTheDocument();
+      expect(screen.getByRole("heading", { name: /personal interests/i })).toBeInTheDocument();
       expect(screen.getByPlaceholderText(/^e\.g\. photography$/i)).toBeInTheDocument();
       expect(screen.getByRole("button", { name: /^add interest$/i })).toBeInTheDocument();
     });

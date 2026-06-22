@@ -220,6 +220,12 @@
     "cvStyleClassic": "Ältestes zuerst",
     "cvStyleAmerican": "Neuestes zuerst (Empfohlen)",
     "confirmReadAgree": "Ich habe den Text gelesen und bin damit einverstanden",
+    "hints": {
+      "jobPosting": "Kopiere die vollständige Stellenanzeige hier rein.",
+      "initiativbewerbung": "Bewerbung ohne konkrete Stelle — du gibst nur die Wunschfirma an.",
+      "cvStyle": "Neuestes zuerst (amerikanisch) ist heute Standard bei den meisten Firmen.",
+      "template": "Wähle das Layout, das am besten zu deiner Branche passt."
+    },
     "sendGuideTitle": "Fast geschafft!",
     "sendGuideStep1": "Deine Bewerbungsunterlagen wurden heruntergeladen",
     "sendGuideStep2": "Dein E-Mail-Programm öffnet sich jetzt",
@@ -266,6 +272,17 @@
     "accessValidUntil": "Dein zeitlich begrenzter Zugang ist gültig bis {date}.",
     "addEducation": "Ausbildung hinzufügen",
     "remove": "Entfernen",
+    "hints": {
+      "name": "Dein vollständiger Name, wie er auf dem Lebenslauf erscheint.",
+      "address": "Deine aktuelle Adresse für den Lebenslauf.",
+      "birthdate": "Dein Geburtsdatum — wird im Lebenslauf angezeigt.",
+      "phone": "Telefonnummer mit Vorwahl.",
+      "photo": "Ein professionelles Bewerbungsfoto (optional).",
+      "education": "Schule, Studium oder Ausbildung mit Abschluss und Jahr.",
+      "experience": "Berufliche Stationen mit Firma, Position und Zeitraum.",
+      "qualifications": "Fähigkeiten und Kenntnisse.",
+      "interests": "Persönliche Hobbys und Interessen."
+    },
     "errors": {
       "required": "Name ist erforderlich",
       "minEducation": "Mindestens ein Ausbildungseintrag erforderlich",
@@ -461,6 +478,17 @@
     "skip": "Überspringen",
     "finish": "Loslegen!",
     "stepOf": "Schritt {current} von {total}",
+    "hints": {
+      "name": "Dein vollständiger Name, wie er auf dem Lebenslauf erscheint.",
+      "address": "Deine aktuelle Adresse für den Lebenslauf.",
+      "birthdate": "Dein Geburtsdatum im Format Tag/Monat/Jahr.",
+      "phone": "Telefonnummer mit Vorwahl, z. B. 0151 12345678.",
+      "photo": "Ein professionelles Bewerbungsfoto (optional).",
+      "education": "Schule, Studium oder Ausbildung mit Abschluss und Jahr.",
+      "experience": "Berufliche Stationen mit Firma, Position und Zeitraum.",
+      "qualifications": "Fähigkeiten und Kenntnisse, z. B. Programmiersprachen oder Tools.",
+      "interests": "Persönliche Hobbys und Interessen für den Lebenslauf."
+    },
     "errors": {
       "birthdateIncomplete": "Bitte alle drei Felder ausfüllen (Tag, Monat, Jahr)",
       "birthdateInvalid": "Ungültiges Datum – bitte prüfe Tag, Monat und Jahr",
