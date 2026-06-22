@@ -87,6 +87,23 @@ describe("buildPrompt – Berufserfahrung", () => {
   });
 });
 
+describe("buildPrompt – Sektions-Trennung und HINWEIS-Verbot", () => {
+  it("enthält explizite Anweisung, dass der Lebenslauf alle Profildaten enthalten muss", () => {
+    const prompt = buildPrompt({ jobPosting: "Stelle als Entwickler", profile: baseProfile });
+    expect(prompt).toMatch(/lebenslauf.*muss.*profildaten|lebenslauf.*enth.lt.*ausbildung.*berufserfahrung.*qualifikation/i);
+  });
+
+  it("enthält explizite Anweisung, dass der E-Mail-Body nur kurzen Text enthalten darf", () => {
+    const prompt = buildPrompt({ jobPosting: "Stelle als Entwickler", profile: baseProfile });
+    expect(prompt).toMatch(/e-mail.*nur.*kurz|e-mail.*keine.*profildaten|e-mail.*text.*keine.*lebenslauf/i);
+  });
+
+  it("verbietet HINWEIS-Blöcke in generierten Texten", () => {
+    const prompt = buildPrompt({ jobPosting: "Stelle als Entwickler", profile: baseProfile });
+    expect(prompt).toMatch(/hinweis.*verbot|keine.*hinweis|niemals.*hinweis|verboten.*hinweis/i);
+  });
+});
+
 describe("buildPrompt – E-Mail-Sektion", () => {
   it("enthält E-MAIL als vierte Ausgabesektion im Antwortformat", () => {
     const prompt = buildPrompt({ jobPosting: "Stelle als Entwickler", profile: baseProfile });

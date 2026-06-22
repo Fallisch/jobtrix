@@ -92,6 +92,11 @@ Aufbau des E-Mail-Texts:
 - Schreibe genau 3–5 kurze Sätze: höfliche Anrede, ${emailHinweis} Verweis auf die Anhänge (Anschreiben und Lebenslauf), Grußformel mit dem Namen des Bewerbers.
 - Der E-Mail-Text ist KEIN zweites Anschreiben – halte ihn kurz und professionell.
 
+Strikte Sektions-Trennung – halte diese Regeln ein:
+- Der LEBENSLAUF muss alle Profildaten enthalten: Ausbildung, Berufserfahrung, Qualifikationen, Interessen und persönliche Daten. Keine Profildaten dürfen in der E-MAIL-Sektion landen.
+- Die E-MAIL-Sektion enthält nur kurzen Text (3–5 Sätze). Keine Profildaten, keine Qualifikationen, keine Berufserfahrung im E-Mail-Text.
+- Keine HINWEIS-Blöcke: Es ist verboten, Zeilen wie "HINWEIS:", "Hinweis:" oder ähnliche Meta-Kommentare in Anschreiben, Lebenslauf oder E-Mail einzufügen. Schreibe ausschließlich den fertigen Text.
+
 Wichtig: Schreibe Anschreiben und Lebenslauf in reinem Klartext ohne Markdown-Formatierung –
 also ohne Sternchen (**fett**), ohne Raute-Überschriften (#, ##), ohne Tabellen (| ... |) und
 ohne Trennlinien (---). Verwende stattdessen normale Absätze, Zeilenumbrüche und ggf. einfache

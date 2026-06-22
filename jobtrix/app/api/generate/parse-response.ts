@@ -8,8 +8,17 @@ function isNoiseLine(line: string, label: string): boolean {
   return false;
 }
 
+const HINWEIS_REGEX = /^\s*\*{0,2}\s*HINWEIS\s*:\s*.*/i;
+
+function stripHinweise(text: string): string {
+  return text
+    .split("\n")
+    .filter((line) => !HINWEIS_REGEX.test(line))
+    .join("\n");
+}
+
 function cleanSection(section: string, label: string): string {
-  const lines = section.split("\n");
+  const lines = stripHinweise(section).split("\n");
   let start = 0;
   while (start < lines.length && isNoiseLine(lines[start], label)) start++;
   let end = lines.length;
@@ -37,10 +46,16 @@ export function parseResponse(text: string): {
   const cvEnd = email ? email.index! : text.length;
   const emailStart = email ? email.index! + email[0].length : text.length;
 
+  const cv = cleanSection(text.slice(cvStart, cvEnd), "Lebenslauf");
+
+  if (cv.length < 50) {
+    throw new Error("Lebenslauf-Sektion zu kurz — die KI hat die Profildaten vermutlich in die falsche Sektion geschrieben.");
+  }
+
   return {
     emailSubject: betreff ? cleanSection(text.slice(subjectStart, subjectEnd), "Betreff") : "",
     coverLetter: cleanSection(text.slice(coverStart, coverEnd), "Anschreiben"),
-    cv: cleanSection(text.slice(cvStart, cvEnd), "Lebenslauf"),
+    cv,
     emailBody: email ? cleanSection(text.slice(emailStart), "E-Mail") : "",
   };
 }
