@@ -181,7 +181,7 @@
     "sendEmailSending": "Wird gesendet …",
     "sendEmailSuccess": "E-Mail wurde erfolgreich versendet! Anschreiben und Lebenslauf sind als PDF angehängt.",
     "sendEmailError": "Versand fehlgeschlagen. Bitte versuche es erneut.",
-    "sendEmailInfo": "Dein Anschreiben und Lebenslauf werden automatisch als PDF angehängt.",
+    "sendEmailInfo": "Dein E-Mail-Programm wird geöffnet und Anschreiben + Lebenslauf als PDF heruntergeladen.",
     "sendEmailConfirmHint": "Bitte bestätige zuerst oben das Anschreiben und den Lebenslauf mit den Häkchen.",
     "sendEmailPreviewTitle": "Vorschau deiner E-Mail",
     "sendEmailPreviewTo": "An",

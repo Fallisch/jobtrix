@@ -181,7 +181,7 @@
     "sendEmailSending": "Sending …",
     "sendEmailSuccess": "Email sent successfully! Cover letter and CV are attached as PDF.",
     "sendEmailError": "Sending failed. Please try again.",
-    "sendEmailInfo": "Your cover letter and CV will be automatically attached as PDF.",
+    "sendEmailInfo": "Your email app will open and cover letter + CV will be downloaded as PDF.",
     "sendEmailConfirmHint": "Please confirm the cover letter and CV above by checking the boxes first.",
     "sendEmailPreviewTitle": "Preview of your email",
     "sendEmailPreviewTo": "To",

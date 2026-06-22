@@ -6,6 +6,7 @@ import { useRouter, useParams } from "next/navigation";
 import { loadProfile, saveProfile } from "@/lib/profile-storage";
 import EmailDraft from "@/components/EmailDraft";
 import { downloadCoverLetterPdf, downloadCvPdf } from "@/lib/download-pdf";
+import { extractEmail } from "@/lib/email-utils";
 import LayoutPreview from "@/components/LayoutPreview";
 import { openPdfPreview } from "@/components/PdfPreviewModal";
 import React from "react";
@@ -544,6 +545,7 @@ export default function GenerateForm() {
             cvStyle={cvStyle}
             accentColor={accentColor}
             documentsConfirmed={coverLetterAgreed && cvAgreed}
+            extractedEmail={extractEmail(jobPosting)}
           />
         </div>
       )}
