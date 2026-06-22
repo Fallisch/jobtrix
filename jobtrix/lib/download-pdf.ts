@@ -14,8 +14,13 @@ async function triggerDownload(element: React.ReactElement, filename: string) {
   const a = document.createElement("a");
   a.href = url;
   a.download = filename;
+  a.style.display = "none";
+  document.body.appendChild(a);
   a.click();
-  URL.revokeObjectURL(url);
+  setTimeout(() => {
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, 500);
 }
 
 export async function downloadCoverLetterPdf(coverLetter: string, profile: ProfileData, template: "classic" | "modern" | "traditional" | "accent" | "creative" = "classic", accentColor?: string) {

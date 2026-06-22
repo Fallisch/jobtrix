@@ -43,7 +43,7 @@ export default function WelcomeSlides({ onDone }: WelcomeSlidesProps) {
   const key = slideKeys[current];
 
   return (
-    <div className="fixed inset-0 z-50 bg-primary/95 flex items-center justify-center" data-testid="welcome-slides">
+    <div className="fixed inset-0 z-[100] bg-primary flex items-center justify-center" data-testid="welcome-slides">
       <div className="max-w-md w-full mx-4 text-center space-y-8">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div

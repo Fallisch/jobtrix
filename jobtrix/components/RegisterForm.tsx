@@ -51,6 +51,7 @@ export default function RegisterForm() {
         return;
       }
 
+      router.refresh();
       router.push(`/${locale}/onboarding`);
     } catch {
       setSubmitError("generic");
