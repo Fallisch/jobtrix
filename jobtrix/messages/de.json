@@ -219,7 +219,11 @@
     "cvStyleLabel": "Reihenfolge Einträge",
     "cvStyleClassic": "Ältestes zuerst",
     "cvStyleAmerican": "Neuestes zuerst (Empfohlen)",
-    "confirmReadAgree": "Ich habe den Text gelesen und bin damit einverstanden"
+    "confirmReadAgree": "Ich habe den Text gelesen und bin damit einverstanden",
+    "profileHintTitle": "Profil unvollständig",
+    "profileHintMessage": "Dein Profil enthält wenige Angaben. Für bessere Ergebnisse empfehlen wir, mindestens eine Qualifikation und eine Ausbildung einzutragen.",
+    "profileHintGoToProfile": "Profil ergänzen",
+    "profileHintContinue": "Trotzdem fortfahren"
   },
   "profile": {
     "title": "Profil",

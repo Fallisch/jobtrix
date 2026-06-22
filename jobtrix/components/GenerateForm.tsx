@@ -63,6 +63,7 @@ export default function GenerateForm() {
   const [jobResults, setJobResults] = useState<JobSearchResult[]>([]);
   const [externalHintVisible, setExternalHintVisible] = useState(false);
   const [adoptedHintVisible, setAdoptedHintVisible] = useState(false);
+  const [showProfileHint, setShowProfileHint] = useState(false);
 
   useEffect(() => {
     setHasProfile(loadProfile() !== null);
@@ -82,6 +83,22 @@ export default function GenerateForm() {
   }, []);
 
   const canGenerate = hasProfile && (isInitiativbewerbung ? targetCompany.trim().length > 0 : jobPosting.trim().length > 0);
+
+  function isProfileSparse(): boolean {
+    const profile = loadProfile();
+    if (!profile) return true;
+    const hasQualification = profile.qualifications.length > 0;
+    const hasEducation = profile.education.some((e) => e.institution || e.degree);
+    return !hasQualification || !hasEducation;
+  }
+
+  function handleGenerateClick() {
+    if (isProfileSparse()) {
+      setShowProfileHint(true);
+    } else {
+      handleGenerate();
+    }
+  }
 
   async function handleGenerate() {
     setLoading(true);
@@ -296,7 +313,7 @@ export default function GenerateForm() {
 
         <div className="flex flex-wrap items-center gap-3">
           <button
-            onClick={handleGenerate}
+            onClick={handleGenerateClick}
             disabled={!canGenerate || loading}
             className="w-full sm:w-auto bg-accent text-white px-8 py-3 rounded-full font-semibold text-base hover:brightness-110 transition disabled:opacity-40 disabled:cursor-not-allowed"
           >
@@ -528,6 +545,30 @@ export default function GenerateForm() {
             accentColor={accentColor}
             documentsConfirmed={coverLetterAgreed && cvAgreed}
           />
+        </div>
+      )}
+      {showProfileHint && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" role="dialog" aria-modal="true">
+          <div className="bg-white dark:bg-surface border border-gray-200 dark:border-gray-700 rounded-lg p-6 max-w-md mx-4 space-y-4">
+            <h2 className="text-lg font-bold text-primary dark:text-accent">{t("profileHintTitle")}</h2>
+            <p className="text-sm text-text/80">{t("profileHintMessage")}</p>
+            <div className="flex gap-3 justify-end">
+              <button
+                type="button"
+                onClick={() => { setShowProfileHint(false); router.push(`/${locale}/profile`); }}
+                className="px-4 py-2 text-sm font-semibold text-accent border border-accent rounded-lg hover:bg-accent/10 transition"
+              >
+                {t("profileHintGoToProfile")}
+              </button>
+              <button
+                type="button"
+                onClick={() => { setShowProfileHint(false); handleGenerate(); }}
+                className="px-4 py-2 text-sm font-semibold bg-accent text-white rounded-lg hover:brightness-110 transition"
+              >
+                {t("profileHintContinue")}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

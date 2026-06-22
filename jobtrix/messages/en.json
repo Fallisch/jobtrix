@@ -219,7 +219,11 @@
     "cvStyleLabel": "Entry order",
     "cvStyleClassic": "Oldest first",
     "cvStyleAmerican": "Newest first (Recommended)",
-    "confirmReadAgree": "I have read the text and agree to it"
+    "confirmReadAgree": "I have read the text and agree to it",
+    "profileHintTitle": "Profile incomplete",
+    "profileHintMessage": "Your profile has few details. For better results, we recommend adding at least one qualification and one education entry.",
+    "profileHintGoToProfile": "Complete profile",
+    "profileHintContinue": "Continue anyway"
   },
   "profile": {
     "title": "Profile",
