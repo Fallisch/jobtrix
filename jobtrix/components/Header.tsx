@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
@@ -11,18 +12,67 @@ export default function Header({ locale }: { locale: string }) {
   const pathname = usePathname();
   const { status } = useSession();
   const t = useTranslations("nav");
+  const [menuOpen, setMenuOpen] = useState(false);
 
   function switchLocale(next: string) {
     const segments = pathname.split("/");
     segments[1] = next;
     router.push(segments.join("/") || "/");
+    setMenuOpen(false);
   }
 
   function handleLogout() {
     signOut({ callbackUrl: `/${locale}` });
+    setMenuOpen(false);
   }
 
   const other = locale === "de" ? "en" : "de";
+
+  const navLinks = (
+    <>
+      <Link
+        href={`/${locale}/profile`}
+        onClick={() => setMenuOpen(false)}
+        className="text-sm font-medium text-white/80 hover:text-white transition-colors min-h-[44px] min-w-[44px] flex items-center"
+      >
+        {locale === "de" ? "Profil" : "Profile"}
+      </Link>
+      {status === "authenticated" && (
+        <Link
+          href={`/${locale}/generate`}
+          onClick={() => setMenuOpen(false)}
+          className="text-sm font-medium text-white/80 hover:text-white transition-colors min-h-[44px] min-w-[44px] flex items-center"
+        >
+          {t("startApplication")}
+        </Link>
+      )}
+      {status === "authenticated" && (
+        <Link
+          href={`/${locale}/application-history`}
+          onClick={() => setMenuOpen(false)}
+          className="text-sm font-medium text-white/80 hover:text-white transition-colors min-h-[44px] min-w-[44px] flex items-center"
+        >
+          {t("applicationHistory")}
+        </Link>
+      )}
+      {status === "authenticated" && (
+        <button
+          onClick={handleLogout}
+          className="text-sm font-medium text-white/80 hover:text-white transition-colors min-h-[44px] min-w-[44px] flex items-center"
+        >
+          {t("logout")}
+        </button>
+      )}
+      <button
+        onClick={() => switchLocale(other)}
+        className="text-sm font-medium text-white/50 hover:text-white transition-colors uppercase tracking-wide min-h-[44px] min-w-[44px] flex items-center"
+        aria-label={`Switch to ${other === "de" ? "Deutsch" : "English"}`}
+      >
+        {locale}
+      </button>
+      <ThemeToggle />
+    </>
+  );
 
   return (
     <header className="bg-primary text-white shadow-md">
@@ -33,45 +83,37 @@ export default function Header({ locale }: { locale: string }) {
         >
           JobTRIX
         </Link>
-        <nav className="flex items-center gap-4">
-          <Link
-            href={`/${locale}/profile`}
-            className="text-sm font-medium text-white/80 hover:text-white transition-colors"
-          >
-            {locale === "de" ? "Profil" : "Profile"}
-          </Link>
-          {status === "authenticated" && (
-            <Link
-              href={`/${locale}/generate`}
-              className="text-sm font-medium text-white/80 hover:text-white transition-colors"
-            >
-              {t("startApplication")}
-            </Link>
-          )}
-          {status === "authenticated" && (
-            <Link
-              href={`/${locale}/application-history`}
-              className="text-sm font-medium text-white/80 hover:text-white transition-colors"
-            >
-              {t("applicationHistory")}
-            </Link>
-          )}
-          {status === "authenticated" && (
-            <button
-              onClick={handleLogout}
-              className="text-sm font-medium text-white/80 hover:text-white transition-colors"
-            >
-              {t("logout")}
-            </button>
-          )}
-          <button
-            onClick={() => switchLocale(other)}
-            className="text-sm font-medium text-white/50 hover:text-white transition-colors uppercase tracking-wide"
-            aria-label={`Switch to ${other === "de" ? "Deutsch" : "English"}`}
-          >
-            {locale}
-          </button>
-          <ThemeToggle />
+
+        {/* Desktop nav */}
+        <nav className="hidden md:flex items-center gap-4">
+          {navLinks}
+        </nav>
+
+        {/* Mobile hamburger */}
+        <button
+          onClick={() => setMenuOpen((o) => !o)}
+          className="md:hidden min-h-[44px] min-w-[44px] flex items-center justify-center"
+          aria-label="Menu"
+          aria-expanded={menuOpen}
+          data-testid="hamburger-button"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+            {menuOpen ? (
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            ) : (
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+            )}
+          </svg>
+        </button>
+      </div>
+
+      {/* Mobile slide-down menu */}
+      <div
+        className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${menuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}
+        data-testid="mobile-menu"
+      >
+        <nav className="flex flex-col gap-1 px-4 pb-4">
+          {navLinks}
         </nav>
       </div>
     </header>

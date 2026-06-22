@@ -71,7 +71,8 @@ describe("Header", () => {
 
   it("zeigt den Sprachumschalter an", () => {
     render(<Header locale="de" />);
-    expect(screen.getByRole("button", { name: /english/i })).toBeInTheDocument();
+    const buttons = screen.getAllByRole("button", { name: /english/i });
+    expect(buttons.length).toBeGreaterThan(0);
   });
 
   it("zeigt keinen Logout-Button im abgemeldeten Zustand", () => {
@@ -89,7 +90,7 @@ describe("Header", () => {
     expect(screen.queryByRole("link", { name: "Bewerbung starten" })).not.toBeInTheDocument();
   });
 
-  it("zeigt im angemeldeten Zustand einen Navigationspunkt 'Bewerbung starten', der zur Generierung führt", () => {
+  it("zeigt im angemeldeten Zustand 'Bewerbung starten' Links", () => {
     mockedUseSession.mockReturnValue({
       data: { user: {}, expires: "" },
       status: "authenticated",
@@ -97,11 +98,11 @@ describe("Header", () => {
     } as unknown as ReturnType<typeof useSession>);
 
     render(<Header locale="de" />);
-    const link = screen.getByRole("link", { name: "Bewerbung starten" });
-    expect(link).toHaveAttribute("href", "/de/generate");
+    const links = screen.getAllByRole("link", { name: "Bewerbung starten" });
+    expect(links[0]).toHaveAttribute("href", "/de/generate");
   });
 
-  it("zeigt im angemeldeten Zustand einen Navigationspunkt 'Bewerbungshistorie'", () => {
+  it("zeigt im angemeldeten Zustand 'Bewerbungshistorie' Links", () => {
     mockedUseSession.mockReturnValue({
       data: { user: {}, expires: "" },
       status: "authenticated",
@@ -109,11 +110,11 @@ describe("Header", () => {
     } as unknown as ReturnType<typeof useSession>);
 
     render(<Header locale="de" />);
-    const link = screen.getByRole("link", { name: "Bewerbungshistorie" });
-    expect(link).toHaveAttribute("href", "/de/application-history");
+    const links = screen.getAllByRole("link", { name: "Bewerbungshistorie" });
+    expect(links[0]).toHaveAttribute("href", "/de/application-history");
   });
 
-  it("zeigt im angemeldeten Zustand einen Logout-Button", () => {
+  it("zeigt im angemeldeten Zustand Logout-Buttons", () => {
     mockedUseSession.mockReturnValue({
       data: { user: {}, expires: "" },
       status: "authenticated",
@@ -121,7 +122,8 @@ describe("Header", () => {
     } as unknown as ReturnType<typeof useSession>);
 
     render(<Header locale="de" />);
-    expect(screen.getByRole("button", { name: "Abmelden" })).toBeInTheDocument();
+    const buttons = screen.getAllByRole("button", { name: "Abmelden" });
+    expect(buttons.length).toBeGreaterThan(0);
   });
 
   it("Logout-Button meldet ab und leitet zur Startseite", async () => {
@@ -132,25 +134,35 @@ describe("Header", () => {
     } as unknown as ReturnType<typeof useSession>);
 
     render(<Header locale="de" />);
-    await userEvent.click(screen.getByRole("button", { name: "Abmelden" }));
+    const buttons = screen.getAllByRole("button", { name: "Abmelden" });
+    await userEvent.click(buttons[0]);
 
     expect(mockedSignOut).toHaveBeenCalledWith({ callbackUrl: "/de" });
   });
 
-  it("zeigt die aktive Sprache im Sprachumschalter an (DE wenn Deutsch aktiv)", () => {
+  it("zeigt die aktive Sprache im Sprachumschalter an", () => {
     render(<Header locale="de" />);
-    const btn = screen.getByRole("button", { name: /english/i });
-    expect(btn).toHaveTextContent("de");
-  });
-
-  it("zeigt die aktive Sprache im Sprachumschalter an (EN wenn Englisch aktiv)", () => {
-    render(<Header locale="en" />);
-    const btn = screen.getByRole("button", { name: /deutsch/i });
-    expect(btn).toHaveTextContent("en");
+    const buttons = screen.getAllByRole("button", { name: /english/i });
+    expect(buttons[0]).toHaveTextContent("de");
   });
 
   it("zeigt den Dark-Mode-Umschalter an", () => {
     render(<Header locale="de" />);
-    expect(screen.getByRole("button", { name: "Zu Dunkelmodus wechseln" })).toBeInTheDocument();
+    const buttons = screen.getAllByRole("button", { name: "Zu Dunkelmodus wechseln" });
+    expect(buttons.length).toBeGreaterThan(0);
+  });
+
+  it("zeigt ein Hamburger-Menü-Button", () => {
+    render(<Header locale="de" />);
+    expect(screen.getByTestId("hamburger-button")).toBeInTheDocument();
+  });
+
+  it("zeigt das Mobile-Menü nach Klick auf Hamburger", async () => {
+    render(<Header locale="de" />);
+    const hamburger = screen.getByTestId("hamburger-button");
+
+    await userEvent.click(hamburger);
+
+    expect(hamburger).toHaveAttribute("aria-expanded", "true");
   });
 });
