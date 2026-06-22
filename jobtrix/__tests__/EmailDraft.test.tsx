@@ -21,6 +21,11 @@ jest.mock("@/lib/profile-storage", () => ({
   }),
 }));
 
+jest.mock("@/lib/download-pdf", () => ({
+  downloadCoverLetterPdf: jest.fn().mockResolvedValue(undefined),
+  downloadCvPdf: jest.fn().mockResolvedValue(undefined),
+}));
+
 const defaultProps = {
   subject: "Bewerbung als Entwickler",
   body: "Sehr geehrte Damen und Herren",
@@ -33,7 +38,7 @@ const defaultProps = {
 
 beforeEach(() => {
   Object.assign(navigator, { clipboard: { writeText: jest.fn().mockResolvedValue(undefined) } });
-  global.fetch = jest.fn();
+  window.open = jest.fn();
 });
 
 describe("EmailDraft", () => {
@@ -56,27 +61,28 @@ describe("EmailDraft", () => {
     expect(screen.getByText(/sendEmailPreviewAttachments/i)).toBeInTheDocument();
   });
 
-  it("sendet erst nach Bestätigung in der Vorschau", async () => {
-    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve({ success: true }) });
-
+  it("öffnet mailto-Link und zeigt Anleitungs-Popup nach Bestätigung", async () => {
     render(<EmailDraft {...defaultProps} />);
     await userEvent.type(screen.getByTestId("recipient-input"), "hr@firma.de");
     fireEvent.click(screen.getByTestId("send-email-button"));
 
-    expect(global.fetch).not.toHaveBeenCalled();
-
-    fireEvent.click(screen.getByRole("button", { name: /sendEmailConfirmSend/i }));
+    fireEvent.click(screen.getByTestId("confirm-send-button"));
 
     await waitFor(() => {
-      expect(global.fetch).toHaveBeenCalledWith(
-        "/api/send-email",
-        expect.objectContaining({ method: "POST" })
+      expect(window.open).toHaveBeenCalledWith(
+        expect.stringContaining("mailto:hr@firma.de"),
+        "_blank"
       );
     });
 
     await waitFor(() => {
-      expect(screen.getByTestId("send-success")).toBeInTheDocument();
+      expect(screen.getByTestId("send-guide-popup")).toBeInTheDocument();
     });
+  });
+
+  it("zeigt extrahierte E-Mail als Vorausfüllung", () => {
+    render(<EmailDraft {...defaultProps} extractedEmail="jobs@firma.de" />);
+    expect(screen.getByTestId("recipient-input")).toHaveValue("jobs@firma.de");
   });
 
   it("kann die Vorschau abbrechen", async () => {

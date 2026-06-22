@@ -45,10 +45,19 @@ function CopyButton({ value, label, testId }: { value: string; label: string; te
   );
 }
 
+function detectDevice(): "android" | "ios" | "desktop" {
+  if (typeof navigator === "undefined") return "desktop";
+  const ua = navigator.userAgent.toLowerCase();
+  if (/android/.test(ua)) return "android";
+  if (/iphone|ipad|ipod/.test(ua)) return "ios";
+  return "desktop";
+}
+
 export default function EmailDraft({ subject, body, coverLetter, cv, template, cvStyle, accentColor, documentsConfirmed, extractedEmail }: EmailDraftProps) {
   const t = useTranslations("generate");
   const [recipient, setRecipient] = useState(extractedEmail ?? "");
   const [showPreview, setShowPreview] = useState(false);
+  const [showGuide, setShowGuide] = useState(false);
 
   const canSend = documentsConfirmed && !!recipient && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recipient);
 
@@ -65,6 +74,9 @@ export default function EmailDraft({ subject, body, coverLetter, cv, template, c
       downloadCoverLetterPdf(coverLetter, profile, template, accentColor),
       downloadCvPdf(cv, profile, template, cvStyle, accentColor),
     ]);
+
+    setShowPreview(false);
+    setShowGuide(true);
   }
 
   return (
@@ -178,6 +190,34 @@ export default function EmailDraft({ subject, body, coverLetter, cv, template, c
           </div>
         )}
       </div>
+
+      {showGuide && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" role="dialog" aria-modal="true" onClick={() => setShowGuide(false)}>
+          <div className="bg-white dark:bg-surface border border-gray-200 dark:border-gray-700 rounded-lg p-6 max-w-md mx-4 space-y-4" onClick={(e) => e.stopPropagation()} data-testid="send-guide-popup">
+            <h2 className="text-lg font-bold text-primary dark:text-accent">{t("sendGuideTitle")}</h2>
+            <ol className="space-y-3 text-sm text-text/80 list-decimal list-inside">
+              <li>{t("sendGuideStep1")}</li>
+              <li>{t("sendGuideStep2")}</li>
+              <li>{t("sendGuideStep3")}</li>
+              <li>{t("sendGuideStep4")}</li>
+            </ol>
+            <p className="text-xs text-accent font-medium">
+              {detectDevice() === "android" && t("sendGuideHintAndroid")}
+              {detectDevice() === "ios" && t("sendGuideHintIOS")}
+              {detectDevice() === "desktop" && t("sendGuideHintDesktop")}
+            </p>
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={() => setShowGuide(false)}
+                className="bg-accent text-white px-6 py-2 rounded-lg font-semibold text-sm hover:brightness-110 transition"
+              >
+                {t("sendGuideOk")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
