@@ -36,6 +36,10 @@ export default function OnboardingForm() {
   const [birthMonth, setBirthMonth] = useState("");
   const [birthYear, setBirthYear] = useState("");
   const [photo, setPhoto] = useState<string | null>(null);
+  const [photoOriginal, setPhotoOriginal] = useState<string | null>(null);
+  const [photoRemoved, setPhotoRemoved] = useState<string | null>(null);
+  const [photoVariant, setPhotoVariant] = useState<"original" | "removed">("original");
+  const [bgStatus, setBgStatus] = useState<"idle" | "processing" | "error">("idle");
   const [education, setEducation] = useState<EducationEntry[]>([makeEduEntry()]);
   const [experience, setExperience] = useState<ExperienceEntry[]>([]);
   const [qualifications, setQualifications] = useState<SkillItem[]>([]);
@@ -73,6 +77,34 @@ export default function OnboardingForm() {
     if (!file) return;
     const dataUrl = await compressImage(file);
     setPhoto(dataUrl);
+    setPhotoOriginal(dataUrl);
+    setPhotoRemoved(null);
+    setPhotoVariant("original");
+    setBgStatus("idle");
+  }
+
+  async function handleRemoveBackground() {
+    const source = photoOriginal ?? photo;
+    if (!source) return;
+    setBgStatus("processing");
+    try {
+      // Lazy-Load: das Freistell-Modul wird erst hier geladen (kein App-Start-Einfluss).
+      const { removeBackground } = await import("@/lib/remove-background");
+      const result = await removeBackground(source);
+      setPhotoRemoved(result);
+      setPhotoVariant("removed");
+      setPhoto(result);
+      setBgStatus("idle");
+    } catch {
+      setBgStatus("error");
+    }
+  }
+
+  function selectPhotoVariant(variant: "original" | "removed") {
+    const next = variant === "original" ? photoOriginal ?? photo : photoRemoved;
+    if (!next) return;
+    setPhoto(next);
+    setPhotoVariant(variant);
   }
 
   function updateEdu(id: string, field: keyof EducationEntry, value: string) {
@@ -251,17 +283,64 @@ export default function OnboardingForm() {
 
           {step === 6 && (
             <div className="space-y-3 text-center">
-              <h2 className="text-lg font-semibold text-text">{t("step6Title")}</h2>
+              <h2 className="text-lg font-semibold text-text">
+                {t("step6Title")} <span className="text-sm font-normal text-text/50">{t("step6Optional")}</span>
+              </h2>
               <input ref={photoInputRef} type="file" accept="image/*" onChange={handlePhoto} className="sr-only" />
               {photo ? (
                 <div className="flex flex-col items-center gap-3">
                   <img src={photo} alt="Foto" className="h-24 w-24 rounded-full object-cover border-2 border-accent" />
                   <button type="button" onClick={() => photoInputRef.current?.click()} className="text-sm text-accent hover:underline">{t("step6Choose")}</button>
+                  <div className="flex flex-col items-center gap-2" data-testid="photo-bg-tools">
+                    {!photoRemoved && bgStatus !== "processing" && (
+                      <button
+                        type="button"
+                        onClick={handleRemoveBackground}
+                        data-testid="remove-bg-button"
+                        className="rounded-full border border-accent text-accent px-4 py-2 text-sm font-semibold hover:bg-accent hover:text-white transition min-h-[44px]"
+                      >
+                        {t("step6RemoveBackground")}
+                      </button>
+                    )}
+                    {bgStatus === "processing" && (
+                      <p className="text-sm text-text/60 flex items-center gap-2" data-testid="bg-processing">
+                        <span className="animate-spin h-4 w-4 rounded-full border-2 border-accent/30 border-t-accent" />
+                        {t("step6Processing")}
+                      </p>
+                    )}
+                    {bgStatus === "error" && (
+                      <p className="text-sm text-red-600 dark:text-red-400" data-testid="bg-error">{t("step6ProcessingError")}</p>
+                    )}
+                    {photoRemoved && (
+                      <div className="flex gap-2" data-testid="photo-variant-toggle">
+                        <button
+                          type="button"
+                          onClick={() => selectPhotoVariant("original")}
+                          aria-pressed={photoVariant === "original"}
+                          className={`rounded-full px-4 py-2 text-sm font-semibold border transition min-h-[44px] ${photoVariant === "original" ? "bg-accent text-white border-accent" : "border-gray-300 dark:border-gray-600 text-text hover:border-accent hover:text-accent"}`}
+                        >
+                          {t("step6UseOriginal")}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => selectPhotoVariant("removed")}
+                          aria-pressed={photoVariant === "removed"}
+                          className={`rounded-full px-4 py-2 text-sm font-semibold border transition min-h-[44px] ${photoVariant === "removed" ? "bg-accent text-white border-accent" : "border-gray-300 dark:border-gray-600 text-text hover:border-accent hover:text-accent"}`}
+                        >
+                          {t("step6UseRemoved")}
+                        </button>
+                      </div>
+                    )}
+                    <p className="text-xs text-text/50">{t("step6LocalHint")}</p>
+                  </div>
                 </div>
               ) : (
-                <button type="button" onClick={() => photoInputRef.current?.click()} className="bg-accent text-white px-6 py-2.5 rounded-full font-semibold hover:brightness-110 transition">{t("step6Choose")}</button>
+                <button type="button" onClick={() => photoInputRef.current?.click()} className="bg-accent text-white px-6 py-2.5 rounded-full font-semibold hover:brightness-110 transition min-h-[44px]">{t("step6Choose")}</button>
               )}
               <p className="text-xs text-text/50">{t("step6Hint")}</p>
+              <div>
+                <button type="button" onClick={handleSkip} data-testid="skip-photo-button" className="text-sm text-accent hover:underline">{t("step6Skip")}</button>
+              </div>
             </div>
           )}
 

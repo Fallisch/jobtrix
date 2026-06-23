@@ -56,6 +56,10 @@ export default function ProfileForm() {
   const [yearErrors, setYearErrors] = useState<Record<string, string | null>>({});
   const interactedRef = useRef(false);
   const photoInputRef = useRef<HTMLInputElement>(null);
+  const [photoOriginal, setPhotoOriginal] = useState<string | null>(null);
+  const [photoRemoved, setPhotoRemoved] = useState<string | null>(null);
+  const [photoVariant, setPhotoVariant] = useState<"original" | "removed">("original");
+  const [bgStatus, setBgStatus] = useState<"idle" | "processing" | "error">("idle");
   const tErr = useTranslations("profile.errors");
   const tHint = useTranslations("profile.hints");
 
@@ -179,6 +183,34 @@ export default function ProfileForm() {
     if (!file) return;
     const dataUrl = await compressImage(file);
     set("photo", dataUrl);
+    setPhotoOriginal(dataUrl);
+    setPhotoRemoved(null);
+    setPhotoVariant("original");
+    setBgStatus("idle");
+  }
+
+  async function handleRemoveBackground() {
+    const source = photoOriginal ?? data.photo;
+    if (!source) return;
+    setBgStatus("processing");
+    try {
+      // Lazy-Load: das Freistell-Modul wird erst hier geladen (kein App-Start-Einfluss).
+      const { removeBackground } = await import("@/lib/remove-background");
+      const result = await removeBackground(source);
+      setPhotoRemoved(result);
+      setPhotoVariant("removed");
+      set("photo", result);
+      setBgStatus("idle");
+    } catch {
+      setBgStatus("error");
+    }
+  }
+
+  function selectPhotoVariant(variant: "original" | "removed") {
+    const next = variant === "original" ? photoOriginal ?? data.photo : photoRemoved;
+    if (!next) return;
+    set("photo", next);
+    setPhotoVariant(variant);
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -301,9 +333,12 @@ export default function ProfileForm() {
 
       {/* Foto */}
       <div>
-        <label htmlFor="photo" className="block text-sm font-medium mb-1">
-          {t("photoLabel")}
-        </label>
+        <div className="flex items-center gap-1 mb-1">
+          <label htmlFor="photo" className="block text-sm font-medium">
+            {t("photoLabel")}
+          </label>
+          <span className="text-xs font-normal text-text/50">{t("photoOptionalHint")}</span>
+        </div>
         <input
           id="photo"
           ref={photoInputRef}
@@ -320,11 +355,55 @@ export default function ProfileForm() {
           {t("photoChooseFile")}
         </button>
         {data.photo && (
-          <img
-            src={data.photo}
-            alt={t("photoPreviewAlt")}
-            className="mt-2 h-20 w-20 rounded-full object-cover border"
-          />
+          <div className="mt-2 space-y-2">
+            <img
+              src={data.photo}
+              alt={t("photoPreviewAlt")}
+              className="h-20 w-20 rounded-full object-cover border"
+            />
+            <div className="space-y-2" data-testid="photo-bg-tools">
+              {!photoRemoved && bgStatus !== "processing" && (
+                <button
+                  type="button"
+                  onClick={handleRemoveBackground}
+                  data-testid="remove-bg-button"
+                  className="rounded-full border border-accent text-accent px-4 py-2 text-sm font-semibold hover:bg-accent hover:text-white transition min-h-[44px]"
+                >
+                  {t("photoRemoveBackground")}
+                </button>
+              )}
+              {bgStatus === "processing" && (
+                <p className="text-sm text-text/60 flex items-center gap-2" data-testid="bg-processing">
+                  <span className="animate-spin h-4 w-4 rounded-full border-2 border-accent/30 border-t-accent" />
+                  {t("photoProcessing")}
+                </p>
+              )}
+              {bgStatus === "error" && (
+                <p className="text-sm text-red-600 dark:text-red-400" data-testid="bg-error">{t("photoProcessingError")}</p>
+              )}
+              {photoRemoved && (
+                <div className="flex gap-2" data-testid="photo-variant-toggle">
+                  <button
+                    type="button"
+                    onClick={() => selectPhotoVariant("original")}
+                    aria-pressed={photoVariant === "original"}
+                    className={`rounded-full px-4 py-2 text-sm font-semibold border transition min-h-[44px] ${photoVariant === "original" ? "bg-accent text-white border-accent" : "border-gray-300 dark:border-gray-600 text-text hover:border-accent hover:text-accent"}`}
+                  >
+                    {t("photoUseOriginal")}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => selectPhotoVariant("removed")}
+                    aria-pressed={photoVariant === "removed"}
+                    className={`rounded-full px-4 py-2 text-sm font-semibold border transition min-h-[44px] ${photoVariant === "removed" ? "bg-accent text-white border-accent" : "border-gray-300 dark:border-gray-600 text-text hover:border-accent hover:text-accent"}`}
+                  >
+                    {t("photoUseRemoved")}
+                  </button>
+                </div>
+              )}
+              <p className="text-xs text-text/50">{t("photoLocalHint")}</p>
+            </div>
+          </div>
         )}
       </div>
 

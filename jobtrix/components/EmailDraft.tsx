@@ -8,6 +8,8 @@ import { openPdfPreview } from "@/components/PdfPreviewModal";
 import { CoverLetterDocument, CvDocument } from "@/lib/pdf-documents";
 import { downloadCoverLetterPdf, downloadCvPdf } from "@/lib/download-pdf";
 import { buildMailtoUrl } from "@/lib/email-utils";
+import { detectDevice } from "@/lib/device";
+import { navigate } from "@/lib/navigate";
 
 interface EmailDraftProps {
   subject: string;
@@ -45,14 +47,6 @@ function CopyButton({ value, label, testId }: { value: string; label: string; te
   );
 }
 
-function detectDevice(): "android" | "ios" | "desktop" {
-  if (typeof navigator === "undefined") return "desktop";
-  const ua = navigator.userAgent.toLowerCase();
-  if (/android/.test(ua)) return "android";
-  if (/iphone|ipad|ipod/.test(ua)) return "ios";
-  return "desktop";
-}
-
 export default function EmailDraft({ subject, body, coverLetter, cv, template, cvStyle, accentColor, documentsConfirmed, extractedEmail }: EmailDraftProps) {
   const t = useTranslations("generate");
   const [recipient, setRecipient] = useState(extractedEmail ?? "");
@@ -61,22 +55,31 @@ export default function EmailDraft({ subject, body, coverLetter, cv, template, c
 
   const canSend = documentsConfirmed && !!recipient && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recipient);
 
-  async function handleMailto() {
+  async function handleConfirmSend() {
     if (!canSend) return;
 
     const profile = loadProfile();
     if (!profile) return;
 
+    // Reihenfolge umgedreht (Barrierefreiheit/Mobile):
+    // (1) zuerst beide PDFs herunterladen, (2) Anleitung sofort zeigen.
+    // Der Sprung ins Mailprogramm passiert erst über einen separaten Button.
+    try {
+      await Promise.all([
+        downloadCoverLetterPdf(coverLetter, profile, template, accentColor),
+        downloadCvPdf(cv, profile, template, cvStyle, accentColor),
+      ]);
+    } finally {
+      setShowPreview(false);
+      setShowGuide(true);
+    }
+  }
+
+  function handleOpenMailClient() {
+    // mailto bewusst per Navigation (kein _blank-Fenster, das mobil die Seite
+    // wegreißt und die Downloads abbricht).
     const mailtoUrl = buildMailtoUrl(recipient, subject, body);
-    window.open(mailtoUrl, "_blank");
-
-    await Promise.all([
-      downloadCoverLetterPdf(coverLetter, profile, template, accentColor),
-      downloadCvPdf(cv, profile, template, cvStyle, accentColor),
-    ]);
-
-    setShowPreview(false);
-    setShowGuide(true);
+    navigate(mailtoUrl);
   }
 
   return (
@@ -180,8 +183,8 @@ export default function EmailDraft({ subject, body, coverLetter, cv, template, c
               </button>
               <button
                 type="button"
-                onClick={handleMailto}
-                className="bg-accent text-white px-6 py-2.5 rounded-full font-semibold text-sm hover:brightness-110 transition"
+                onClick={handleConfirmSend}
+                className="bg-accent text-white px-6 py-2.5 rounded-full font-semibold text-sm hover:brightness-110 transition min-h-[44px]"
                 data-testid="confirm-send-button"
               >
                 {t("sendEmailConfirmSend")}
@@ -206,11 +209,20 @@ export default function EmailDraft({ subject, body, coverLetter, cv, template, c
               {detectDevice() === "ios" && t("sendGuideHintIOS")}
               {detectDevice() === "desktop" && t("sendGuideHintDesktop")}
             </p>
-            <div className="flex justify-end">
+            <div className="flex flex-col gap-3">
+              <button
+                type="button"
+                autoFocus
+                onClick={handleOpenMailClient}
+                className="w-full bg-accent text-white px-6 py-3 rounded-lg font-semibold text-sm hover:brightness-110 transition min-h-[44px]"
+                data-testid="open-mail-client-button"
+              >
+                {t("sendGuideOpenMail")}
+              </button>
               <button
                 type="button"
                 onClick={() => setShowGuide(false)}
-                className="bg-accent text-white px-6 py-2 rounded-lg font-semibold text-sm hover:brightness-110 transition"
+                className="w-full border border-gray-300 dark:border-gray-600 text-text/70 px-6 py-3 rounded-lg font-semibold text-sm hover:border-accent hover:text-accent transition min-h-[44px]"
               >
                 {t("sendGuideOk")}
               </button>
