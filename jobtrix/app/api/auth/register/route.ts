@@ -15,9 +15,12 @@ export async function POST(req: NextRequest) {
   if (!parsed.success) {
     return NextResponse.json({ error: "invalidInput" }, { status: 400 });
   }
-  const { email, password } = parsed.data;
+  const { email: rawEmail, password } = parsed.data;
+  const email = rawEmail.toLowerCase();
 
-  const existing = await prisma.user.findUnique({ where: { email } });
+  const existing = await prisma.user.findFirst({
+    where: { email: { equals: email, mode: "insensitive" } },
+  });
   if (existing) {
     return NextResponse.json({ error: "emailTaken" }, { status: 409 });
   }

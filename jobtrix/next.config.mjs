@@ -42,23 +42,17 @@ export default withNextIntl(
   withPWA({
     dest: "public",
     cacheOnFrontEndNav: true,
-    aggressiveFrontEndNavCaching: true,
+    aggressiveFrontEndNavCaching: false,
     reloadOnOnline: true,
     disable: process.env.NODE_ENV === "development",
-    runtimeCaching: [
-      {
-        urlPattern: /^https?:\/\/.*\/api\/auth\/.*/i,
-        handler: "NetworkOnly",
-      },
-      {
-        urlPattern: /^https?:\/\/.*\/api\/.*/i,
-        handler: "NetworkFirst",
-        options: {
-          cacheName: "apis",
-          networkTimeoutSeconds: 10,
-          expiration: { maxEntries: 16, maxAgeSeconds: 86400 },
+    extendDefaultRuntimeCaching: true,
+    workboxOptions: {
+      runtimeCaching: [
+        {
+          urlPattern: /^https?:\/\/.*\/api\/auth\/.*/i,
+          handler: "NetworkOnly",
         },
-      },
-    ],
+      ],
+    },
   })(nextConfig)
 );

@@ -36,14 +36,17 @@ jest.mock("next-intl", () => {
   };
 });
 
-const mockPush = jest.fn();
 jest.mock("next/navigation", () => ({
-  useRouter: () => ({ push: mockPush }),
   useParams: () => ({ locale: "de" }),
 }));
 
 jest.mock("next-auth/react", () => ({
   signIn: jest.fn(),
+}));
+
+const mockNavigate = jest.fn();
+jest.mock("@/lib/navigate", () => ({
+  navigate: (...args: unknown[]) => mockNavigate(...args),
 }));
 
 const mockedSignIn = jest.mocked(signIn);
@@ -52,9 +55,9 @@ global.fetch = jest.fn();
 
 describe("LoginForm", () => {
   beforeEach(() => {
-    mockPush.mockClear();
     mockedSignIn.mockReset();
     (global.fetch as jest.Mock).mockReset();
+    mockNavigate.mockClear();
   });
 
   it("zeigt Validierungsfehler bei leerem Formular", async () => {
@@ -85,7 +88,7 @@ describe("LoginForm", () => {
       password: "correct-password",
       redirect: false,
     }));
-    await waitFor(() => expect(mockPush).toHaveBeenCalledWith("/de/generate"));
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith("/de/generate"));
   });
 
   it("leitet nach Login zu /onboarding weiter wenn Profil leer", async () => {
@@ -101,7 +104,7 @@ describe("LoginForm", () => {
     await userEvent.type(screen.getByLabelText("Passwort"), "correct-password");
     await userEvent.click(screen.getByRole("button", { name: "Anmelden" }));
 
-    await waitFor(() => expect(mockPush).toHaveBeenCalledWith("/de/onboarding"));
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith("/de/onboarding"));
   });
 
   it("verlinkt auf die Passwort-vergessen-Seite", () => {
@@ -123,6 +126,6 @@ describe("LoginForm", () => {
     await userEvent.click(screen.getByRole("button", { name: "Anmelden" }));
 
     expect(await screen.findByText("E-Mail oder Passwort ist falsch")).toBeInTheDocument();
-    expect(mockPush).not.toHaveBeenCalled();
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 });

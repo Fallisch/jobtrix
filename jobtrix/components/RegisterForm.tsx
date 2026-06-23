@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { validateRegistration, RegistrationErrors } from "@/lib/auth-validation";
+import { navigate } from "@/lib/navigate";
 
 export default function RegisterForm() {
   const t = useTranslations("auth.register");
@@ -50,7 +51,7 @@ export default function RegisterForm() {
         return;
       }
 
-      window.location.href = `/${locale}/onboarding`;
+      navigate(`/${locale}/onboarding`);
     } catch {
       setSubmitError("generic");
     } finally {

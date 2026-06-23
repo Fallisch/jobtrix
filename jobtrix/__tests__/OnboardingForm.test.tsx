@@ -11,9 +11,7 @@ jest.mock("next-intl", () => ({
   },
 }));
 
-const mockPush = jest.fn();
 jest.mock("next/navigation", () => ({
-  useRouter: () => ({ push: mockPush }),
   useParams: () => ({ locale: "de" }),
 }));
 
@@ -24,11 +22,16 @@ jest.mock("next-auth/react", () => ({
   }),
 }));
 
+const mockNavigate = jest.fn();
+jest.mock("@/lib/navigate", () => ({
+  navigate: (...args: unknown[]) => mockNavigate(...args),
+}));
+
 global.fetch = jest.fn();
 
 beforeEach(() => {
   (global.fetch as jest.Mock).mockReset();
-  mockPush.mockClear();
+  mockNavigate.mockClear();
 });
 
 describe("OnboardingForm", () => {
@@ -110,7 +113,7 @@ describe("OnboardingForm", () => {
     expect(body.email).toBe("test@example.com");
 
     await waitFor(() => {
-      expect(mockPush).toHaveBeenCalledWith("/de/generate");
+      expect(mockNavigate).toHaveBeenCalledWith("/de/generate");
     });
   });
 

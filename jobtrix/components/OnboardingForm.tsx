@@ -7,6 +7,7 @@ import { useSession } from "next-auth/react";
 import { compressImage } from "@/lib/image-compress";
 import { EducationEntry, ExperienceEntry, SkillItem } from "@/lib/profile-storage";
 import { validateBirthdate, validatePhone, validateLocation, validateYearRange } from "@/lib/validation";
+import { navigate } from "@/lib/navigate";
 import InfoTooltip from "@/components/InfoTooltip";
 
 const TOTAL_STEPS = 10;
@@ -125,9 +126,9 @@ export default function OnboardingForm() {
       });
 
       if (res.ok) {
-        window.location.href = `/${locale}/generate`;
+        navigate(`/${locale}/generate`);
       } else if (res.status === 401) {
-        window.location.href = `/${locale}/login`;
+        navigate(`/${locale}/login`);
       }
     } finally {
       setSubmitting(false);

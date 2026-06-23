@@ -36,9 +36,7 @@ jest.mock("next-intl", () => {
   };
 });
 
-const mockPush = jest.fn();
 jest.mock("next/navigation", () => ({
-  useRouter: () => ({ push: mockPush }),
   useParams: () => ({ locale: "de" }),
 }));
 
@@ -46,11 +44,16 @@ jest.mock("next-auth/react", () => ({
   signIn: jest.fn(),
 }));
 
+const mockNavigate = jest.fn();
+jest.mock("@/lib/navigate", () => ({
+  navigate: (...args: unknown[]) => mockNavigate(...args),
+}));
+
 const mockedSignIn = jest.mocked(signIn);
 
 describe("RegisterForm", () => {
   beforeEach(() => {
-    mockPush.mockClear();
+    mockNavigate.mockClear();
     mockedSignIn.mockReset();
     global.fetch = jest.fn();
   });
@@ -99,7 +102,7 @@ describe("RegisterForm", () => {
       password: "Correct1!",
       redirect: false,
     }));
-    await waitFor(() => expect(mockPush).toHaveBeenCalledWith("/de/onboarding"));
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith("/de/onboarding"));
   });
 
   it("verlinkt AGB und Datenschutzbestimmungen im Zustimmungs-Label, geöffnet in neuem Tab", () => {

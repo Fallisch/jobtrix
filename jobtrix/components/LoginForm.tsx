@@ -2,14 +2,14 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { useRouter, useParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { validateLogin, LoginErrors } from "@/lib/auth-validation";
+import { navigate } from "@/lib/navigate";
 
 export default function LoginForm() {
   const t = useTranslations("auth.login");
-  const router = useRouter();
   const params = useParams();
   const locale = (params?.locale as string) ?? "de";
 
@@ -36,15 +36,15 @@ export default function LoginForm() {
         return;
       }
 
-      const profileRes = await fetch("/api/profile");
+      const profileRes = await fetch("/api/profile", { cache: "no-store" });
       if (profileRes.ok) {
         const profile = await profileRes.json();
         if (!profile.name) {
-          router.push(`/${locale}/onboarding`);
+          navigate(`/${locale}/onboarding`);
           return;
         }
       }
-      router.push(`/${locale}/generate`);
+      navigate(`/${locale}/generate`);
     } finally {
       setSubmitting(false);
     }
