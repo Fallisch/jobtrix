@@ -2,14 +2,13 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { useRouter, useParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { validateRegistration, RegistrationErrors } from "@/lib/auth-validation";
 
 export default function RegisterForm() {
   const t = useTranslations("auth.register");
-  const router = useRouter();
   const params = useParams();
   const locale = (params?.locale as string) ?? "de";
 

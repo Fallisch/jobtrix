@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import { useRouter, useParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { compressImage } from "@/lib/image-compress";
 import { EducationEntry, ExperienceEntry, SkillItem } from "@/lib/profile-storage";
@@ -21,7 +21,6 @@ function makeExpEntry(): ExperienceEntry {
 
 export default function OnboardingForm() {
   const t = useTranslations("onboarding");
-  const router = useRouter();
   const params = useParams();
   const locale = (params?.locale as string) ?? "de";
   const { data: session } = useSession();
