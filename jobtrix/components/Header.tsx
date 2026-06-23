@@ -30,16 +30,22 @@ export default function Header({ locale }: { locale: string }) {
 
   const navLinks = (
     <>
-      <Link
-        href={`/${locale}/profile`}
-        onClick={() => setMenuOpen(false)}
-        className="text-sm font-medium text-white/80 hover:text-white transition-colors min-h-[44px] min-w-[44px] flex items-center"
-      >
-        {locale === "de" ? "Profil" : "Profile"}
-      </Link>
+      {/* prefetch={false} auf geschuetzten Routen: verhindert, dass Next.js sie
+          im ausgeloggten Zustand prefetcht und den Login-Redirect cached (#134). */}
+      {status === "authenticated" && (
+        <Link
+          href={`/${locale}/profile`}
+          prefetch={false}
+          onClick={() => setMenuOpen(false)}
+          className="text-sm font-medium text-white/80 hover:text-white transition-colors min-h-[44px] min-w-[44px] flex items-center"
+        >
+          {locale === "de" ? "Profil" : "Profile"}
+        </Link>
+      )}
       {status === "authenticated" && (
         <Link
           href={`/${locale}/generate`}
+          prefetch={false}
           onClick={() => setMenuOpen(false)}
           className="text-sm font-medium text-white/80 hover:text-white transition-colors min-h-[44px] min-w-[44px] flex items-center"
         >
@@ -49,6 +55,7 @@ export default function Header({ locale }: { locale: string }) {
       {status === "authenticated" && (
         <Link
           href={`/${locale}/application-history`}
+          prefetch={false}
           onClick={() => setMenuOpen(false)}
           className="text-sm font-medium text-white/80 hover:text-white transition-colors min-h-[44px] min-w-[44px] flex items-center"
         >
@@ -62,6 +69,15 @@ export default function Header({ locale }: { locale: string }) {
         >
           {t("logout")}
         </button>
+      )}
+      {status === "unauthenticated" && (
+        <Link
+          href={`/${locale}/login`}
+          onClick={() => setMenuOpen(false)}
+          className="text-sm font-medium text-white/80 hover:text-white transition-colors min-h-[44px] min-w-[44px] flex items-center"
+        >
+          {locale === "de" ? "Anmelden" : "Login"}
+        </Link>
       )}
       <button
         onClick={() => switchLocale(other)}

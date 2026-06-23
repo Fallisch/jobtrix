@@ -90,6 +90,17 @@ describe("Header", () => {
     expect(screen.queryByRole("link", { name: "Bewerbung starten" })).not.toBeInTheDocument();
   });
 
+  it("zeigt im abgemeldeten Zustand keinen 'Profil'-Link (verhindert Prefetch des Login-Redirects)", () => {
+    render(<Header locale="de" />);
+    expect(screen.queryByRole("link", { name: "Profil" })).not.toBeInTheDocument();
+  });
+
+  it("zeigt im abgemeldeten Zustand einen 'Anmelden'-Link zur Login-Seite", () => {
+    render(<Header locale="de" />);
+    const links = screen.getAllByRole("link", { name: "Anmelden" });
+    expect(links[0]).toHaveAttribute("href", "/de/login");
+  });
+
   it("zeigt im angemeldeten Zustand 'Bewerbung starten' Links", () => {
     mockedUseSession.mockReturnValue({
       data: { user: {}, expires: "" },
@@ -112,6 +123,19 @@ describe("Header", () => {
     render(<Header locale="de" />);
     const links = screen.getAllByRole("link", { name: "Bewerbungshistorie" });
     expect(links[0]).toHaveAttribute("href", "/de/application-history");
+  });
+
+  it("zeigt im angemeldeten Zustand einen 'Profil'-Link, aber keinen 'Anmelden'-Link", () => {
+    mockedUseSession.mockReturnValue({
+      data: { user: {}, expires: "" },
+      status: "authenticated",
+      update: jest.fn(),
+    } as unknown as ReturnType<typeof useSession>);
+
+    render(<Header locale="de" />);
+    const profile = screen.getAllByRole("link", { name: "Profil" });
+    expect(profile[0]).toHaveAttribute("href", "/de/profile");
+    expect(screen.queryByRole("link", { name: "Anmelden" })).not.toBeInTheDocument();
   });
 
   it("zeigt im angemeldeten Zustand Logout-Buttons", () => {
