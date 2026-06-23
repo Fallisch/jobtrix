@@ -57,6 +57,10 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        // email/name im Token cachen, damit die Session auch bei DB-Ausfall
+        // vollständig bleibt und der Nutzer nicht aus der UI fliegt.
+        token.email = user.email;
+        token.name = user.name;
       }
       return token;
     },
@@ -64,11 +68,21 @@ export const authOptions: NextAuthOptions = {
       if (!token.id) return session;
 
       session.user.id = token.id;
+      // Aus dem Token vorbelegen (Fallback), dann live aus der DB aktualisieren.
+      if (token.email) session.user.email = token.email;
+      session.user.name = (token.name as string | null) ?? null;
 
-      const user = await prisma.user.findUnique({ where: { id: token.id } });
-      if (user) {
-        session.user.email = user.email;
-        session.user.name = user.name;
+      try {
+        const user = await prisma.user.findUnique({ where: { id: token.id } });
+        if (user) {
+          session.user.email = user.email;
+          session.user.name = user.name;
+        }
+      } catch (err) {
+        // DB-Hiccup darf den eingeloggten Nutzer nicht aus der UI ausloggen
+        // (Header zeigte sonst "Anmelden", obwohl die Session-Cookie gültig
+        // ist). Session bleibt mit den Token-Werten gültig.
+        console.error("session callback: DB-Lookup fehlgeschlagen, behalte Session:", err);
       }
 
       return session;
