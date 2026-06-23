@@ -5,7 +5,7 @@ import { routing } from "./i18n/routing";
 
 const intlMiddleware = createMiddleware(routing);
 
-const protectedPaths = ["/profile", "/generate", "/application-history"];
+const protectedPaths = ["/profile", "/generate", "/application-history", "/onboarding"];
 
 const publicPaths = ["/", "/impressum", "/datenschutz", "/agb", "/hilfe", "/pricing"];
 
