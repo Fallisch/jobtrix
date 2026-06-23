@@ -8,7 +8,7 @@ import EmailDraft from "@/components/EmailDraft";
 import { downloadCoverLetterPdf, downloadCvPdf } from "@/lib/download-pdf";
 import { extractEmail } from "@/lib/email-utils";
 import LayoutPreview from "@/components/LayoutPreview";
-import { openPdfPreview } from "@/components/PdfPreviewModal";
+import { openPdfPreview, PdfPreviewHost } from "@/components/PdfPreviewModal";
 import React from "react";
 import { CoverLetterDocument, CvDocument } from "@/lib/pdf-documents";
 
@@ -64,6 +64,9 @@ export default function GenerateForm() {
   const [jobResults, setJobResults] = useState<JobSearchResult[]>([]);
   const [externalHintVisible, setExternalHintVisible] = useState(false);
   const [adoptedHintVisible, setAdoptedHintVisible] = useState(false);
+  const [pasteFieldVisible, setPasteFieldVisible] = useState(false);
+  const [pasteText, setPasteText] = useState("");
+  const [extractLoadingIndex, setExtractLoadingIndex] = useState<number | null>(null);
   const [showProfileHint, setShowProfileHint] = useState(false);
 
   useEffect(() => {
@@ -151,17 +154,57 @@ export default function GenerateForm() {
     }
   }
 
-  function handleJobResultClick(result: JobSearchResult) {
+  function adoptText(text: string) {
+    setJobPosting(text);
+    setExternalHintVisible(false);
+    setPasteFieldVisible(false);
+    setPasteText("");
+    setAdoptedHintVisible(true);
+    setTimeout(() => setAdoptedHintVisible(false), 4000);
+  }
+
+  function showExternalFallback(url: string) {
+    window.open(url, "_blank");
+    setExternalHintVisible(true);
+    setPasteFieldVisible(true);
+    setAdoptedHintVisible(false);
+  }
+
+  async function handleJobResultClick(result: JobSearchResult, index: number) {
+    // Interne BA-Anzeige: Beschreibungstext liegt schon vor.
     if (result.description) {
-      setJobPosting(result.description);
-      setExternalHintVisible(false);
-      setAdoptedHintVisible(true);
-      setTimeout(() => setAdoptedHintVisible(false), 4000);
-    } else {
-      window.open(result.url, "_blank");
-      setExternalHintVisible(true);
-      setAdoptedHintVisible(false);
+      adoptText(result.description);
+      return;
     }
+
+    // Externe Anzeige: Server versucht, den Anzeigentext zu holen.
+    setExtractLoadingIndex(index);
+    setExternalHintVisible(false);
+    try {
+      const res = await fetch("/api/jobsuche/extract", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: result.url }),
+      });
+      const data = res.ok ? await res.json() : null;
+      if (data?.text) {
+        adoptText(data.text);
+        return;
+      }
+    } catch {
+      // Netzwerkfehler → Fallback unten.
+    } finally {
+      setExtractLoadingIndex(null);
+    }
+
+    // Abruf fehlgeschlagen/zu wenig Text → externen Link öffnen + Einfügefeld.
+    showExternalFallback(result.url);
+  }
+
+  function handleAdoptPaste() {
+    const trimmed = pasteText.trim();
+    if (!trimmed) return;
+    adoptText(trimmed);
   }
 
   return (
@@ -241,13 +284,17 @@ export default function GenerateForm() {
                     <button
                       type="button"
                       data-testid={`job-result-${i}`}
-                      onClick={() => handleJobResultClick(result)}
-                      className="text-left flex-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
+                      onClick={() => handleJobResultClick(result, i)}
+                      disabled={extractLoadingIndex !== null}
+                      className="text-left flex-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-60"
                     >
                       <p className="font-semibold text-text">
                         {result.title}
                         {!result.description && (
                           <span data-testid="external-badge" className="ml-2 inline-flex items-center text-xs font-medium text-amber-600 dark:text-amber-400">↗ {t("jobSearchExternalBadge")}</span>
+                        )}
+                        {extractLoadingIndex === i && (
+                          <span data-testid={`extract-loading-${i}`} className="ml-2 text-xs text-text/50">{t("jobSearchExtracting")}</span>
                         )}
                       </p>
                       <p className="text-sm text-text/60">{result.company} · {result.location}</p>
@@ -266,6 +313,30 @@ export default function GenerateForm() {
             )
           )}
         </div>
+
+        {pasteFieldVisible && (
+          <div className="rounded-2xl border border-amber-300 dark:border-amber-700 bg-amber-50/60 dark:bg-amber-950/20 p-4 space-y-2" data-testid="external-paste-field">
+            <p className="text-sm font-medium text-text">{t("jobSearchPasteTitle")}</p>
+            <p className="text-sm text-text/60">{t("jobSearchPasteHint")}</p>
+            <textarea
+              id="jobSearchPaste"
+              value={pasteText}
+              onChange={(e) => setPasteText(e.target.value)}
+              rows={5}
+              placeholder={t("jobSearchPastePlaceholder")}
+              aria-label={t("jobSearchPasteLabel")}
+              className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-3 text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent resize-y"
+            />
+            <button
+              type="button"
+              onClick={handleAdoptPaste}
+              disabled={!pasteText.trim()}
+              className="rounded-full bg-accent text-white px-5 py-2 text-sm font-semibold hover:brightness-110 transition disabled:opacity-40 disabled:cursor-not-allowed min-h-[44px]"
+            >
+              {t("jobSearchPasteAdopt")}
+            </button>
+          </div>
+        )}
 
         <div className="flex items-center gap-3">
           <input
@@ -573,6 +644,7 @@ export default function GenerateForm() {
           </div>
         </div>
       )}
+      <PdfPreviewHost />
     </div>
   );
 }

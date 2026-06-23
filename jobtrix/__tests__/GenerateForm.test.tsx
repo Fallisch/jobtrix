@@ -786,8 +786,11 @@ describe("GenerateForm", () => {
       localStorage.setItem("jobtrix_profile", JSON.stringify(mockProfile));
     });
 
-    function mockJobSearch(results: unknown[]) {
+    function mockJobSearch(results: unknown[], extractResponse: unknown = { text: null }) {
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
+        if (typeof url === "string" && url.startsWith("/api/jobsuche/extract")) {
+          return Promise.resolve({ ok: true, json: () => Promise.resolve(extractResponse) });
+        }
         if (typeof url === "string" && url.startsWith("/api/jobsuche")) {
           return Promise.resolve({ ok: true, json: () => Promise.resolve({ results }) });
         }
@@ -858,11 +861,12 @@ describe("GenerateForm", () => {
       expect(screen.getByRole("textbox", { name: JOB_POSTING })).toHaveValue("Wir suchen einen Entwickler...");
     });
 
-    it("öffnet die Originalanzeige in neuem Tab bei Klick auf einen Treffer ohne Beschreibungstext", async () => {
+    it("öffnet die Originalanzeige in neuem Tab wenn der Server-Abruf eines externen Treffers fehlschlägt", async () => {
       const openSpy = jest.spyOn(window, "open").mockImplementation(() => null);
-      mockJobSearch([
-        { title: "Frontend Developer", company: "External GmbH", location: "Hamburg", description: null, url: "https://example.com/job/2" },
-      ]);
+      mockJobSearch(
+        [{ title: "Frontend Developer", company: "External GmbH", location: "Hamburg", description: null, url: "https://example.com/job/2" }],
+        { text: null }
+      );
 
       render(<GenerateForm />);
       await userEvent.type(screen.getByRole("textbox", { name: /jobSearchQueryLabel/i }), "Developer");
@@ -871,9 +875,80 @@ describe("GenerateForm", () => {
 
       fireEvent.click(screen.getByTestId("job-result-0"));
 
-      expect(openSpy).toHaveBeenCalledWith("https://example.com/job/2", "_blank");
+      await waitFor(() => {
+        expect(openSpy).toHaveBeenCalledWith("https://example.com/job/2", "_blank");
+      });
       expect(screen.getByRole("textbox", { name: JOB_POSTING })).toHaveValue("");
 
+      openSpy.mockRestore();
+    });
+
+    it("übernimmt bei einem externen Treffer den vom Server geholten Anzeigentext ins Feld 'Stellenanzeige'", async () => {
+      const openSpy = jest.spyOn(window, "open").mockImplementation(() => null);
+      mockJobSearch(
+        [{ title: "Externe Stelle", company: "External GmbH", location: "Hamburg", description: null, url: "https://example.com/job/2" }],
+        { text: "Vom Server extrahierter Anzeigentext" }
+      );
+
+      render(<GenerateForm />);
+      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchQueryLabel/i }), "Developer");
+      fireEvent.click(screen.getByRole("button", { name: /jobSearchButton/i }));
+      await waitFor(() => screen.getByText("Externe Stelle"));
+
+      fireEvent.click(screen.getByTestId("job-result-0"));
+
+      await waitFor(() => {
+        expect(screen.getByRole("textbox", { name: JOB_POSTING })).toHaveValue("Vom Server extrahierter Anzeigentext");
+      });
+      // Server-Übernahme → kein Absprung in einen neuen Tab nötig.
+      expect(openSpy).not.toHaveBeenCalled();
+      expect(screen.getByText(/jobSearchAdoptedHint/i)).toBeInTheDocument();
+      openSpy.mockRestore();
+    });
+
+    it("ruft beim externen Treffer die Server-Übernahme mit der Original-URL auf", async () => {
+      const openSpy = jest.spyOn(window, "open").mockImplementation(() => null);
+      mockJobSearch(
+        [{ title: "Externe Stelle", company: "External GmbH", location: "Hamburg", description: null, url: "https://example.com/job/2" }],
+        { text: "Anzeigentext lang genug" }
+      );
+
+      render(<GenerateForm />);
+      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchQueryLabel/i }), "Developer");
+      fireEvent.click(screen.getByRole("button", { name: /jobSearchButton/i }));
+      await waitFor(() => screen.getByText("Externe Stelle"));
+
+      fireEvent.click(screen.getByTestId("job-result-0"));
+
+      await waitFor(() => {
+        const extractCall = (global.fetch as jest.Mock).mock.calls.find((c) => String(c[0]).startsWith("/api/jobsuche/extract"));
+        expect(extractCall).toBeDefined();
+        expect(JSON.parse(extractCall![1].body as string)).toEqual({ url: "https://example.com/job/2" });
+      });
+      openSpy.mockRestore();
+    });
+
+    it("zeigt ein Einfügefeld und übernimmt eingefügten Text ins Feld 'Stellenanzeige' wenn der Server-Abruf fehlschlägt", async () => {
+      const openSpy = jest.spyOn(window, "open").mockImplementation(() => null);
+      mockJobSearch(
+        [{ title: "Externe Stelle", company: "External GmbH", location: "Hamburg", description: null, url: "https://example.com/job/2" }],
+        { text: null }
+      );
+
+      render(<GenerateForm />);
+      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchQueryLabel/i }), "Developer");
+      fireEvent.click(screen.getByRole("button", { name: /jobSearchButton/i }));
+      await waitFor(() => screen.getByText("Externe Stelle"));
+
+      fireEvent.click(screen.getByTestId("job-result-0"));
+
+      const pasteArea = await screen.findByRole("textbox", { name: /jobSearchPasteLabel/i });
+      await userEvent.type(pasteArea, "Manuell kopierter Anzeigentext");
+      fireEvent.click(screen.getByRole("button", { name: /jobSearchPasteAdopt/i }));
+
+      expect(screen.getByRole("textbox", { name: JOB_POSTING })).toHaveValue("Manuell kopierter Anzeigentext");
+      // Nach Übernahme verschwindet das Einfügefeld wieder.
+      expect(screen.queryByTestId("external-paste-field")).not.toBeInTheDocument();
       openSpy.mockRestore();
     });
 
@@ -921,7 +996,7 @@ describe("GenerateForm", () => {
 
       fireEvent.click(screen.getByTestId("job-result-0"));
 
-      expect(screen.getByText(/jobSearchExternalHint/i)).toBeInTheDocument();
+      expect(await screen.findByText(/jobSearchExternalHint/i)).toBeInTheDocument();
       openSpy.mockRestore();
     });
 
@@ -953,6 +1028,7 @@ describe("GenerateForm", () => {
 
       fireEvent.click(screen.getByTestId("job-result-0"));
 
+      expect(await screen.findByText(/jobSearchExternalHint/i)).toBeInTheDocument();
       expect(screen.queryByText(/jobSearchAdoptedHint/i)).not.toBeInTheDocument();
       openSpy.mockRestore();
     });

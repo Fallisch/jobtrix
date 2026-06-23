@@ -86,9 +86,33 @@ test.describe("Issue #44 – Jobsuche über Arbeitsagentur-API", () => {
     expect(requestedUrl).toContain("umkreis=50");
   });
 
-  test("AC: Treffer ohne Beschreibung öffnet Originalanzeige in neuem Tab, Feld 'Stellenanzeige' bleibt unverändert", async ({ page, context }) => {
+  test("AC: externer Treffer – Server holt den Anzeigentext und füllt das Feld 'Stellenanzeige'", async ({ page }) => {
     await page.route("**/api/jobsuche**", (route) =>
       route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(JOB_RESULTS) })
+    );
+    // Spezifischer (später registriert → Vorrang für /extract): erfolgreiche Server-Übernahme.
+    await page.route("**/api/jobsuche/extract**", (route) =>
+      route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ text: "Vom Server geholter Anzeigentext." }) })
+    );
+
+    await page.getByRole("textbox", { name: "Berufsfeld" }).fill("Frontend");
+    await page.getByRole("button", { name: "Suchen" }).click();
+    await expect(page.getByText("Frontend Developer")).toBeVisible();
+
+    await page.getByText("Frontend Developer").click();
+
+    await expect(page.getByRole("textbox", { name: "Stellenanzeige" })).toHaveValue(
+      "Vom Server geholter Anzeigentext."
+    );
+  });
+
+  test("AC: externer Treffer – scheitert der Server-Abruf, öffnet sich die Originalanzeige + ein Einfügefeld", async ({ page, context }) => {
+    await page.route("**/api/jobsuche**", (route) =>
+      route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(JOB_RESULTS) })
+    );
+    // Server kann den Text nicht holen → Fallback (text:null).
+    await page.route("**/api/jobsuche/extract**", (route) =>
+      route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ text: null }) })
     );
 
     await page.getByRole("textbox", { name: "Berufsfeld" }).fill("Frontend");
@@ -104,7 +128,9 @@ test.describe("Issue #44 – Jobsuche über Arbeitsagentur-API", () => {
     expect(newPage.url()).toBe("https://example.com/job/456");
     await newPage.close();
 
+    // Feld bleibt leer, dafür erscheint das Einfügefeld als Fallback.
     await expect(page.getByRole("textbox", { name: "Stellenanzeige" })).toHaveValue("");
+    await expect(page.getByTestId("external-paste-field")).toBeVisible();
   });
 
   test("AC: leere Trefferliste zeigt 'Keine Treffer gefunden.' ohne technischen Fehlerhinweis", async ({ page }) => {
