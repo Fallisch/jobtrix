@@ -16,33 +16,47 @@ export async function checkRateLimit(key: string, max: number = RATE_LIMIT_MAX):
     return true;
   }
 
-  const now = Date.now();
-  const entry = await prisma.rateLimitEntry.findUnique({ where: { key } });
+  try {
+    const now = Date.now();
+    const entry = await prisma.rateLimitEntry.findUnique({ where: { key } });
 
-  if (!entry) {
-    await prisma.rateLimitEntry.create({ data: { key, attempts: 1 } });
-    return true;
-  }
+    if (!entry) {
+      // upsert statt create: vermeidet Unique-Constraint-Fehler, wenn zwei
+      // parallele Requests mit gleichem Key gleichzeitig den Eintrag anlegen.
+      await prisma.rateLimitEntry.upsert({
+        where: { key },
+        create: { key, attempts: 1 },
+        update: { attempts: { increment: 1 } },
+      });
+      return true;
+    }
 
-  const windowExpired = now - entry.windowStart.getTime() > RATE_LIMIT_WINDOW_MS;
+    const windowExpired = now - entry.windowStart.getTime() > RATE_LIMIT_WINDOW_MS;
 
-  if (windowExpired) {
+    if (windowExpired) {
+      await prisma.rateLimitEntry.update({
+        where: { key },
+        data: { attempts: 1, windowStart: new Date() },
+      });
+      return true;
+    }
+
+    if (entry.attempts >= max) {
+      return false;
+    }
+
     await prisma.rateLimitEntry.update({
       where: { key },
-      data: { attempts: 1, windowStart: new Date() },
+      data: { attempts: { increment: 1 } },
     });
     return true;
+  } catch (err) {
+    // Fail-open: Rate-Limiting läuft als erstes in register/login/reset. Ein
+    // DB-Fehler/-Hang hier darf den Auth-Flow nicht hart killen (sonst hängt
+    // der Login-Button). Lieber kurz ungedrosselt als gar kein Login.
+    console.error(`checkRateLimit fehlgeschlagen (fail-open) für key=${key}:`, err);
+    return true;
   }
-
-  if (entry.attempts >= max) {
-    return false;
-  }
-
-  await prisma.rateLimitEntry.update({
-    where: { key },
-    data: { attempts: { increment: 1 } },
-  });
-  return true;
 }
 
 export function getClientIp(req: { headers: { get: (key: string) => string | null } }): string {

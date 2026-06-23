@@ -18,15 +18,22 @@ export async function POST(req: NextRequest) {
   const { email: rawEmail, password } = parsed.data;
   const email = rawEmail.toLowerCase();
 
-  const existing = await prisma.user.findFirst({
-    where: { email: { equals: email, mode: "insensitive" } },
-  });
-  if (existing) {
-    return NextResponse.json({ error: "emailTaken" }, { status: 409 });
+  try {
+    const existing = await prisma.user.findFirst({
+      where: { email: { equals: email, mode: "insensitive" } },
+    });
+    if (existing) {
+      return NextResponse.json({ error: "emailTaken" }, { status: 409 });
+    }
+
+    const passwordHash = await bcrypt.hash(password, 10);
+    const user = await prisma.user.create({ data: { email, passwordHash } });
+
+    return NextResponse.json({ id: user.id, email: user.email }, { status: 201 });
+  } catch (err) {
+    // DB-Fehler nicht als leeres 500 durchreichen — klarer Status, damit das
+    // Frontend eine echte Meldung zeigen kann statt eines toten Buttons.
+    console.error("register: DB-Fehler beim Anlegen des Users:", err);
+    return NextResponse.json({ error: "serverError" }, { status: 503 });
   }
-
-  const passwordHash = await bcrypt.hash(password, 10);
-  const user = await prisma.user.create({ data: { email, passwordHash } });
-
-  return NextResponse.json({ id: user.id, email: user.email }, { status: 201 });
 }
