@@ -247,6 +247,8 @@
     "sendGuideHintIOS": "Tippe auf das Anhang-Symbol, um die PDFs anzuhängen",
     "sendGuideHintDesktop": "Ziehe die Dateien in das E-Mail-Fenster oder klicke auf Anhang hinzufügen",
     "sendGuideDisclaimer": "Hinweis: Die Absendung der E-Mail und die Richtigkeit der Inhalte liegen in der Verantwortung des Verfassers.",
+    "sendGuideDownloadCoverLetter": "Anschreiben.pdf",
+    "sendGuideDownloadCv": "Lebenslauf.pdf",
     "sendGuideOpenMail": "Jetzt E-Mail-Programm öffnen",
     "sendGuideOk": "Verstanden",
     "profileHintTitle": "Profil unvollständig",

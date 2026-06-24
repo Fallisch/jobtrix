@@ -6,10 +6,11 @@ import { useTranslations } from "next-intl";
 import { loadProfile } from "@/lib/profile-storage";
 import { openPdfPreview } from "@/components/PdfPreviewModal";
 import { CoverLetterDocument, CvDocument } from "@/lib/pdf-documents";
-import { downloadCoverLetterPdf, downloadCvPdf } from "@/lib/download-pdf";
+import { downloadCoverLetterPdf, downloadCvPdf, buildFilename } from "@/lib/download-pdf";
 import { buildMailtoUrl } from "@/lib/email-utils";
-import { detectDevice } from "@/lib/device";
+import { detectDevice, isMobileDevice } from "@/lib/device";
 import { navigate } from "@/lib/navigate";
+import { generateValidatedBlob } from "@/lib/pdf-blob";
 
 interface EmailDraftProps {
   subject: string;
@@ -52,6 +53,7 @@ export default function EmailDraft({ subject, body, coverLetter, cv, template, c
   const [recipient, setRecipient] = useState(extractedEmail ?? "");
   const [showPreview, setShowPreview] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
+  const [guidePdfs, setGuidePdfs] = useState<{ coverLetterUrl: string; cvUrl: string; coverLetterName: string; cvName: string } | null>(null);
 
   const canSend = documentsConfirmed && !!recipient && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recipient);
 
@@ -61,9 +63,28 @@ export default function EmailDraft({ subject, body, coverLetter, cv, template, c
     const profile = loadProfile();
     if (!profile) return;
 
-    // Reihenfolge umgedreht (Barrierefreiheit/Mobile):
-    // (1) zuerst beide PDFs herunterladen, (2) Anleitung sofort zeigen.
-    // Der Sprung ins Mailprogramm passiert erst über einen separaten Button.
+    if (isMobileDevice()) {
+      try {
+        const clBlob = await generateValidatedBlob(
+          React.createElement(CoverLetterDocument, { coverLetter, profile, template, accentColor })
+        );
+        const cvBlob = await generateValidatedBlob(
+          React.createElement(CvDocument, { cv, profile, template, cvStyle, accentColor })
+        );
+        const clName = buildFilename("Anschreiben", profile.name);
+        const cvName = buildFilename("Lebenslauf", profile.name);
+        setGuidePdfs({
+          coverLetterUrl: URL.createObjectURL(new File([clBlob], clName, { type: "application/pdf" })),
+          cvUrl: URL.createObjectURL(new File([cvBlob], cvName, { type: "application/pdf" })),
+          coverLetterName: clName,
+          cvName: cvName,
+        });
+      } catch { /* Guide zeigt trotzdem, Nutzer kann manuell herunterladen */ }
+      setShowPreview(false);
+      setShowGuide(true);
+      return;
+    }
+
     try {
       await downloadCoverLetterPdf(coverLetter, profile, template, accentColor);
       await downloadCvPdf(cv, profile, template, cvStyle, accentColor);
@@ -193,7 +214,7 @@ export default function EmailDraft({ subject, body, coverLetter, cv, template, c
       </div>
 
       {showGuide && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" role="dialog" aria-modal="true" onClick={() => setShowGuide(false)}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" role="dialog" aria-modal="true" onClick={() => { setShowGuide(false); if (guidePdfs) { URL.revokeObjectURL(guidePdfs.coverLetterUrl); URL.revokeObjectURL(guidePdfs.cvUrl); setGuidePdfs(null); } }}>
           <div className="bg-white dark:bg-surface border border-gray-200 dark:border-gray-700 rounded-lg p-6 max-w-md mx-4 space-y-4" onClick={(e) => e.stopPropagation()} data-testid="send-guide-popup">
             <h2 className="text-lg font-bold text-primary dark:text-accent">{t("sendGuideTitle")}</h2>
             <ol className="space-y-3 text-sm text-text/80 list-decimal list-inside">
@@ -208,6 +229,24 @@ export default function EmailDraft({ subject, body, coverLetter, cv, template, c
               {detectDevice() === "desktop" && t("sendGuideHintDesktop")}
             </p>
             <p className="text-xs text-text/50" data-testid="send-guide-disclaimer">{t("sendGuideDisclaimer")}</p>
+            {guidePdfs && (
+              <div className="flex gap-2" data-testid="guide-download-links">
+                <a
+                  href={guidePdfs.coverLetterUrl}
+                  download={guidePdfs.coverLetterName}
+                  className="flex-1 text-center rounded-lg border-2 border-accent text-accent px-3 py-2.5 text-sm font-semibold hover:bg-accent hover:text-white transition min-h-[44px]"
+                >
+                  {t("sendGuideDownloadCoverLetter")}
+                </a>
+                <a
+                  href={guidePdfs.cvUrl}
+                  download={guidePdfs.cvName}
+                  className="flex-1 text-center rounded-lg border-2 border-accent text-accent px-3 py-2.5 text-sm font-semibold hover:bg-accent hover:text-white transition min-h-[44px]"
+                >
+                  {t("sendGuideDownloadCv")}
+                </a>
+              </div>
+            )}
             <div className="flex flex-col gap-3">
               <button
                 type="button"
