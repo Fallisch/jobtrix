@@ -7,7 +7,7 @@ const CSP_DIRECTIVES: Record<string, string> = {
   "font-src": "'self' https://fonts.gstatic.com",
   "img-src": "'self' data: blob:",
   "connect-src": "'self' data: https://cloudflareinsights.com",
-  "frame-src": "https://checkout.stripe.com",
+  "frame-src": "https://checkout.stripe.com blob:",
   "worker-src": "'self' blob:",
   "frame-ancestors": "'none'",
   "form-action": "'self'",

@@ -47,4 +47,14 @@ describe("HTTP-Security-Header", () => {
     const csp = header("Content-Security-Policy")!;
     expect(csp).toContain("worker-src");
   });
+
+  it("erlaubt blob:-Iframes in frame-src für PDF-Vorschau", () => {
+    const csp = header("Content-Security-Policy")!;
+    expect(csp).toMatch(/frame-src[^;]*blob:/);
+  });
+
+  it("behält Stripe-Checkout in frame-src nach blob:-Erweiterung", () => {
+    const csp = header("Content-Security-Policy")!;
+    expect(csp).toMatch(/frame-src[^;]*checkout\.stripe\.com/);
+  });
 });
