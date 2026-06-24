@@ -132,10 +132,10 @@ describe("CvDocument – Modern-Layout (Beispiel-Layout-Stil)", () => {
     expect(screen.getByText("Anna Beispiel")).toBeInTheDocument();
   });
 
-  it("rendert Profildaten im linken Hauptbereich", () => {
+  it("rendert Profildaten im linken Hauptbereich ohne doppelte Persönliche Daten", () => {
     render(<CvDocument cv="Mein moderner Lebenslauf" profile={profile} template="modern" />);
     const content = screen.getByTestId("modern-content");
-    expect(content).toHaveTextContent("Persönliche Daten");
+    expect(content).not.toHaveTextContent("Persönliche Daten");
     expect(content).toHaveTextContent("HU Berlin");
   });
 

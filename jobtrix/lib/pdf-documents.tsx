@@ -288,7 +288,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
-    marginBottom: 16,
+    marginBottom: 10,
     paddingBottom: 10,
     borderBottomWidth: 1,
     borderBottomColor: "#1a1a1a",
@@ -377,13 +377,13 @@ const styles = StyleSheet.create({
     color: "#1a1a1a",
   },
   traditionalRecipientBlock: {
-    marginBottom: 24,
+    marginBottom: 12,
     minHeight: 60,
   },
   traditionalDateRow: {
     fontSize: 9.5,
     color: "#374151",
-    marginBottom: 14,
+    marginBottom: 10,
     textAlign: "right",
   },
   traditionalSubject: {
@@ -719,6 +719,43 @@ function isAllCapsHeading(line: string): boolean {
   );
 }
 
+function stripPersonalData(text: string, profile: ProfileData): string {
+  const tokens: string[] = [];
+  if (profile.name) tokens.push(...profile.name.split(/\s+/).filter(Boolean));
+  if (profile.address) tokens.push(...profile.address.split(/[,\s]+/).filter((t) => t.length > 2));
+  if (profile.email) tokens.push(profile.email);
+  if (profile.phone) tokens.push(profile.phone.replace(/\s+/g, ""));
+  if (profile.birthdate) {
+    tokens.push(profile.birthdate);
+    const d = formatDate(profile.birthdate);
+    if (d) tokens.push(d);
+  }
+  if (tokens.length === 0) return text;
+
+  const lines = text.split("\n");
+  let firstContentLine = 0;
+  for (let i = 0; i < Math.min(lines.length, 12); i++) {
+    const line = lines[i].trim();
+    if (!line) { firstContentLine = i + 1; continue; }
+    const lower = line.toLowerCase();
+    const matches = tokens.some((t) => lower.includes(t.toLowerCase()));
+    if (matches && line.length < 120) {
+      firstContentLine = i + 1;
+    } else {
+      break;
+    }
+  }
+  return lines.slice(firstContentLine).join("\n").trim();
+}
+
+const GREETING_RE = /^(mit\s+freundlichen\s+gr[üu][ßs]en|herzliche\s+gr[üu][ßs]e|best\s+regards|viele\s+gr[üu][ßs]e|freundliche\s+gr[üu][ßs]e)/i;
+const DATE_LINE_RE = /^[A-ZÄÖÜ][a-zäöüß]+,?\s+(den\s+)?\d{1,2}\.\s?\d{1,2}\.\s?\d{2,4}/;
+const SUBJECT_RE = /^Bewerbung\s+(als|um|für)\s/i;
+
+function needsDoubleSpacing(trimmed: string): boolean {
+  return GREETING_RE.test(trimmed) || DATE_LINE_RE.test(trimmed) || SUBJECT_RE.test(trimmed);
+}
+
 function renderTextBlocks(text: string, variant: "classic" | "modern" | "traditional" | "accent" | "creative" = "classic") {
   const headingStyle =
     variant === "modern" ? styles.modernSectionHeading
@@ -733,19 +770,22 @@ function renderTextBlocks(text: string, variant: "classic" | "modern" | "traditi
     : variant === "creative" ? styles.creativeParagraph
     : styles.paragraph;
 
+  const applySpacing = variant !== "traditional";
+
   const blocks = text.split(/\n{2,}/);
   return blocks.map((block, i) => {
     const trimmed = block.trim();
     if (!trimmed) return null;
+    const extraMargin = applySpacing && i > 0 && needsDoubleSpacing(trimmed) ? { marginTop: 14 } : undefined;
     if (isAllCapsHeading(trimmed)) {
       return (
-        <Text key={i} style={headingStyle}>
+        <Text key={i} style={extraMargin ? { ...headingStyle, ...extraMargin } : headingStyle}>
           {trimmed}
         </Text>
       );
     }
     return (
-      <Text key={i} style={paragraphStyle}>
+      <Text key={i} style={extraMargin ? { ...paragraphStyle, ...extraMargin } : paragraphStyle}>
         {trimmed}
       </Text>
     );
@@ -861,7 +901,7 @@ function AccentTimelineEntry({
   testId: string;
 }) {
   return (
-    <View style={styles.accentTimelineEntry} {...{ "data-testid": testId }}>
+    <View wrap={false} style={styles.accentTimelineEntry} {...{ "data-testid": testId }}>
       <Text style={{ ...styles.accentTimelineMarker, color: accentColor }}>{">"}</Text>
       <View style={styles.accentTimelineContent}>
         <Text style={styles.accentTimelinePeriod}>{period}</Text>
@@ -1014,7 +1054,7 @@ function CreativeTimelineEntry({
   testId: string;
 }) {
   return (
-    <View style={styles.creativeTimelineEntry} {...{ "data-testid": testId }}>
+    <View wrap={false} style={styles.creativeTimelineEntry} {...{ "data-testid": testId }}>
       <View style={styles.creativeTimelineIcon}>
         <CreativeIcon kind={icon} color="#374151" size={13} />
       </View>
@@ -1046,7 +1086,7 @@ export function CoverLetterDocument({ coverLetter, profile, template = "classic"
           <ModernSidebar profile={profile} sidebarBg={sidebarBg} />
           <View style={styles.modernContent} {...{ "data-testid": "modern-content" }}>
             <Text style={styles.documentLabel}>Anschreiben</Text>
-            {renderTextBlocks(coverLetter, "modern")}
+            {renderTextBlocks(stripPersonalData(coverLetter, profile), "modern")}
           </View>
         </Page>
       </Document>
@@ -1067,7 +1107,7 @@ export function CoverLetterDocument({ coverLetter, profile, template = "classic"
           <View {...{ "data-testid": "traditional-subject" }}>
             <Text style={styles.traditionalSubject}>Betreff: Bewerbung</Text>
           </View>
-          <View>{renderTextBlocks(coverLetter, "traditional")}</View>
+          <View>{renderTextBlocks(stripPersonalData(coverLetter, profile), "traditional")}</View>
         </Page>
       </Document>
     );
@@ -1112,7 +1152,7 @@ export function CoverLetterDocument({ coverLetter, profile, template = "classic"
           <Text style={styles.name}>{profile.name}</Text>
           {profile.address ? <Text style={styles.meta}>{profile.address}</Text> : null}
         </View>
-        <View>{renderTextBlocks(coverLetter)}</View>
+        <View>{renderTextBlocks(stripPersonalData(coverLetter, profile))}</View>
       </Page>
     </Document>
   );
@@ -1168,37 +1208,12 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
             {/* Left column: structured profile data */}
             <View style={styles.cvLeftCol} {...{ "data-testid": "modern-content" }}>
               <Text style={styles.documentLabel}>Lebenslauf</Text>
-              <Text style={styles.cvSectionHeading}>Persönliche Daten</Text>
-              {birthFormatted ? (
-                <View style={styles.cvDataRow}>
-                  <Text style={styles.cvDataLabel}>Geburtsdatum</Text>
-                  <Text style={styles.cvDataValue}>{birthFormatted}</Text>
-                </View>
-              ) : null}
-              {profile.address ? (
-                <View style={styles.cvDataRow}>
-                  <Text style={styles.cvDataLabel}>Adresse</Text>
-                  <Text style={styles.cvDataValue}>{profile.address}</Text>
-                </View>
-              ) : null}
-              {profile.email ? (
-                <View style={styles.cvDataRow}>
-                  <Text style={styles.cvDataLabel}>E-Mail</Text>
-                  <Text style={styles.cvDataValue}>{profile.email}</Text>
-                </View>
-              ) : null}
-              {profile.phone ? (
-                <View style={styles.cvDataRow}>
-                  <Text style={styles.cvDataLabel}>Telefon</Text>
-                  <Text style={styles.cvDataValue}>{profile.phone}</Text>
-                </View>
-              ) : null}
 
               {experience?.length > 0 && (
                 <>
-                  <Text style={styles.cvSectionHeading}>Berufserfahrung</Text>
+                  <Text style={styles.cvSectionHeading} minPresenceAhead={40}>Berufserfahrung</Text>
                   {experience.map((exp, i) => (
-                    <View key={i} style={styles.cvExpEntry} {...{ "data-testid": "modern-exp-entry" }}>
+                    <View key={i} wrap={false} style={styles.cvExpEntry} {...{ "data-testid": "modern-exp-entry" }}>
                       <Text style={styles.cvExpPeriod}>{exp.period}</Text>
                       <Text style={styles.cvExpPosition}>{exp.position}</Text>
                       <Text style={styles.cvExpCompany}>{exp.company}</Text>
@@ -1216,9 +1231,9 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
 
               {education?.length > 0 && (
                 <>
-                  <Text style={styles.cvSectionHeading}>Ausbildung</Text>
+                  <Text style={styles.cvSectionHeading} minPresenceAhead={40}>Ausbildung</Text>
                   {education.map((edu, i) => (
-                    <View key={i} style={styles.cvEduEntry} {...{ "data-testid": "modern-edu-entry" }}>
+                    <View key={i} wrap={false} style={styles.cvEduEntry} {...{ "data-testid": "modern-edu-entry" }}>
                       <Text style={styles.cvEduYear}>{edu.year}</Text>
                       <Text style={styles.cvEduDegree}>{edu.degree}</Text>
                       <Text style={styles.cvEduInstitution}>{edu.institution}</Text>
@@ -1263,10 +1278,10 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
 
           {experience?.length > 0 && (
             <>
-              <Text style={styles.traditionalSectionHeading}>Berufserfahrung</Text>
+              <Text style={styles.traditionalSectionHeading} minPresenceAhead={40}>Berufserfahrung</Text>
               <View style={styles.traditionalTable} {...{ "data-testid": "traditional-exp-table" }}>
                 {experience.map((exp, i) => (
-                  <View key={i} style={styles.traditionalTableRow} {...{ "data-testid": "traditional-exp-row" }}>
+                  <View key={i} wrap={false} style={styles.traditionalTableRow} {...{ "data-testid": "traditional-exp-row" }}>
                     <Text style={styles.traditionalCellPeriod}>{exp.period}</Text>
                     <View style={styles.traditionalCellContent}>
                       <Text style={styles.traditionalCellTitle}>{exp.position}</Text>
@@ -1287,10 +1302,10 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
 
           {education?.length > 0 && (
             <>
-              <Text style={styles.traditionalSectionHeading}>Ausbildung</Text>
+              <Text style={styles.traditionalSectionHeading} minPresenceAhead={40}>Ausbildung</Text>
               <View style={styles.traditionalTable} {...{ "data-testid": "traditional-edu-table" }}>
                 {education.map((edu, i) => (
-                  <View key={i} style={styles.traditionalTableRow} {...{ "data-testid": "traditional-edu-row" }}>
+                  <View key={i} wrap={false} style={styles.traditionalTableRow} {...{ "data-testid": "traditional-edu-row" }}>
                     <Text style={styles.traditionalCellPeriod}>{edu.year}</Text>
                     <View style={styles.traditionalCellContent}>
                       <Text style={styles.traditionalCellTitle}>{edu.degree}</Text>
@@ -1343,7 +1358,7 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
             <View style={styles.accentLeftCol} {...{ "data-testid": "accent-content" }}>
               {experience?.length > 0 && (
                 <>
-                  <Text style={{ ...styles.accentSectionHeading, color }}>Berufserfahrung</Text>
+                  <Text style={{ ...styles.accentSectionHeading, color }} minPresenceAhead={40}>Berufserfahrung</Text>
                   {experience.map((exp, i) => (
                     <AccentTimelineEntry
                       key={i}
@@ -1360,7 +1375,7 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
 
               {education?.length > 0 && (
                 <>
-                  <Text style={{ ...styles.accentSectionHeading, color }}>Ausbildung</Text>
+                  <Text style={{ ...styles.accentSectionHeading, color }} minPresenceAhead={40}>Ausbildung</Text>
                   {education.map((edu, i) => (
                     <AccentTimelineEntry
                       key={i}
@@ -1430,7 +1445,7 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
 
             {experience?.length > 0 && (
               <>
-                <View style={styles.creativeSectionHeading}>
+                <View minPresenceAhead={40} style={styles.creativeSectionHeading}>
                   <View style={styles.creativeSectionHeadingIcon}>
                     <CreativeIcon kind="briefcase" color={color} size={14} />
                   </View>
@@ -1452,7 +1467,7 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
 
             {education?.length > 0 && (
               <>
-                <View style={styles.creativeSectionHeading}>
+                <View minPresenceAhead={40} style={styles.creativeSectionHeading}>
                   <View style={styles.creativeSectionHeadingIcon}>
                     <CreativeIcon kind="graduation" color={color} size={14} />
                   </View>
@@ -1485,7 +1500,7 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
           <Text style={styles.name}>{profile.name}</Text>
           {profile.address ? <Text style={styles.meta}>{profile.address}</Text> : null}
         </View>
-        <View>{renderTextBlocks(cv)}</View>
+        <View>{renderTextBlocks(stripPersonalData(cv, profile))}</View>
       </Page>
     </Document>
   );
