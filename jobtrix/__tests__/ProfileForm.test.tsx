@@ -353,6 +353,18 @@ describe("ProfileForm", () => {
     });
   });
 
+  describe("Foto-Hinweis", () => {
+    it("zeigt keinen Hintergrund-entfernen-Button", () => {
+      render(<ProfileForm />);
+      expect(screen.queryByTestId("remove-bg-button")).not.toBeInTheDocument();
+    });
+
+    it("zeigt einen Foto-Tipp im Upload-Bereich", () => {
+      render(<ProfileForm />);
+      expect(screen.getByTestId("photo-tip")).toBeInTheDocument();
+    });
+  });
+
   describe("Speicherfehler", () => {
     it("zeigt Fehlermeldung wenn das Speichern per API fehlschlägt", async () => {
       const user = userEvent.setup();
