@@ -67,7 +67,7 @@ describe("PdfPreviewHost (mobile)", () => {
       await openPdfPreview(sampleDoc, "Anschreiben_Schieck_Falk.pdf");
     });
 
-    expect(await screen.findByTestId("pdf-preview-download")).toHaveAttribute("download", "Anschreiben_Schieck_Falk.pdf");
+    expect(await screen.findByTestId("pdf-preview-download")).toBeInTheDocument();
     expect(screen.getByTestId("pdf-preview-newtab")).toHaveAttribute("href", "blob:preview-url");
   });
 
@@ -83,6 +83,71 @@ describe("PdfPreviewHost (mobile)", () => {
     await waitFor(() => {
       expect(screen.queryByTestId("pdf-preview-modal")).not.toBeInTheDocument();
     });
+  });
+
+  it("pusht einen History-Eintrag beim Öffnen des Modals", async () => {
+    const pushStateSpy = jest.spyOn(history, "pushState");
+    render(<PdfPreviewHost />);
+    await act(async () => {
+      await openPdfPreview(sampleDoc);
+    });
+
+    expect(pushStateSpy).toHaveBeenCalledWith({ pdfPreviewModal: true }, "");
+    pushStateSpy.mockRestore();
+  });
+
+  it("schließt das Modal bei Browser-Zurück-Taste (popstate)", async () => {
+    render(<PdfPreviewHost />);
+    await act(async () => {
+      await openPdfPreview(sampleDoc);
+    });
+    expect(await screen.findByTestId("pdf-preview-modal")).toBeInTheDocument();
+
+    act(() => {
+      window.dispatchEvent(new PopStateEvent("popstate"));
+    });
+
+    await waitFor(() => {
+      expect(screen.queryByTestId("pdf-preview-modal")).not.toBeInTheDocument();
+    });
+  });
+
+  it("nutzt navigator.share() auf Mobile beim Download statt <a download>", async () => {
+    const shareSpy = jest.fn().mockResolvedValue(undefined);
+    const canShareSpy = jest.fn().mockReturnValue(true);
+    Object.defineProperty(navigator, "share", { value: shareSpy, configurable: true });
+    Object.defineProperty(navigator, "canShare", { value: canShareSpy, configurable: true });
+
+    render(<PdfPreviewHost />);
+    await act(async () => {
+      await openPdfPreview(sampleDoc, "Test.pdf");
+    });
+    await screen.findByTestId("pdf-preview-download");
+
+    fireEvent.click(screen.getByTestId("pdf-preview-download"));
+
+    await waitFor(() => {
+      expect(canShareSpy).toHaveBeenCalled();
+      expect(shareSpy).toHaveBeenCalled();
+      const shareArg = shareSpy.mock.calls[0][0];
+      expect(shareArg.files).toHaveLength(1);
+      expect(shareArg.files[0].name).toBe("Test.pdf");
+    });
+  });
+
+  it("ruft history.back() beim Schließen per Button auf um den History-Eintrag aufzuräumen", async () => {
+    const backSpy = jest.spyOn(history, "back").mockImplementation(() => {});
+    Object.defineProperty(history, "state", { value: { pdfPreviewModal: true }, configurable: true });
+    render(<PdfPreviewHost />);
+    await act(async () => {
+      await openPdfPreview(sampleDoc);
+    });
+
+    fireEvent.click(screen.getByTestId("pdf-preview-close"));
+
+    expect(backSpy).toHaveBeenCalled();
+    backSpy.mockRestore();
+    Object.defineProperty(history, "state", { value: null, configurable: true });
   });
 });
 

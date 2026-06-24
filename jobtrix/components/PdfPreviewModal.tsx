@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { isMobileDevice } from "@/lib/device";
 import { generateValidatedBlob } from "@/lib/pdf-blob";
@@ -76,7 +76,9 @@ export function PdfPreviewHost() {
   const [doc, setDoc] = useState<React.ReactElement | null>(currentState.doc);
   const [filename, setFilename] = useState(currentState.filename);
   const [url, setUrl] = useState<string | null>(null);
+  const [blob, setBlob] = useState<Blob | null>(null);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
+  const historyPushedRef = useRef(false);
 
   useEffect(() => {
     const listener: Listener = (state) => {
@@ -90,8 +92,26 @@ export function PdfPreviewHost() {
   }, []);
 
   useEffect(() => {
+    if (!doc) return;
+
+    history.pushState({ pdfPreviewModal: true }, "");
+    historyPushedRef.current = true;
+
+    const onPopState = () => {
+      historyPushedRef.current = false;
+      setPreviewDoc(null);
+    };
+
+    window.addEventListener("popstate", onPopState);
+    return () => {
+      window.removeEventListener("popstate", onPopState);
+    };
+  }, [doc]);
+
+  useEffect(() => {
     if (!doc) {
       setUrl(null);
+      setBlob(null);
       setStatus("loading");
       return;
     }
@@ -99,11 +119,13 @@ export function PdfPreviewHost() {
     let objectUrl: string | null = null;
     setStatus("loading");
     setUrl(null);
+    setBlob(null);
     generateValidatedBlob(doc)
-      .then((blob) => {
+      .then((b) => {
         if (!active) return;
-        objectUrl = URL.createObjectURL(blob);
+        objectUrl = URL.createObjectURL(b);
         setUrl(objectUrl);
+        setBlob(b);
         setStatus("ready");
       })
       .catch(() => {
@@ -118,6 +140,10 @@ export function PdfPreviewHost() {
   if (!doc) return null;
 
   function close() {
+    if (historyPushedRef.current) {
+      historyPushedRef.current = false;
+      history.back();
+    }
     setPreviewDoc(null);
   }
 
@@ -134,14 +160,25 @@ export function PdfPreviewHost() {
         <div className="flex items-center gap-2">
           {url && (
             <>
-              <a
-                href={url}
-                download={filename}
+              <button
+                type="button"
+                onClick={async () => {
+                  if (isMobileDevice() && blob) {
+                    const file = new File([blob], filename, { type: "application/pdf" });
+                    if (navigator.canShare?.({ files: [file] })) {
+                      try {
+                        await navigator.share({ files: [file] });
+                        return;
+                      } catch { /* user cancelled or failed → fall through */ }
+                    }
+                  }
+                  triggerDownload(url, filename);
+                }}
                 data-testid="pdf-preview-download"
                 className="rounded-full border border-accent text-accent px-3.5 py-1.5 text-sm font-semibold hover:bg-accent hover:text-white transition min-h-[44px] inline-flex items-center"
               >
                 {t("pdfPreviewDownload")}
-              </a>
+              </button>
               <a
                 href={url}
                 target="_blank"
