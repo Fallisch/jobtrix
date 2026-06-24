@@ -128,6 +128,17 @@ describe("buildPrompt – E-Mail-Sektion", () => {
     expect(prompt).not.toMatch(/arbeitsform|bevorzugte.*remote|bevorzugte.*hybrid/i);
   });
 
+  it("enthält Bewerber-Hinweise im Prompt wenn vorhanden", () => {
+    const prompt = buildPrompt({ jobPosting: "Stelle", profile: baseProfile, hints: "Gehaltsvorstellung 50.000€ erwähnen" });
+    expect(prompt).toContain("Gehaltsvorstellung 50.000€ erwähnen");
+    expect(prompt).toMatch(/hinweis/i);
+  });
+
+  it("enthält keine Hinweise-Sektion wenn hints leer ist", () => {
+    const prompt = buildPrompt({ jobPosting: "Stelle", profile: baseProfile });
+    expect(prompt).not.toMatch(/zusätzliche hinweise/i);
+  });
+
   it("enthält bei Initiativbewerbung Unternehmensbezug statt Stellenbezug in der E-Mail-Sektion", () => {
     const prompt = buildPrompt({
       jobPosting: "",

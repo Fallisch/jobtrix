@@ -158,6 +158,8 @@
     "initiativbewerbungLabel": "Initiativbewerbung (Bewerbung ohne konkrete Stellenanzeige)",
     "targetCompanyLabel": "Wunschfirma",
     "targetCompanyPlaceholder": "z. B. Musterfirma GmbH",
+    "hintsLabel": "Hinweise für die Bewerbung (optional)",
+    "hintsPlaceholder": "z. B. Gehaltsvorstellung 50.000 € erwähnen, frühester Eintrittstermin: 01.03., bitte Teamfähigkeit betonen",
     "workModeLabel": "Arbeitsform",
     "workModeNone": "Egal",
     "workModeRemote": "Remote",

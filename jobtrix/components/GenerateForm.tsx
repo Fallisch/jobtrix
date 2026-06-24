@@ -68,6 +68,7 @@ export default function GenerateForm() {
   const [pasteText, setPasteText] = useState("");
   const [extractLoadingIndex, setExtractLoadingIndex] = useState<number | null>(null);
   const [showProfileHint, setShowProfileHint] = useState(false);
+  const [hints, setHints] = useState("");
 
   useEffect(() => {
     setHasProfile(loadProfile() !== null);
@@ -114,7 +115,7 @@ export default function GenerateForm() {
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ jobPosting, profile, cvStyle, template: selectedTemplate, accentColor, isInitiativbewerbung, targetCompany }),
+        body: JSON.stringify({ jobPosting, profile, cvStyle, template: selectedTemplate, accentColor, isInitiativbewerbung, targetCompany, hints: hints.trim() || undefined }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -383,6 +384,23 @@ export default function GenerateForm() {
             />
           </div>
         )}
+
+        <div>
+          <label htmlFor="hints" className="block text-sm font-medium text-text mb-1">
+            {t("hintsLabel")}
+          </label>
+          <textarea
+            id="hints"
+            value={hints}
+            onChange={(e) => setHints(e.target.value)}
+            rows={3}
+            maxLength={2000}
+            className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-3 text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent resize-y"
+            placeholder={t("hintsPlaceholder")}
+            aria-label={t("hintsLabel")}
+            data-testid="hints-textarea"
+          />
+        </div>
 
         <div className="flex flex-wrap items-center gap-3">
           <button

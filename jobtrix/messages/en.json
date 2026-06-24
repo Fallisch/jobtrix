@@ -158,6 +158,8 @@
     "initiativbewerbungLabel": "Speculative application (apply without a specific job listing)",
     "targetCompanyLabel": "Target company",
     "targetCompanyPlaceholder": "e.g. Acme Corp",
+    "hintsLabel": "Notes for the application (optional)",
+    "hintsPlaceholder": "e.g. mention salary expectation of 50,000 €, earliest start date: March 1st, emphasize teamwork skills",
     "workModeLabel": "Work mode",
     "workModeNone": "Any",
     "workModeRemote": "Remote",

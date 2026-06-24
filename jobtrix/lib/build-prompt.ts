@@ -12,10 +12,11 @@ export interface GenerateRequest {
   isInitiativbewerbung?: boolean;
   targetCompany?: string;
   workMode?: "remote" | "homeoffice" | "hybrid" | "onsite";
+  hints?: string;
 }
 
 export function buildPrompt(req: GenerateRequest): string {
-  const { jobPosting, companyName, contactPerson, profile, cvStyle, isInitiativbewerbung, targetCompany, workMode } = req;
+  const { jobPosting, companyName, contactPerson, profile, cvStyle, isInitiativbewerbung, targetCompany, workMode, hints } = req;
 
   const workModeLabels: Record<string, string> = {
     remote: "Remote",
@@ -73,7 +74,7 @@ ${profile.interests.length > 0 ? `Persönliche Interessen: ${interestsText}` : "
 ${effectiveCompany ? `Unternehmen: ${effectiveCompany}` : ""}
 ${contactPerson ? `Ansprechpartner: ${contactPerson}` : ""}
 
-${jobSection}${workModeHint}
+${jobSection}${workModeHint}${hints ? `\nZusätzliche Hinweise des Bewerbers:\n${hints}` : ""}
 
 ${cvStyle === "american" ? "Sortiere Berufserfahrung und Ausbildung antichronologisch – neuester Eintrag zuerst.\n\n" : ""}Schreibstil – halte diese Regeln strikt ein:
 - Verwende eine natürliche, leicht unregelmäßige Satzstruktur: variiere Satzlänge und Satzbau bewusst, mische kurze Sätze mit längeren.

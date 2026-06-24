@@ -59,6 +59,7 @@ export const generateRequestSchema = z.object({
   isInitiativbewerbung: z.boolean().optional(),
   targetCompany: z.string().max(500).optional(),
   workMode: z.enum(["remote", "homeoffice", "hybrid", "onsite"]).optional(),
+  hints: z.string().max(2000).optional(),
 });
 
 export const sendEmailSchema = z.object({
