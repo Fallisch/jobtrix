@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import GenerateForm from "@/components/GenerateForm";
-import { pdf } from "@react-pdf/renderer";
+import { generateValidatedBlob } from "@/lib/pdf-blob";
 
 jest.mock("next-intl", () => ({
   useTranslations: () => (key: string) => key,
@@ -10,6 +10,13 @@ jest.mock("next-intl", () => ({
 jest.mock("next/navigation", () => ({
   useRouter: () => ({ push: jest.fn() }),
   useParams: () => ({ locale: "de" }),
+}));
+
+jest.mock("@/lib/pdf-blob", () => ({
+  generateValidatedBlob: jest.fn().mockResolvedValue(
+    new Blob(["x".repeat(2000)], { type: "application/pdf" })
+  ),
+  EmptyPdfError: class EmptyPdfError extends Error {},
 }));
 
 global.fetch = jest.fn();
@@ -26,7 +33,7 @@ const mockProfile = {
 
 beforeEach(() => {
   (global.fetch as jest.Mock).mockReset();
-  (pdf as jest.Mock).mockClear();
+  (generateValidatedBlob as jest.Mock).mockClear();
   localStorage.clear();
   localStorage.setItem("jobtrix_profile", JSON.stringify(mockProfile));
 
@@ -84,7 +91,7 @@ describe("PDF-Download-Verhalten", () => {
     fireEvent.click(screen.getByRole("button", { name: /coverLetterPdfButton/i }));
 
     await waitFor(() => {
-      const pdfCall = (pdf as jest.Mock).mock.calls[0]?.[0];
+      const pdfCall = (generateValidatedBlob as jest.Mock).mock.calls[0]?.[0];
       expect(JSON.stringify(pdfCall)).toContain("Bearbeiteter Inhalt");
     });
   });
@@ -111,7 +118,7 @@ describe("PDF-Download-Verhalten", () => {
     fireEvent.click(screen.getByRole("button", { name: /coverLetterPdfButton/i }));
 
     await waitFor(() => {
-      const pdfCall = (pdf as jest.Mock).mock.calls[0]?.[0];
+      const pdfCall = (generateValidatedBlob as jest.Mock).mock.calls[0]?.[0];
       expect(JSON.stringify(pdfCall)).toContain("modern");
     });
   });
@@ -124,7 +131,7 @@ describe("PDF-Download-Verhalten", () => {
     fireEvent.click(screen.getByRole("button", { name: /cvPdfButton/i }));
 
     await waitFor(() => {
-      const pdfCall = (pdf as jest.Mock).mock.calls[0]?.[0];
+      const pdfCall = (generateValidatedBlob as jest.Mock).mock.calls[0]?.[0];
       expect(JSON.stringify(pdfCall)).toContain("modern");
     });
   });
@@ -138,7 +145,7 @@ describe("PDF-Download-Verhalten", () => {
     fireEvent.click(screen.getByRole("button", { name: /coverLetterPdfButton/i }));
 
     await waitFor(() => {
-      const pdfCall = (pdf as jest.Mock).mock.calls[0]?.[0];
+      const pdfCall = (generateValidatedBlob as jest.Mock).mock.calls[0]?.[0];
       expect(JSON.stringify(pdfCall)).toContain("#1A5C38");
     });
   });
@@ -152,7 +159,7 @@ describe("PDF-Download-Verhalten", () => {
     fireEvent.click(screen.getByRole("button", { name: /cvPdfButton/i }));
 
     await waitFor(() => {
-      const pdfCall = (pdf as jest.Mock).mock.calls[0]?.[0];
+      const pdfCall = (generateValidatedBlob as jest.Mock).mock.calls[0]?.[0];
       expect(JSON.stringify(pdfCall)).toContain("#5C1A1A");
     });
   });

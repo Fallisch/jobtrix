@@ -1,6 +1,6 @@
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import ApplicationHistoryList from "@/components/ApplicationHistoryList";
-import { pdf } from "@react-pdf/renderer";
+import { generateValidatedBlob } from "@/lib/pdf-blob";
 
 jest.mock("next-intl", () => ({
   useTranslations: () => (key: string) => key,
@@ -8,6 +8,13 @@ jest.mock("next-intl", () => ({
 
 jest.mock("next/navigation", () => ({
   useParams: () => ({ locale: "de" }),
+}));
+
+jest.mock("@/lib/pdf-blob", () => ({
+  generateValidatedBlob: jest.fn().mockResolvedValue(
+    new Blob(["x".repeat(2000)], { type: "application/pdf" })
+  ),
+  EmptyPdfError: class EmptyPdfError extends Error {},
 }));
 
 global.fetch = jest.fn();
@@ -49,7 +56,7 @@ const entries = [
 
 beforeEach(() => {
   (global.fetch as jest.Mock).mockReset();
-  (pdf as jest.Mock).mockClear();
+  (generateValidatedBlob as jest.Mock).mockClear();
   global.URL.createObjectURL = jest.fn(() => "blob:mock-url");
   global.URL.revokeObjectURL = jest.fn();
 });
@@ -111,7 +118,7 @@ describe("ApplicationHistoryList", () => {
       expect(global.URL.createObjectURL).toHaveBeenCalledTimes(2);
     });
 
-    const calls = (pdf as jest.Mock).mock.calls;
+    const calls = (generateValidatedBlob as jest.Mock).mock.calls;
     expect(calls[0][0].props.template).toBe("modern");
     expect(calls[1][0].props.template).toBe("modern");
   });
@@ -133,7 +140,7 @@ describe("ApplicationHistoryList", () => {
       expect(global.URL.createObjectURL).toHaveBeenCalledTimes(2);
     });
 
-    const calls = (pdf as jest.Mock).mock.calls;
+    const calls = (generateValidatedBlob as jest.Mock).mock.calls;
     expect(calls[0][0].props.accentColor).toBe("#1A5C38");
     expect(calls[1][0].props.accentColor).toBe("#1A5C38");
     expect(calls[1][0].props.cvStyle).toBe("american");
