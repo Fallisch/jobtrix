@@ -65,10 +65,8 @@ export default function EmailDraft({ subject, body, coverLetter, cv, template, c
     // (1) zuerst beide PDFs herunterladen, (2) Anleitung sofort zeigen.
     // Der Sprung ins Mailprogramm passiert erst über einen separaten Button.
     try {
-      await Promise.all([
-        downloadCoverLetterPdf(coverLetter, profile, template, accentColor),
-        downloadCvPdf(cv, profile, template, cvStyle, accentColor),
-      ]);
+      await downloadCoverLetterPdf(coverLetter, profile, template, accentColor);
+      await downloadCvPdf(cv, profile, template, cvStyle, accentColor);
     } finally {
       setShowPreview(false);
       setShowGuide(true);
@@ -209,6 +207,7 @@ export default function EmailDraft({ subject, body, coverLetter, cv, template, c
               {detectDevice() === "ios" && t("sendGuideHintIOS")}
               {detectDevice() === "desktop" && t("sendGuideHintDesktop")}
             </p>
+            <p className="text-xs text-text/50" data-testid="send-guide-disclaimer">{t("sendGuideDisclaimer")}</p>
             <div className="flex flex-col gap-3">
               <button
                 type="button"

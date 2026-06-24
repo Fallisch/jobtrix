@@ -246,6 +246,7 @@
     "sendGuideHintAndroid": "Tippe auf das Büroklammer-Symbol, um die PDFs anzuhängen",
     "sendGuideHintIOS": "Tippe auf das Anhang-Symbol, um die PDFs anzuhängen",
     "sendGuideHintDesktop": "Ziehe die Dateien in das E-Mail-Fenster oder klicke auf Anhang hinzufügen",
+    "sendGuideDisclaimer": "Hinweis: Die Absendung der E-Mail und die Richtigkeit der Inhalte liegen in der Verantwortung des Verfassers.",
     "sendGuideOpenMail": "Jetzt E-Mail-Programm öffnen",
     "sendGuideOk": "Verstanden",
     "profileHintTitle": "Profil unvollständig",

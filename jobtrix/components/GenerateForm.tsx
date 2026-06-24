@@ -240,13 +240,14 @@ export default function GenerateForm() {
               className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-2.5 text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent"
             />
             <div className="flex items-center gap-3">
-              <span className="text-sm text-text/60 whitespace-nowrap">{t("jobSearchRadiusLabel")}:</span>
+              <span className={`text-sm whitespace-nowrap ${jobSearchLocation.trim() ? "text-text/60" : "text-text/30"}`}>{t("jobSearchRadiusLabel")}:</span>
               <select
                 id="jobSearchRadius"
                 value={jobSearchRadius}
                 onChange={(e) => setJobSearchRadius(e.target.value)}
+                disabled={!jobSearchLocation.trim()}
                 aria-label={t("jobSearchRadiusLabel")}
-                className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-2.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-accent"
+                className={`rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent ${jobSearchLocation.trim() ? "text-text" : "text-text/30 opacity-50 cursor-not-allowed"}`}
               >
                 <option value="0">0 km</option>
                 <option value="5">5 km</option>

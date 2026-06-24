@@ -812,6 +812,7 @@ describe("GenerateForm", () => {
       const radiusSelect = screen.getByRole("combobox", { name: /jobSearchRadiusLabel/i });
       expect(radiusSelect).toHaveValue("25");
 
+      await userEvent.type(screen.getByRole("textbox", { name: /jobSearchLocationLabel/i }), "Berlin");
       await userEvent.selectOptions(radiusSelect, "50");
       await userEvent.type(screen.getByRole("textbox", { name: /jobSearchQueryLabel/i }), "Entwickler");
       fireEvent.click(screen.getByRole("button", { name: /jobSearchButton/i }));

@@ -246,6 +246,7 @@
     "sendGuideHintAndroid": "Tap the paperclip icon to attach the PDFs",
     "sendGuideHintIOS": "Tap the attachment icon to attach the PDFs",
     "sendGuideHintDesktop": "Drag the files into the email window or click Add attachment",
+    "sendGuideDisclaimer": "Note: Sending the email and the accuracy of its contents are the responsibility of the sender.",
     "sendGuideOpenMail": "Open email app now",
     "sendGuideOk": "Got it",
     "profileHintTitle": "Profile incomplete",
