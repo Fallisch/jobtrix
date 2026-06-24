@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { pdf } from "@react-pdf/renderer";
 import { isMobileDevice } from "@/lib/device";
 import { generateValidatedBlob } from "@/lib/pdf-blob";
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { ProfileData } from "@/lib/profile-storage";
 import { CoverLetterDocument, CvDocument } from "@/lib/pdf-documents";
-import { generateValidatedBlob, EmptyPdfError } from "@/lib/pdf-blob";
+import { generateValidatedBlob } from "@/lib/pdf-blob";
 
 export function buildFilename(prefix: string, name: string): string {
   const trimmed = name.trim();
@@ -29,8 +29,6 @@ async function triggerDownload(element: React.ReactElement, filename: string) {
     URL.revokeObjectURL(url);
   }, 500);
 }
-
-export { EmptyPdfError } from "@/lib/pdf-blob";
 
 export async function downloadCoverLetterPdf(coverLetter: string, profile: ProfileData, template: "classic" | "modern" | "traditional" | "accent" | "creative" = "classic", accentColor?: string) {
   await triggerDownload(
