@@ -3,14 +3,21 @@ import { pdf } from "@react-pdf/renderer";
 import { ProfileData } from "@/lib/profile-storage";
 import { CoverLetterDocument, CvDocument } from "@/lib/pdf-documents";
 
-function buildFilename(prefix: string, name: string): string {
-  const sanitized = name.trim().replace(/\s+/g, "_").replace(/[^a-zA-ZäöüÄÖÜß_-]/g, "");
-  return sanitized ? `${prefix}_${sanitized}.pdf` : `${prefix}.pdf`;
+export function buildFilename(prefix: string, name: string): string {
+  const trimmed = name.trim();
+  if (!trimmed) return `${prefix}.pdf`;
+  const parts = trimmed.split(/\s+/).map((p) => p.replace(/[^a-zA-ZäöüÄÖÜß-]/g, "")).filter(Boolean);
+  if (parts.length === 0) return `${prefix}.pdf`;
+  if (parts.length === 1) return `${prefix}_${parts[0]}.pdf`;
+  const nachname = parts[parts.length - 1];
+  const vorname = parts.slice(0, -1).join("_");
+  return `${prefix}_${nachname}_${vorname}.pdf`;
 }
 
 async function triggerDownload(element: React.ReactElement, filename: string) {
   const blob = await pdf(element).toBlob();
-  const url = URL.createObjectURL(blob);
+  const file = new File([blob], filename, { type: "application/pdf" });
+  const url = URL.createObjectURL(file);
   const a = document.createElement("a");
   a.href = url;
   a.download = filename;

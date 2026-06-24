@@ -49,8 +49,14 @@ interface SendApplicationEmailParams {
 
 function buildFilename(prefix: string, name?: string): string {
   if (!name) return `${prefix}.pdf`;
-  const sanitized = name.trim().replace(/\s+/g, "_").replace(/[^a-zA-ZäöüÄÖÜß_-]/g, "");
-  return sanitized ? `${prefix}_${sanitized}.pdf` : `${prefix}.pdf`;
+  const trimmed = name.trim();
+  if (!trimmed) return `${prefix}.pdf`;
+  const parts = trimmed.split(/\s+/).map((p) => p.replace(/[^a-zA-ZäöüÄÖÜß-]/g, "")).filter(Boolean);
+  if (parts.length === 0) return `${prefix}.pdf`;
+  if (parts.length === 1) return `${prefix}_${parts[0]}.pdf`;
+  const nachname = parts[parts.length - 1];
+  const vorname = parts.slice(0, -1).join("_");
+  return `${prefix}_${nachname}_${vorname}.pdf`;
 }
 
 export async function sendApplicationEmail({ to, replyTo, subject, text, coverLetterBase64, cvBase64, applicantName }: SendApplicationEmailParams): Promise<boolean> {

@@ -5,22 +5,27 @@ import { useTranslations } from "next-intl";
 import { pdf } from "@react-pdf/renderer";
 import { isMobileDevice } from "@/lib/device";
 
-type Listener = (doc: React.ReactElement | null) => void;
+interface PreviewState {
+  doc: React.ReactElement | null;
+  filename: string;
+}
 
-let currentDoc: React.ReactElement | null = null;
+type Listener = (state: PreviewState) => void;
+
+let currentState: PreviewState = { doc: null, filename: "Vorschau.pdf" };
 const listeners = new Set<Listener>();
 
 function emit() {
-  listeners.forEach((l) => l(currentDoc));
+  listeners.forEach((l) => l(currentState));
 }
 
-function setPreviewDoc(doc: React.ReactElement | null) {
-  currentDoc = doc;
+function setPreviewDoc(doc: React.ReactElement | null, filename = "Vorschau.pdf") {
+  currentState = { doc, filename };
   emit();
 }
 
 export function closePdfPreview() {
-  setPreviewDoc(null);
+  setPreviewDoc(null, "Vorschau.pdf");
 }
 
 function triggerDownload(url: string, filename: string) {
@@ -42,9 +47,9 @@ function triggerDownload(url: string, filename: string) {
  * - Desktop: weiterhin neuer Tab (wie bisher). Wird das Popup blockiert, greift
  *   als Fallback dasselbe In-App-Modal (kein stiller Fehlschlag).
  */
-export async function openPdfPreview(document: React.ReactElement) {
+export async function openPdfPreview(document: React.ReactElement, filename = "Vorschau.pdf") {
   if (isMobileDevice()) {
-    setPreviewDoc(document);
+    setPreviewDoc(document, filename);
     return;
   }
 
@@ -58,22 +63,26 @@ export async function openPdfPreview(document: React.ReactElement) {
       return;
     }
     // Popup blockiert → Download anstoßen und In-App-Modal als Rückmeldung zeigen.
-    triggerDownload(url, "Vorschau.pdf");
-    setPreviewDoc(document);
+    triggerDownload(url, filename);
+    setPreviewDoc(document, filename);
   } catch {
     win?.close();
-    setPreviewDoc(document);
+    setPreviewDoc(document, filename);
   }
 }
 
 export function PdfPreviewHost() {
   const t = useTranslations("generate");
-  const [doc, setDoc] = useState<React.ReactElement | null>(currentDoc);
+  const [doc, setDoc] = useState<React.ReactElement | null>(currentState.doc);
+  const [filename, setFilename] = useState(currentState.filename);
   const [url, setUrl] = useState<string | null>(null);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
 
   useEffect(() => {
-    const listener: Listener = (next) => setDoc(next);
+    const listener: Listener = (state) => {
+      setDoc(state.doc);
+      setFilename(state.filename);
+    };
     listeners.add(listener);
     return () => {
       listeners.delete(listener);
@@ -128,7 +137,7 @@ export function PdfPreviewHost() {
             <>
               <a
                 href={url}
-                download="Vorschau.pdf"
+                download={filename}
                 data-testid="pdf-preview-download"
                 className="rounded-full border border-accent text-accent px-3.5 py-1.5 text-sm font-semibold hover:bg-accent hover:text-white transition min-h-[44px] inline-flex items-center"
               >

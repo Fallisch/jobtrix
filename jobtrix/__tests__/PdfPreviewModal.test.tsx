@@ -54,13 +54,13 @@ describe("PdfPreviewHost (mobile)", () => {
     openSpy.mockRestore();
   });
 
-  it("bietet einen Download- und Neuer-Tab-Fallback im Modal", async () => {
+  it("bietet einen Download- und Neuer-Tab-Fallback im Modal mit echtem Dateinamen", async () => {
     render(<PdfPreviewHost />);
     await act(async () => {
-      await openPdfPreview(sampleDoc);
+      await openPdfPreview(sampleDoc, "Anschreiben_Schieck_Falk.pdf");
     });
 
-    expect(await screen.findByTestId("pdf-preview-download")).toHaveAttribute("download", "Vorschau.pdf");
+    expect(await screen.findByTestId("pdf-preview-download")).toHaveAttribute("download", "Anschreiben_Schieck_Falk.pdf");
     expect(screen.getByTestId("pdf-preview-newtab")).toHaveAttribute("href", "blob:preview-url");
   });
 

@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { useRouter, useParams } from "next/navigation";
 import { loadProfile, saveProfile } from "@/lib/profile-storage";
 import EmailDraft from "@/components/EmailDraft";
-import { downloadCoverLetterPdf, downloadCvPdf } from "@/lib/download-pdf";
+import { downloadCoverLetterPdf, downloadCvPdf, buildFilename } from "@/lib/download-pdf";
 import { extractEmail } from "@/lib/email-utils";
 import LayoutPreview from "@/components/LayoutPreview";
 import { openPdfPreview, PdfPreviewHost } from "@/components/PdfPreviewModal";
@@ -494,7 +494,7 @@ export default function GenerateForm() {
                 <button
                   onClick={() => {
                     const profile = loadProfile();
-                    if (profile) openPdfPreview(React.createElement(CoverLetterDocument, { coverLetter: editedCoverLetter, profile, template: selectedTemplate, accentColor }));
+                    if (profile) openPdfPreview(React.createElement(CoverLetterDocument, { coverLetter: editedCoverLetter, profile, template: selectedTemplate, accentColor }), buildFilename("Anschreiben", profile.name));
                   }}
                   className="rounded-full border border-gray-300 dark:border-gray-600 text-text/60 px-3.5 py-1.5 text-sm font-semibold hover:border-accent hover:text-accent transition"
                   aria-label={t("pdfPreviewButton")}
@@ -554,7 +554,7 @@ export default function GenerateForm() {
                 <button
                   onClick={() => {
                     const profile = loadProfile();
-                    if (profile) openPdfPreview(React.createElement(CvDocument, { cv: editedCv, profile, template: selectedTemplate, cvStyle, accentColor }));
+                    if (profile) openPdfPreview(React.createElement(CvDocument, { cv: editedCv, profile, template: selectedTemplate, cvStyle, accentColor }), buildFilename("Lebenslauf", profile.name));
                   }}
                   className="rounded-full border border-gray-300 dark:border-gray-600 text-text/60 px-3.5 py-1.5 text-sm font-semibold hover:border-accent hover:text-accent transition"
                   aria-label={t("pdfPreviewButton")}
