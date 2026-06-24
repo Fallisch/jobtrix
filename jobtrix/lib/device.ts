@@ -13,5 +13,9 @@ export function detectDevice(): DeviceKind {
 }
 
 export function isMobileDevice(): boolean {
-  return detectDevice() !== "desktop";
+  if (detectDevice() !== "desktop") return true;
+  if (typeof navigator === "undefined") return false;
+  const ua = navigator.userAgent.toLowerCase();
+  // WebView-Browser, die blob:-URLs in neuen Tabs nicht unterstützen
+  return /duckduckgo|fbav|fban|instagram|line\/|snapchat/i.test(ua);
 }
