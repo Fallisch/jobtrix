@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { pdf } from "@react-pdf/renderer";
 import { isMobileDevice } from "@/lib/device";
+import { generateValidatedBlob } from "@/lib/pdf-blob";
 
 interface PreviewState {
   doc: React.ReactElement | null;
@@ -56,7 +57,7 @@ export async function openPdfPreview(document: React.ReactElement, filename = "V
   // Desktop: Tab synchron im Klick-Kontext öffnen, dann Blob laden.
   const win = window.open("", "_blank");
   try {
-    const blob = await pdf(document).toBlob();
+    const blob = await generateValidatedBlob(document);
     const url = URL.createObjectURL(blob);
     if (win && !win.closed) {
       win.location.href = url;
@@ -99,8 +100,7 @@ export function PdfPreviewHost() {
     let objectUrl: string | null = null;
     setStatus("loading");
     setUrl(null);
-    pdf(doc)
-      .toBlob()
+    generateValidatedBlob(doc)
       .then((blob) => {
         if (!active) return;
         objectUrl = URL.createObjectURL(blob);

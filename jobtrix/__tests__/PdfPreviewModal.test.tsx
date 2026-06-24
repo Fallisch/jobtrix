@@ -9,6 +9,13 @@ jest.mock("next-intl", () => ({
   useTranslations: () => (key: string) => key,
 }));
 
+jest.mock("@/lib/pdf-blob", () => ({
+  generateValidatedBlob: jest.fn().mockResolvedValue(
+    new Blob(["x".repeat(2000)], { type: "application/pdf" })
+  ),
+  EmptyPdfError: class EmptyPdfError extends Error {},
+}));
+
 function setUserAgent(ua: string) {
   Object.defineProperty(navigator, "userAgent", { value: ua, configurable: true });
 }

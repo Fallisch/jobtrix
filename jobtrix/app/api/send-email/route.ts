@@ -2,13 +2,13 @@ import React from "react";
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
-import { pdf } from "@react-pdf/renderer";
 import { CoverLetterDocument, CvDocument } from "@/lib/pdf-documents";
 import { ProfileData } from "@/lib/profile-storage";
 import { sendApplicationEmail } from "@/lib/email";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { sendEmailSchema } from "@/lib/validation-schemas";
 import { logAudit } from "@/lib/audit";
+import { generateValidatedBlob, EmptyPdfError } from "@/lib/pdf-blob";
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -32,16 +32,16 @@ export async function POST(req: NextRequest) {
   const data = parsed.data as typeof parsed.data & { profile: ProfileData };
 
   try {
-    const coverLetterBlob = await pdf(
+    const coverLetterBlob = await generateValidatedBlob(
       React.createElement(CoverLetterDocument, {
         coverLetter: data.coverLetter,
         profile: data.profile,
         template: data.template,
         accentColor: data.accentColor,
       }) as unknown as React.ReactElement
-    ).toBlob();
+    );
 
-    const cvBlob = await pdf(
+    const cvBlob = await generateValidatedBlob(
       React.createElement(CvDocument, {
         cv: data.cv,
         profile: data.profile,
@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
         cvStyle: data.cvStyle,
         accentColor: data.accentColor,
       }) as unknown as React.ReactElement
-    ).toBlob();
+    );
 
     const coverLetterBase64 = Buffer.from(await coverLetterBlob.arrayBuffer()).toString("base64");
     const cvBase64 = Buffer.from(await cvBlob.arrayBuffer()).toString("base64");
@@ -74,6 +74,9 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch (err) {
+    if (err instanceof EmptyPdfError) {
+      return NextResponse.json({ error: "pdf_empty" }, { status: 502 });
+    }
     console.error("[/api/send-email] Fehler:", err instanceof Error ? err.message : "unknown");
     return NextResponse.json({ error: "send_failed" }, { status: 500 });
   }
