@@ -48,12 +48,42 @@ function CopyButton({ value, label, testId }: { value: string; label: string; te
   );
 }
 
+function triggerFileDownload(file: File) {
+  const url = URL.createObjectURL(file);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = file.name;
+  a.style.display = "none";
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => {
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, 500);
+}
+
+async function shareOrDownload(file: File): Promise<boolean> {
+  if (navigator.canShare?.({ files: [file] })) {
+    try {
+      await navigator.share({ files: [file] });
+      return true;
+    } catch { /* user cancelled or failed → try download */ }
+  }
+  try {
+    triggerFileDownload(file);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export default function EmailDraft({ subject, body, coverLetter, cv, template, cvStyle, accentColor, documentsConfirmed, extractedEmail }: EmailDraftProps) {
   const t = useTranslations("generate");
   const [recipient, setRecipient] = useState(extractedEmail ?? "");
   const [showPreview, setShowPreview] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
   const [guidePdfs, setGuidePdfs] = useState<{ coverLetterFile: File; cvFile: File } | null>(null);
+  const [shareError, setShareError] = useState(false);
 
   const canSend = documentsConfirmed && !!recipient && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recipient);
 
@@ -226,21 +256,34 @@ export default function EmailDraft({ subject, body, coverLetter, cv, template, c
             </p>
             <p className="text-xs text-text/50" data-testid="send-guide-disclaimer">{t("sendGuideDisclaimer")}</p>
             {guidePdfs && (
-              <div className="flex gap-2" data-testid="guide-download-links">
-                <button
-                  type="button"
-                  onClick={() => navigator.share({ files: [guidePdfs.coverLetterFile] }).catch(() => {})}
-                  className="flex-1 text-center rounded-lg border-2 border-accent text-accent px-3 py-2.5 text-sm font-semibold hover:bg-accent hover:text-white transition min-h-[44px]"
-                >
-                  {t("sendGuideDownloadCoverLetter")}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => navigator.share({ files: [guidePdfs.cvFile] }).catch(() => {})}
-                  className="flex-1 text-center rounded-lg border-2 border-accent text-accent px-3 py-2.5 text-sm font-semibold hover:bg-accent hover:text-white transition min-h-[44px]"
-                >
-                  {t("sendGuideDownloadCv")}
-                </button>
+              <div className="space-y-2">
+                <div className="flex gap-2" data-testid="guide-download-links">
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      setShareError(false);
+                      const ok = await shareOrDownload(guidePdfs.coverLetterFile);
+                      if (!ok) setShareError(true);
+                    }}
+                    className="flex-1 text-center rounded-lg border-2 border-accent text-accent px-3 py-2.5 text-sm font-semibold hover:bg-accent hover:text-white transition min-h-[44px]"
+                  >
+                    {t("sendGuideDownloadCoverLetter")}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      setShareError(false);
+                      const ok = await shareOrDownload(guidePdfs.cvFile);
+                      if (!ok) setShareError(true);
+                    }}
+                    className="flex-1 text-center rounded-lg border-2 border-accent text-accent px-3 py-2.5 text-sm font-semibold hover:bg-accent hover:text-white transition min-h-[44px]"
+                  >
+                    {t("sendGuideDownloadCv")}
+                  </button>
+                </div>
+                {shareError && (
+                  <p className="text-xs text-red-600 dark:text-red-400" data-testid="share-error">{t("shareError")}</p>
+                )}
               </div>
             )}
             <div className="flex flex-col gap-3">

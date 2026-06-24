@@ -251,6 +251,7 @@
     "sendGuideDownloadCv": "Lebenslauf.pdf",
     "sendGuideOpenMail": "Jetzt E-Mail-Programm öffnen",
     "sendGuideOk": "Verstanden",
+    "shareError": "Download fehlgeschlagen. Bitte versuche es erneut.",
     "profileHintTitle": "Profil unvollständig",
     "profileHintMessage": "Dein Profil enthält wenige Angaben. Für bessere Ergebnisse empfehlen wir, mindestens eine Qualifikation und eine Ausbildung einzutragen.",
     "profileHintGoToProfile": "Profil ergänzen",

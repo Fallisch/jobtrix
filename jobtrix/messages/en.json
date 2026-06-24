@@ -251,6 +251,7 @@
     "sendGuideDownloadCv": "Resume.pdf",
     "sendGuideOpenMail": "Open email app now",
     "sendGuideOk": "Got it",
+    "shareError": "Download failed. Please try again.",
     "profileHintTitle": "Profile incomplete",
     "profileHintMessage": "Your profile has few details. For better results, we recommend adding at least one qualification and one education entry.",
     "profileHintGoToProfile": "Complete profile",

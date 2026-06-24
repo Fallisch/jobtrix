@@ -10,6 +10,20 @@ jest.mock("next-intl", () => ({
 
 jest.mock("@/lib/navigate", () => ({ navigate: jest.fn() }));
 
+jest.mock("@/lib/pdf-blob", () => ({
+  generateValidatedBlob: jest.fn().mockResolvedValue(
+    new Blob(["x".repeat(2000)], { type: "application/pdf" })
+  ),
+  EmptyPdfError: class EmptyPdfError extends Error {},
+}));
+
+const mockIsMobileDevice = jest.fn<boolean, []>(() => false);
+const mockDetectDevice = jest.fn<"android" | "ios" | "desktop", []>(() => "desktop");
+jest.mock("@/lib/device", () => ({
+  isMobileDevice: () => mockIsMobileDevice(),
+  detectDevice: () => mockDetectDevice(),
+}));
+
 jest.mock("@/lib/profile-storage", () => ({
   loadProfile: () => ({
     name: "Max Mustermann",
@@ -28,6 +42,7 @@ jest.mock("@/lib/profile-storage", () => ({
 jest.mock("@/lib/download-pdf", () => ({
   downloadCoverLetterPdf: jest.fn().mockResolvedValue(undefined),
   downloadCvPdf: jest.fn().mockResolvedValue(undefined),
+  buildFilename: jest.fn((prefix: string, name: string) => `${prefix}_${name}.pdf`),
 }));
 
 const defaultProps = {
@@ -46,6 +61,8 @@ beforeEach(() => {
   (downloadCoverLetterPdf as jest.Mock).mockClear();
   (downloadCvPdf as jest.Mock).mockClear();
   (navigate as jest.Mock).mockClear();
+  mockIsMobileDevice.mockReturnValue(false);
+  mockDetectDevice.mockReturnValue("desktop");
 });
 
 describe("EmailDraft", () => {
@@ -127,6 +144,60 @@ describe("EmailDraft", () => {
     fireEvent.click(screen.getByRole("button", { name: /sendEmailPreviewCancel/i }));
 
     expect(screen.queryByTestId("email-preview")).not.toBeInTheDocument();
+  });
+
+  describe("Share-Buttons im Guide-Dialog (Mobile)", () => {
+    beforeEach(() => {
+      mockIsMobileDevice.mockReturnValue(true);
+      mockDetectDevice.mockReturnValue("ios");
+    });
+
+    async function openGuide() {
+      render(<EmailDraft {...defaultProps} />);
+      await userEvent.type(screen.getByTestId("recipient-input"), "hr@firma.de");
+      fireEvent.click(screen.getByTestId("send-email-button"));
+      fireEvent.click(screen.getByTestId("confirm-send-button"));
+      await screen.findByTestId("send-guide-popup");
+    }
+
+    it("nutzt navigator.share() wenn canShare verfügbar ist", async () => {
+      const shareSpy = jest.fn().mockResolvedValue(undefined);
+      const canShareSpy = jest.fn().mockReturnValue(true);
+      Object.defineProperty(navigator, "share", { value: shareSpy, configurable: true });
+      Object.defineProperty(navigator, "canShare", { value: canShareSpy, configurable: true });
+
+      await openGuide();
+      const links = screen.getByTestId("guide-download-links");
+      const buttons = links.querySelectorAll("button");
+      fireEvent.click(buttons[0]);
+
+      await waitFor(() => {
+        expect(shareSpy).toHaveBeenCalled();
+      });
+    });
+
+    it("zeigt Fehlermeldung wenn Share und Download fehlschlagen", async () => {
+      Object.defineProperty(navigator, "canShare", { value: () => false, configurable: true });
+      const origCreateElement = document.createElement.bind(document);
+      jest.spyOn(document, "createElement").mockImplementation((tag: string) => {
+        const el = origCreateElement(tag);
+        if (tag === "a") {
+          Object.defineProperty(el, "click", { value: () => { throw new Error("blocked"); } });
+        }
+        return el;
+      });
+
+      await openGuide();
+      const links = screen.getByTestId("guide-download-links");
+      const buttons = links.querySelectorAll("button");
+      fireEvent.click(buttons[0]);
+
+      await waitFor(() => {
+        expect(screen.getByTestId("share-error")).toBeInTheDocument();
+      });
+
+      (document.createElement as jest.Mock).mockRestore();
+    });
   });
 
   describe("Kopieren in die Zwischenablage", () => {
