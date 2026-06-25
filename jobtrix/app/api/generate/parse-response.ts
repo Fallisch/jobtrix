@@ -49,7 +49,10 @@ export function parseResponse(text: string): {
   let cv = cleanSection(text.slice(cvStart, cvEnd), "Lebenslauf");
   let emailBody = email ? cleanSection(text.slice(emailStart), "E-Mail") : "";
 
-  if (cv.length < 50 && emailBody.length > 200) {
+  const cvKeywords = /berufserfahrung|ausbildung|qualifikation|persönliche\s+daten|schulbildung|weiterbildung|kenntnisse|interessen/i;
+  const emailLooksLikeCv = cvKeywords.test(emailBody) && emailBody.length > 200;
+
+  if ((cv.length < 50 || emailLooksLikeCv) && emailBody.length > cv.length) {
     cv = emailBody;
     emailBody = "";
   }

@@ -40,13 +40,28 @@ export default function GenerateForm() {
   const t = useTranslations("generate");
   const router = useRouter();
   const { locale } = useParams<{ locale: string }>();
-  const [jobPosting, setJobPosting] = useState("");
+  const [jobPosting, setJobPosting] = useState(() => {
+    if (typeof window === "undefined") return "";
+    return sessionStorage.getItem("jt_jobPosting") ?? "";
+  });
   const [hasProfile, setHasProfile] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<GenerateResult | null>(null);
+  const [result, setResult] = useState<GenerateResult | null>(() => {
+    if (typeof window === "undefined") return null;
+    try {
+      const saved = sessionStorage.getItem("jt_result");
+      return saved ? JSON.parse(saved) : null;
+    } catch { return null; }
+  });
   const [error, setError] = useState<string | null>(null);
-  const [editedCoverLetter, setEditedCoverLetter] = useState("");
-  const [editedCv, setEditedCv] = useState("");
+  const [editedCoverLetter, setEditedCoverLetter] = useState(() => {
+    if (typeof window === "undefined") return "";
+    return sessionStorage.getItem("jt_coverLetter") ?? "";
+  });
+  const [editedCv, setEditedCv] = useState(() => {
+    if (typeof window === "undefined") return "";
+    return sessionStorage.getItem("jt_cv") ?? "";
+  });
   const [coverLetterAgreed, setCoverLetterAgreed] = useState(false);
   const [cvAgreed, setCvAgreed] = useState(false);
   const [coverLetterHighlight, setCoverLetterHighlight] = useState(false);
@@ -69,6 +84,18 @@ export default function GenerateForm() {
   const [extractLoadingIndex, setExtractLoadingIndex] = useState<number | null>(null);
   const [showProfileHint, setShowProfileHint] = useState(false);
   const [hints, setHints] = useState("");
+
+  useEffect(() => {
+    try { sessionStorage.setItem("jt_coverLetter", editedCoverLetter); } catch {}
+  }, [editedCoverLetter]);
+
+  useEffect(() => {
+    try { sessionStorage.setItem("jt_cv", editedCv); } catch {}
+  }, [editedCv]);
+
+  useEffect(() => {
+    try { sessionStorage.setItem("jt_jobPosting", jobPosting); } catch {}
+  }, [jobPosting]);
 
   useEffect(() => {
     setHasProfile(loadProfile() !== null);
@@ -127,6 +154,12 @@ export default function GenerateForm() {
       } else {
         setResult(data);
         setEditedCoverLetter(data.coverLetter);
+        try {
+          sessionStorage.setItem("jt_result", JSON.stringify(data));
+          sessionStorage.setItem("jt_coverLetter", data.coverLetter);
+          sessionStorage.setItem("jt_cv", data.cv);
+          sessionStorage.setItem("jt_jobPosting", jobPosting);
+        } catch { /* quota exceeded */ }
         setEditedCv(data.cv);
       }
     } catch {

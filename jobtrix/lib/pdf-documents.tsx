@@ -525,8 +525,8 @@ const styles = StyleSheet.create({
   },
   accentLetterBody: {
     paddingHorizontal: 56,
-    paddingTop: 24,
-    paddingBottom: 40,
+    paddingTop: 20,
+    paddingBottom: 24,
   },
   accentSectionHeadingLetter: {
     fontSize: 10.5,
@@ -742,7 +742,8 @@ function stripPersonalData(text: string, profile: ProfileData): string {
       break;
     }
   }
-  return lines.slice(firstContentLine).join("\n").trim();
+  const result = lines.slice(firstContentLine).join("\n").trim();
+  return result.length > 20 ? result : text;
 }
 
 const GREETING_RE = /^(mit\s+freundlichen\s+gr[üu][ßs]en|herzliche\s+gr[üu][ßs]e|best\s+regards|viele\s+gr[üu][ßs]e|freundliche\s+gr[üu][ßs]e)/i;

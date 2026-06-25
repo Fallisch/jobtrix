@@ -28,6 +28,7 @@ beforeEach(() => {
   (global.fetch as jest.Mock).mockReset();
   mockPush.mockClear();
   localStorage.clear();
+  sessionStorage.clear();
 });
 
 // Translation keys (mock returns key as-is)
