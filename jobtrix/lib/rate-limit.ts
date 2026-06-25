@@ -8,6 +8,41 @@ export const RATE_LIMIT_WINDOW_MS = process.env.RATE_LIMIT_WINDOW_MS
   ? parseInt(process.env.RATE_LIMIT_WINDOW_MS, 10)
   : 15 * 60 * 1000;
 
+interface MemoryEntry {
+  attempts: number;
+  windowStart: number;
+}
+
+const memoryStore = new Map<string, MemoryEntry>();
+
+const MEMORY_CLEANUP_INTERVAL_MS = 5 * 60 * 1000;
+let lastCleanup = Date.now();
+
+function cleanupMemoryStore(now: number): void {
+  if (now - lastCleanup < MEMORY_CLEANUP_INTERVAL_MS) return;
+  lastCleanup = now;
+  memoryStore.forEach((v, k) => {
+    if (now - v.windowStart > RATE_LIMIT_WINDOW_MS) memoryStore.delete(k);
+  });
+}
+
+function checkMemoryRateLimit(key: string, max: number): boolean {
+  const now = Date.now();
+  cleanupMemoryStore(now);
+
+  const entry = memoryStore.get(key);
+
+  if (!entry || now - entry.windowStart > RATE_LIMIT_WINDOW_MS) {
+    memoryStore.set(key, { attempts: 1, windowStart: now });
+    return true;
+  }
+
+  if (entry.attempts >= max) return false;
+
+  entry.attempts++;
+  return true;
+}
+
 export async function checkRateLimit(key: string, max: number = RATE_LIMIT_MAX): Promise<boolean> {
   if (
     process.env.NODE_ENV === "test" &&
@@ -21,8 +56,6 @@ export async function checkRateLimit(key: string, max: number = RATE_LIMIT_MAX):
     const entry = await prisma.rateLimitEntry.findUnique({ where: { key } });
 
     if (!entry) {
-      // upsert statt create: vermeidet Unique-Constraint-Fehler, wenn zwei
-      // parallele Requests mit gleichem Key gleichzeitig den Eintrag anlegen.
       await prisma.rateLimitEntry.upsert({
         where: { key },
         create: { key, attempts: 1 },
@@ -50,12 +83,8 @@ export async function checkRateLimit(key: string, max: number = RATE_LIMIT_MAX):
       data: { attempts: { increment: 1 } },
     });
     return true;
-  } catch (err) {
-    // Fail-open: Rate-Limiting läuft als erstes in register/login/reset. Ein
-    // DB-Fehler/-Hang hier darf den Auth-Flow nicht hart killen (sonst hängt
-    // der Login-Button). Lieber kurz ungedrosselt als gar kein Login.
-    console.error(`checkRateLimit fehlgeschlagen (fail-open) für key=${key}:`, err);
-    return true;
+  } catch {
+    return checkMemoryRateLimit(key, max);
   }
 }
 

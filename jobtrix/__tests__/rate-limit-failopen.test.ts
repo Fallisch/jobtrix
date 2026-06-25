@@ -1,7 +1,7 @@
 /**
  * @jest-environment node
  */
-import { checkRateLimit } from "@/lib/rate-limit";
+import { checkRateLimit, RATE_LIMIT_MAX } from "@/lib/rate-limit";
 import { prisma } from "@/lib/prisma";
 
 jest.mock("@/lib/prisma", () => ({
@@ -17,9 +17,8 @@ jest.mock("@/lib/prisma", () => ({
 const mockedFindUnique = prisma.rateLimitEntry.findUnique as jest.Mock;
 const mockedUpsert = prisma.rateLimitEntry.upsert as jest.Mock;
 
-describe("checkRateLimit – fail-open bei DB-Fehler", () => {
+describe("checkRateLimit – In-Memory-Backstop bei DB-Fehler", () => {
   beforeAll(() => {
-    // Test-Bypass deaktivieren, damit die echte DB-Logik durchläuft.
     process.env.ENABLE_RATE_LIMIT_IN_TESTS = "1";
   });
   afterAll(() => {
@@ -27,17 +26,35 @@ describe("checkRateLimit – fail-open bei DB-Fehler", () => {
   });
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(console, "error").mockImplementation(() => {});
   });
 
-  it("gibt true zurück, wenn die DB-Abfrage wirft (Auth darf nicht hart failen)", async () => {
+  it("erlaubt Requests wenn DB ausfällt (In-Memory-Fallback)", async () => {
     mockedFindUnique.mockRejectedValue(new Error("DB down"));
-    await expect(checkRateLimit("failopen-key")).resolves.toBe(true);
+    await expect(checkRateLimit("mem-fallback-1")).resolves.toBe(true);
+  });
+
+  it("blockiert nach max Versuchen auch bei DB-Ausfall", async () => {
+    mockedFindUnique.mockRejectedValue(new Error("DB down"));
+    const key = `mem-block-${Date.now()}`;
+    for (let i = 0; i < RATE_LIMIT_MAX; i++) {
+      await expect(checkRateLimit(key)).resolves.toBe(true);
+    }
+    await expect(checkRateLimit(key)).resolves.toBe(false);
+  });
+
+  it("erlaubt Requests mit custom max auch bei DB-Ausfall", async () => {
+    mockedFindUnique.mockRejectedValue(new Error("DB down"));
+    const key = `mem-custom-${Date.now()}`;
+    const customMax = 3;
+    for (let i = 0; i < customMax; i++) {
+      await expect(checkRateLimit(key, customMax)).resolves.toBe(true);
+    }
+    await expect(checkRateLimit(key, customMax)).resolves.toBe(false);
   });
 
   it("gibt true zurück, wenn der upsert beim Anlegen wirft", async () => {
     mockedFindUnique.mockResolvedValue(null);
     mockedUpsert.mockRejectedValue(new Error("connection reset"));
-    await expect(checkRateLimit("failopen-key-2")).resolves.toBe(true);
+    await expect(checkRateLimit(`mem-upsert-${Date.now()}`)).resolves.toBe(true);
   });
 });
