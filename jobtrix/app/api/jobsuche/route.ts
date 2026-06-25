@@ -74,10 +74,12 @@ export async function GET(request: NextRequest) {
 
   try {
     const params = new URLSearchParams();
-    const combinedWas = [was, arbeitgeber, branche].filter(Boolean).join(" ");
+    const isRemoteSearch = /^(home\s*office|remote|telearbeit)$/i.test(wo.trim());
+    const remoteKeyword = isRemoteSearch ? "Homeoffice" : "";
+    const combinedWas = [was, arbeitgeber, branche, remoteKeyword].filter(Boolean).join(" ");
     if (combinedWas) params.set("was", combinedWas);
-    if (wo) params.set("wo", wo);
-    if (umkreis) params.set("umkreis", umkreis);
+    if (wo && !isRemoteSearch) params.set("wo", wo);
+    if (umkreis && !isRemoteSearch) params.set("umkreis", umkreis);
 
     const res = await fetchWithTimeout(`${API_BASE}/jobs?${params.toString()}`, {
       headers: { "X-API-Key": apiKey },

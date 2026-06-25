@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import React from "react";
 import { useTranslations } from "next-intl";
 import { loadProfile } from "@/lib/profile-storage";
@@ -72,6 +72,20 @@ export default function EmailDraft({ subject, body, coverLetter, cv, template, c
   const [showGuide, setShowGuide] = useState(false);
   const [guidePdfs, setGuidePdfs] = useState<{ coverLetterFile: File; cvFile: File } | null>(null);
   const [shareError, setShareError] = useState(false);
+  const guideHistoryRef = useRef(false);
+
+  useEffect(() => {
+    if (!showGuide) return;
+    history.pushState({ guideDialog: true }, "");
+    guideHistoryRef.current = true;
+    const onPopState = () => {
+      guideHistoryRef.current = false;
+      setShowGuide(false);
+      setGuidePdfs(null);
+    };
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, [showGuide]);
 
   const canSend = documentsConfirmed && !!recipient && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recipient);
 
@@ -228,7 +242,7 @@ export default function EmailDraft({ subject, body, coverLetter, cv, template, c
       </div>
 
       {showGuide && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" role="dialog" aria-modal="true" onClick={() => { setShowGuide(false); setGuidePdfs(null); }}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" role="dialog" aria-modal="true" onClick={() => { if (guideHistoryRef.current) { guideHistoryRef.current = false; history.back(); } else { setShowGuide(false); setGuidePdfs(null); } }}>
           <div className="bg-white dark:bg-surface border border-gray-200 dark:border-gray-700 rounded-lg p-6 max-w-md mx-4 space-y-4" onClick={(e) => e.stopPropagation()} data-testid="send-guide-popup">
             <h2 className="text-lg font-bold text-primary dark:text-accent">{t("sendGuideTitle")}</h2>
             <ol className="space-y-3 text-sm text-text/80 list-decimal list-inside">
@@ -286,7 +300,7 @@ export default function EmailDraft({ subject, body, coverLetter, cv, template, c
               </button>
               <button
                 type="button"
-                onClick={() => setShowGuide(false)}
+                onClick={() => { if (guideHistoryRef.current) { guideHistoryRef.current = false; history.back(); } else { setShowGuide(false); setGuidePdfs(null); } }}
                 className="w-full border border-gray-300 dark:border-gray-600 text-text/70 px-6 py-3 rounded-lg font-semibold text-sm hover:border-accent hover:text-accent transition min-h-[44px]"
               >
                 {t("sendGuideOk")}

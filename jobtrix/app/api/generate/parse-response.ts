@@ -1,4 +1,4 @@
-const SECTION_MARKER = /\*{0,2}\s*(BETREFF|ANSCHREIBEN|LEBENSLAUF|E-MAIL)\s*:\s*\*{0,2}/gi;
+const SECTION_MARKER = /\*{0,2}\s*(BETREFF|ANSCHREIBEN|LEBENSLAUF|E[\s-]?MAIL)\s*:\s*\*{0,2}/gi;
 
 function isNoiseLine(line: string, label: string): boolean {
   const trimmed = line.trim();
@@ -36,7 +36,7 @@ export function parseResponse(text: string): {
   const betreff = markers.find((m) => m[1].toUpperCase() === "BETREFF");
   const anschreiben = markers.find((m) => m[1].toUpperCase() === "ANSCHREIBEN");
   const lebenslauf = markers.find((m) => m[1].toUpperCase() === "LEBENSLAUF");
-  const email = markers.find((m) => m[1].toUpperCase() === "E-MAIL");
+  const email = markers.find((m) => /^E[\s-]?MAIL$/i.test(m[1]));
 
   const subjectStart = betreff ? betreff.index! + betreff[0].length : 0;
   const subjectEnd = anschreiben ? anschreiben.index! : lebenslauf ? lebenslauf.index! : text.length;
@@ -46,16 +46,30 @@ export function parseResponse(text: string): {
   const cvEnd = email ? email.index! : text.length;
   const emailStart = email ? email.index! + email[0].length : text.length;
 
-  const cv = cleanSection(text.slice(cvStart, cvEnd), "Lebenslauf");
+  let cv = cleanSection(text.slice(cvStart, cvEnd), "Lebenslauf");
+  let emailBody = email ? cleanSection(text.slice(emailStart), "E-Mail") : "";
+
+  if (cv.length < 50 && emailBody.length > 200) {
+    cv = emailBody;
+    emailBody = "";
+  }
 
   if (cv.length < 50) {
     throw new Error("Lebenslauf-Sektion zu kurz — die KI hat die Profildaten vermutlich in die falsche Sektion geschrieben.");
+  }
+
+  if (emailBody.length > 500) {
+    const lines = emailBody.split("\n");
+    const cutoff = lines.findIndex((_, i) => lines.slice(0, i + 1).join("\n").length > 400);
+    if (cutoff > 0) {
+      emailBody = lines.slice(0, cutoff).join("\n").trim();
+    }
   }
 
   return {
     emailSubject: betreff ? cleanSection(text.slice(subjectStart, subjectEnd), "Betreff") : "",
     coverLetter: cleanSection(text.slice(coverStart, coverEnd), "Anschreiben"),
     cv,
-    emailBody: email ? cleanSection(text.slice(emailStart), "E-Mail") : "",
+    emailBody,
   };
 }

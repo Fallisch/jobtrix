@@ -166,10 +166,9 @@ const styles = StyleSheet.create({
   // Two-column content: left 55% | right 45%
   cvTwoColumns: {
     flexDirection: "row",
-    flex: 1,
   },
   cvLeftCol: {
-    flex: 55,
+    width: "58%",
     paddingLeft: 36,
     paddingRight: 14,
     paddingTop: 16,
@@ -178,7 +177,7 @@ const styles = StyleSheet.create({
     borderRightColor: "#e5e7eb",
   },
   cvRightCol: {
-    flex: 45,
+    width: "42%",
     paddingLeft: 18,
     paddingRight: 36,
     paddingTop: 16,
@@ -467,17 +466,16 @@ const styles = StyleSheet.create({
   },
   accentTwoColumns: {
     flexDirection: "row",
-    flex: 1,
   },
   accentLeftCol: {
-    flex: 58,
+    width: "58%",
     paddingLeft: 36,
     paddingRight: 14,
     paddingTop: 16,
     paddingBottom: 20,
   },
   accentRightCol: {
-    flex: 42,
+    width: "42%",
     paddingLeft: 18,
     paddingRight: 36,
     paddingTop: 16,
@@ -555,9 +553,8 @@ const styles = StyleSheet.create({
   },
   creativeSidebar: {
     width: "34%",
-    minHeight: "100%",
-    paddingVertical: 28,
-    paddingHorizontal: 20,
+    paddingVertical: 24,
+    paddingHorizontal: 18,
     alignItems: "center",
   },
   creativeSidebarPhoto: {
@@ -631,20 +628,20 @@ const styles = StyleSheet.create({
   },
   creativeMain: {
     width: "66%",
-    paddingVertical: 32,
-    paddingHorizontal: 28,
+    paddingVertical: 24,
+    paddingHorizontal: 24,
   },
   creativeMainName: {
-    fontSize: 22,
+    fontSize: 20,
     fontFamily: "Helvetica-Bold",
     color: "#1a1a1a",
-    marginBottom: 16,
+    marginBottom: 12,
   },
   creativeSectionHeading: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 14,
-    marginBottom: 8,
+    marginTop: 10,
+    marginBottom: 6,
   },
   creativeSectionHeadingIcon: {
     width: 14,
@@ -658,7 +655,7 @@ const styles = StyleSheet.create({
   },
   creativeTimelineEntry: {
     flexDirection: "row",
-    marginBottom: 10,
+    marginBottom: 7,
   },
   creativeTimelineIcon: {
     width: 13,
@@ -1318,25 +1315,21 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
           )}
 
           {profile.qualifications?.length > 0 && (
-            <>
+            <View wrap={false} {...{ "data-testid": "traditional-quals" }}>
               <Text style={styles.traditionalSectionHeading}>Qualifikationen</Text>
-              <View {...{ "data-testid": "traditional-quals" }}>
-                {profile.qualifications.map((q, i) => (
-                  <Text key={i} style={styles.traditionalListItem}>• {q.label}</Text>
-                ))}
-              </View>
-            </>
+              {profile.qualifications.map((q, i) => (
+                <Text key={i} style={styles.traditionalListItem}>• {q.label}</Text>
+              ))}
+            </View>
           )}
 
           {profile.interests?.length > 0 && (
-            <>
+            <View wrap={false} {...{ "data-testid": "traditional-interests" }}>
               <Text style={styles.traditionalSectionHeading}>Interessen</Text>
-              <View {...{ "data-testid": "traditional-interests" }}>
-                {profile.interests.map((interest, i) => (
-                  <Text key={i} style={styles.traditionalListItem}>• {interest.label}</Text>
-                ))}
-              </View>
-            </>
+              {profile.interests.map((interest, i) => (
+                <Text key={i} style={styles.traditionalListItem}>• {interest.label}</Text>
+              ))}
+            </View>
           )}
         </Page>
       </Document>
