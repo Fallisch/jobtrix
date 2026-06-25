@@ -160,11 +160,9 @@ describe("EmailDraft", () => {
       await screen.findByTestId("send-guide-popup");
     }
 
-    it("nutzt navigator.share() wenn canShare verfügbar ist", async () => {
+    it("nutzt navigator.share() wenn verfügbar", async () => {
       const shareSpy = jest.fn().mockResolvedValue(undefined);
-      const canShareSpy = jest.fn().mockReturnValue(true);
       Object.defineProperty(navigator, "share", { value: shareSpy, configurable: true });
-      Object.defineProperty(navigator, "canShare", { value: canShareSpy, configurable: true });
 
       await openGuide();
       const links = screen.getByTestId("guide-download-links");
@@ -176,16 +174,9 @@ describe("EmailDraft", () => {
       });
     });
 
-    it("zeigt Fehlermeldung wenn Share und Download fehlschlagen", async () => {
-      Object.defineProperty(navigator, "canShare", { value: () => false, configurable: true });
-      const origCreateElement = document.createElement.bind(document);
-      jest.spyOn(document, "createElement").mockImplementation((tag: string) => {
-        const el = origCreateElement(tag);
-        if (tag === "a") {
-          Object.defineProperty(el, "click", { value: () => { throw new Error("blocked"); } });
-        }
-        return el;
-      });
+    it("zeigt Fehlermeldung wenn Share und Fallback fehlschlagen", async () => {
+      Object.defineProperty(navigator, "share", { value: undefined, configurable: true });
+      const openSpy = jest.spyOn(window, "open").mockImplementation(() => { throw new Error("blocked"); });
 
       await openGuide();
       const links = screen.getByTestId("guide-download-links");
@@ -196,7 +187,7 @@ describe("EmailDraft", () => {
         expect(screen.getByTestId("share-error")).toBeInTheDocument();
       });
 
-      (document.createElement as jest.Mock).mockRestore();
+      openSpy.mockRestore();
     });
   });
 

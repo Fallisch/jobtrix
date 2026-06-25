@@ -112,11 +112,9 @@ describe("PdfPreviewHost (mobile)", () => {
     });
   });
 
-  it("nutzt navigator.share() auf Mobile beim Download statt <a download>", async () => {
+  it("nutzt navigator.share() auf Mobile beim Download", async () => {
     const shareSpy = jest.fn().mockResolvedValue(undefined);
-    const canShareSpy = jest.fn().mockReturnValue(true);
     Object.defineProperty(navigator, "share", { value: shareSpy, configurable: true });
-    Object.defineProperty(navigator, "canShare", { value: canShareSpy, configurable: true });
 
     render(<PdfPreviewHost />);
     await act(async () => {
@@ -127,7 +125,6 @@ describe("PdfPreviewHost (mobile)", () => {
     fireEvent.click(screen.getByTestId("pdf-preview-download"));
 
     await waitFor(() => {
-      expect(canShareSpy).toHaveBeenCalled();
       expect(shareSpy).toHaveBeenCalled();
       const shareArg = shareSpy.mock.calls[0][0];
       expect(shareArg.files).toHaveLength(1);

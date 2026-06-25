@@ -54,6 +54,10 @@ Erstelle ein allgemeines Anschreiben ohne Bezug auf eine konkrete Stellenanzeige
     ? `- Hauptteil (Interest & Desire): Hebe die Qualifikationen und Erfahrungen des Bewerbers hervor und zeige, welchen Mehrwert er dem Unternehmen bieten kann – ohne Bezug auf eine konkrete Stelle.`
     : `- Hauptteil (Interest & Desire): Verknüpfe die Qualifikationen und Erfahrungen des Bewerbers konkret mit den Anforderungen aus der Stellenanzeige und zeige den Mehrwert für das Unternehmen – keine reine Aufzählung von Eigenschaften.`;
 
+  const today = new Date();
+  const todayFormatted = `${String(today.getDate()).padStart(2, "0")}.${String(today.getMonth() + 1).padStart(2, "0")}.${today.getFullYear()}`;
+  const city = profile.address?.match(/\d{5}\s+(.+)/)?.[1] ?? "";
+
   return `Du bist ein Karriereberater und erstellst professionelle deutsche Bewerbungsunterlagen.
 
 Erstelle auf Basis der folgenden Daten:
@@ -62,9 +66,13 @@ ${betreffHinweis}
 3. Einen strukturierten deutschen Lebenslauf
 4. Einen kurzen E-Mail-Text (3–5 Sätze) für die Bewerbungs-E-Mail
 
+Heutiges Datum: ${todayFormatted}${city ? ` (Ort des Bewerbers: ${city})` : ""}
+
 Bewerber:
 Name: ${profile.name}
 Adresse: ${profile.address}
+E-Mail: ${profile.email || "nicht angegeben"}
+Telefon: ${profile.phone || "nicht angegeben"}
 Geburtsdatum: ${profile.birthdate}
 Ausbildung:
 ${eduText}
@@ -77,12 +85,18 @@ ${contactPerson ? `Ansprechpartner: ${contactPerson}` : ""}
 ${jobSection}${workModeHint}${hints ? `\nZusätzliche Hinweise des Bewerbers:\n${hints}` : ""}
 
 ${cvStyle === "american" ? "Sortiere Berufserfahrung und Ausbildung antichronologisch – neuester Eintrag zuerst.\n\n" : ""}Schreibstil – halte diese Regeln strikt ein:
-- Verwende eine natürliche, leicht unregelmäßige Satzstruktur: variiere Satzlänge und Satzbau bewusst, mische kurze Sätze mit längeren.
+- Schreibe auf einem professionellen, gehobenen Niveau — wie ein erfahrener Personalberater, nicht wie ein Chatbot.
+- Verwende eine natürliche, leicht variierte Satzstruktur: mische kürzere mit längeren Sätzen, aber halte den Ton stets seriös und geschliffen.
 - Vermeide typische KI-Floskeln und abgedroschene Phrasen wie „Ich freue mich sehr", „Als leidenschaftlicher", „Mit großer Begeisterung" oder „Ich bin überzeugt".
-- Bevorzuge einen direkten, persönlichen Ton – schreibe so, wie ein Mensch tatsächlich spricht und denkt.
-- Keine übertriebene Förmlichkeit oder aufgesetzte Begeisterung; sachlich und authentisch bleiben.
+- Vermeide auch zu umgangssprachliche oder lässige Formulierungen — kein Slang, keine saloppen Redewendungen, keine verkürzten Sätze wie Aufzählungen.
+- Sachlich, selbstbewusst und authentisch — ohne aufgesetzte Begeisterung, aber auch ohne Unterwürfigkeit.
 - Vermeide austauschbare Schlussfloskeln im Anschreiben wie „Ich freue mich auf ein persönliches Gespräch" oder „Über eine Einladung zum Vorstellungsgespräch würde ich mich sehr freuen" – formuliere den letzten Satz konkret und individuell.
 - Beginne nicht mehrere Sätze hintereinander mit „Ich" – variiere die Satzanfänge bewusst.
+- Jeder Absatz soll in vollständigen, ausformulierten Sätzen geschrieben sein — keine Stichpunkte oder Halbsätze im Anschreiben.
+
+Formale Anforderungen an das Anschreiben:
+- Das Anschreiben MUSS das heutige Datum enthalten, formatiert als „Ort, TT. Monat JJJJ" (z. B. „${city || "Berlin"}, ${today.getDate()}. ${["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"][today.getMonth()]} ${today.getFullYear()}").
+- Verwende ausschließlich die E-Mail-Adresse und Telefonnummer aus den Bewerberdaten oben — erfinde keine Kontaktdaten.
 
 Aufbau des Anschreibens (AIDA-Prinzip) – halte diese Struktur ein:
 - Einstieg (Attention): Kein Standardeinstieg wie „Mit großem Interesse habe ich Ihre Stellenanzeige gelesen" oder „Hiermit bewerbe ich mich auf die Position als..." – starte mit einem konkreten, individuellen Aufhänger zu Unternehmen, Aufgabe oder eigener Motivation.

@@ -163,14 +163,16 @@ export function PdfPreviewHost() {
               <button
                 type="button"
                 onClick={async () => {
-                  if (isMobileDevice() && blob) {
+                  if (isMobileDevice() && blob && typeof navigator.share === "function") {
                     const file = new File([blob], filename, { type: "application/pdf" });
-                    if (navigator.canShare?.({ files: [file] })) {
-                      try {
-                        await navigator.share({ files: [file] });
-                        return;
-                      } catch { /* user cancelled or failed → fall through */ }
-                    }
+                    try {
+                      await navigator.share({ files: [file] });
+                      return;
+                    } catch { /* user cancelled or not supported → fall through */ }
+                  }
+                  if (isMobileDevice() && url) {
+                    window.open(url, "_blank");
+                    return;
                   }
                   triggerDownload(url, filename);
                 }}

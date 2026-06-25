@@ -373,6 +373,7 @@ export default function GenerateForm() {
             <label htmlFor="jobPosting" className="block text-sm font-medium text-text mb-1">
               {t("jobPostingLabel")}
             </label>
+            <p className="text-xs text-text/50 mb-2">{t("jobPostingHint")}</p>
             <textarea
               id="jobPosting"
               value={jobPosting}

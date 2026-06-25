@@ -48,29 +48,17 @@ function CopyButton({ value, label, testId }: { value: string; label: string; te
   );
 }
 
-function triggerFileDownload(file: File) {
-  const url = URL.createObjectURL(file);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = file.name;
-  a.style.display = "none";
-  document.body.appendChild(a);
-  a.click();
-  setTimeout(() => {
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }, 500);
-}
-
 async function shareOrDownload(file: File): Promise<boolean> {
-  if (navigator.canShare?.({ files: [file] })) {
+  if (typeof navigator.share === "function") {
     try {
       await navigator.share({ files: [file] });
       return true;
-    } catch { /* user cancelled or failed → try download */ }
+    } catch { /* user cancelled or not supported → try fallback */ }
   }
   try {
-    triggerFileDownload(file);
+    const url = URL.createObjectURL(file);
+    window.open(url, "_blank");
+    setTimeout(() => URL.revokeObjectURL(url), 60_000);
     return true;
   } catch {
     return false;
