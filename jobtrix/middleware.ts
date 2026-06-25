@@ -2,6 +2,7 @@ import createMiddleware from "next-intl/middleware";
 import { NextResponse, type NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 import { routing } from "./i18n/routing";
+import { buildCspHeader } from "@/lib/security-headers";
 
 const intlMiddleware = createMiddleware(routing);
 
@@ -45,7 +46,32 @@ export default async function middleware(request: NextRequest) {
     }
   }
 
-  return intlMiddleware(request);
+  const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
+  const csp = buildCspHeader(nonce);
+
+  const intlResponse = intlMiddleware(request);
+
+  if (intlResponse.headers.has("location")) {
+    return intlResponse;
+  }
+
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-nonce", nonce);
+  requestHeaders.set("content-security-policy", csp);
+
+  const rewriteUrl = intlResponse.headers.get("x-middleware-rewrite");
+
+  const response = rewriteUrl
+    ? NextResponse.rewrite(new URL(rewriteUrl), { request: { headers: requestHeaders } })
+    : NextResponse.next({ request: { headers: requestHeaders } });
+
+  for (const cookie of intlResponse.cookies.getAll()) {
+    response.cookies.set(cookie.name, cookie.value);
+  }
+
+  response.headers.set("content-security-policy", csp);
+
+  return response;
 }
 
 export const config = {

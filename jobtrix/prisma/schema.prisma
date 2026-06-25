@@ -9,13 +9,14 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  passwordHash  String
-  createdAt     DateTime  @default(now())
-  name          String?
-  image         String?
-  emailVerified DateTime?
+  id                String    @id @default(cuid())
+  email             String    @unique
+  passwordHash      String
+  passwordChangedAt DateTime?
+  createdAt         DateTime  @default(now())
+  name              String?
+  image             String?
+  emailVerified     DateTime?
 
   hasSeenWelcome Boolean @default(false)
 

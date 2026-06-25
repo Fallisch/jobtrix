@@ -47,6 +47,6 @@ describe("Deployment-Guide", () => {
     const migrations = fs
       .readdirSync(MIGRATIONS_PATH)
       .filter((d) => !d.endsWith(".toml"));
-    expect(migrations.length).toBe(13);
+    expect(migrations.length).toBe(16);
   });
 });

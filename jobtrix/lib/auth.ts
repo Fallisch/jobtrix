@@ -67,21 +67,28 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       if (!token.id) return session;
 
-      session.user.id = token.id;
-      // Aus dem Token vorbelegen (Fallback), dann live aus der DB aktualisieren.
-      if (token.email) session.user.email = token.email;
-      session.user.name = (token.name as string | null) ?? null;
-
       try {
         const user = await prisma.user.findUnique({ where: { id: token.id } });
+
+        if (user?.passwordChangedAt && token.iat) {
+          const changedAtSec = Math.floor(user.passwordChangedAt.getTime() / 1000);
+          if (changedAtSec > (token.iat as number)) {
+            return session;
+          }
+        }
+
+        session.user.id = token.id;
+        if (token.email) session.user.email = token.email;
+        session.user.name = (token.name as string | null) ?? null;
+
         if (user) {
           session.user.email = user.email;
           session.user.name = user.name;
         }
       } catch (err) {
-        // DB-Hiccup darf den eingeloggten Nutzer nicht aus der UI ausloggen
-        // (Header zeigte sonst "Anmelden", obwohl die Session-Cookie gültig
-        // ist). Session bleibt mit den Token-Werten gültig.
+        session.user.id = token.id;
+        if (token.email) session.user.email = token.email;
+        session.user.name = (token.name as string | null) ?? null;
         console.error("session callback: DB-Lookup fehlgeschlagen, behalte Session:", err);
       }
 

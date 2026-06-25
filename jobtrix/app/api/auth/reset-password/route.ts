@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { decodeResetTokenUserId, verifyResetToken } from "@/lib/reset-token";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 import { resetPasswordSchema } from "@/lib/validation-schemas";
+import { logAudit } from "@/lib/audit";
 
 export async function POST(request: NextRequest) {
   const ip = getClientIp(request);
@@ -25,7 +26,11 @@ export async function POST(request: NextRequest) {
   }
 
   const passwordHash = await bcrypt.hash(password, 10);
-  await prisma.user.update({ where: { id: user.id }, data: { passwordHash } });
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { passwordHash, passwordChangedAt: new Date() },
+  });
+  await logAudit("password_reset_completed", { userId: user.id, ip });
 
   return NextResponse.json({ ok: true });
 }

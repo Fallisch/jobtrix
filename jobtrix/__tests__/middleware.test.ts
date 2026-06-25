@@ -1,9 +1,16 @@
 /**
  * @jest-environment node
  */
+import { randomUUID } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import middleware from "@/middleware";
 import { getToken } from "next-auth/jwt";
+
+if (!globalThis.crypto?.randomUUID) {
+  Object.defineProperty(globalThis, "crypto", {
+    value: { ...globalThis.crypto, randomUUID },
+  });
+}
 
 jest.mock("next-auth/jwt", () => ({
   getToken: jest.fn(),
@@ -11,7 +18,14 @@ jest.mock("next-auth/jwt", () => ({
 
 jest.mock("next-intl/middleware", () => ({
   __esModule: true,
-  default: () => () => NextResponse.next(),
+  default: () => () => {
+    const res = NextResponse.next();
+    return res;
+  },
+}));
+
+jest.mock("@/lib/security-headers", () => ({
+  buildCspHeader: (nonce?: string) => `default-src 'self'; script-src 'self' 'nonce-${nonce}'`,
 }));
 
 jest.mock("@/i18n/routing", () => ({
