@@ -17,6 +17,8 @@ model User {
   name              String?
   image             String?
   emailVerified     DateTime?
+  role              String    @default("user")
+  stripeCustomerId  String?   @unique
 
   hasSeenWelcome Boolean @default(false)
 
@@ -51,17 +53,38 @@ enum AccessPackage {
   none
   limited
   lifetime
+  monthly
+  yearly
 }
 
 model Access {
-  id                 String        @id @default(cuid())
-  userId             String        @unique
-  freeGenerationUsed Boolean       @default(false)
-  package            AccessPackage @default(none)
-  validUntil         DateTime?
-  stripePaymentId    String?
+  id                   String        @id @default(cuid())
+  userId               String        @unique
+  freeGenerationUsed   Boolean       @default(false)
+  package              AccessPackage @default(none)
+  validUntil           DateTime?
+  stripePaymentId      String?
+  stripeSubscriptionId String?
+  subscriptionStatus   String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Payment {
+  id              String   @id @default(cuid())
+  userId          String
+  stripePaymentId String   @unique
+  amount          Int
+  currency        String   @default("eur")
+  status          String
+  package         String
+  refundedAt      DateTime?
+  refundAmount    Int?
+  createdAt       DateTime @default(now())
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
 }
 
 model ApplicationHistoryEntry {

@@ -2,11 +2,14 @@
 
 import { useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
+import type { PackageType } from "@/lib/pricing";
 
 interface PricingCardsProps {
   config: {
     limited: { priceEur: number; durationDays: number };
     lifetime: { priceEur: number };
+    monthly: { priceEur: number };
+    yearly: { priceEur: number };
   };
   navigate?: (url: string) => void;
   status?: "success" | "cancelled" | null;
@@ -22,7 +25,7 @@ export default function PricingCards({
   const t = useTranslations("pricing");
   const locale = useLocale();
   const [error, setError] = useState<string | null>(null);
-  const [loadingPackage, setLoadingPackage] = useState<"limited" | "lifetime" | null>(null);
+  const [loadingPackage, setLoadingPackage] = useState<PackageType | null>(null);
 
   const formatPrice = (priceEur: number) =>
     new Intl.NumberFormat(locale === "de" ? "de-DE" : "en-US", {
@@ -30,7 +33,7 @@ export default function PricingCards({
       currency: "EUR",
     }).format(priceEur);
 
-  async function handleBuy(pkg: "limited" | "lifetime") {
+  async function handleBuy(pkg: PackageType) {
     setError(null);
     setLoadingPackage(pkg);
     try {
@@ -52,8 +55,10 @@ export default function PricingCards({
     }
   }
 
+  const monthlySaving = Math.round((1 - config.yearly.priceEur / (config.monthly.priceEur * 12)) * 100);
+
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
+    <div className="max-w-5xl mx-auto px-4 py-8 space-y-6">
       <div className="text-center space-y-2">
         <h1 className="text-2xl font-bold text-primary dark:text-accent">{t("title")}</h1>
         <p className="text-sm text-text/70">{t("subtitle")}</p>
@@ -73,6 +78,58 @@ export default function PricingCards({
           {t("checkoutCancelled")}
         </div>
       )}
+
+      <h2 className="text-lg font-semibold text-text text-center">{t("subscriptionsHeading")}</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div className="rounded-xl bg-white dark:bg-surface border border-gray-200 dark:border-gray-700 p-6 flex flex-col gap-4">
+          <h2 className="text-xl font-bold text-primary dark:text-accent">{t("monthly.title")}</h2>
+          <p className="text-3xl font-bold text-text">
+            {formatPrice(config.monthly.priceEur)}
+            <span className="text-base font-normal text-text/60"> / {t("monthly.interval")}</span>
+          </p>
+          <ul className="flex flex-col gap-2 text-sm text-text/80">
+            <li>{t("monthly.feature1")}</li>
+            <li>{t("monthly.feature2")}</li>
+            <li>{t("monthly.feature3")}</li>
+          </ul>
+          <button
+            type="button"
+            onClick={() => handleBuy("monthly")}
+            disabled={loadingPackage !== null}
+            className="mt-auto w-full bg-accent text-white px-8 py-3 rounded-full font-semibold text-base hover:brightness-110 transition disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            {t("monthly.buyButton")}
+          </button>
+        </div>
+
+        <div className="relative rounded-xl bg-white dark:bg-surface border-2 border-accent p-6 flex flex-col gap-4">
+          {monthlySaving > 0 && (
+            <span className="absolute -top-3 right-6 bg-accent text-white text-xs font-semibold px-3 py-1 rounded-full">
+              {t("yearly.saveBadge", { percent: monthlySaving })}
+            </span>
+          )}
+          <h2 className="text-xl font-bold text-primary dark:text-accent">{t("yearly.title")}</h2>
+          <p className="text-3xl font-bold text-text">
+            {formatPrice(config.yearly.priceEur)}
+            <span className="text-base font-normal text-text/60"> / {t("yearly.interval")}</span>
+          </p>
+          <ul className="flex flex-col gap-2 text-sm text-text/80">
+            <li>{t("yearly.feature1")}</li>
+            <li>{t("yearly.feature2")}</li>
+            <li>{t("yearly.feature3")}</li>
+          </ul>
+          <button
+            type="button"
+            onClick={() => handleBuy("yearly")}
+            disabled={loadingPackage !== null}
+            className="mt-auto w-full bg-accent text-white px-8 py-3 rounded-full font-semibold text-base hover:brightness-110 transition disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            {t("yearly.buyButton")}
+          </button>
+        </div>
+      </div>
+
+      <h2 className="text-lg font-semibold text-text text-center pt-4">{t("oneTimeHeading")}</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div className="rounded-xl bg-white dark:bg-surface border border-gray-200 dark:border-gray-700 p-6 flex flex-col gap-4">
           <h2 className="text-xl font-bold text-primary dark:text-accent">{t("limited.title")}</h2>

@@ -418,6 +418,25 @@
     "title": "Zugang zu JobTRIX",
     "subtitle": "Deine kostenlose Probegenerierung wurde bereits genutzt. Wähle ein Paket, um weitere Bewerbungen zu erstellen.",
     "recommendedBadge": "Empfohlen",
+    "subscriptionsHeading": "Abonnements",
+    "oneTimeHeading": "Einmalzahlung",
+    "monthly": {
+      "title": "Monatsabo",
+      "interval": "Monat",
+      "feature1": "Unbegrenzte Generierungen",
+      "feature2": "Alle Layouts und Vorlagen",
+      "feature3": "Jederzeit kündbar",
+      "buyButton": "Monatsabo starten"
+    },
+    "yearly": {
+      "title": "Jahresabo",
+      "interval": "Jahr",
+      "saveBadge": "{percent}% sparen",
+      "feature1": "Unbegrenzte Generierungen",
+      "feature2": "Alle Layouts und Vorlagen",
+      "feature3": "Günstiger als monatlich",
+      "buyButton": "Jahresabo starten"
+    },
     "limited": {
       "title": "Zeitlich begrenzter Zugang",
       "duration": "{days} Tage gültig",
@@ -435,7 +454,7 @@
       "feature4": "Alle zukünftigen Updates inklusive",
       "buyButton": "Jetzt kaufen"
     },
-    "secureNote": "Sichere Zahlung über Stripe per Kreditkarte oder SEPA-Lastschrift.",
+    "secureNote": "Sichere Zahlung über Stripe per Kreditkarte, Apple Pay, Google Pay, SEPA-Lastschrift oder PayPal.",
     "checkoutError": "Weiterleitung zu Stripe ist fehlgeschlagen. Bitte versuche es erneut.",
     "checkoutSuccess": "Zahlung erfolgreich! Dein Zugang ist jetzt aktiv – du kannst direkt weitere Bewerbungen generieren.",
     "checkoutCancelled": "Die Zahlung wurde abgebrochen. Du kannst es jederzeit erneut versuchen."

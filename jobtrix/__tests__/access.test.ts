@@ -34,4 +34,24 @@ describe("checkAccess", () => {
     const decision = checkAccess({ freeGenerationUsed: true, package: "lifetime", validUntil: null }, now);
     expect(decision).toEqual({ allowed: true, markFreeGenerationUsed: false });
   });
+
+  it("erlaubt die Generierung bei aktivem Monatsabo", () => {
+    const decision = checkAccess({ freeGenerationUsed: true, package: "monthly", validUntil: null, subscriptionStatus: "active" }, now);
+    expect(decision).toEqual({ allowed: true, markFreeGenerationUsed: false });
+  });
+
+  it("erlaubt die Generierung bei aktivem Jahresabo", () => {
+    const decision = checkAccess({ freeGenerationUsed: true, package: "yearly", validUntil: null, subscriptionStatus: "active" }, now);
+    expect(decision).toEqual({ allowed: true, markFreeGenerationUsed: false });
+  });
+
+  it("verweigert die Generierung bei gekündigtem Abo", () => {
+    const decision = checkAccess({ freeGenerationUsed: true, package: "monthly", validUntil: null, subscriptionStatus: "cancelled" }, now);
+    expect(decision).toEqual({ allowed: false, reason: "access_required" });
+  });
+
+  it("verweigert die Generierung bei überfälligem Abo", () => {
+    const decision = checkAccess({ freeGenerationUsed: true, package: "yearly", validUntil: null, subscriptionStatus: "past_due" }, now);
+    expect(decision).toEqual({ allowed: false, reason: "access_required" });
+  });
 });

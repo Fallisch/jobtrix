@@ -30,6 +30,8 @@ global.fetch = jest.fn();
 const config = {
   limited: { priceEur: 9.99, durationDays: 30 },
   lifetime: { priceEur: 29.99 },
+  monthly: { priceEur: 9.99 },
+  yearly: { priceEur: 89.99 },
 };
 
 beforeEach(() => {
@@ -37,12 +39,13 @@ beforeEach(() => {
 });
 
 describe("PricingCards", () => {
-  it("zeigt beide Pakete mit Preis und Laufzeit aus der Konfiguration", () => {
+  it("zeigt alle Pakete mit Preis und Laufzeit aus der Konfiguration", () => {
     render(<PricingCards config={config} />);
 
-    expect(screen.getByText(/^9,99/)).toBeInTheDocument();
+    expect(screen.getAllByText(/9,99/).length).toBeGreaterThanOrEqual(2);
     expect(screen.getByText(/30 Tage/)).toBeInTheDocument();
-    expect(screen.getByText(/^29,99/)).toBeInTheDocument();
+    expect(screen.getByText(/29,99/)).toBeInTheDocument();
+    expect(screen.getByText(/89,99/)).toBeInTheDocument();
   });
 
   it("hebt das Lifetime-Paket als empfohlen hervor", () => {

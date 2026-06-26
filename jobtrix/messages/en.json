@@ -418,6 +418,25 @@
     "title": "Access to JobTRIX",
     "subtitle": "Your free trial generation has already been used. Choose a package to create more applications.",
     "recommendedBadge": "Recommended",
+    "subscriptionsHeading": "Subscriptions",
+    "oneTimeHeading": "One-time purchase",
+    "monthly": {
+      "title": "Monthly plan",
+      "interval": "month",
+      "feature1": "Unlimited generations",
+      "feature2": "All layouts and templates",
+      "feature3": "Cancel anytime",
+      "buyButton": "Start monthly plan"
+    },
+    "yearly": {
+      "title": "Yearly plan",
+      "interval": "year",
+      "saveBadge": "Save {percent}%",
+      "feature1": "Unlimited generations",
+      "feature2": "All layouts and templates",
+      "feature3": "Cheaper than monthly",
+      "buyButton": "Start yearly plan"
+    },
     "limited": {
       "title": "Limited-time access",
       "duration": "Valid for {days} days",
@@ -435,7 +454,7 @@
       "feature4": "All future updates included",
       "buyButton": "Buy now"
     },
-    "secureNote": "Secure payment via Stripe by card or SEPA direct debit.",
+    "secureNote": "Secure payment via Stripe by card, Apple Pay, Google Pay, SEPA direct debit or PayPal.",
     "checkoutError": "Redirecting to Stripe failed. Please try again.",
     "checkoutSuccess": "Payment successful! Your access is now active – you can generate more applications right away.",
     "checkoutCancelled": "Payment was cancelled. You can try again anytime."

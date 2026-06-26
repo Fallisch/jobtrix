@@ -14,5 +14,6 @@ export async function GET() {
   return NextResponse.json({
     package: access?.package ?? "none",
     validUntil: access?.validUntil ?? null,
+    subscriptionStatus: access?.subscriptionStatus ?? null,
   });
 }

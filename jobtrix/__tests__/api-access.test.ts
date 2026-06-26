@@ -47,7 +47,7 @@ describe("GET /api/access", () => {
     const data = await res.json();
 
     expect(res.status).toBe(200);
-    expect(data).toEqual({ package: "none", validUntil: null });
+    expect(data).toEqual({ package: "none", validUntil: null, subscriptionStatus: null });
   });
 
   it("liefert package und Gültigkeitsdatum bei aktivem zeitlich begrenztem Zugang", async () => {
@@ -71,6 +71,6 @@ describe("GET /api/access", () => {
     const data = await res.json();
 
     expect(res.status).toBe(200);
-    expect(data).toEqual({ package: "lifetime", validUntil: null });
+    expect(data).toEqual({ package: "lifetime", validUntil: null, subscriptionStatus: null });
   });
 });

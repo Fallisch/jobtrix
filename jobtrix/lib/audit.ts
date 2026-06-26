@@ -10,7 +10,14 @@ export type AuditAction =
   | "email_bounced"
   | "email_complained"
   | "password_reset_requested"
-  | "password_reset_completed";
+  | "password_reset_completed"
+  | "payment_succeeded"
+  | "payment_failed"
+  | "payment_refunded"
+  | "subscription_created"
+  | "subscription_updated"
+  | "subscription_cancelled"
+  | "subscription_expired";
 
 export async function logAudit(action: AuditAction, opts: { userId?: string; detail?: string; ip?: string } = {}): Promise<void> {
   try {
