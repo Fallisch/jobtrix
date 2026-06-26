@@ -7,6 +7,8 @@ export type AuditAction =
   | "checkout_created"
   | "webhook_processed"
   | "email_sent"
+  | "email_bounced"
+  | "email_complained"
   | "password_reset_requested"
   | "password_reset_completed";
 
