@@ -87,12 +87,26 @@
 | **PayPal** *(neu)* | Eine Zahlungsmethode, die über Stripe als zusätzliche Option neben Kreditkarte und SEPA-Lastschrift für den Kauf von Paketen angeboten wird; muss im Stripe-Dashboard des Betreibers aktiviert werden. | PayPal-Integration, PayPal-Direktanbindung (PayPal läuft immer über Stripe, nie direkt) |
 | **Zahlungsmethode** *(neu)* | Eine vom Nutzer beim Kauf eines Pakets wählbare Bezahloption; aktuell unterstützt: Kreditkarte, SEPA-Lastschrift, PayPal (über Stripe). | Zahlungsart, Bezahlweg, Payment Method (englisch) |
 
-## Kerndomäne: Marketing & Außendarstellung *(neu)*
+## Kerndomäne: Marketing & Außendarstellung *(aktualisiert)*
 
 | Term | Definition | Aliases to avoid |
 |------|-----------|-----------------|
 | **Marketing-Landingpage** *(neu)* | Die vollständig ausgebaute Startseite von JobTRIX, die Besucher mit klarer Kernbotschaft, strukturiertem Ablauf, Feature-Übersicht und Preise-Teaser zur Registrierung oder zum Paketkauf überzeugt. | Startseite (nur wenn sie noch leer/minimal ist), Homepage (zu generisch), Landing Page (englisch) |
 | **Scroll-Animation** *(neu)* | Eine via Framer Motion umgesetzte Animation, die Abschnitte oder Elemente der Marketing-Landingpage einblendet, wenn der Nutzer beim Herunterscrollen in ihren Sichtbereich gelangt (`whileInView`). | Einblend-Effekt, Fade-In (englisch), CSS-Animation (technisch anderer Ansatz) |
+| **TrixMarquee** *(neu)* | Ein horizontal endlos scrollendes Laufband-Element mit motivierenden Trix-Wortspielen (z. B. „Trix deinen inneren Schweinehund aus"), das als wiederkehrendes Markenelement auf der Landingpage, der Pricing-Seite und nach erfolgreicher Generierung erscheint. | Laufband, Ticker, Carousel, Banner |
+| **Marquee-Spruch** *(neu)* | Ein einzelner kurzer, motivierender Text im TrixMarquee, der das Wort „Trix" als Wortspiel enthält; wird über i18n-Keys zweisprachig (DE/EN) definiert. | Slogan, Claim, Tagline |
+| **Trust-Badge** *(neu)* | Ein kompaktes visuelles Element (Icon + Kurztext) auf der Landingpage, das einen belegbaren Vertrauensfakt kommuniziert (z. B. „Hosting in Deutschland", „DSGVO-konform"); keine erfundenen Bewertungen oder Nutzerzahlen. | Siegel, Zertifikat (impliziert externe Prüfung), Testimonial |
+| **Entrance-Animation** *(neu)* | Eine einmalige Einblend-Animation beim ersten Erscheinen eines Elements (fade-in + leichter Y-Translate), umgesetzt mit Framer Motion; erscheint nur einmal pro Seitenbesuch, nicht bei jedem Scroll-Durchgang. | Intro-Animation, Ladeanimation |
+| **Hover-Effekt** *(neu)* | Eine dezente visuelle Reaktion auf Mauszeiger-Berührung (z. B. leichtes Vergrößern, Schatten-Verstärkung), die Interaktivität signalisiert; primär auf Karten und Buttons eingesetzt. | Mouseover-Effekt, Rollover |
+| **Stagger-Animation** *(neu)* | Eine gestaffelte Entrance-Animation, bei der mehrere gleichartige Elemente (z. B. Feature-Karten, Schritte) nacheinander mit kurzem Zeitversatz (0.1–0.15s) einblenden statt gleichzeitig. | Kaskade, Wasserfall-Animation |
+
+## Kerndomäne: Design-System *(neu)*
+
+| Term | Definition | Aliases to avoid |
+|------|-----------|-----------------|
+| **Design-Token** *(neu)* | Ein zentraler, benannter Wert für eine visuelle Eigenschaft (Farbe, Abstand, Schriftgröße), der in CSS-Variablen definiert und über Tailwind-Config referenziert wird; ermöglicht konsistente Änderungen an einer Stelle statt in jedem Einzelkomponent. | CSS-Variable (zu technisch), Theme-Variable, Farbwert |
+| **Visual Direction** *(neu)* | Die in einer SPEC dokumentierte Gesamtaussage über die angestrebte visuelle Ästhetik eines Features oder Redesigns – Farbpalette, Typografie, Animationsstil, Komponentenmuster; dient als verbindliche Gestaltungsvorgabe für die Umsetzung. | Styleguide (impliziert ein eigenständiges Dokument), Moodboard (ist ein Vorstadium), Design-Konzept (zu vage) |
+| **prefers-reduced-motion** *(neu)* | Eine Systemeinstellung des Nutzers, die signalisiert, dass Animationen reduziert oder deaktiviert werden sollen; Framer Motion respektiert diese automatisch, CSS-Animationen (z. B. Marquee) müssen explizit per Media Query gestoppt werden. | Barrierefreiheits-Modus (zu breit), Motion-Einstellung |
 
 ## Kerndomäne: Infrastruktur, Betrieb & Compliance *(neu)*
 
@@ -126,7 +140,13 @@
 - **Konto löschen** entfernt das **Nutzerkonto** inkl. **Nutzerprofil**, **Zugang** und **Bewerbungshistorie** unwiderruflich *(neu)*.
 - Ein **Paket** wird über eine **Zahlungsmethode** (Kreditkarte, SEPA-Lastschrift oder **PayPal**) über **Stripe** gekauft *(neu)*.
 - Im **Stripe Test-Modus** ist kein echter Geldfluss möglich; erst im **Stripe Live-Modus** werden Zahlungen tatsächlich abgewickelt *(neu)*.
-- Die **Marketing-Landingpage** ist die öffentliche Startseite von JobTRIX und enthält **Scroll-Animationen** für eine moderne Nutzeransprache *(neu)*.
+- Die **Marketing-Landingpage** ist die öffentliche Startseite von JobTRIX und enthält **Scroll-Animationen**, ein **TrixMarquee** und **Trust-Badges** für eine moderne, vertrauensbildende Nutzeransprache *(aktualisiert)*.
+- Das **TrixMarquee** enthält mehrere **Marquee-Sprüche** und erscheint auf der **Marketing-Landingpage**, der Pricing-Seite und nach erfolgreicher **Generierung** *(neu)*.
+- **Trust-Badges** zeigen belegbare Fakten und erscheinen unterhalb des Hero-Bereichs der **Marketing-Landingpage** *(neu)*.
+- **Entrance-Animationen** und **Stagger-Animationen** werden auf der **Marketing-Landingpage** und in App-Komponenten eingesetzt; sie respektieren **prefers-reduced-motion** *(neu)*.
+- **Hover-Effekte** werden auf Karten und Buttons eingesetzt und signalisieren dem Nutzer Interaktivität *(neu)*.
+- **Design-Tokens** definieren die Farbpalette, Abstände und Schriftgrößen zentral; Änderungen wirken sich auf alle Komponenten aus *(neu)*.
+- Die **Visual Direction** einer SPEC definiert verbindlich, wie die umzusetzenden UI-Elemente gestaltet werden *(neu)*.
 - **JobTRIX** ist ein **Verkaufsfertiges Cloud-Produkt** und folgt dem **Standard-Stack** von Faltrix *(neu)*.
 - Die **Produktionsumgebung** von JobTRIX läuft auf dem **Standard-Stack** (Cloudflare als DNS/CDN/WAF, Render als App-Hosting, Supabase als Datenbank) und ist unter `jobtrix.de` erreichbar *(neu)*.
 - Ein **Security-Audit** erzeugt **Findings**; jedes **Finding** wird als Issue umgesetzt, per TDD behoben und mit `/security-review` geprüft *(neu)*.
@@ -225,6 +245,18 @@
 
 > **Dev:** „Kann der Nutzer ‚gestern' als Zeitraum bei der Berufserfahrung eingeben?" *(neu)*
 > **Domain Expert:** „Nein. Die **Inline-Validierung** erlaubt nur einen **Jahreszahl-Bereich** – also ‚2019' oder ‚2019 - 2022'. Alles andere wird sofort rot markiert."
+
+> **Dev:** „Ist das TrixMarquee eine Animation oder ein UI-Element?" *(neu)*
+> **Domain Expert:** „Beides. Das **TrixMarquee** ist eine eigenständige Komponente – ein horizontal scrollendes Laufband mit **Marquee-Sprüchen**. Es nutzt eine CSS-Animation für den Endlos-Scroll und wird bei **prefers-reduced-motion** automatisch angehalten."
+
+> **Dev:** „Sind Trust-Badges dasselbe wie Nutzerbewertungen?" *(neu)*
+> **Domain Expert:** „Nein. **Trust-Badges** zeigen belegbare Fakten (Hosting in Deutschland, DSGVO-konform). Nutzerbewertungen oder Testimonials wären erfundene Inhalte, solange keine echten vorliegen – die sind explizit Out of Scope."
+
+> **Dev:** „Was ist der Unterschied zwischen einem Design-Token und einer CSS-Variable?" *(neu)*
+> **Domain Expert:** „Ein **Design-Token** ist das Konzept – ein benannter Wert mit semantischer Bedeutung (z. B. ‚Akzentfarbe'). Die CSS-Variable (`--color-accent`) ist die technische Umsetzung. Im Gespräch immer **Design-Token** sagen, wenn du über das Designsystem sprichst."
+
+> **Dev:** „Muss ich prefers-reduced-motion für Framer Motion manuell implementieren?" *(neu)*
+> **Domain Expert:** „Nein, Framer Motion respektiert **prefers-reduced-motion** automatisch. Aber CSS-Animationen wie das **TrixMarquee** brauchen eine explizite `@media (prefers-reduced-motion: reduce)`-Regel, die die Animation stoppt."
 
 ## Markierte Unklarheiten
 
