@@ -11,6 +11,7 @@ import LayoutPreview from "@/components/LayoutPreview";
 import { openPdfPreview, PdfPreviewHost } from "@/components/PdfPreviewModal";
 import React from "react";
 import { CoverLetterDocument, CvDocument } from "@/lib/pdf-documents";
+import TrixMarquee from "@/components/TrixMarquee";
 
 const ACCENT_COLORS = [
   "#1E3A5F",
@@ -242,7 +243,7 @@ export default function GenerateForm() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8 space-y-6 relative">
+    <div className="max-w-3xl mx-auto px-4 py-8 space-y-6 divide-y divide-gray-100 dark:divide-gray-800 relative">
       {adoptedHintVisible && (
         <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 bg-green-600 text-white px-6 py-3 rounded-full shadow-lg text-sm font-semibold animate-bounce">
           {t("jobSearchAdoptedHint")}
@@ -261,7 +262,7 @@ export default function GenerateForm() {
               onChange={(e) => setJobSearchQuery(e.target.value)}
               placeholder={t("jobSearchQueryPlaceholder")}
               aria-label={t("jobSearchQueryLabel")}
-              className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-3 text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-3 min-h-[44px] text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent/50"
               onKeyDown={(e) => e.key === "Enter" && handleJobSearch()}
             />
             <input
@@ -271,7 +272,7 @@ export default function GenerateForm() {
               onChange={(e) => setJobSearchLocation(e.target.value)}
               placeholder={t("jobSearchLocationPlaceholder")}
               aria-label={t("jobSearchLocationLabel")}
-              className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-2.5 text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-3 min-h-[44px] text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent/50"
             />
             <div className="flex items-center gap-3">
               <span className={`text-sm whitespace-nowrap ${jobSearchLocation.trim() ? "text-text/60" : "text-text/30"}`}>{t("jobSearchRadiusLabel")}:</span>
@@ -281,7 +282,7 @@ export default function GenerateForm() {
                 onChange={(e) => setJobSearchRadius(e.target.value)}
                 disabled={!jobSearchLocation.trim()}
                 aria-label={t("jobSearchRadiusLabel")}
-                className={`rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent ${jobSearchLocation.trim() ? "text-text" : "text-text/30 opacity-50 cursor-not-allowed"}`}
+                className={`rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent/50 ${jobSearchLocation.trim() ? "text-text" : "text-text/30 opacity-50 cursor-not-allowed"}`}
               >
                 <option value="0">0 km</option>
                 <option value="5">5 km</option>
@@ -321,7 +322,7 @@ export default function GenerateForm() {
                       data-testid={`job-result-${i}`}
                       onClick={() => handleJobResultClick(result, i)}
                       disabled={extractLoadingIndex !== null}
-                      className="text-left flex-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-60"
+                      className="text-left flex-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/50 disabled:opacity-60"
                     >
                       <p className="font-semibold text-text">
                         {result.title}
@@ -360,7 +361,7 @@ export default function GenerateForm() {
               rows={5}
               placeholder={t("jobSearchPastePlaceholder")}
               aria-label={t("jobSearchPasteLabel")}
-              className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-3 text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent resize-y"
+              className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-3 min-h-[44px] text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent/50 resize-y"
             />
             <button
               type="button"
@@ -398,7 +399,7 @@ export default function GenerateForm() {
               onChange={(e) => setTargetCompany(e.target.value)}
               placeholder={t("targetCompanyPlaceholder")}
               aria-label={t("targetCompanyLabel")}
-              className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-3 text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-3 min-h-[44px] text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent/50"
             />
           </div>
         ) : (
@@ -412,7 +413,7 @@ export default function GenerateForm() {
               value={jobPosting}
               onChange={(e) => setJobPosting(e.target.value)}
               rows={8}
-              className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-3 text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent resize-y"
+              className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-3 min-h-[44px] text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent/50 resize-y"
               placeholder={t("jobPostingPlaceholder")}
               aria-label={t("jobPostingLabel")}
             />
@@ -429,7 +430,7 @@ export default function GenerateForm() {
             onChange={(e) => setHints(e.target.value)}
             rows={3}
             maxLength={2000}
-            className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-3 text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent resize-y"
+            className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface px-4 py-3 min-h-[44px] text-sm text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent/50 resize-y"
             placeholder={t("hintsPlaceholder")}
             aria-label={t("hintsLabel")}
             data-testid="hints-textarea"
@@ -496,6 +497,7 @@ export default function GenerateForm() {
 
       {result && (
         <div className="space-y-4">
+          <TrixMarquee />
           <div
             data-testid="ai-review-hint"
             className="flex items-start gap-3 rounded-xl border border-amber-300 dark:border-amber-600 bg-amber-50 dark:bg-amber-950/30 p-4"
@@ -602,7 +604,7 @@ export default function GenerateForm() {
                   if (e.target.checked) setCoverLetterHighlight(false);
                 }}
                 data-testid="cover-letter-agree-checkbox"
-                className="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-accent focus:ring-accent"
+                className="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-accent focus:ring-accent/50"
               />
               {t("confirmReadAgree")}
             </label>
@@ -662,7 +664,7 @@ export default function GenerateForm() {
                   if (e.target.checked) setCvHighlight(false);
                 }}
                 data-testid="cv-agree-checkbox"
-                className="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-accent focus:ring-accent"
+                className="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-accent focus:ring-accent/50"
               />
               {t("confirmReadAgree")}
             </label>

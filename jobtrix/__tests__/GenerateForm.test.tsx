@@ -3,7 +3,10 @@ import userEvent from "@testing-library/user-event";
 import GenerateForm from "@/components/GenerateForm";
 
 jest.mock("next-intl", () => ({
-  useTranslations: () => (key: string) => key,
+  useTranslations: () => (key: string) => {
+    if (key === "phrases") return ["phrase1", "phrase2"];
+    return key;
+  },
 }));
 
 const mockPush = jest.fn();
