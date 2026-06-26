@@ -566,5 +566,12 @@
       "Kein Hexenwerk, sondern JobTRIX",
       "Dein nächster Job ist nur einen Trix entfernt"
     ]
+  },
+  "trustBadges": {
+    "hosting": "Hosting in Deutschland",
+    "dsgvo": "DSGVO-konform",
+    "encryption": "Verschlüsselte Übertragung",
+    "payment": "Sichere Zahlung",
+    "data": "Deine Daten gehören dir"
   }
 }

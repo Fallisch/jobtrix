@@ -566,5 +566,12 @@
       "Not magic, just JobTRIX",
       "Your next job is just one Trix away"
     ]
+  },
+  "trustBadges": {
+    "hosting": "Hosted in Germany",
+    "dsgvo": "GDPR compliant",
+    "encryption": "Encrypted transmission",
+    "payment": "Secure payment",
+    "data": "Your data belongs to you"
   }
 }
