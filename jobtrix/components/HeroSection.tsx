@@ -20,7 +20,7 @@ export default function HeroSection({ locale, headline, subline, cta, freeBadge 
       transition={{ duration: 0.5, ease: "easeOut" }}
       className="flex flex-col items-center justify-center min-h-[calc(100vh-64px)] px-4 text-center"
     >
-      <h1 className="text-4xl sm:text-6xl font-extrabold text-primary dark:text-accent mb-6 leading-tight">
+      <h1 className="text-5xl sm:text-6xl font-extrabold text-primary dark:text-accent mb-6 leading-tight">
         {headline}
       </h1>
       <p className="text-lg sm:text-xl text-text/70 dark:text-white/60 max-w-xl mb-10">
@@ -28,7 +28,7 @@ export default function HeroSection({ locale, headline, subline, cta, freeBadge 
       </p>
       <Link
         href={`/${locale}/register`}
-        className="bg-accent text-white px-10 py-4 rounded-full font-semibold text-lg hover:brightness-110 transition shadow-lg"
+        className="bg-accent text-white px-10 py-4 rounded-full font-semibold text-lg min-h-[44px] hover:shadow-md hover:scale-[1.02] transition-all duration-200 shadow-sm"
       >
         {cta}
       </Link>

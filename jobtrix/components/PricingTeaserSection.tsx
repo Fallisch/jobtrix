@@ -25,7 +25,7 @@ export default function PricingTeaserSection({ locale, title, desc, link }: Pric
         <p className="text-text/70 dark:text-white/60 mb-8">{desc}</p>
         <Link
           href={`/${locale}/pricing`}
-          className="inline-block border-2 border-accent text-accent px-8 py-3 rounded-full font-semibold hover:bg-accent hover:text-white transition"
+          className="inline-block border-2 border-accent text-accent px-8 py-3 rounded-full font-semibold min-h-[44px] hover:bg-accent hover:text-white hover:shadow-md hover:scale-[1.02] transition-all duration-200"
         >
           {link}
         </Link>

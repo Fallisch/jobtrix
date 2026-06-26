@@ -38,7 +38,7 @@ export default function FeaturesSection({ title, features }: FeaturesSectionProp
               whileInView="visible"
               viewport={{ once: true }}
               variants={tileVariants}
-              className="bg-background dark:bg-white/10 rounded-2xl p-6 shadow-sm"
+              className="bg-white dark:bg-surface rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md hover:scale-[1.02] transition-all duration-200"
             >
               <h3 className="font-semibold text-primary dark:text-white mb-2">{f.title}</h3>
               <p className="text-sm text-text/70 dark:text-white/60">{f.desc}</p>

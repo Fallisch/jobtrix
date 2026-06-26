@@ -25,7 +25,7 @@ export default function FinalCtaSection({ locale, title, desc, cta }: FinalCtaSe
         <p className="text-white/80 mb-10 text-lg">{desc}</p>
         <Link
           href={`/${locale}/register`}
-          className="bg-accent text-white px-10 py-4 rounded-full font-semibold text-lg hover:brightness-110 transition shadow-lg"
+          className="bg-accent text-white px-10 py-4 rounded-full font-semibold text-lg min-h-[44px] hover:shadow-md hover:scale-[1.02] transition-all duration-200 shadow-sm"
         >
           {cta}
         </Link>

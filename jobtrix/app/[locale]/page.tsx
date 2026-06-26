@@ -1,5 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import HeroSection from "@/components/HeroSection";
+import TrustBadges from "@/components/TrustBadges";
+import TrixMarquee from "@/components/TrixMarquee";
 import HowItWorksSection from "@/components/HowItWorksSection";
 import FeaturesSection from "@/components/FeaturesSection";
 import PricingTeaserSection from "@/components/PricingTeaserSection";
@@ -22,6 +24,8 @@ export default async function Home({ params }: Props) {
         cta={t("cta")}
         freeBadge={t("freeBadge")}
       />
+      <TrustBadges />
+      <TrixMarquee />
       <HowItWorksSection
         title={t("howItWorks.title")}
         steps={[
