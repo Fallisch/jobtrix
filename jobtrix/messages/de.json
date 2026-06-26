@@ -234,6 +234,8 @@
     "cvStyleLabel": "Reihenfolge Einträge",
     "cvStyleClassic": "Ältestes zuerst",
     "cvStyleAmerican": "Neuestes zuerst (Empfohlen)",
+    "aiReviewHint": "Bitte prüfe das generierte Anschreiben und den Lebenslauf sorgfältig vor dem Versand. KI-generierte Texte können Fehler enthalten.",
+    "aiReviewHintEmail": "Bitte prüfe das generierte Anschreiben und den Lebenslauf vor dem Versand.",
     "confirmReadAgree": "Ich habe den Text gelesen und bin damit einverstanden",
     "hints": {
       "jobPosting": "Kopiere die vollständige Stellenanzeige hier rein.",

@@ -206,4 +206,10 @@ describe("EmailDraft", () => {
       await waitFor(() => expect(screen.getByTestId("copy-body-button")).toHaveTextContent("copied"));
     });
   });
+
+  it("zeigt einen Prüfhinweis für KI-generierte Inhalte im E-Mail-Bereich", () => {
+    render(<EmailDraft {...defaultProps} />);
+    expect(screen.getByTestId("ai-review-hint-email")).toBeInTheDocument();
+    expect(screen.getByText(/aiReviewHintEmail/i)).toBeInTheDocument();
+  });
 });

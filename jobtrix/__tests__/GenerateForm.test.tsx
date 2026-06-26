@@ -781,6 +781,34 @@ describe("GenerateForm", () => {
     });
   });
 
+  describe("KI-Prüfhinweis nach Generierung", () => {
+    beforeEach(() => {
+      localStorage.setItem("jobtrix_profile", JSON.stringify(mockProfile));
+    });
+
+    async function generate() {
+      (global.fetch as jest.Mock).mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ coverLetter: "Brief", cv: "CV", emailSubject: "Betr" }),
+      });
+      render(<GenerateForm />);
+      await userEvent.type(screen.getByRole("textbox", { name: JOB_POSTING }), "Stelle");
+      fireEvent.click(screen.getByRole("button", { name: GENERATE_BTN }));
+      await waitFor(() => screen.getByDisplayValue("Brief"));
+    }
+
+    it("zeigt nach der Generierung einen gut sichtbaren Prüfhinweis an", async () => {
+      await generate();
+      const hint = screen.getByTestId("ai-review-hint");
+      expect(hint).toBeInTheDocument();
+      expect(hint).toHaveTextContent("aiReviewHint");
+    });
+
+    it("zeigt den Prüfhinweis nicht vor der Generierung", () => {
+      render(<GenerateForm />);
+      expect(screen.queryByTestId("ai-review-hint")).not.toBeInTheDocument();
+    });
+  });
 
   describe("Stelle suchen", () => {
     beforeEach(() => {

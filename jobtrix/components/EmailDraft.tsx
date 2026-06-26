@@ -172,6 +172,14 @@ export default function EmailDraft({ subject, body, coverLetter, cv, template, c
           />
         </div>
 
+        <div
+          data-testid="ai-review-hint-email"
+          className="flex items-start gap-3 rounded-lg border border-amber-300 dark:border-amber-600 bg-amber-50 dark:bg-amber-950/30 p-3"
+        >
+          <span className="text-amber-500 text-lg leading-none" aria-hidden="true">&#9888;</span>
+          <p className="text-xs font-medium text-amber-800 dark:text-amber-200">{t("aiReviewHintEmail")}</p>
+        </div>
+
         <div className="flex gap-2">
           <button
             type="button"

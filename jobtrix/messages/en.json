@@ -234,6 +234,8 @@
     "cvStyleLabel": "Entry order",
     "cvStyleClassic": "Oldest first",
     "cvStyleAmerican": "Newest first (Recommended)",
+    "aiReviewHint": "Please carefully review the generated cover letter and CV before sending. AI-generated texts may contain errors.",
+    "aiReviewHintEmail": "Please review the generated cover letter and CV before sending.",
     "confirmReadAgree": "I have read the text and agree to it",
     "hints": {
       "jobPosting": "Paste the full job posting text here.",

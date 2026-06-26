@@ -496,6 +496,14 @@ export default function GenerateForm() {
 
       {result && (
         <div className="space-y-4">
+          <div
+            data-testid="ai-review-hint"
+            className="flex items-start gap-3 rounded-xl border border-amber-300 dark:border-amber-600 bg-amber-50 dark:bg-amber-950/30 p-4"
+            role="alert"
+          >
+            <span className="text-amber-500 text-xl leading-none" aria-hidden="true">&#9888;</span>
+            <p className="text-sm font-medium text-amber-800 dark:text-amber-200">{t("aiReviewHint")}</p>
+          </div>
           <div>
             <span className="text-sm font-medium text-text block mb-2">{t("templateLabel")}:</span>
             <div className="flex flex-wrap gap-3">
