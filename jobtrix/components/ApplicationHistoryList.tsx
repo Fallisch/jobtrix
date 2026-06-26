@@ -112,7 +112,7 @@ export default function ApplicationHistoryList() {
       )}
 
       {entries.length === 0 ? (
-        <div className="bg-white dark:bg-surface rounded-xl shadow p-6 text-center space-y-3">
+        <div className="bg-white dark:bg-surface rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm p-6 text-center space-y-3">
           <p className="text-text/70">{t("emptyState")}</p>
           <Link href={`/${locale}/generate`} className="text-accent font-semibold hover:underline">
             {t("emptyStateLink")}
@@ -124,7 +124,7 @@ export default function ApplicationHistoryList() {
             const diff = new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
             return sortOrder === "oldest" ? -diff : diff;
           }).map((entry) => (
-            <div key={entry.id} className="bg-white dark:bg-surface rounded-xl shadow p-5 space-y-2">
+            <div key={entry.id} className="bg-white dark:bg-surface rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-200 p-5 space-y-2">
               <div className="flex items-center justify-between gap-4">
                 <h2 className="font-semibold text-primary dark:text-accent">
                   {entry.jobTitle ?? t("untitled")}

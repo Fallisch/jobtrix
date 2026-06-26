@@ -116,21 +116,21 @@ export default function ApplicationHistoryDetail({ id }: { id: string }) {
       </div>
 
       {activeTab === "coverLetter" && (
-        <section className="bg-white dark:bg-surface rounded-xl shadow p-5 space-y-2">
+        <section className="bg-white dark:bg-surface rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm p-5 space-y-2">
           <h2 className="font-semibold text-primary dark:text-accent">{t("coverLetterTitle")}</h2>
           <p className="text-sm text-text/80 whitespace-pre-wrap">{entry.coverLetter}</p>
         </section>
       )}
 
       {activeTab === "cv" && (
-        <section className="bg-white dark:bg-surface rounded-xl shadow p-5 space-y-2">
+        <section className="bg-white dark:bg-surface rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm p-5 space-y-2">
           <h2 className="font-semibold text-primary dark:text-accent">{t("cvTitle")}</h2>
           <p className="text-sm text-text/80 whitespace-pre-wrap">{entry.cv}</p>
         </section>
       )}
 
       {activeTab === "email" && (
-        <section className="bg-white dark:bg-surface rounded-xl shadow p-5 space-y-2">
+        <section className="bg-white dark:bg-surface rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm p-5 space-y-2">
           <h2 className="font-semibold text-primary dark:text-accent">{t("emailDraftTitle")}</h2>
           <div>
             <span className="text-sm font-medium text-text/60">{t("emailSubjectLabel")}</span>
