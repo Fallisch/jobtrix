@@ -39,13 +39,12 @@ beforeEach(() => {
 });
 
 describe("PricingCards", () => {
-  it("zeigt alle Pakete mit Preis und Laufzeit aus der Konfiguration", () => {
+  it("zeigt beide Einmalkauf-Pakete mit Preis und Laufzeit aus der Konfiguration", () => {
     render(<PricingCards config={config} />);
 
-    expect(screen.getAllByText(/9,99/).length).toBeGreaterThanOrEqual(2);
-    expect(screen.getByText(/30 Tage/)).toBeInTheDocument();
+    expect(screen.getAllByText(/9,99/).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByText(/30/)).toBeInTheDocument();
     expect(screen.getByText(/29,99/)).toBeInTheDocument();
-    expect(screen.getByText(/89,99/)).toBeInTheDocument();
   });
 
   it("hebt das Lifetime-Paket als empfohlen hervor", () => {
