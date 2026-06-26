@@ -206,7 +206,7 @@ export default function ProfileForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-2xl mx-auto px-4 py-8 space-y-6 text-base">
+    <form onSubmit={handleSubmit} className="max-w-2xl mx-auto px-4 py-8 space-y-6 text-base sm:px-6">
       <h1 className="text-2xl font-bold text-primary dark:text-accent">{t("title")}</h1>
 
       {access?.package === "limited" && access.validUntil && (

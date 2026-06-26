@@ -125,7 +125,7 @@ export default function ApplicationHistoryList() {
             return sortOrder === "oldest" ? -diff : diff;
           }).map((entry) => (
             <div key={entry.id} className="bg-white dark:bg-surface rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-200 p-5 space-y-2">
-              <div className="flex items-center justify-between gap-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
                 <h2 className="font-semibold text-primary dark:text-accent">
                   {entry.jobTitle ?? t("untitled")}
                   {entry.companyName ? ` – ${entry.companyName}` : ""}
@@ -141,7 +141,7 @@ export default function ApplicationHistoryList() {
                 </span>
               </div>
               <p className="text-sm text-text/80">{excerpt(entry.coverLetter)}</p>
-              <div className="flex gap-3 pt-2">
+              <div className="flex flex-wrap gap-3 pt-2">
                 <Link
                   href={`/${locale}/application-history/${entry.id}`}
                   className="rounded-full px-4 py-2 text-sm font-semibold bg-accent text-white hover:bg-accent/90 transition"
