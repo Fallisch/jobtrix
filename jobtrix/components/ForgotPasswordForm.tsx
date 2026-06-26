@@ -48,7 +48,7 @@ export default function ForgotPasswordForm() {
 
   return (
     <div className="max-w-md mx-auto px-4 py-12">
-      <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface p-6 space-y-6">
+      <div className="rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-surface p-6 shadow-sm space-y-6">
         <h1 className="text-2xl font-bold text-primary dark:text-accent">{t("title")}</h1>
 
         {submitted ? (
@@ -67,7 +67,7 @@ export default function ForgotPasswordForm() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+                  className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-xl px-4 py-3 min-h-[44px] focus:outline-none focus:ring-2 focus:ring-accent/50"
                   aria-label={t("emailLabel")}
                 />
                 {errors.email && (

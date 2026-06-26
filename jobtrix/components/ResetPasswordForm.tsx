@@ -62,7 +62,7 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
   if (invalidToken) {
     return (
       <div className="max-w-md mx-auto px-4 py-12">
-        <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface p-6 space-y-6">
+        <div className="rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-surface p-6 shadow-sm space-y-6">
           <h1 className="text-2xl font-bold text-primary dark:text-accent">{t("invalidTokenTitle")}</h1>
           <p className="text-text/80">{t("invalidTokenMessage")}</p>
           <p className="text-sm text-text/70 text-center">
@@ -77,7 +77,7 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
 
   return (
     <div className="max-w-md mx-auto px-4 py-12">
-      <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface p-6 space-y-6">
+      <div className="rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-surface p-6 shadow-sm space-y-6">
         <h1 className="text-2xl font-bold text-primary dark:text-accent">{t("title")}</h1>
 
         {submitted ? (
@@ -101,7 +101,7 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-accent"
+                  className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-xl px-4 py-3 pr-10 min-h-[44px] focus:outline-none focus:ring-2 focus:ring-accent/50"
                   aria-label={t("passwordLabel")}
                 />
                 <button
@@ -133,7 +133,7 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
                   type={showPasswordConfirm ? "text" : "password"}
                   value={passwordConfirm}
                   onChange={(e) => setPasswordConfirm(e.target.value)}
-                  className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-accent"
+                  className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-xl px-4 py-3 pr-10 min-h-[44px] focus:outline-none focus:ring-2 focus:ring-accent/50"
                   aria-label={t("passwordConfirmLabel")}
                 />
                 <button
