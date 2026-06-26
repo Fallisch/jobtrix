@@ -3,6 +3,20 @@ import userEvent from "@testing-library/user-event";
 import ProfileForm from "@/components/ProfileForm";
 import { ProfileData } from "@/lib/profile-storage";
 
+jest.mock("framer-motion", () => {
+  const React = require("react");
+  return {
+    motion: new Proxy({}, {
+      get: (_: unknown, tag: string) =>
+        React.forwardRef((props: Record<string, unknown>, ref: unknown) => {
+          const { initial, animate, exit, whileInView, whileHover, viewport, transition: _t, variants, custom, ...rest } = props;
+          return React.createElement(tag, { ...rest, ref });
+        }),
+    }),
+    AnimatePresence: ({ children }: { children: React.ReactNode }) => children,
+  };
+});
+
 const mockLocaleState: { locale: "de" | "en" } = { locale: "de" };
 
 jest.mock("next-intl", () => {

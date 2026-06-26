@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { useRouter, useParams } from "next/navigation";
 import {
@@ -209,7 +210,7 @@ export default function ProfileForm() {
       <h1 className="text-2xl font-bold text-primary dark:text-accent">{t("title")}</h1>
 
       {access?.package === "limited" && access.validUntil && (
-        <p className="text-sm text-text/70 bg-surface border border-gray-200 dark:border-gray-700 rounded-md px-3 py-2">
+        <p className="text-sm text-text/70 bg-surface border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2">
           {t("accessValidUntil", {
             date: new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeZone: "UTC" }).format(
               new Date(access.validUntil)
@@ -231,7 +232,7 @@ export default function ProfileForm() {
           type="text"
           value={data.name}
           onChange={(e) => set("name", e.target.value)}
-          className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 min-h-[44px] text-base focus:outline-none focus:ring-2 focus:ring-accent"
+          className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-xl px-3 py-2 min-h-[44px] text-base focus:outline-none focus:ring-2 focus:ring-accent/50"
           aria-label={t("nameLabel")}
         />
         {errors.name && <p className="text-red-600 dark:text-red-400 text-sm mt-1">{t(`errors.${errors.name}`)}</p>}
@@ -247,7 +248,7 @@ export default function ProfileForm() {
           type="text"
           value={data.address}
           onChange={(e) => { set("address", e.target.value); setAddressError(validateLocation(e.target.value)); }}
-          className={`w-full border dark:bg-surface rounded-md px-3 py-2 min-h-[44px] text-base focus:outline-none focus:ring-2${addressError ? " border-red-500 ring-red-500" : " border-gray-300 dark:border-gray-600 focus:ring-accent"}`}
+          className={`w-full border dark:bg-surface rounded-xl px-3 py-2 min-h-[44px] text-base focus:outline-none focus:ring-2${addressError ? " border-red-500 ring-red-500" : " border-gray-300 dark:border-gray-600 focus:ring-accent/50"}`}
           aria-label={t("addressLabel")}
         />
         {addressError && <p className="text-red-600 dark:text-red-400 text-sm mt-1">{tErr(addressError)}</p>}
@@ -263,7 +264,7 @@ export default function ProfileForm() {
           type="email"
           value={data.email}
           onChange={(e) => set("email", e.target.value)}
-          className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 min-h-[44px] text-base focus:outline-none focus:ring-2 focus:ring-accent"
+          className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-xl px-3 py-2 min-h-[44px] text-base focus:outline-none focus:ring-2 focus:ring-accent/50"
           aria-label={t("emailLabel")}
         />
       </div>
@@ -278,7 +279,7 @@ export default function ProfileForm() {
           type="tel"
           value={data.phone}
           onChange={(e) => { set("phone", e.target.value); setPhoneError(validatePhone(e.target.value)); }}
-          className={`w-full border dark:bg-surface rounded-md px-3 py-2 min-h-[44px] text-base focus:outline-none focus:ring-2${phoneError ? " border-red-500 ring-red-500" : " border-gray-300 dark:border-gray-600 focus:ring-accent"}`}
+          className={`w-full border dark:bg-surface rounded-xl px-3 py-2 min-h-[44px] text-base focus:outline-none focus:ring-2${phoneError ? " border-red-500 ring-red-500" : " border-gray-300 dark:border-gray-600 focus:ring-accent/50"}`}
           aria-label={t("phoneLabel")}
         />
         {phoneError && <p className="text-red-600 dark:text-red-400 text-sm mt-1">{tErr(phoneError)}</p>}
@@ -294,7 +295,7 @@ export default function ProfileForm() {
           type="date"
           value={data.birthdate}
           onChange={(e) => set("birthdate", e.target.value)}
-          className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 min-h-[44px] text-base focus:outline-none focus:ring-2 focus:ring-accent"
+          className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-xl px-3 py-2 min-h-[44px] text-base focus:outline-none focus:ring-2 focus:ring-accent/50"
           aria-label={t("birthdateLabel")}
         />
       </div>
@@ -338,13 +339,13 @@ export default function ProfileForm() {
       <div>
         <h2 className="text-lg font-semibold text-primary dark:text-accent mb-2">{t("educationTitle")}<InfoTooltip text={tHint("education")} /></h2>
         {data.education.map((edu) => (
-          <div key={edu.id} className="border border-gray-200 dark:border-gray-700 rounded-md p-3 mb-3 space-y-2">
+          <div key={edu.id} className="border border-gray-200 dark:border-gray-700 rounded-xl p-3 mb-3 space-y-2">
             <input
               type="text"
               placeholder={t("institutionPlaceholder")}
               value={edu.institution}
               onChange={(e) => updateEdu(edu.id, "institution", e.target.value)}
-              className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent/50"
             />
             <div className="flex gap-2">
               <input
@@ -352,14 +353,14 @@ export default function ProfileForm() {
                 placeholder={t("degreePlaceholder")}
                 value={edu.degree}
                 onChange={(e) => updateEdu(edu.id, "degree", e.target.value)}
-                className="flex-1 border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+                className="flex-1 border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent/50"
               />
               <input
                 type="text"
                 placeholder={t("yearPlaceholder")}
                 value={edu.year}
                 onChange={(e) => { updateEdu(edu.id, "year", e.target.value); setYearErrors((prev) => ({ ...prev, [edu.id]: validateYearRange(e.target.value) })); }}
-                className={`w-24 border dark:bg-surface rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2${yearErrors[edu.id] ? " border-red-500 ring-red-500" : " border-gray-300 dark:border-gray-600 focus:ring-accent"}`}
+                className={`w-24 border dark:bg-surface rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2${yearErrors[edu.id] ? " border-red-500 ring-red-500" : " border-gray-300 dark:border-gray-600 focus:ring-accent/50"}`}
               />
             </div>
             {yearErrors[edu.id] && (
@@ -392,13 +393,13 @@ export default function ProfileForm() {
       <div>
         <h2 className="text-lg font-semibold text-primary dark:text-accent mb-2">{t("experienceTitle")}<InfoTooltip text={tHint("experience")} /></h2>
         {data.experience.map((exp) => (
-          <div key={exp.id} className="border border-gray-200 dark:border-gray-700 rounded-md p-3 mb-3 space-y-2">
+          <div key={exp.id} className="border border-gray-200 dark:border-gray-700 rounded-xl p-3 mb-3 space-y-2">
             <input
               type="text"
               placeholder={t("companyPlaceholder")}
               value={exp.company}
               onChange={(e) => updateExp(exp.id, "company", e.target.value)}
-              className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent/50"
             />
             <div className="flex gap-2">
               <input
@@ -406,14 +407,14 @@ export default function ProfileForm() {
                 placeholder={t("positionPlaceholder")}
                 value={exp.position}
                 onChange={(e) => updateExp(exp.id, "position", e.target.value)}
-                className="flex-1 border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+                className="flex-1 border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent/50"
               />
               <input
                 type="text"
                 placeholder={t("periodPlaceholder")}
                 value={exp.period}
                 onChange={(e) => { updateExp(exp.id, "period", e.target.value); setYearErrors((prev) => ({ ...prev, [exp.id]: validateYearRange(e.target.value) })); }}
-                className={`w-32 border dark:bg-surface rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2${yearErrors[exp.id] ? " border-red-500 ring-red-500" : " border-gray-300 dark:border-gray-600 focus:ring-accent"}`}
+                className={`w-32 border dark:bg-surface rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2${yearErrors[exp.id] ? " border-red-500 ring-red-500" : " border-gray-300 dark:border-gray-600 focus:ring-accent/50"}`}
               />
             </div>
             {yearErrors[exp.id] && (
@@ -425,7 +426,7 @@ export default function ProfileForm() {
               onChange={(e) => updateExp(exp.id, "tasks", e.target.value)}
               rows={3}
               spellCheck={false}
-              className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent/50"
             />
             <button
               type="button"
@@ -462,19 +463,20 @@ export default function ProfileForm() {
                 addQualification(qualInput);
               }
             }}
-            className="flex-1 border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+            className="flex-1 border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent/50"
           />
           <button
             type="button"
             onClick={() => addQualification(qualInput)}
-            className="px-3 py-2 bg-surface border border-gray-300 dark:border-gray-600 rounded-md text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+            className="px-3 py-2 bg-surface border border-gray-300 dark:border-gray-600 rounded-xl text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
           >
             {t("add")}
           </button>
         </div>
         <div className="flex flex-col gap-2">
+          <AnimatePresence>
           {data.qualifications.map((q) => (
-            <div key={q.label} className="flex items-center gap-2 flex-wrap">
+            <motion.div key={q.label} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ duration: 0.2 }} className="flex items-center gap-2 flex-wrap">
               <span className="inline-flex items-center gap-1 bg-accent/10 text-accent text-sm px-3 py-1 rounded-full">
                 {q.label}
                 <button
@@ -497,8 +499,9 @@ export default function ProfileForm() {
                 className="w-32 accent-accent"
               />
               <span className="text-xs text-gray-500 dark:text-gray-400">{q.value}%</span>
-            </div>
+            </motion.div>
           ))}
+          </AnimatePresence>
         </div>
       </div>
 
@@ -517,19 +520,20 @@ export default function ProfileForm() {
                 addInterest(interestInput);
               }
             }}
-            className="flex-1 border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+            className="flex-1 border border-gray-300 dark:border-gray-600 dark:bg-surface rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent/50"
           />
           <button
             type="button"
             onClick={() => addInterest(interestInput)}
-            className="px-3 py-2 bg-surface border border-gray-300 dark:border-gray-600 rounded-md text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+            className="px-3 py-2 bg-surface border border-gray-300 dark:border-gray-600 rounded-xl text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
           >
             {t("addInterest")}
           </button>
         </div>
         <div className="flex flex-col gap-2">
+          <AnimatePresence>
           {data.interests.map((s) => (
-            <div key={s.label} className="flex items-center gap-2 flex-wrap">
+            <motion.div key={s.label} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ duration: 0.2 }} className="flex items-center gap-2 flex-wrap">
               <span className="inline-flex items-center gap-1 bg-accent/10 text-accent text-sm px-3 py-1 rounded-full">
                 {s.label}
                 <button
@@ -552,8 +556,9 @@ export default function ProfileForm() {
                 className="w-32 accent-accent"
               />
               <span className="text-xs text-gray-500 dark:text-gray-400">{s.value}%</span>
-            </div>
+            </motion.div>
           ))}
+          </AnimatePresence>
         </div>
       </div>
 
