@@ -14,7 +14,7 @@ export default function HilfeContent() {
         {items.map((item) => (
           <details
             key={item}
-            className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface p-4"
+            className="rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-surface p-4 shadow-sm"
           >
             <summary className="font-semibold text-primary dark:text-accent cursor-pointer">
               {t(`${item}Question`)}

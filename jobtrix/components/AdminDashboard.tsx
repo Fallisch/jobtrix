@@ -77,7 +77,7 @@ function StatusBadge({ status }: { status: string }) {
 
 function StatCard({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
-    <div className="rounded-xl bg-white dark:bg-surface border border-gray-200 dark:border-gray-700 p-5">
+    <div className="rounded-2xl bg-white dark:bg-surface border border-gray-100 dark:border-gray-800 p-5 shadow-sm">
       <p className="text-xs font-medium text-text/60 uppercase tracking-wide">{label}</p>
       <p className="text-2xl font-bold text-primary dark:text-accent mt-1">{value}</p>
       {sub && <p className="text-xs text-text/50 mt-1">{sub}</p>}
@@ -119,7 +119,7 @@ function OverviewTab() {
       </div>
 
       {data.revenueByPackage.length > 0 && (
-        <div className="rounded-xl bg-white dark:bg-surface border border-gray-200 dark:border-gray-700 p-5">
+        <div className="rounded-2xl bg-white dark:bg-surface border border-gray-100 dark:border-gray-800 p-5 shadow-sm">
           <h3 className="text-sm font-semibold text-text mb-3">Umsatz nach Paket</h3>
           <div className="space-y-2">
             {data.revenueByPackage.map((r) => (
@@ -135,7 +135,7 @@ function OverviewTab() {
       )}
 
       {data.dailyRevenue.length > 0 && (
-        <div className="rounded-xl bg-white dark:bg-surface border border-gray-200 dark:border-gray-700 p-5">
+        <div className="rounded-2xl bg-white dark:bg-surface border border-gray-100 dark:border-gray-800 p-5 shadow-sm">
           <h3 className="text-sm font-semibold text-text mb-3">Tagesumsatz (letzte 30 Tage)</h3>
           <div className="flex items-end gap-1 h-32">
             {(() => {
@@ -203,7 +203,7 @@ function PaymentsTab() {
       {loading ? (
         <p className="text-text/60 text-sm">Lade...</p>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700">
+        <div className="overflow-x-auto rounded-2xl border border-gray-200 dark:border-gray-700">
           <table className="w-full text-sm">
             <thead className="bg-gray-50 dark:bg-surface">
               <tr>
@@ -301,7 +301,7 @@ function CustomersTab() {
       {loading ? (
         <p className="text-text/60 text-sm">Lade...</p>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700">
+        <div className="overflow-x-auto rounded-2xl border border-gray-200 dark:border-gray-700">
           <table className="w-full text-sm">
             <thead className="bg-gray-50 dark:bg-surface">
               <tr>
@@ -388,7 +388,7 @@ function RefundsTab() {
       {loading ? (
         <p className="text-text/60 text-sm">Lade...</p>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700">
+        <div className="overflow-x-auto rounded-2xl border border-gray-200 dark:border-gray-700">
           <table className="w-full text-sm">
             <thead className="bg-gray-50 dark:bg-surface">
               <tr>
