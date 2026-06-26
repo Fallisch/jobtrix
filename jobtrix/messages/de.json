@@ -456,7 +456,8 @@
     "emailBodyLabel": "E-Mail-Text",
     "noEmailBody": "Kein separater E-Mail-Entwurf verfügbar",
     "sortNewest": "Neuestes zuerst (empfohlen)",
-    "sortOldest": "Ältestes zuerst"
+    "sortOldest": "Ältestes zuerst",
+    "loadMore": "Mehr laden"
   },
   "welcome": {
     "slide1Title": "Willkommen bei JobTRIX",

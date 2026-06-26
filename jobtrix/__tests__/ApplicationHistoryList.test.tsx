@@ -63,7 +63,7 @@ beforeEach(() => {
 
 describe("ApplicationHistoryList", () => {
   it("zeigt einen Leerzustand mit Hinweistext und Link zur Generierungs-Seite, wenn keine Bewerbungen vorhanden sind", async () => {
-    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve([]) });
+    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve({ entries: [], total: 0 }) });
 
     render(<ApplicationHistoryList />);
 
@@ -73,7 +73,7 @@ describe("ApplicationHistoryList", () => {
   });
 
   it("zeigt für jeden Eintrag Stellenbezug, Erstellungsdatum, Anschreiben-Auszug und Buttons 'Anzeigen' und 'PDF erneut herunterladen'", async () => {
-    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve(entries) });
+    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve({ entries, total: entries.length }) });
 
     render(<ApplicationHistoryList />);
 
@@ -91,7 +91,7 @@ describe("ApplicationHistoryList", () => {
   });
 
   it("löst beim Klick auf 'PDF erneut herunterladen' den erneuten PDF-Export von Anschreiben und Lebenslauf aus", async () => {
-    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve(entries) });
+    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve({ entries, total: entries.length }) });
 
     render(<ApplicationHistoryList />);
 
@@ -106,7 +106,7 @@ describe("ApplicationHistoryList", () => {
 
   it("verwendet beim PDF-Re-Export das im Eintrag gespeicherte Layout 'modern'", async () => {
     const entriesWithModern = [{ ...entries[0], template: "modern" as const }, entries[1]];
-    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve(entriesWithModern) });
+    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve({ entries: entriesWithModern, total: entriesWithModern.length }) });
 
     render(<ApplicationHistoryList />);
 
@@ -128,7 +128,7 @@ describe("ApplicationHistoryList", () => {
       { ...entries[0], template: "modern" as const, accentColor: "#1A5C38", cvStyle: "american" as const },
       entries[1],
     ];
-    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve(entriesWithAccent) });
+    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve({ entries: entriesWithAccent, total: entriesWithAccent.length }) });
 
     render(<ApplicationHistoryList />);
 
@@ -147,7 +147,7 @@ describe("ApplicationHistoryList", () => {
   });
 
   it("zeigt für jeden Eintrag Datum UND Uhrzeit der Erstellung an", async () => {
-    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve(entries) });
+    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve({ entries, total: entries.length }) });
 
     render(<ApplicationHistoryList />);
 
@@ -156,7 +156,7 @@ describe("ApplicationHistoryList", () => {
   });
 
   it("zeigt für jeden Eintrag einen Löschen-Button", async () => {
-    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve(entries) });
+    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve({ entries, total: entries.length }) });
 
     render(<ApplicationHistoryList />);
 
@@ -166,7 +166,7 @@ describe("ApplicationHistoryList", () => {
 
   it("entfernt einen Eintrag nach Bestätigung und erfolgreichem Löschen ohne Reload", async () => {
     (global.fetch as jest.Mock)
-      .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve(entries) })
+      .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve({ entries, total: entries.length }) })
       .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve({ success: true }) });
     jest.spyOn(window, "confirm").mockReturnValue(true);
 
@@ -184,7 +184,7 @@ describe("ApplicationHistoryList", () => {
   });
 
   it("zeigt Sortier-Buttons 'Neuestes zuerst' und 'Ältestes zuerst' an", async () => {
-    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve(entries) });
+    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve({ entries, total: entries.length }) });
 
     render(<ApplicationHistoryList />);
 
@@ -194,7 +194,7 @@ describe("ApplicationHistoryList", () => {
   });
 
   it("sortiert standardmäßig nach 'Neuestes zuerst' und der Button ist hervorgehoben", async () => {
-    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve(entries) });
+    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve({ entries, total: entries.length }) });
 
     render(<ApplicationHistoryList />);
 
@@ -204,7 +204,7 @@ describe("ApplicationHistoryList", () => {
   });
 
   it("sortiert aufsteigend nach Datum wenn 'Ältestes zuerst' geklickt wird", async () => {
-    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve(entries) });
+    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve({ entries, total: entries.length }) });
 
     render(<ApplicationHistoryList />);
 
@@ -216,7 +216,7 @@ describe("ApplicationHistoryList", () => {
   });
 
   it("entfernt einen Eintrag nicht, wenn die Bestätigung abgelehnt wird", async () => {
-    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve(entries) });
+    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve({ entries, total: entries.length }) });
     jest.spyOn(window, "confirm").mockReturnValue(false);
 
     render(<ApplicationHistoryList />);
@@ -227,5 +227,61 @@ describe("ApplicationHistoryList", () => {
 
     expect(screen.getByText(/Senior Developer/)).toBeInTheDocument();
     expect(global.fetch).toHaveBeenCalledTimes(1);
+  });
+
+  it("zeigt einen 'Mehr laden'-Button wenn es weitere Einträge gibt", async () => {
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve({ entries: [entries[0]], total: 5 }),
+    });
+
+    render(<ApplicationHistoryList />);
+
+    await waitFor(() => screen.getByText(/Senior Developer/));
+    expect(screen.getByRole("button", { name: /loadMore/i })).toBeInTheDocument();
+  });
+
+  it("zeigt keinen 'Mehr laden'-Button wenn alle Einträge geladen sind", async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({ entries, total: 2 }),
+    });
+
+    render(<ApplicationHistoryList />);
+
+    await waitFor(() => screen.getByText(/Senior Developer/));
+    expect(screen.queryByRole("button", { name: /loadMore/i })).not.toBeInTheDocument();
+  });
+
+  it("lädt weitere Einträge nach Klick auf 'Mehr laden'", async () => {
+    const thirdEntry = {
+      id: "entry-3",
+      createdAt: "2026-05-01T10:00:00.000Z",
+      jobTitle: "Trainee",
+      companyName: "Startup AG",
+      emailSubject: "Bewerbung als Trainee",
+      coverLetter: "Anschreiben 3",
+      cv: "Lebenslauf 3",
+      profileSnapshot,
+    };
+
+    (global.fetch as jest.Mock)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve({ entries: [entries[0]], total: 2 }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve({ entries: [thirdEntry], total: 2 }),
+      });
+
+    render(<ApplicationHistoryList />);
+
+    await waitFor(() => screen.getByText(/Senior Developer/));
+    fireEvent.click(screen.getByRole("button", { name: /loadMore/i }));
+
+    await waitFor(() => screen.getByText(/Trainee/));
+    expect(screen.getByText(/Senior Developer/)).toBeInTheDocument();
+    expect(screen.getByText(/Trainee/)).toBeInTheDocument();
   });
 });

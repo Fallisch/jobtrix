@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import Link from "next/link";
@@ -23,6 +23,7 @@ export interface ApplicationHistoryEntry {
 }
 
 const EXCERPT_LENGTH = 150;
+const PAGE_SIZE = 100;
 
 function excerpt(text: string): string {
   const trimmed = text.trim();
@@ -33,14 +34,35 @@ export default function ApplicationHistoryList() {
   const t = useTranslations("applicationHistory");
   const { locale } = useParams<{ locale: string }>();
   const [entries, setEntries] = useState<ApplicationHistoryEntry[] | null>(null);
+  const [total, setTotal] = useState(0);
   const [sortOrder, setSortOrder] = useState<"newest" | "oldest">("newest");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetch("/api/application-history")
-      .then((res) => (res.ok ? (res.json() as Promise<ApplicationHistoryEntry[]>) : []))
-      .then(setEntries)
-      .catch(() => setEntries([]));
+    fetch(`/api/application-history?offset=0&limit=${PAGE_SIZE}`)
+      .then((res) => (res.ok ? res.json() : { entries: [], total: 0 }))
+      .then((data: { entries: ApplicationHistoryEntry[]; total: number }) => {
+        setEntries(data.entries);
+        setTotal(data.total);
+      })
+      .catch(() => {
+        setEntries([]);
+        setTotal(0);
+      });
   }, []);
+
+  const loadMore = useCallback(() => {
+    if (!entries || loading) return;
+    setLoading(true);
+    fetch(`/api/application-history?offset=${entries.length}&limit=${PAGE_SIZE}`)
+      .then((res) => (res.ok ? res.json() : { entries: [], total }))
+      .then((data: { entries: ApplicationHistoryEntry[]; total: number }) => {
+        setEntries((prev) => [...(prev ?? []), ...data.entries]);
+        setTotal(data.total);
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, [entries, loading, total]);
 
   if (entries === null) return null;
 
@@ -50,8 +72,11 @@ export default function ApplicationHistoryList() {
     const res = await fetch(`/api/application-history/${id}`, { method: "DELETE" });
     if (res.ok) {
       setEntries((prev) => (prev ? prev.filter((entry) => entry.id !== id) : prev));
+      setTotal((prev) => prev - 1);
     }
   }
+
+  const hasMore = entries.length < total;
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8 space-y-6">
@@ -145,6 +170,19 @@ export default function ApplicationHistoryList() {
               </div>
             </div>
           ))}
+
+          {hasMore && (
+            <div className="text-center pt-2">
+              <button
+                type="button"
+                onClick={loadMore}
+                disabled={loading}
+                className="rounded-full px-6 py-2 text-sm font-semibold border border-gray-200 dark:border-gray-700 text-text hover:border-accent hover:text-accent transition disabled:opacity-50"
+              >
+                {t("loadMore")}
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>
