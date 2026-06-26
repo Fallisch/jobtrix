@@ -194,15 +194,12 @@
     "sendEmailPreviewCancel": "Cancel",
     "sendEmailConfirmSend": "Send now",
     "errorGeneric": "Generation failed. Please try again.",
-    "pdfPreviewTitle": "PDF Preview",
-    "pdfPreviewClose": "Close",
-    "pdfPreviewError": "Preview could not be loaded.",
-    "pdfPreviewButton": "Preview",
     "pdfPreviewTitle": "PDF preview",
     "pdfPreviewClose": "Close",
+    "pdfPreviewError": "The preview could not be created. Please download the PDF.",
+    "pdfPreviewButton": "Preview",
     "pdfPreviewDownload": "Download",
     "pdfPreviewOpenNewTab": "Open in new tab",
-    "pdfPreviewError": "The preview could not be created. Please download the PDF.",
     "pdfPreviewHint": "If the PDF is not displayed, download it via “Download”.",
     "coverLetterPdfButton": "Download cover letter as PDF",
     "cvPdfButton": "Download CV as PDF",
@@ -560,5 +557,14 @@
       "yearRangeInvalid": "Please use format \"YYYY\" or \"YYYY - YYYY\"",
       "yearRangeOutOfBounds": "Year must be between 1950 and 2030"
     }
+  },
+  "marquee": {
+    "phrases": [
+      "Outsmart your inner excuses",
+      "Application? No tricks — just do it",
+      "The JobTRIX for your career",
+      "Not magic, just JobTRIX",
+      "Your next job is just one Trix away"
+    ]
   }
 }
