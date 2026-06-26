@@ -15,6 +15,7 @@ jest.mock("next-intl", () => {
             (acc, part) => (acc as Record<string, unknown> | undefined)?.[part],
             de[namespace]
           );
+        if (Array.isArray(value)) return value;
         if (typeof value !== "string") return key;
         if (!params) return value;
         return Object.entries(params).reduce(

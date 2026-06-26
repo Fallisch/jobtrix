@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import type { PackageType } from "@/lib/pricing";
+import TrixMarquee from "@/components/TrixMarquee";
 
 interface PricingCardsProps {
   config: {
@@ -61,6 +62,7 @@ export default function PricingCards({
         <h1 className="text-2xl font-bold text-primary dark:text-accent">{t("title")}</h1>
         <p className="text-sm text-text/70">{t("subtitle")}</p>
       </div>
+      <TrixMarquee />
       {error && (
         <div role="alert" className="mb-6 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 px-4 py-3 text-red-700 dark:text-red-300 text-sm">
           {error}
@@ -78,7 +80,7 @@ export default function PricingCards({
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        <div className="rounded-xl bg-white dark:bg-surface border border-gray-200 dark:border-gray-700 p-6 flex flex-col gap-4">
+        <div className="rounded-2xl bg-white dark:bg-surface border border-gray-100 dark:border-gray-800 p-6 flex flex-col gap-4 shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-200">
           <h2 className="text-xl font-bold text-primary dark:text-accent">{t("limited.title")}</h2>
           <p className="text-3xl font-bold text-text">{formatPrice(config.limited.priceEur)}</p>
           <p className="text-sm text-text/70">{t("limited.duration", { days: config.limited.durationDays })}</p>
@@ -97,7 +99,7 @@ export default function PricingCards({
           </button>
         </div>
 
-        <div className="relative rounded-xl bg-white dark:bg-surface border-2 border-accent p-6 flex flex-col gap-4">
+        <div className="relative rounded-2xl bg-white dark:bg-surface border-2 border-accent p-6 flex flex-col gap-4 shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-200">
           <span className="absolute -top-3 right-6 bg-accent text-white text-xs font-semibold px-3 py-1 rounded-full">
             {t("recommendedBadge")}
           </span>
