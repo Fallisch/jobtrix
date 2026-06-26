@@ -8,7 +8,7 @@ export default function Footer({ locale }: { locale: string }) {
 
   return (
     <footer className="bg-primary text-white">
-      <div className="max-w-5xl mx-auto px-4 py-3 flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
+      <div className="max-w-5xl mx-auto px-4 py-6 flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
         <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4">
           <Link href={`/${locale}/impressum`} className="text-white/80 hover:text-white transition-colors min-h-[44px] flex items-center">
             {t("impressumLink")}

@@ -37,7 +37,7 @@ export default function Header({ locale }: { locale: string }) {
           href={`/${locale}/profile`}
           prefetch={false}
           onClick={() => setMenuOpen(false)}
-          className="text-sm font-medium text-white/80 hover:text-white transition-colors min-h-[44px] min-w-[44px] flex items-center"
+          className="text-sm font-medium text-white/80 hover:text-white hover:scale-105 transition-all min-h-[44px] min-w-[44px] flex items-center"
         >
           {locale === "de" ? "Profil" : "Profile"}
         </Link>
@@ -47,7 +47,7 @@ export default function Header({ locale }: { locale: string }) {
           href={`/${locale}/generate`}
           prefetch={false}
           onClick={() => setMenuOpen(false)}
-          className="text-sm font-medium text-white/80 hover:text-white transition-colors min-h-[44px] min-w-[44px] flex items-center"
+          className="text-sm font-medium text-white/80 hover:text-white hover:scale-105 transition-all min-h-[44px] min-w-[44px] flex items-center"
         >
           {t("startApplication")}
         </Link>
@@ -57,7 +57,7 @@ export default function Header({ locale }: { locale: string }) {
           href={`/${locale}/application-history`}
           prefetch={false}
           onClick={() => setMenuOpen(false)}
-          className="text-sm font-medium text-white/80 hover:text-white transition-colors min-h-[44px] min-w-[44px] flex items-center"
+          className="text-sm font-medium text-white/80 hover:text-white hover:scale-105 transition-all min-h-[44px] min-w-[44px] flex items-center"
         >
           {t("applicationHistory")}
         </Link>
@@ -65,7 +65,7 @@ export default function Header({ locale }: { locale: string }) {
       {status === "authenticated" && (
         <button
           onClick={handleLogout}
-          className="text-sm font-medium text-white/80 hover:text-white transition-colors min-h-[44px] min-w-[44px] flex items-center"
+          className="text-sm font-medium text-white/80 hover:text-white hover:scale-105 transition-all min-h-[44px] min-w-[44px] flex items-center"
         >
           {t("logout")}
         </button>
@@ -74,7 +74,7 @@ export default function Header({ locale }: { locale: string }) {
         <Link
           href={`/${locale}/login`}
           onClick={() => setMenuOpen(false)}
-          className="text-sm font-medium text-white/80 hover:text-white transition-colors min-h-[44px] min-w-[44px] flex items-center"
+          className="text-sm font-medium text-white/80 hover:text-white hover:scale-105 transition-all min-h-[44px] min-w-[44px] flex items-center"
         >
           {locale === "de" ? "Anmelden" : "Login"}
         </Link>
@@ -95,7 +95,7 @@ export default function Header({ locale }: { locale: string }) {
       <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
         <Link
           href={`/${locale}`}
-          className="text-xl font-bold tracking-wide hover:text-accent transition-colors"
+          className="text-xl font-bold tracking-wide hover:text-accent hover:scale-105 transition-all"
         >
           JobTRIX
         </Link>
