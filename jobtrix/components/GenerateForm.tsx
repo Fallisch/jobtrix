@@ -380,7 +380,7 @@ export default function GenerateForm() {
             id="initiativbewerbung"
             checked={isInitiativbewerbung}
             onChange={(e) => setIsInitiativbewerbung(e.target.checked)}
-            className="appearance-none w-4 h-4 border-2 border-gray-300 dark:border-gray-600 rounded cursor-pointer shrink-0 checked:bg-accent checked:border-accent relative after:content-[''] after:absolute after:left-[3px] after:top-[0px] after:w-[6px] after:h-[10px] after:border-white after:border-r-2 after:border-b-2 after:rotate-45 after:opacity-0 checked:after:opacity-100"
+            className="appearance-none w-3.5 h-3.5 border-2 border-gray-300 dark:border-gray-600 rounded cursor-pointer shrink-0 checked:bg-accent checked:border-accent relative after:content-[''] after:absolute after:left-[2.5px] after:top-[0px] after:w-[5px] after:h-[8px] after:border-white after:border-r-2 after:border-b-2 after:rotate-45 after:opacity-0 checked:after:opacity-100"
           />
           <label htmlFor="initiativbewerbung" className="text-sm font-medium text-text cursor-pointer select-none">
             {t("initiativbewerbungLabel")}
