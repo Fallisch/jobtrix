@@ -77,6 +77,57 @@ describe("Landingpage Redesign", () => {
         expect(card.className).toMatch(/border/);
       });
     });
+
+    test("jedes Feature-Tile hat ein SVG-Icon", () => {
+      const fourFeatures = [
+        { title: "PDF", desc: "D1" },
+        { title: "AI", desc: "D2" },
+        { title: "Email", desc: "D3" },
+        { title: "Suche", desc: "D4" },
+      ];
+      const { container } = render(
+        <FeaturesSection title="Features" features={fourFeatures} />
+      );
+      const tiles = container.querySelectorAll("[data-testid='feature-tile']");
+      expect(tiles.length).toBe(4);
+      tiles.forEach((tile) => {
+        const svg = tile.querySelector("svg");
+        expect(svg).not.toBeNull();
+        expect(svg?.getAttribute("width")).toBe("24");
+        expect(svg?.getAttribute("height")).toBe("24");
+      });
+    });
+
+    test("Icons haben Accent-Farbe", () => {
+      const fourFeatures = [
+        { title: "PDF", desc: "D1" },
+        { title: "AI", desc: "D2" },
+        { title: "Email", desc: "D3" },
+        { title: "Suche", desc: "D4" },
+      ];
+      const { container } = render(
+        <FeaturesSection title="Features" features={fourFeatures} />
+      );
+      const tiles = container.querySelectorAll("[data-testid='feature-tile']");
+      tiles.forEach((tile) => {
+        const iconWrapper = tile.querySelector(".text-accent");
+        expect(iconWrapper).not.toBeNull();
+      });
+    });
+
+    test("keine Emojis in Feature-Tiles", () => {
+      const fourFeatures = [
+        { title: "PDF", desc: "D1" },
+        { title: "AI", desc: "D2" },
+        { title: "Email", desc: "D3" },
+        { title: "Suche", desc: "D4" },
+      ];
+      const { container } = render(
+        <FeaturesSection title="Features" features={fourFeatures} />
+      );
+      const emojiPattern = /[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/u;
+      expect(container.textContent).not.toMatch(emojiPattern);
+    });
   });
 
   describe("FinalCtaSection", () => {
