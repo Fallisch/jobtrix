@@ -26,5 +26,12 @@ export default defineConfig({
     command: "npm run dev",
     url: "http://localhost:3000",
     reuseExistingServer: !process.env.CI,
+    // E2E-Tests teilen sich dieselbe (localhost-)IP. Mit dem Produktions-Default
+    // (5 Registrierungen / 15 min pro IP) liefe das IP-Rate-Limit sofort voll und
+    // Registrierungs-/Login-Flows scheiterten mit 429. Für die Testumgebung daher
+    // effektiv deaktiviert; kein E2E-Test prüft Rate-Limiting.
+    env: {
+      RATE_LIMIT_MAX: "100000",
+    },
   },
 });
