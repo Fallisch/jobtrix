@@ -58,13 +58,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "tooManyRequests" }, { status: 429 });
   }
 
-  const access = await prisma.access.findUnique({ where: { userId } });
-  const decision = checkAccess(access);
-  if (!decision.allowed) {
-    return NextResponse.json({ error: decision.reason }, { status: 402 });
-  }
-
   try {
+    const access = await prisma.access.findUnique({ where: { userId } });
+    const decision = checkAccess(access);
+    if (!decision.allowed) {
+      return NextResponse.json({ error: decision.reason }, { status: 402 });
+    }
     const raw = await request.json();
     const parsed = generateRequestSchema.safeParse(raw);
     if (!parsed.success) {
