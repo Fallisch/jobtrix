@@ -36,6 +36,11 @@ jest.mock("@/components/InstallBanner", () => ({
   default: () => null,
 }));
 
+jest.mock("@/components/WelcomeGate", () => ({
+  __esModule: true,
+  default: () => null,
+}));
+
 jest.mock("@/components/AuthSessionProvider", () => ({
   __esModule: true,
   default: ({ children }: { children: React.ReactNode }) => children,
