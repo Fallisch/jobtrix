@@ -559,13 +559,11 @@
     }
   },
   "marquee": {
-    "phrases": [
-      "Outsmart your inner excuses",
-      "Application? No tricks — just do it",
-      "The JobTRIX for your career",
-      "Not magic, just JobTRIX",
-      "Your next job is just one Trix away"
-    ]
+    "phrase0": "Outsmart your inner excuses",
+    "phrase1": "Application? No tricks — just do it",
+    "phrase2": "The JobTRIX for your career",
+    "phrase3": "Not magic, just JobTRIX",
+    "phrase4": "Your next job is just one Trix away"
   },
   "trustBadges": {
     "hosting": "Hosted in Germany",

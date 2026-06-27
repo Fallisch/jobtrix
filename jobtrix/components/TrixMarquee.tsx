@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 
 export default function TrixMarquee() {
   const t = useTranslations("marquee");
-  const phrases = t("phrases") as unknown as string[];
+  const phrases = [t("phrase0"), t("phrase1"), t("phrase2"), t("phrase3"), t("phrase4")];
 
   const content = phrases.join(" • ") + " • ";
 

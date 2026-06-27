@@ -559,13 +559,11 @@
     }
   },
   "marquee": {
-    "phrases": [
-      "Trix deinen inneren Schweinehund aus",
-      "Bewerbung? Kein Trix — einfach machen",
-      "Der JobTRIX für deine Karriere",
-      "Kein Hexenwerk, sondern JobTRIX",
-      "Dein nächster Job ist nur einen Trix entfernt"
-    ]
+    "phrase0": "Trix deinen inneren Schweinehund aus",
+    "phrase1": "Bewerbung? Kein Trix — einfach machen",
+    "phrase2": "Der JobTRIX für deine Karriere",
+    "phrase3": "Kein Hexenwerk, sondern JobTRIX",
+    "phrase4": "Dein nächster Job ist nur einen Trix entfernt"
   },
   "trustBadges": {
     "hosting": "Hosting in Deutschland",
