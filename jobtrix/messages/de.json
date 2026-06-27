@@ -480,8 +480,8 @@
     "emailSubjectLabel": "Betreff",
     "emailBodyLabel": "E-Mail-Text",
     "noEmailBody": "Kein separater E-Mail-Entwurf verfügbar",
-    "sortNewest": "Neuestes zuerst (empfohlen)",
-    "sortOldest": "Ältestes zuerst",
+    "searchPlaceholder": "Bewerbung suchen…",
+    "noResults": "Keine Bewerbungen gefunden",
     "loadMore": "Mehr laden"
   },
   "welcome": {

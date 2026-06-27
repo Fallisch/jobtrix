@@ -480,8 +480,8 @@
     "emailSubjectLabel": "Subject",
     "emailBodyLabel": "Email body",
     "noEmailBody": "No separate email draft available",
-    "sortNewest": "Newest first (recommended)",
-    "sortOldest": "Oldest first",
+    "searchPlaceholder": "Search applications…",
+    "noResults": "No applications found",
     "loadMore": "Load more"
   },
   "welcome": {

@@ -227,36 +227,48 @@ describe("ApplicationHistoryList", () => {
     expect(global.fetch).toHaveBeenLastCalledWith("/api/application-history/entry-2", { method: "DELETE" });
   });
 
-  it("zeigt Sortier-Buttons 'Neuestes zuerst' und 'Ältestes zuerst' an", async () => {
+  it("zeigt ein Suchfeld wenn Einträge vorhanden sind", async () => {
     (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve({ entries, total: entries.length }) });
 
     render(<ApplicationHistoryList />);
 
     await waitFor(() => screen.getByText(/Senior Developer/));
-    expect(screen.getByRole("button", { name: /sortNewest/i })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /sortOldest/i })).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("searchPlaceholder")).toBeInTheDocument();
   });
 
-  it("sortiert standardmäßig nach 'Neuestes zuerst' und der Button ist hervorgehoben", async () => {
+  it("filtert Einträge live nach Jobtitel", async () => {
     (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve({ entries, total: entries.length }) });
 
     render(<ApplicationHistoryList />);
 
     await waitFor(() => screen.getByText(/Senior Developer/));
-    expect(screen.getByRole("button", { name: /sortNewest/i })).toHaveAttribute("aria-pressed", "true");
-    expect(screen.getByRole("button", { name: /sortOldest/i })).toHaveAttribute("aria-pressed", "false");
+    fireEvent.change(screen.getByPlaceholderText("searchPlaceholder"), { target: { value: "Junior" } });
+
+    expect(screen.queryByText(/Senior Developer/)).not.toBeInTheDocument();
+    expect(screen.getByText(/Junior Developer/)).toBeInTheDocument();
   });
 
-  it("sortiert aufsteigend nach Datum wenn 'Ältestes zuerst' geklickt wird", async () => {
+  it("filtert Einträge live nach Firmenname", async () => {
     (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve({ entries, total: entries.length }) });
 
     render(<ApplicationHistoryList />);
 
     await waitFor(() => screen.getByText(/Senior Developer/));
-    fireEvent.click(screen.getByRole("button", { name: /sortOldest/i }));
+    fireEvent.change(screen.getByPlaceholderText("searchPlaceholder"), { target: { value: "Acme" } });
 
-    const headings = screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent);
-    expect(headings.indexOf("Junior Developer")).toBeLessThan(headings.indexOf("Senior Developer – Acme GmbH"));
+    expect(screen.getByText(/Senior Developer/)).toBeInTheDocument();
+    expect(screen.queryByText(/Junior Developer/)).not.toBeInTheDocument();
+  });
+
+  it("zeigt 'Keine Bewerbungen gefunden' wenn die Suche keine Treffer hat", async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve({ entries, total: entries.length }) });
+
+    render(<ApplicationHistoryList />);
+
+    await waitFor(() => screen.getByText(/Senior Developer/));
+    fireEvent.change(screen.getByPlaceholderText("searchPlaceholder"), { target: { value: "xyz-nicht-vorhanden" } });
+
+    expect(screen.getByText("noResults")).toBeInTheDocument();
   });
 
   it("entfernt einen Eintrag nicht, wenn die Bestätigung abgelehnt wird", async () => {

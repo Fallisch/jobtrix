@@ -21,6 +21,12 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
     apple: "/apple-touch-icon.png",
   },
+  openGraph: {
+    title: "JobTRIX",
+    description: "Bewerbungen professionell erstellen und versenden",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+    type: "website",
+  },
 };
 
 export const viewport: Viewport = {

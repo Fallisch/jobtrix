@@ -46,7 +46,7 @@ export default function ApplicationHistoryList() {
   const { locale } = useParams<{ locale: string }>();
   const [entries, setEntries] = useState<ApplicationHistoryEntry[] | null>(null);
   const [total, setTotal] = useState(0);
-  const [sortOrder, setSortOrder] = useState<"newest" | "oldest">("newest");
+  const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -94,31 +94,14 @@ export default function ApplicationHistoryList() {
       <h1 className="text-3xl font-bold text-primary dark:text-accent">{t("title")}</h1>
 
       {entries.length > 0 && (
-        <div className="flex gap-2">
-          <button
-            type="button"
-            onClick={() => setSortOrder("newest")}
-            aria-pressed={sortOrder === "newest"}
-            className={`rounded-full px-4 py-2 text-sm font-semibold border transition ${
-              sortOrder === "newest"
-                ? "bg-accent text-white border-accent"
-                : "border-gray-200 dark:border-gray-700 text-text hover:border-accent hover:text-accent"
-            }`}
-          >
-            {t("sortNewest")}
-          </button>
-          <button
-            type="button"
-            onClick={() => setSortOrder("oldest")}
-            aria-pressed={sortOrder === "oldest"}
-            className={`rounded-full px-4 py-2 text-sm font-semibold border transition ${
-              sortOrder === "oldest"
-                ? "bg-accent text-white border-accent"
-                : "border-gray-200 dark:border-gray-700 text-text hover:border-accent hover:text-accent"
-            }`}
-          >
-            {t("sortOldest")}
-          </button>
+        <div>
+          <input
+            type="search"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder={t("searchPlaceholder")}
+            className="w-full rounded-full px-5 py-3 text-sm border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface text-text dark:text-white placeholder:text-text/50 dark:placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent transition"
+          />
         </div>
       )}
 
@@ -131,10 +114,30 @@ export default function ApplicationHistoryList() {
         </div>
       ) : (
         <div className="space-y-4">
-          {[...entries].sort((a, b) => {
-            const diff = new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-            return sortOrder === "oldest" ? -diff : diff;
-          }).map((entry) => (
+          {(() => {
+            const q = searchQuery.toLowerCase().trim();
+            const filtered = q
+              ? entries.filter((e) => {
+                  const title = deriveTitle(e, "").toLowerCase();
+                  const company = (e.companyName ?? "").toLowerCase();
+                  const date = new Date(e.createdAt).toLocaleString(locale, {
+                    day: "2-digit", month: "2-digit", year: "numeric",
+                  });
+                  return title.includes(q) || company.includes(q) || date.includes(q);
+                })
+              : entries;
+
+            if (filtered.length === 0) {
+              return (
+                <div className="bg-white dark:bg-surface rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm p-6 text-center">
+                  <p className="text-text/70">{t("noResults")}</p>
+                </div>
+              );
+            }
+
+            return filtered.sort((a, b) =>
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            ).map((entry) => (
             <div key={entry.id} className="bg-white dark:bg-surface rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-200 p-5 space-y-2">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
                 <h2 className="font-semibold text-primary dark:text-accent">
@@ -180,7 +183,8 @@ export default function ApplicationHistoryList() {
                 </button>
               </div>
             </div>
-          ))}
+          ));
+          })()}
 
           {hasMore && (
             <div className="text-center pt-2">
