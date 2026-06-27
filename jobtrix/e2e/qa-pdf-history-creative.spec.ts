@@ -64,7 +64,7 @@ function extractText(content: string): string {
 
 test.describe("Issue #43 – PDF-Layout 'Kreativ' in Bewerbungshistorie", () => {
   test("Re-Export aus der Bewerbungshistorie behält Layout 'Kreativ' und Akzentfarbe bei", async ({ page }) => {
-    const userId = await registerAndLogin(page, uniqueEmail("e2e-history-creative"), "correct-password");
+    const userId = await registerAndLogin(page, uniqueEmail("e2e-history-creative"), "Correct-1");
 
     const entry = await prisma.applicationHistoryEntry.create({
       data: {

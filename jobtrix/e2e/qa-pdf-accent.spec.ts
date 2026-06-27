@@ -61,7 +61,7 @@ test.describe("Issue #38 – PDF-Layout 'Akzent'", () => {
   test("Story: Layout Akzent + Akzentfarbe auswählen -> generieren -> Lebenslauf-PDF zeigt Foto-Banner, Zeitstrahl und Fortschrittsbalken, Anschreiben-PDF zeigt Banner-Header mit 'Bewerbung'-Band", async ({
     page,
   }) => {
-    await registerAndLogin(page, uniqueEmail("e2e-pdf-accent"), "correct-password");
+    await registerAndLogin(page, uniqueEmail("e2e-pdf-accent"), "Correct-1");
 
     await page.goto("/de/generate");
     await page.evaluate((p) => {

@@ -12,7 +12,7 @@ const PROFILE = {
 
 test.describe("Generate Page – QA", () => {
   test.beforeEach(async ({ page }) => {
-    await registerAndLogin(page, uniqueEmail("e2e-generate"), "correct-password");
+    await registerAndLogin(page, uniqueEmail("e2e-generate"), "Correct-1");
     await page.goto("/de/generate");
     await page.evaluate((p) => {
       localStorage.setItem("jobtrix_profile", JSON.stringify(p));

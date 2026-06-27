@@ -19,7 +19,7 @@ const MOCK_RESULT = {
 
 test.describe("Farbpalette Modern-Template – QA (Issue #11)", () => {
   test.beforeEach(async ({ page }) => {
-    await registerAndLogin(page, uniqueEmail("e2e-farbe"), "correct-password");
+    await registerAndLogin(page, uniqueEmail("e2e-farbe"), "Correct-1");
     await page.goto("/de/generate");
     await page.evaluate((p) => {
       localStorage.setItem("jobtrix_profile", JSON.stringify(p));

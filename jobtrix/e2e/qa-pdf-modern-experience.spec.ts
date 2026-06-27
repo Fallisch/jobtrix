@@ -57,7 +57,7 @@ test.describe("Issue #36 – Berufserfahrung-Sektion im Modern-PDF-Layout", () =
   test("Story: Profil mit Berufserfahrung + Layout Modern generieren -> PDF enthält Berufserfahrung-Sektion in linker Spalte", async ({
     page,
   }) => {
-    await registerAndLogin(page, uniqueEmail("e2e-pdf-modern-experience"), "correct-password");
+    await registerAndLogin(page, uniqueEmail("e2e-pdf-modern-experience"), "Correct-1");
 
     await page.goto("/de/generate");
     await page.evaluate((p) => {

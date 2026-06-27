@@ -1,9 +1,11 @@
 export type SecurityHeader = { key: string; value: string };
 
 export function buildCspHeader(nonce?: string): string {
+  const isDev = process.env.NODE_ENV === "development";
+  const evalPolicy = isDev ? " 'unsafe-eval'" : "";
   const scriptSrc = nonce
-    ? `'self' 'nonce-${nonce}' 'unsafe-inline' 'wasm-unsafe-eval' https://static.cloudflareinsights.com`
-    : `'self' 'unsafe-inline' 'wasm-unsafe-eval' https://static.cloudflareinsights.com`;
+    ? `'self' 'nonce-${nonce}' 'unsafe-inline'${evalPolicy} 'wasm-unsafe-eval' https://static.cloudflareinsights.com`
+    : `'self' 'unsafe-inline'${evalPolicy} 'wasm-unsafe-eval' https://static.cloudflareinsights.com`;
 
   const directives: Record<string, string> = {
     "default-src": "'self'",

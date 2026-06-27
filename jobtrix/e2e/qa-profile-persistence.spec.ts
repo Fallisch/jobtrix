@@ -6,7 +6,7 @@ test.describe("Issue #19 – Profil aus Datenbank statt localStorage", () => {
     browser,
   }) => {
     const email = `e2e-profile-${Date.now()}@example.com`;
-    const password = "correct-password";
+    const password = "Correct-1";
     const name = "Erika Musterfrau";
     const institution = "TU Berlin";
 
@@ -20,8 +20,9 @@ test.describe("Issue #19 – Profil aus Datenbank statt localStorage", () => {
     await page.getByLabel(/AGB und die Datenschutzbestimmungen/).check();
     await page.getByRole("button", { name: "Registrieren" }).click();
 
-    await expect(page).toHaveURL(/\/de\/profile/);
+    await expect(page).toHaveURL(/\/de\/onboarding/);
 
+    await page.goto("/de/profile");
     await page.getByLabel(/^name/i).fill(name);
     await page.getByPlaceholder("Institution").fill(institution);
 
@@ -42,7 +43,8 @@ test.describe("Issue #19 – Profil aus Datenbank statt localStorage", () => {
     await newPage.getByLabel("Passwort").fill(password);
     await newPage.getByRole("button", { name: "Anmelden" }).click();
 
-    await expect(newPage).toHaveURL(/\/de\/profile/);
+    await expect(newPage).toHaveURL(/\/de\/generate/);
+    await newPage.goto("/de/profile");
     await expect(newPage.getByLabel(/^name/i)).toHaveValue(name);
     await expect(newPage.getByPlaceholder("Institution")).toHaveValue(institution);
 

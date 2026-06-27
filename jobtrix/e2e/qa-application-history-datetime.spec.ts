@@ -21,7 +21,7 @@ test.describe("Issue #28 – Uhrzeit in Bewerbungshistorie-Einträgen anzeigen",
 
   test("Liste und Detailansicht zeigen Datum und Uhrzeit eines Eintrags", async ({ page }) => {
     const email = uniqueEmail("e2e-history-datetime");
-    const userId = await registerAndLogin(page, email, "correct-password");
+    const userId = await registerAndLogin(page, email, "Correct-1");
 
     await prisma.applicationHistoryEntry.create({
       data: {

@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 test.describe("Issue #25 – Sprachpräfix nach Profil-Speichern erhalten", () => {
   test("Story: Profil unter /en/profile speichern bleibt auf /en", async ({ page }) => {
     const email = `e2e-locale-en-${Date.now()}@example.com`;
-    const password = "correct-password";
+    const password = "Correct-1";
 
     await page.goto("/en/register");
     await page.getByLabel("Email", { exact: true }).fill(email);
@@ -12,8 +12,9 @@ test.describe("Issue #25 – Sprachpräfix nach Profil-Speichern erhalten", () =
     await page.getByLabel(/terms and conditions/i).check();
     await page.getByRole("button", { name: "Register" }).click();
 
-    await expect(page).toHaveURL(/\/en\/profile/);
+    await expect(page).toHaveURL(/\/en\/onboarding/);
 
+    await page.goto("/en/profile");
     await page.getByLabel(/^name/i).fill("Max Mustermann");
     await page.getByPlaceholder("Institution").fill("TU Berlin");
 
@@ -32,7 +33,7 @@ test.describe("Issue #25 – Sprachpräfix nach Profil-Speichern erhalten", () =
 
   test("Story: Profil unter /de/profile speichern bleibt auf /de", async ({ page }) => {
     const email = `e2e-locale-de-${Date.now()}@example.com`;
-    const password = "correct-password";
+    const password = "Correct-1";
 
     await page.goto("/de/register");
     await page.getByLabel("E-Mail").fill(email);
@@ -41,8 +42,9 @@ test.describe("Issue #25 – Sprachpräfix nach Profil-Speichern erhalten", () =
     await page.getByLabel(/AGB und die Datenschutzbestimmungen/).check();
     await page.getByRole("button", { name: "Registrieren" }).click();
 
-    await expect(page).toHaveURL(/\/de\/profile/);
+    await expect(page).toHaveURL(/\/de\/onboarding/);
 
+    await page.goto("/de/profile");
     await page.getByLabel(/^name/i).fill("Max Mustermann");
     await page.getByPlaceholder("Institution").fill("TU Berlin");
 

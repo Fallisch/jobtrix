@@ -3,7 +3,7 @@ import { registerAndLogin, uniqueEmail } from "./helpers/auth";
 
 test.describe("Issue #6 – Foto-Komprimierung und Speicherfehler", () => {
   test.beforeEach(async ({ page }) => {
-    await registerAndLogin(page, uniqueEmail("e2e-foto"), "correct-password");
+    await registerAndLogin(page, uniqueEmail("e2e-foto"), "Correct-1");
   });
 
   test("Story 1: Foto hochladen, Profil speichern und nach Reload noch vorhanden", async ({ page }) => {

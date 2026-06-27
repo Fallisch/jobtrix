@@ -20,7 +20,7 @@ test.describe("Issue #21 – Stripe-Webhook aktiviert Zugang", () => {
 
   test("simulierter Webhook-Call aktiviert zeitlich begrenzten Zugang, /api/generate ist danach sofort wieder nutzbar", async ({ page }) => {
     const email = `e2e-webhook-${Date.now()}@example.com`;
-    const password = "correct-password";
+    const password = "Correct-1";
 
     await page.goto("/de/register");
     await page.getByLabel("E-Mail").fill(email);
@@ -28,7 +28,7 @@ test.describe("Issue #21 – Stripe-Webhook aktiviert Zugang", () => {
     await page.getByLabel("Passwort bestätigen").fill(password);
     await page.getByLabel(/AGB und die Datenschutzbestimmungen/).check();
     await page.getByRole("button", { name: "Registrieren" }).click();
-    await expect(page).toHaveURL(/\/de\/profile/);
+    await expect(page).toHaveURL(/\/de\/onboarding/);
 
     const sessionRes = await page.request.get("/api/auth/session");
     const session = await sessionRes.json();

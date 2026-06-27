@@ -19,7 +19,7 @@ const MOCK_RESULT = {
 
 test.describe("Template-Auswahl – QA (Issue #8)", () => {
   test.beforeEach(async ({ page }) => {
-    await registerAndLogin(page, uniqueEmail("e2e-template"), "correct-password");
+    await registerAndLogin(page, uniqueEmail("e2e-template"), "Correct-1");
     await page.goto("/de/generate");
     await page.evaluate((p) => {
       localStorage.setItem("jobtrix_profile", JSON.stringify(p));

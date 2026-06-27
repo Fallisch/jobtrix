@@ -21,7 +21,7 @@ test.describe("Issue #30 – Löschen-Button für Bewerbungshistorie-Einträge",
 
   test("Eintrag kann gelöscht werden und verschwindet ohne Reload aus der Liste", async ({ page }) => {
     const email = uniqueEmail("e2e-history-delete");
-    const userId = await registerAndLogin(page, email, "correct-password");
+    const userId = await registerAndLogin(page, email, "Correct-1");
 
     await prisma.applicationHistoryEntry.create({
       data: {
@@ -64,7 +64,7 @@ test.describe("Issue #30 – Löschen-Button für Bewerbungshistorie-Einträge",
 
   test("Eintrag bleibt erhalten, wenn die Löschen-Bestätigung abgebrochen wird", async ({ page }) => {
     const email = uniqueEmail("e2e-history-delete-cancel");
-    const userId = await registerAndLogin(page, email, "correct-password");
+    const userId = await registerAndLogin(page, email, "Correct-1");
 
     await prisma.applicationHistoryEntry.create({
       data: {
