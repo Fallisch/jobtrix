@@ -156,6 +156,6 @@ export async function POST(request: NextRequest) {
       status = 503;
     }
 
-    return NextResponse.json({ error: userError, detail: msg }, { status });
+    return NextResponse.json({ error: userError }, { status });
   }
 }

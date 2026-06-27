@@ -151,7 +151,7 @@ export default function GenerateForm() {
           router.push(`/${locale}/pricing`);
           return;
         }
-        setError(data.detail ? `${data.error} (${data.detail})` : data.error ?? t("errorGeneric"));
+        setError(data.error ?? t("errorGeneric"));
       } else {
         setResult(data);
         setEditedCoverLetter(data.coverLetter);
