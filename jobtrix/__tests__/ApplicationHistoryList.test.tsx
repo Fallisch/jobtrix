@@ -62,6 +62,49 @@ beforeEach(() => {
 });
 
 describe("ApplicationHistoryList", () => {
+  it("zeigt 'jobTitle – companyName' wenn beides vorhanden ist", async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve({ entries, total: entries.length }) });
+
+    render(<ApplicationHistoryList />);
+
+    await waitFor(() => screen.getByText(/Senior Developer/));
+    const headings = screen.getAllByRole("heading", { level: 2 });
+    expect(headings[0].textContent).toBe("Senior Developer – Acme GmbH");
+  });
+
+  it("zeigt 'untitled – companyName' wenn nur companyName vorhanden", async () => {
+    const onlyCompany = [{ ...entries[0], jobTitle: null, companyName: "TestFirma" }];
+    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve({ entries: onlyCompany, total: 1 }) });
+
+    render(<ApplicationHistoryList />);
+
+    await waitFor(() => screen.getByText(/TestFirma/));
+    const heading = screen.getByRole("heading", { level: 2 });
+    expect(heading.textContent).toBe("untitled – TestFirma");
+  });
+
+  it("zeigt nur jobTitle wenn companyName fehlt", async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve({ entries: [entries[1]], total: 1 }) });
+
+    render(<ApplicationHistoryList />);
+
+    await waitFor(() => screen.getByText(/Junior Developer/));
+    const heading = screen.getByRole("heading", { level: 2 });
+    expect(heading.textContent).toBe("Junior Developer");
+  });
+
+  it("zeigt Fallback 'untitled' wenn beides fehlt", async () => {
+    const noInfo = [{ ...entries[0], jobTitle: null, companyName: null }];
+    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve({ entries: noInfo, total: 1 }) });
+
+    render(<ApplicationHistoryList />);
+
+    await waitFor(() => {
+      const heading = screen.getByRole("heading", { level: 2 });
+      expect(heading.textContent).toBe("untitled");
+    });
+  });
+
   it("zeigt einen Leerzustand mit Hinweistext und Link zur Generierungs-Seite, wenn keine Bewerbungen vorhanden sind", async () => {
     (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve({ entries: [], total: 0 }) });
 

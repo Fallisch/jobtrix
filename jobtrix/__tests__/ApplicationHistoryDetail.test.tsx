@@ -50,6 +50,50 @@ beforeEach(() => {
 });
 
 describe("ApplicationHistoryDetail", () => {
+  it("zeigt 'jobTitle – companyName' im Titel wenn beides vorhanden", async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve(entry) });
+
+    render(<ApplicationHistoryDetail id="entry-1" />);
+
+    await waitFor(() => {
+      const h1 = screen.getByRole("heading", { level: 1 });
+      expect(h1.textContent).toBe("Senior Developer – Acme GmbH");
+    });
+  });
+
+  it("zeigt 'untitled – companyName' wenn nur companyName vorhanden", async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve({ ...entry, jobTitle: null, companyName: "TestFirma" }) });
+
+    render(<ApplicationHistoryDetail id="entry-1" />);
+
+    await waitFor(() => {
+      const h1 = screen.getByRole("heading", { level: 1 });
+      expect(h1.textContent).toBe("untitled – TestFirma");
+    });
+  });
+
+  it("zeigt nur jobTitle wenn companyName fehlt", async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve({ ...entry, companyName: null }) });
+
+    render(<ApplicationHistoryDetail id="entry-1" />);
+
+    await waitFor(() => {
+      const h1 = screen.getByRole("heading", { level: 1 });
+      expect(h1.textContent).toBe("Senior Developer");
+    });
+  });
+
+  it("zeigt Fallback 'untitled' wenn beides fehlt", async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve({ ...entry, jobTitle: null, companyName: null }) });
+
+    render(<ApplicationHistoryDetail id="entry-1" />);
+
+    await waitFor(() => {
+      const h1 = screen.getByRole("heading", { level: 1 });
+      expect(h1.textContent).toBe("untitled");
+    });
+  });
+
   it("zeigt einen Eintrag schreibgeschützt an und standardmäßig nur das Anschreiben", async () => {
     (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve(entry) });
 
