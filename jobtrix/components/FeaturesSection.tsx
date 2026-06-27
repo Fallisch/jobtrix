@@ -20,11 +20,11 @@ const featureIcons = [
 ];
 
 const tileVariants = {
-  hidden: { opacity: 0, scale: 0.95 },
+  hidden: { opacity: 0, y: 16 },
   visible: (i: number) => ({
     opacity: 1,
-    scale: 1,
-    transition: { delay: i * 0.1, duration: 0.4, ease: "easeOut" as const },
+    y: 0,
+    transition: { delay: i * 0.12, duration: 0.5, ease: "easeOut" as const },
   }),
 };
 
@@ -43,9 +43,9 @@ export default function FeaturesSection({ title, features }: FeaturesSectionProp
               custom={i}
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: true }}
+              viewport={{ once: true, amount: 0.3 }}
               variants={tileVariants}
-              className="bg-white dark:bg-surface rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md hover:scale-[1.02] transition-all duration-200"
+              className="bg-white dark:bg-surface rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition-shadow duration-200"
             >
               <span className="text-accent mb-3 block">{featureIcons[i]}</span>
               <h3 className="font-semibold text-primary dark:text-white mb-2">{f.title}</h3>
