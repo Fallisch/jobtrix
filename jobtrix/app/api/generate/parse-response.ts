@@ -58,7 +58,12 @@ export function parseResponse(text: string): {
   }
 
   if (cv.length < 50) {
-    throw new Error("Lebenslauf-Sektion zu kurz — die KI hat die Profildaten vermutlich in die falsche Sektion geschrieben.");
+    const fullText = cleanSection(text, "");
+    if (fullText.length > 200) {
+      cv = fullText;
+    } else {
+      throw new Error("Lebenslauf-Sektion zu kurz — die KI hat die Profildaten vermutlich in die falsche Sektion geschrieben.");
+    }
   }
 
   if (emailBody.length > 500) {
