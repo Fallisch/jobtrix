@@ -105,7 +105,7 @@ test.describe("Issue #41 – Dark Mode: Hauptseiten (Profil, Generierung, Bewerb
     );
     await page.getByRole("textbox", { name: /Stellenanzeige/i }).fill("Wir suchen eine Entwicklerin.");
     await page.getByRole("button", { name: /Bewerbung generieren/i }).click();
-    await expect(page.locator("textarea").nth(1)).toHaveValue(MOCK_RESULT.coverLetter);
+    await expect(page.locator("textarea").nth(1)).toHaveValue(MOCK_RESULT.coverLetter, { timeout: 10000 });
 
     const templateSection = page.getByText("Layout:").locator("xpath=..");
     await templateSection.getByRole("button", { name: "Akzent", exact: true }).click();

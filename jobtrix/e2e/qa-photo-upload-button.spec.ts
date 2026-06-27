@@ -38,6 +38,7 @@ test.describe("Issue #27 – Übersetztes Label für Foto-Upload-Button im Profi
     await registerAndLogin(page, email, "Correct-1");
 
     await page.goto("/en/profile");
+    await page.waitForLoadState("networkidle");
 
     await expect(page.getByRole("button", { name: "Choose file" })).toBeVisible();
     await expect(page.getByLabel(/^photo$/i)).toBeAttached();

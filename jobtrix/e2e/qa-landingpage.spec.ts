@@ -57,8 +57,9 @@ test.describe("Issue #59 – Marketing-Landingpage: Hero und kein Redirect", () 
     await expect(page).toHaveURL(/^http:\/\/localhost:\d+\/de\/?$/);
     const hero = page.getByTestId("hero");
     await expect(hero.getByRole("heading", { level: 1 })).toBeVisible();
-    await expect(hero.getByRole("link", { name: /registrier/i })).toBeVisible();
-    await expect(hero.getByRole("link", { name: /registrier/i })).toHaveAttribute("href", /\/register/);
+    const heroCta = hero.getByRole("link").first();
+    await expect(heroCta).toBeVisible();
+    await expect(heroCta).toHaveAttribute("href", /\/register/);
   });
 
   test("Englische Landingpage – keine Weiterleitung, Überschrift sichtbar", async ({ page }) => {

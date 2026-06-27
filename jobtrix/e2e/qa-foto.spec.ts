@@ -19,7 +19,7 @@ test.describe("Issue #6 – Foto-Komprimierung und Speicherfehler", () => {
     await expect(page.getByRole("img", { name: /vorschau/i })).toBeVisible({ timeout: 8000 });
 
     await page.getByRole("button", { name: /speichern/i }).click();
-    await page.waitForURL("**/de", { timeout: 10000 });
+    await page.waitForURL("**/de/generate", { timeout: 10000 });
 
     await page.goto("/de/profile");
     await expect(page.getByRole("img", { name: /vorschau/i })).toBeVisible({ timeout: 5000 });

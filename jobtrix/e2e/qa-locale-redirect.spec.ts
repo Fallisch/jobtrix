@@ -6,6 +6,7 @@ test.describe("Issue #25 – Sprachpräfix nach Profil-Speichern erhalten", () =
     const password = "Correct-1";
 
     await page.goto("/en/register");
+    await page.waitForLoadState("networkidle");
     await page.getByLabel("Email", { exact: true }).fill(email);
     await page.getByLabel("Password", { exact: true }).fill(password);
     await page.getByLabel("Confirm password").fill(password);

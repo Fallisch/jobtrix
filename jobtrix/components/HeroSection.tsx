@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
 
 interface HeroSectionProps {
@@ -21,6 +22,7 @@ export default function HeroSection({ locale, headline, subline, cta, freeBadge,
       transition={{ duration: 0.5, ease: "easeOut" }}
       className="flex flex-col items-center justify-center min-h-[calc(100vh-64px)] px-4 text-center"
     >
+      <Image src="/logo-icon.svg" alt="JobTRIX" width={80} height={80} className="mb-6 drop-shadow-lg" priority />
       <h1 className="text-5xl sm:text-6xl font-extrabold text-primary dark:text-accent mb-6 leading-tight">
         {headline}
       </h1>

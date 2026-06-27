@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
@@ -95,9 +96,10 @@ export default function Header({ locale }: { locale: string }) {
       <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
         <Link
           href={`/${locale}`}
-          className="text-xl font-bold tracking-wide hover:text-accent hover:scale-105 transition-all"
+          className="flex items-center gap-2 hover:scale-105 transition-all"
         >
-          JobTRIX
+          <Image src="/logo-icon.svg" alt="" width={28} height={28} className="drop-shadow-sm" />
+          <span className="text-xl font-bold tracking-wide hover:text-accent transition-colors">JobTRIX</span>
         </Link>
 
         {/* Desktop nav */}

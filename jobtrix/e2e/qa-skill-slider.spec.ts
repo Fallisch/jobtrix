@@ -49,7 +49,7 @@ test.describe("Skill-Balken individuell anpassbar – QA (Issue #12)", () => {
     await page.getByRole("textbox", { name: /Name/i }).fill("Test User");
     await page.getByPlaceholder(/Institution/i).fill("TU Berlin");
     await page.getByRole("button", { name: /Speichern/i }).click();
-    await page.waitForURL("**/de");
+    await page.waitForURL("**/de/generate");
 
     const res = await page.request.get("/api/profile");
     const saved = await res.json();

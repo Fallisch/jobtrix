@@ -11,8 +11,10 @@ test.describe("Issue #49 – Konto-Löschung im Bereich 'Konto & Datenschutz'", 
     await page.goto("/de/profile");
     await expect(page.getByRole("heading", { name: /konto & datenschutz/i })).toBeVisible();
 
-    const downloadPromise = page.waitForEvent("download");
     await page.getByRole("button", { name: /meine daten herunterladen/i }).click();
+    await page.getByLabel(/aktuelles passwort/i).first().fill(password);
+    const downloadPromise = page.waitForEvent("download");
+    await page.getByRole("button", { name: /^daten herunterladen$/i }).click();
     const download = await downloadPromise;
     expect(download.suggestedFilename()).toBe("meine-daten.json");
 

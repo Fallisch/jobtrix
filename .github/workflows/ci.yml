@@ -82,9 +82,6 @@ jobs:
         run: npm run build
 
       - name: E2E-Tests (Playwright)
-        # Auth-Flow-Fixes (#199) erledigt. Verbleibende pre-existing Failures:
-        # PDF-Dateinamen, Datenexport-Dialog, Dark-Mode-Timing, i18n en-Labels.
-        continue-on-error: true
         run: npm run test:e2e
 
       - name: Playwright-Report hochladen

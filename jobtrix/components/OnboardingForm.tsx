@@ -9,6 +9,7 @@ import { EducationEntry, ExperienceEntry, SkillItem } from "@/lib/profile-storag
 import { validateBirthdate, validatePhone, validateLocation, validateYearRange } from "@/lib/validation";
 import { navigate } from "@/lib/navigate";
 import InfoTooltip from "@/components/InfoTooltip";
+import WelcomeSlides from "@/components/WelcomeSlides";
 
 const TOTAL_STEPS = 10;
 
@@ -48,6 +49,7 @@ export default function OnboardingForm() {
   const [birthdateError, setBirthdateError] = useState<string | null>(null);
   const [yearErrors, setYearErrors] = useState<Record<string, string | null>>({});
   const [submitting, setSubmitting] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
   const tErr = useTranslations("onboarding.errors");
   const tHint = useTranslations("onboarding.hints");
 
@@ -126,13 +128,24 @@ export default function OnboardingForm() {
       });
 
       if (res.ok) {
-        navigate(`/${locale}/generate`);
+        setShowWelcome(true);
+        return;
       } else if (res.status === 401) {
         navigate(`/${locale}/login`);
       }
     } finally {
       setSubmitting(false);
     }
+  }
+
+  function handleWelcomeDone() {
+    setShowWelcome(false);
+    fetch("/api/welcome", { method: "POST" }).catch(() => {});
+    navigate(`/${locale}/generate`);
+  }
+
+  if (showWelcome) {
+    return <WelcomeSlides onDone={handleWelcomeDone} />;
   }
 
   const progress = (step / TOTAL_STEPS) * 100;
