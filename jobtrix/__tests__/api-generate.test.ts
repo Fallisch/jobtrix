@@ -63,7 +63,7 @@ beforeEach(async () => {
 describe("POST /api/generate", () => {
   it("gibt Anschreiben und Lebenslauf zurück wenn Claude API erfolgreich antwortet", async () => {
     mockCreate.mockResolvedValue({
-      content: [{ type: "text", text: "ANSCHREIBEN: Sehr geehrte Damen\n\nLEBENSLAUF: Max Mustermann" }],
+      content: [{ type: "text", text: "ANSCHREIBEN: Sehr geehrte Damen\n\nLEBENSLAUF: Max Mustermann, geboren 1990 in Berlin. B.Sc. Informatik (TU Berlin, 2015)." }],
     });
 
     const res = await POST(makeRequest({ jobPosting: "Wir suchen einen Entwickler", profile }));
@@ -80,7 +80,7 @@ describe("POST /api/generate", () => {
     mockCreate.mockResolvedValue({
       content: [{
         type: "text",
-        text: "BETREFF: Bewerbung als Senior Developer – Max Mustermann\n\nANSCHREIBEN: Sehr geehrte Damen\n\nLEBENSLAUF: Max Mustermann",
+        text: "BETREFF: Bewerbung als Senior Developer – Max Mustermann\n\nANSCHREIBEN: Sehr geehrte Damen\n\nLEBENSLAUF: Max Mustermann, geboren 1990 in Berlin. B.Sc. Informatik (TU Berlin, 2015).",
       }],
     });
 
@@ -96,7 +96,7 @@ describe("POST /api/generate", () => {
 
   it("übergibt Profil und Stellentext an Claude API", async () => {
     mockCreate.mockResolvedValue({
-      content: [{ type: "text", text: "ANSCHREIBEN: text\n\nLEBENSLAUF: text" }],
+      content: [{ type: "text", text: "ANSCHREIBEN: Sehr geehrte Damen und Herren\n\nLEBENSLAUF: Max Mustermann, geboren 1990 in Berlin. B.Sc. Informatik (TU Berlin, 2015). Kenntnisse in TypeScript und React." }],
     });
 
     await POST(makeRequest({ jobPosting: "Senior Developer gesucht", profile }));
@@ -109,7 +109,7 @@ describe("POST /api/generate", () => {
 
   it("weist Claude an, reinen Klartext ohne Markdown-Formatierung zu liefern", async () => {
     mockCreate.mockResolvedValue({
-      content: [{ type: "text", text: "ANSCHREIBEN: text\n\nLEBENSLAUF: text" }],
+      content: [{ type: "text", text: "ANSCHREIBEN: Sehr geehrte Damen und Herren\n\nLEBENSLAUF: Max Mustermann, geboren 1990 in Berlin. B.Sc. Informatik (TU Berlin, 2015). Kenntnisse in TypeScript und React." }],
     });
 
     await POST(makeRequest({ jobPosting: "Stelle als Entwickler", profile }));
@@ -120,7 +120,7 @@ describe("POST /api/generate", () => {
 
   it("übergibt optionale Felder Firmenname und Ansprechpartner an Claude API", async () => {
     mockCreate.mockResolvedValue({
-      content: [{ type: "text", text: "ANSCHREIBEN: text\n\nLEBENSLAUF: text" }],
+      content: [{ type: "text", text: "ANSCHREIBEN: Sehr geehrte Damen und Herren\n\nLEBENSLAUF: Max Mustermann, geboren 1990 in Berlin. B.Sc. Informatik (TU Berlin, 2015). Kenntnisse in TypeScript und React." }],
     });
 
     await POST(makeRequest({
@@ -139,7 +139,7 @@ describe("POST /api/generate", () => {
     mockCreate.mockResolvedValue({
       content: [{
         type: "text",
-        text: "# Bewerbungsunterlagen für Max Mustermann\n\n---\n\n**ANSCHREIBEN:**\n\nSehr geehrte Damen und Herren\n\nMit freundlichen Grüßen\n\n---\n\n**LEBENSLAUF: Lebenslauf**\n\n---\n\n**Max Mustermann**\nWerdegang und Qualifikationen",
+        text: "# Bewerbungsunterlagen für Max Mustermann\n\n---\n\n**ANSCHREIBEN:**\n\nSehr geehrte Damen und Herren\n\nMit freundlichen Grüßen\n\n---\n\n**LEBENSLAUF: Lebenslauf**\n\n---\n\n**Max Mustermann**\nWerdegang und Qualifikationen seit 2015 in der Softwareentwicklung",
       }],
     });
 
@@ -147,7 +147,7 @@ describe("POST /api/generate", () => {
     const data = await res.json();
 
     expect(data.coverLetter).toBe("Sehr geehrte Damen und Herren\n\nMit freundlichen Grüßen");
-    expect(data.cv).toBe("**Max Mustermann**\nWerdegang und Qualifikationen");
+    expect(data.cv).toBe("**Max Mustermann**\nWerdegang und Qualifikationen seit 2015 in der Softwareentwicklung");
     expect(data.coverLetter).not.toContain("**");
     expect(data.coverLetter).not.toContain("Bewerbungsunterlagen");
     expect(data.cv).not.toMatch(/^[\s#*]*Lebenslauf/i);
@@ -177,7 +177,7 @@ describe("POST /api/generate", () => {
 describe("Zugangskontrolle", () => {
   beforeEach(() => {
     mockCreate.mockResolvedValue({
-      content: [{ type: "text", text: "ANSCHREIBEN: text\n\nLEBENSLAUF: text" }],
+      content: [{ type: "text", text: "ANSCHREIBEN: Sehr geehrte Damen und Herren\n\nLEBENSLAUF: Max Mustermann, geboren 1990 in Berlin. B.Sc. Informatik (TU Berlin, 2015). Kenntnisse in TypeScript und React." }],
     });
   });
 
@@ -243,7 +243,7 @@ describe("Bewerbungshistorie", () => {
     mockCreate.mockResolvedValue({
       content: [{
         type: "text",
-        text: "BETREFF: Bewerbung als Senior Developer – Max Mustermann\n\nANSCHREIBEN: Sehr geehrte Damen und Herren\n\nLEBENSLAUF: Max Mustermann – Lebenslauf",
+        text: "BETREFF: Bewerbung als Senior Developer – Max Mustermann\n\nANSCHREIBEN: Sehr geehrte Damen und Herren\n\nLEBENSLAUF: Max Mustermann – Lebenslauf mit Stationen bei mehreren Unternehmen seit 2015.",
       }],
     });
     await prisma.applicationHistoryEntry.deleteMany({ where: { userId } });
@@ -269,7 +269,7 @@ describe("Bewerbungshistorie", () => {
     expect(entries[0].companyName).toBe("Acme GmbH");
     expect(entries[0].emailSubject).toBe("Bewerbung als Senior Developer – Max Mustermann");
     expect(entries[0].coverLetter).toBe("Sehr geehrte Damen und Herren");
-    expect(entries[0].cv).toBe("Max Mustermann – Lebenslauf");
+    expect(entries[0].cv).toBe("Max Mustermann – Lebenslauf mit Stationen bei mehreren Unternehmen seit 2015.");
     expect(entries[0].profileSnapshot).toEqual(expect.objectContaining(profile));
   });
 
