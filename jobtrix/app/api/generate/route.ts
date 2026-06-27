@@ -75,18 +75,32 @@ export async function POST(request: NextRequest) {
     }
     const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-    const message = await client.messages.create({
-      model: "claude-sonnet-4-6",
-      max_tokens: 4096,
-      messages: [{ role: "user", content: buildPrompt(body) }],
-    });
+    let emailSubject = "", coverLetter = "", cv = "", emailBody = "";
 
-    const text = message.content
-      .filter((c) => c.type === "text")
-      .map((c) => (c as { type: "text"; text: string }).text)
-      .join("");
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const message = await client.messages.create({
+        model: "claude-sonnet-4-6",
+        max_tokens: 4096,
+        messages: [{ role: "user", content: buildPrompt(body) }],
+      });
 
-    const { emailSubject, coverLetter, cv, emailBody } = parseResponse(text);
+      const text = message.content
+        .filter((c) => c.type === "text")
+        .map((c) => (c as { type: "text"; text: string }).text)
+        .join("");
+
+      try {
+        const parsed = parseResponse(text);
+        emailSubject = parsed.emailSubject;
+        coverLetter = parsed.coverLetter;
+        cv = parsed.cv;
+        emailBody = parsed.emailBody;
+        break;
+      } catch (parseErr) {
+        if (attempt === 1) throw parseErr;
+        console.warn("[/api/generate] Retry wegen Parse-Fehler:", parseErr instanceof Error ? parseErr.message : "unknown");
+      }
+    }
 
     if (decision.markFreeGenerationUsed) {
       await prisma.access.upsert({

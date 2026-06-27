@@ -374,13 +374,13 @@ export default function GenerateForm() {
           </div>
         )}
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <input
             type="checkbox"
             id="initiativbewerbung"
             checked={isInitiativbewerbung}
             onChange={(e) => setIsInitiativbewerbung(e.target.checked)}
-            className="w-4 h-4 accent-accent cursor-pointer"
+            className="w-3.5 h-3.5 accent-accent cursor-pointer shrink-0"
           />
           <label htmlFor="initiativbewerbung" className="text-sm font-medium text-text cursor-pointer select-none">
             {t("initiativbewerbungLabel")}
