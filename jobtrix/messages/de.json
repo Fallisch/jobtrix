@@ -41,7 +41,11 @@
     },
     "benefit1": "KI-generiertes Anschreiben & Lebenslauf",
     "benefit2": "Professionelles PDF in einem Klick",
-    "benefit3": "Integrierte Jobsuche & E-Mail-Versand"
+    "benefit3": "Integrierte Jobsuche & E-Mail-Versand",
+    "ctaTrustBadges": "Kostenlos starten",
+    "ctaHowItWorks": "Jetzt ausprobieren",
+    "ctaFeatures": "Überzeuge dich selbst",
+    "ctaComparison": "Kostenlos testen"
   },
   "nav": {
     "profile": "Profil",

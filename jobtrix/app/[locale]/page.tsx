@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import HeroSection from "@/components/HeroSection";
 import TrustBadges from "@/components/TrustBadges";
@@ -27,6 +28,15 @@ export default async function Home({ params }: Props) {
         benefits={[t("benefit1"), t("benefit2"), t("benefit3")]}
       />
       <TrustBadges />
+      <div className="text-center py-4">
+        <Link
+          href={`/${locale}/register`}
+          data-testid="section-cta"
+          className="inline-flex items-center min-h-[44px] text-accent font-semibold hover:underline transition"
+        >
+          {t("ctaTrustBadges")} →
+        </Link>
+      </div>
       <TrixMarquee />
       <HowItWorksSection
         title={t("howItWorks.title")}
@@ -36,6 +46,15 @@ export default async function Home({ params }: Props) {
           { title: t("howItWorks.step3Title"), desc: t("howItWorks.step3Desc") },
         ]}
       />
+      <div className="text-center py-6">
+        <Link
+          href={`/${locale}/register`}
+          data-testid="section-cta"
+          className="inline-flex items-center min-h-[44px] bg-accent text-white px-8 py-3 rounded-full font-semibold hover:shadow-md hover:scale-[1.02] transition-all duration-200 shadow-sm"
+        >
+          {t("ctaHowItWorks")}
+        </Link>
+      </div>
       <FeaturesSection
         title={t("features.title")}
         features={[
@@ -45,7 +64,25 @@ export default async function Home({ params }: Props) {
           { title: t("features.jobSearch"), desc: t("features.jobSearchDesc") },
         ]}
       />
+      <div className="text-center py-4">
+        <Link
+          href={`/${locale}/register`}
+          data-testid="section-cta"
+          className="inline-flex items-center min-h-[44px] text-accent font-semibold hover:underline transition"
+        >
+          {t("ctaFeatures")} →
+        </Link>
+      </div>
       <ComparisonSection />
+      <div className="text-center py-6">
+        <Link
+          href={`/${locale}/register`}
+          data-testid="section-cta"
+          className="inline-flex items-center min-h-[44px] bg-accent text-white px-8 py-3 rounded-full font-semibold hover:shadow-md hover:scale-[1.02] transition-all duration-200 shadow-sm"
+        >
+          {t("ctaComparison")}
+        </Link>
+      </div>
       <PricingTeaserSection
         locale={locale}
         title={t("pricingTeaser.title")}

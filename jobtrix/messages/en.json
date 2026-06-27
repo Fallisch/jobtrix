@@ -41,7 +41,11 @@
     },
     "benefit1": "AI-generated cover letter & CV",
     "benefit2": "Professional PDF in one click",
-    "benefit3": "Integrated job search & email sending"
+    "benefit3": "Integrated job search & email sending",
+    "ctaTrustBadges": "Start for free",
+    "ctaHowItWorks": "Try it now",
+    "ctaFeatures": "See for yourself",
+    "ctaComparison": "Try for free"
   },
   "nav": {
     "profile": "Profile",
