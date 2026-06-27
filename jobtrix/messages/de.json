@@ -568,5 +568,15 @@
     "encryption": "Verschlüsselte Übertragung",
     "payment": "Sichere Zahlung",
     "data": "Deine Daten gehören dir"
+  },
+  "comparison": {
+    "title": "Warum JobTRIX?",
+    "feature": "Feature",
+    "pdf": "Fertiges PDF",
+    "aiMatch": "KI-Anpassung an Stelle",
+    "coverAndCv": "Anschreiben + Lebenslauf",
+    "email": "Bewerbungs-E-Mail",
+    "jobSearch": "Integrierte Jobsuche",
+    "oneClick": "Alles in einem Klick"
   }
 }

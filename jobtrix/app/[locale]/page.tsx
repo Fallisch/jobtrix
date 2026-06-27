@@ -4,6 +4,7 @@ import TrustBadges from "@/components/TrustBadges";
 import TrixMarquee from "@/components/TrixMarquee";
 import HowItWorksSection from "@/components/HowItWorksSection";
 import FeaturesSection from "@/components/FeaturesSection";
+import ComparisonSection from "@/components/ComparisonSection";
 import PricingTeaserSection from "@/components/PricingTeaserSection";
 import FinalCtaSection from "@/components/FinalCtaSection";
 
@@ -43,6 +44,7 @@ export default async function Home({ params }: Props) {
           { title: t("features.jobSearch"), desc: t("features.jobSearchDesc") },
         ]}
       />
+      <ComparisonSection />
       <PricingTeaserSection
         locale={locale}
         title={t("pricingTeaser.title")}
