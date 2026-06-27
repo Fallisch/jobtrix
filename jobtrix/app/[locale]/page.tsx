@@ -24,6 +24,7 @@ export default async function Home({ params }: Props) {
         subline={t("subline")}
         cta={t("cta")}
         freeBadge={t("freeBadge")}
+        benefits={[t("benefit1"), t("benefit2"), t("benefit3")]}
       />
       <TrustBadges />
       <TrixMarquee />

@@ -6,9 +6,9 @@
   },
   "home": {
     "headline": "Bewerbungen in Minuten",
-    "subline": "Profil anlegen, Stellenanzeige einfügen – JobTRIX generiert dein Anschreiben und deinen Lebenslauf automatisch.",
-    "cta": "Kostenlos registrieren",
-    "freeBadge": "Erste Bewerbung komplett kostenlos – ohne Kreditkarte",
+    "subline": "Bewerbungen in 2 Minuten statt 2 Stunden.",
+    "cta": "Kostenlos starten",
+    "freeBadge": "Ohne Kreditkarte – sofort loslegen",
     "howItWorks": {
       "title": "Wie es funktioniert",
       "step1Title": "Profil anlegen",
@@ -38,7 +38,10 @@
       "title": "Starte jetzt deine nächste Bewerbung",
       "desc": "In wenigen Minuten fertig. Kostenlos ausprobieren.",
       "cta": "Kostenlos registrieren"
-    }
+    },
+    "benefit1": "KI-generiertes Anschreiben & Lebenslauf",
+    "benefit2": "Professionelles PDF in einem Klick",
+    "benefit3": "Integrierte Jobsuche & E-Mail-Versand"
   },
   "nav": {
     "profile": "Profil",

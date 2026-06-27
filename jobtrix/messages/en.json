@@ -6,9 +6,9 @@
   },
   "home": {
     "headline": "Applications in minutes",
-    "subline": "Create your profile, paste a job listing – JobTRIX automatically generates your cover letter and CV.",
-    "cta": "Register for free",
-    "freeBadge": "First application completely free – no credit card required",
+    "subline": "Applications in 2 minutes instead of 2 hours.",
+    "cta": "Start for free",
+    "freeBadge": "No credit card – get started now",
     "howItWorks": {
       "title": "How it works",
       "step1Title": "Create your profile",
@@ -38,7 +38,10 @@
       "title": "Start your next application now",
       "desc": "Done in minutes. Try it for free.",
       "cta": "Register for free"
-    }
+    },
+    "benefit1": "AI-generated cover letter & CV",
+    "benefit2": "Professional PDF in one click",
+    "benefit3": "Integrated job search & email sending"
   },
   "nav": {
     "profile": "Profile",

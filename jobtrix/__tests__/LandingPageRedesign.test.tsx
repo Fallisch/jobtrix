@@ -35,7 +35,7 @@ describe("Landingpage Redesign", () => {
   describe("HeroSection", () => {
     test("hat große Typografie (text-5xl oder text-6xl)", () => {
       const { container } = render(
-        <HeroSection locale="de" headline="Test" subline="Sub" cta="CTA" freeBadge="Free" />
+        <HeroSection locale="de" headline="Test" subline="Sub" cta="CTA" freeBadge="Free" benefits={[]} />
       );
       const h1 = container.querySelector("h1");
       expect(h1?.className).toMatch(/text-5xl|text-6xl/);
@@ -43,11 +43,23 @@ describe("Landingpage Redesign", () => {
 
     test("CTA-Button hat min-h-[44px] und rounded-full", () => {
       const { container } = render(
-        <HeroSection locale="de" headline="Test" subline="Sub" cta="CTA" freeBadge="Free" />
+        <HeroSection locale="de" headline="Test" subline="Sub" cta="CTA" freeBadge="Free" benefits={[]} />
       );
       const link = container.querySelector("a");
       expect(link?.className).toContain("rounded-full");
       expect(link?.className).toContain("min-h-[44px]");
+    });
+
+    test("rendert Vorteils-Bullets wenn vorhanden", () => {
+      const benefits = ["Benefit A", "Benefit B", "Benefit C"];
+      const { container } = render(
+        <HeroSection locale="de" headline="Test" subline="Sub" cta="CTA" freeBadge="Free" benefits={benefits} />
+      );
+      const items = container.querySelectorAll("[data-testid='hero-benefit']");
+      expect(items.length).toBe(3);
+      expect(items[0].textContent).toContain("Benefit A");
+      expect(items[1].textContent).toContain("Benefit B");
+      expect(items[2].textContent).toContain("Benefit C");
     });
   });
 
