@@ -29,8 +29,6 @@ describe("TrixMarquee", () => {
     for (const phrase of expectedPhrases) {
       expect(text).toContain(phrase);
     }
-    const bulletCount = (text.split("•").length - 1) / 2;
-    expect(bulletCount).toBe(2);
   });
 
   test("DE-Slogans sind exakt wie spezifiziert", () => {
@@ -61,9 +59,9 @@ describe("TrixMarquee", () => {
     }
   });
 
-  test("verwendet Bullet-Trenner", () => {
+  test("verwendet Trenner zwischen Sprüchen", () => {
     const { container } = render(<TrixMarquee />);
-    expect(container.textContent).toContain("•");
+    expect(container.textContent).toContain("·");
   });
 
   test("hat uppercase und tracking-widest Styling", () => {

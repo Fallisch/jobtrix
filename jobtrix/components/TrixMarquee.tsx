@@ -6,13 +6,14 @@ export default function TrixMarquee() {
   const t = useTranslations("marquee");
   const phrases = [t("phrase0"), t("phrase1")];
 
-  const content = phrases.join(" • ") + " • ";
+  const content = phrases.join("   ·   ") + "   ·   ";
+  const repeated = content.repeat(4);
 
   return (
     <div className="overflow-hidden w-full py-3" aria-hidden="true">
       <div className="marquee-track flex whitespace-nowrap uppercase tracking-widest text-sm text-accent/60">
-        <span className="marquee-content inline-block">{content}</span>
-        <span className="marquee-content inline-block">{content}</span>
+        <span className="marquee-content inline-block">{repeated}</span>
+        <span className="marquee-content inline-block">{repeated}</span>
       </div>
       <style jsx>{`
         .marquee-track {

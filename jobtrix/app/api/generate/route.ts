@@ -9,6 +9,43 @@ import { parseResponse } from "./parse-response";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { generateRequestSchema } from "@/lib/validation-schemas";
 
+function extractJobTitle(text: string): string | undefined {
+  const patterns = [
+    /(?:Stellentitel|Jobtitel|Position|Stelle)\s*[:\-–]\s*(.+)/i,
+    /(?:wir suchen|gesucht)\s*(?:eine[n]?\s+)?(.+?)[\s,.(]/i,
+    /^(.+?)\s*\(m\/w\/d\)/im,
+    /^(.+?)\s*\(w\/m\/d\)/im,
+    /^(.+?)\s*\(d\/m\/w\)/im,
+    /^(.+?)\s*\(all genders\)/im,
+  ];
+  for (const p of patterns) {
+    const m = text.match(p);
+    if (m?.[1]) {
+      const title = m[1].trim().slice(0, 200);
+      if (title.length >= 3) return title;
+    }
+  }
+  const firstLine = text.trim().split("\n")[0]?.trim();
+  if (firstLine && firstLine.length >= 3 && firstLine.length <= 120) return firstLine;
+  return undefined;
+}
+
+function extractCompanyName(text: string): string | undefined {
+  const patterns = [
+    /(?:Firma|Unternehmen|Company|Arbeitgeber)\s*[:\-–]\s*(.+)/i,
+    /(?:bei|bei der|bei dem)\s+(.+?)\s+(?:suchen|bieten|sind)/i,
+    /(?:Die|Das|Der)\s+(.+?)\s+(?:sucht|bietet|ist ein)/i,
+  ];
+  for (const p of patterns) {
+    const m = text.match(p);
+    if (m?.[1]) {
+      const name = m[1].trim().replace(/[.,;]+$/, "").slice(0, 200);
+      if (name.length >= 2) return name;
+    }
+  }
+  return undefined;
+}
+
 export async function POST(request: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
@@ -59,11 +96,14 @@ export async function POST(request: NextRequest) {
       });
     }
 
+    const jobTitle = body.jobTitle || extractJobTitle(body.jobPosting) || null;
+    const companyName = body.companyName || body.targetCompany || extractCompanyName(body.jobPosting) || null;
+
     await prisma.applicationHistoryEntry.create({
       data: {
         userId,
-        jobTitle: body.jobTitle,
-        companyName: body.companyName,
+        jobTitle,
+        companyName,
         emailSubject,
         coverLetter,
         cv,
