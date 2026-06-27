@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 
 export default function TrixMarquee() {
   const t = useTranslations("marquee");
-  const phrases = [t("phrase0"), t("phrase1"), t("phrase2"), t("phrase3"), t("phrase4")];
+  const phrases = [t("phrase0"), t("phrase1")];
 
   const content = phrases.join(" • ") + " • ";
 
@@ -16,7 +16,7 @@ export default function TrixMarquee() {
       </div>
       <style jsx>{`
         .marquee-track {
-          animation: marquee-scroll 60s linear infinite;
+          animation: marquee-scroll 30s linear infinite;
         }
         @keyframes marquee-scroll {
           0% {

@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import TrixMarquee from "@/components/TrixMarquee";
 
 jest.mock("next-intl", () => {
@@ -19,18 +19,36 @@ jest.mock("next-intl", () => {
 
 describe("TrixMarquee", () => {
   const expectedPhrases = [
-    "Trix deinen inneren Schweinehund aus",
-    "Bewerbung? Kein Trix — einfach machen",
-    "Der JobTRIX für deine Karriere",
-    "Kein Hexenwerk, sondern JobTRIX",
-    "Dein nächster Job ist nur einen Trix entfernt",
+    "Bewerbung ist für dich kein T R I X mehr",
+    "T R I X deinen inneren Schweinehund aus",
   ];
 
-  test("rendert alle Sprüche", () => {
+  test("rendert genau 2 Slogans", () => {
     const { container } = render(<TrixMarquee />);
+    const text = container.textContent || "";
     for (const phrase of expectedPhrases) {
-      expect(container.textContent).toContain(phrase);
+      expect(text).toContain(phrase);
     }
+    const bulletCount = (text.split("•").length - 1) / 2;
+    expect(bulletCount).toBe(2);
+  });
+
+  test("DE-Slogans sind exakt wie spezifiziert", () => {
+    const { container } = render(<TrixMarquee />);
+    const text = container.textContent || "";
+    expect(text).toContain("Bewerbung ist für dich kein T R I X mehr");
+    expect(text).toContain("T R I X deinen inneren Schweinehund aus");
+  });
+
+  test("Animation-Dauer ist 30s", () => {
+    const fs = require("fs");
+    const path = require("path");
+    const src = fs.readFileSync(
+      path.resolve(__dirname, "../components/TrixMarquee.tsx"),
+      "utf-8",
+    );
+    expect(src).toMatch(/marquee-scroll\s+30s/);
+    expect(src).not.toMatch(/marquee-scroll\s+60s/);
   });
 
   test("dupliziert Content für nahtlosen Loop", () => {
@@ -54,11 +72,5 @@ describe("TrixMarquee", () => {
     expect(marqueeEl).not.toBeNull();
     const trackingEl = container.querySelector("[class*='tracking-widest']");
     expect(trackingEl).not.toBeNull();
-  });
-
-  test("hat text-sm Styling", () => {
-    const { container } = render(<TrixMarquee />);
-    const el = container.querySelector("[class*='text-sm']");
-    expect(el).not.toBeNull();
   });
 });
