@@ -61,14 +61,15 @@ describe("ApplicationHistoryDetail", () => {
     });
   });
 
-  it("zeigt 'untitled – companyName' wenn nur companyName vorhanden", async () => {
+  it("zeigt emailSubject-Titel und companyName wenn jobTitle fehlt", async () => {
     (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve({ ...entry, jobTitle: null, companyName: "TestFirma" }) });
 
     render(<ApplicationHistoryDetail id="entry-1" />);
 
     await waitFor(() => {
       const h1 = screen.getByRole("heading", { level: 1 });
-      expect(h1.textContent).toBe("untitled – TestFirma");
+      expect(h1.textContent).toContain("Senior Developer");
+      expect(h1.textContent).toContain("TestFirma");
     });
   });
 
@@ -83,14 +84,14 @@ describe("ApplicationHistoryDetail", () => {
     });
   });
 
-  it("zeigt Fallback 'untitled' wenn beides fehlt", async () => {
-    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve({ ...entry, jobTitle: null, companyName: null }) });
+  it("leitet Jobtitel aus emailSubject ab wenn jobTitle fehlt", async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve({ ...entry, jobTitle: null, companyName: null, emailSubject: "Bewerbung als Techniker (m/w/d) – Max" }) });
 
     render(<ApplicationHistoryDetail id="entry-1" />);
 
     await waitFor(() => {
       const h1 = screen.getByRole("heading", { level: 1 });
-      expect(h1.textContent).toBe("untitled");
+      expect(h1.textContent).toBe("Techniker (m/w/d)");
     });
   });
 

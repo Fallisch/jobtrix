@@ -30,6 +30,17 @@ function excerpt(text: string): string {
   return trimmed.length > EXCERPT_LENGTH ? `${trimmed.slice(0, EXCERPT_LENGTH)}…` : trimmed;
 }
 
+function deriveTitle(entry: ApplicationHistoryEntry, fallback: string): string {
+  if (entry.jobTitle) return entry.jobTitle;
+  const subj = entry.emailSubject;
+  if (subj) {
+    const m = subj.match(/Bewerbung\s+als\s+(.+?)(?:\s+[–—-]\s+|$)/i);
+    if (m?.[1] && m[1].length >= 3) return m[1].trim();
+    if (subj.length >= 5 && subj.length <= 200) return subj;
+  }
+  return fallback;
+}
+
 export default function ApplicationHistoryList() {
   const t = useTranslations("applicationHistory");
   const { locale } = useParams<{ locale: string }>();
@@ -127,7 +138,7 @@ export default function ApplicationHistoryList() {
             <div key={entry.id} className="bg-white dark:bg-surface rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-200 p-5 space-y-2">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
                 <h2 className="font-semibold text-primary dark:text-accent">
-                  {entry.jobTitle ?? t("untitled")}
+                  {deriveTitle(entry, t("untitled"))}
                   {entry.companyName ? ` – ${entry.companyName}` : ""}
                 </h2>
                 <span className="text-sm text-text/60 whitespace-nowrap">

@@ -72,7 +72,7 @@ describe("ApplicationHistoryList", () => {
     expect(headings[0].textContent).toBe("Senior Developer – Acme GmbH");
   });
 
-  it("zeigt 'untitled – companyName' wenn nur companyName vorhanden", async () => {
+  it("zeigt emailSubject-Titel und companyName wenn jobTitle fehlt", async () => {
     const onlyCompany = [{ ...entries[0], jobTitle: null, companyName: "TestFirma" }];
     (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve({ entries: onlyCompany, total: 1 }) });
 
@@ -80,7 +80,8 @@ describe("ApplicationHistoryList", () => {
 
     await waitFor(() => screen.getByText(/TestFirma/));
     const heading = screen.getByRole("heading", { level: 2 });
-    expect(heading.textContent).toBe("untitled – TestFirma");
+    expect(heading.textContent).toContain("Senior Developer");
+    expect(heading.textContent).toContain("TestFirma");
   });
 
   it("zeigt nur jobTitle wenn companyName fehlt", async () => {
@@ -93,15 +94,15 @@ describe("ApplicationHistoryList", () => {
     expect(heading.textContent).toBe("Junior Developer");
   });
 
-  it("zeigt Fallback 'untitled' wenn beides fehlt", async () => {
-    const noInfo = [{ ...entries[0], jobTitle: null, companyName: null }];
-    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve({ entries: noInfo, total: 1 }) });
+  it("leitet Jobtitel aus emailSubject ab wenn jobTitle fehlt", async () => {
+    const noTitle = [{ ...entries[0], jobTitle: null, companyName: null, emailSubject: "Bewerbung als Techniker (m/w/d) – Max" }];
+    (global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: () => Promise.resolve({ entries: noTitle, total: 1 }) });
 
     render(<ApplicationHistoryList />);
 
     await waitFor(() => {
       const heading = screen.getByRole("heading", { level: 2 });
-      expect(heading.textContent).toBe("untitled");
+      expect(heading.textContent).toBe("Techniker (m/w/d)");
     });
   });
 

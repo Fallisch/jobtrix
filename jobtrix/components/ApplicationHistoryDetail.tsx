@@ -9,6 +9,17 @@ import { downloadCoverLetterPdf, downloadCvPdf } from "@/lib/download-pdf";
 
 type Tab = "coverLetter" | "cv" | "email";
 
+function deriveTitle(entry: ApplicationHistoryEntry, fallback: string): string {
+  if (entry.jobTitle) return entry.jobTitle;
+  const subj = entry.emailSubject;
+  if (subj) {
+    const m = subj.match(/Bewerbung\s+als\s+(.+?)(?:\s+[–—-]\s+|$)/i);
+    if (m?.[1] && m[1].length >= 3) return m[1].trim();
+    if (subj.length >= 5 && subj.length <= 200) return subj;
+  }
+  return fallback;
+}
+
 export default function ApplicationHistoryDetail({ id }: { id: string }) {
   const t = useTranslations("applicationHistory");
   const { locale } = useParams<{ locale: string }>();
@@ -52,7 +63,7 @@ export default function ApplicationHistoryDetail({ id }: { id: string }) {
 
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-3xl font-bold text-primary dark:text-accent">
-          {entry.jobTitle ?? t("untitled")}
+          {deriveTitle(entry, t("untitled"))}
           {entry.companyName ? ` – ${entry.companyName}` : ""}
         </h1>
         <span className="text-sm text-text/60 whitespace-nowrap">

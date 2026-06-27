@@ -45,7 +45,7 @@ describe("TrixMarquee", () => {
       path.resolve(__dirname, "../components/TrixMarquee.tsx"),
       "utf-8",
     );
-    expect(src).toMatch(/marquee-scroll\s+30s/);
+    expect(src).toMatch(/marquee-scroll\s+40s/);
     expect(src).not.toMatch(/marquee-scroll\s+60s/);
   });
 
