@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
+import { APIError, AuthenticationError, PermissionDeniedError, NotFoundError, RateLimitError, APIConnectionError, InternalServerError } from "@anthropic-ai/sdk";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -132,30 +133,28 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ emailSubject, coverLetter, cv, emailBody });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    console.error("[/api/generate] Fehler:", msg, err instanceof Error ? err.stack : "");
+    const apiStatus = err instanceof APIError ? err.status : undefined;
+    const apiType = err instanceof APIError ? err.type : undefined;
+    console.error(`[/api/generate] Fehler: status=${apiStatus} type=${apiType} msg=${msg}`);
 
-    let userError = "Generierung fehlgeschlagen. Bitte versuche es erneut.";
-    let status = 500;
-
-    if (msg.includes("api_key") || msg.includes("authentication") || msg.includes("invalid x-api-key") || msg.includes("401")) {
-      userError = "KI-Dienst nicht konfiguriert. Bitte den Support kontaktieren.";
-      status = 503;
-    } else if (msg.includes("overloaded") || msg.includes("529")) {
-      userError = "KI-Dienst ist überlastet. Bitte in einer Minute erneut versuchen.";
-      status = 529;
-    } else if (msg.includes("rate_limit") || msg.includes("429")) {
-      userError = "Zu viele Anfragen an den KI-Dienst. Bitte kurz warten.";
-      status = 429;
-    } else if (msg.includes("Connection") || msg.includes("fetch") || msg.includes("ECONNREFUSED") || msg.includes("network")) {
-      userError = "KI-Dienst nicht erreichbar. Bitte in einer Minute erneut versuchen.";
-      status = 502;
-    } else if (msg.includes("Lebenslauf-Sektion")) {
-      userError = "Die KI hat das Format nicht eingehalten. Bitte erneut versuchen.";
-    } else if (msg.includes("not_found") || msg.includes("model")) {
-      userError = "KI-Modell nicht verfügbar. Bitte den Support kontaktieren.";
-      status = 503;
+    if (err instanceof AuthenticationError || err instanceof PermissionDeniedError) {
+      return NextResponse.json({ error: "KI-Dienst nicht konfiguriert. Bitte den Support kontaktieren." }, { status: 503 });
     }
-
-    return NextResponse.json({ error: userError }, { status });
+    if (err instanceof RateLimitError) {
+      return NextResponse.json({ error: "Zu viele Anfragen an den KI-Dienst. Bitte kurz warten." }, { status: 429 });
+    }
+    if (err instanceof APIConnectionError) {
+      return NextResponse.json({ error: "KI-Dienst nicht erreichbar. Bitte in einer Minute erneut versuchen." }, { status: 502 });
+    }
+    if (err instanceof NotFoundError) {
+      return NextResponse.json({ error: "KI-Modell nicht verfügbar. Bitte den Support kontaktieren." }, { status: 503 });
+    }
+    if (err instanceof InternalServerError && apiType === "overloaded_error") {
+      return NextResponse.json({ error: "KI-Dienst ist überlastet. Bitte in einer Minute erneut versuchen." }, { status: 503 });
+    }
+    if (msg.includes("Lebenslauf-Sektion")) {
+      return NextResponse.json({ error: "Die KI hat das Format nicht eingehalten. Bitte erneut versuchen." }, { status: 500 });
+    }
+    return NextResponse.json({ error: "Generierung fehlgeschlagen. Bitte versuche es erneut." }, { status: 500 });
   }
 }
