@@ -54,11 +54,16 @@ jobs:
       - name: Migrations-Drift prüfen (Schema ↔ Migrationen)
         # Schlägt fehl, wenn das Prisma-Schema geändert wurde, ohne eine
         # passende Migration zu erzeugen (Ursache des P2022-500ers, Issue #193).
+        # Nutzt eine SEPARATE Shadow-DB: migrate diff spielt alle Migrationen
+        # dorthin und würde sonst die Haupt-DB befüllen (-> P3005 bei deploy).
+        env:
+          SHADOW_DATABASE_URL: postgresql://jobtrix:jobtrix@localhost:5432/prisma_shadow
         run: |
+          PGPASSWORD=jobtrix psql -h localhost -U jobtrix -d jobtrix -c 'CREATE DATABASE prisma_shadow;' || true
           npx prisma migrate diff \
             --from-migrations prisma/migrations \
             --to-schema-datamodel prisma/schema.prisma \
-            --shadow-database-url "$DATABASE_URL" \
+            --shadow-database-url "$SHADOW_DATABASE_URL" \
             --exit-code
 
       - name: Prisma-Migrationen anwenden
