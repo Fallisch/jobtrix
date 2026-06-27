@@ -4,10 +4,11 @@ import { registerAndLogin, uniqueEmail } from "./helpers/auth";
 test.describe("Issue #49 – Konto-Löschung im Bereich 'Konto & Datenschutz'", () => {
   test("Datenexport anstoßen, Konto mit korrektem Passwort löschen -> abgemeldet, alte Zugangsdaten funktionieren nicht mehr", async ({ page }) => {
     const email = uniqueEmail("e2e-account-delete");
-    const password = "correct-password";
+    const password = "Correct-1";
 
     await registerAndLogin(page, email, password);
 
+    await page.goto("/de/profile");
     await expect(page.getByRole("heading", { name: /konto & datenschutz/i })).toBeVisible();
 
     const downloadPromise = page.waitForEvent("download");

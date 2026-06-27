@@ -67,7 +67,7 @@ test.describe("Issue #41 – Dark Mode: Hauptseiten (Profil, Generierung, Bewerb
 
   test("Story: /profile zeigt im Dark Mode kontrastreiche Karten, Formularfelder und Texte", async ({ page }) => {
     await page.emulateMedia({ colorScheme: "dark" });
-    await registerAndLogin(page, uniqueEmail("e2e-dark-profile"), "correct-password");
+    await registerAndLogin(page, uniqueEmail("e2e-dark-profile"), "Correct-1");
     await expect(page.locator("html")).toHaveClass(/dark/);
 
     await page.goto("/de/profile");
@@ -84,7 +84,7 @@ test.describe("Issue #41 – Dark Mode: Hauptseiten (Profil, Generierung, Bewerb
 
   test("Story: /generate inkl. Layout-Auswahl und Akzentfarben-Palette ist im Dark Mode kontrastreich", async ({ page }) => {
     await page.emulateMedia({ colorScheme: "dark" });
-    await registerAndLogin(page, uniqueEmail("e2e-dark-generate"), "correct-password");
+    await registerAndLogin(page, uniqueEmail("e2e-dark-generate"), "Correct-1");
     await expect(page.locator("html")).toHaveClass(/dark/);
 
     await page.goto("/de/generate");
@@ -124,7 +124,7 @@ test.describe("Issue #41 – Dark Mode: Hauptseiten (Profil, Generierung, Bewerb
 
   test("Story: /application-history zeigt Einträge im Dark Mode kontrastreich", async ({ page }) => {
     await page.emulateMedia({ colorScheme: "dark" });
-    const userId = await registerAndLogin(page, uniqueEmail("e2e-dark-history"), "correct-password");
+    const userId = await registerAndLogin(page, uniqueEmail("e2e-dark-history"), "Correct-1");
     await expect(page.locator("html")).toHaveClass(/dark/);
 
     await prisma.applicationHistoryEntry.create({
@@ -154,7 +154,7 @@ test.describe("Issue #41 – Dark Mode: Hauptseiten (Profil, Generierung, Bewerb
 
   test("Story: /application-history/[id] zeigt Detailansicht mit Tabs im Dark Mode kontrastreich", async ({ page }) => {
     await page.emulateMedia({ colorScheme: "dark" });
-    const userId = await registerAndLogin(page, uniqueEmail("e2e-dark-detail"), "correct-password");
+    const userId = await registerAndLogin(page, uniqueEmail("e2e-dark-detail"), "Correct-1");
 
     const entry = await prisma.applicationHistoryEntry.create({
       data: {

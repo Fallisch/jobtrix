@@ -10,7 +10,7 @@ test.describe("Issue #17 – Registrierung, Login, Logout & Routenschutz", () =>
 
   test("Story: Registrieren -> automatisch eingeloggt -> Profile/Generate erreichbar -> Logout -> Routenschutz greift wieder", async ({ page }) => {
     const email = uniqueEmail("e2e-auth");
-    const password = "correct-password";
+    const password = "Correct-1";
 
     await page.goto("/de/register");
     await page.waitForLoadState("networkidle");
@@ -22,7 +22,7 @@ test.describe("Issue #17 – Registrierung, Login, Logout & Routenschutz", () =>
     await page.getByLabel(/AGB und die Datenschutzbestimmungen/).check();
     await page.getByRole("button", { name: "Registrieren" }).click();
 
-    await expect(page).toHaveURL(/\/de\/profile/);
+    await expect(page).toHaveURL(/\/de\/onboarding/);
 
     await page.goto("/de/generate");
     await expect(page).toHaveURL(/\/de\/generate/);

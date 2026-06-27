@@ -12,7 +12,7 @@ const PROFILE = {
 test.describe("Issue #20 – Free Trial, Zugangskontrolle & Pricing", () => {
   test.beforeEach(async ({ page }) => {
     const email = `e2e-pricing-${Date.now()}@example.com`;
-    const password = "correct-password";
+    const password = "Correct-1";
 
     await page.goto("/de/register");
     await page.getByLabel("E-Mail").fill(email);
@@ -20,7 +20,7 @@ test.describe("Issue #20 – Free Trial, Zugangskontrolle & Pricing", () => {
     await page.getByLabel("Passwort bestätigen").fill(password);
     await page.getByLabel(/AGB und die Datenschutzbestimmungen/).check();
     await page.getByRole("button", { name: "Registrieren" }).click();
-    await expect(page).toHaveURL(/\/de\/profile/);
+    await expect(page).toHaveURL(/\/de\/onboarding/);
 
     await page.goto("/de/generate");
     await page.evaluate((p) => {

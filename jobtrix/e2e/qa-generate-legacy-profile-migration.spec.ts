@@ -64,7 +64,7 @@ function extractSkillBarRatios(content: string): number[] {
 
 test.describe("Issue #32 – Legacy-Profil-Migration (String-Format) auf /de/generate", () => {
   test("altes String-Format-Profil wird migriert und Skill-Werte erscheinen als 60% im generierten Lebenslauf", async ({ page }) => {
-    await registerAndLogin(page, uniqueEmail("e2e-legacy-profile-migration"), "correct-password");
+    await registerAndLogin(page, uniqueEmail("e2e-legacy-profile-migration"), "Correct-1");
 
     await page.goto("/de/generate");
     await page.evaluate((p) => {

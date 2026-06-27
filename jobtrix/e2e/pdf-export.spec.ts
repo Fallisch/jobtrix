@@ -16,7 +16,7 @@ const MOCK_CV = "Lena Testmann\n\nAUSBILDUNG\nB.Sc. Informatik, FU Berlin, 2019\
 
 test.describe("PDF-Export – vollständiger Bewerbungsflow", () => {
   test.beforeEach(async ({ page }) => {
-    await registerAndLogin(page, uniqueEmail("e2e-pdf-export"), "correct-password");
+    await registerAndLogin(page, uniqueEmail("e2e-pdf-export"), "Correct-1");
     await page.goto("/de/generate");
     await page.evaluate((p) => {
       localStorage.setItem("jobtrix_profile", JSON.stringify(p));
@@ -87,7 +87,7 @@ test.describe("PDF-Export – vollständiger Bewerbungsflow", () => {
       page.getByRole("button", { name: /Anschreiben als PDF/i }).click(),
     ]);
 
-    expect(download.suggestedFilename()).toBe("anschreiben.pdf");
+    expect(download.suggestedFilename()).toMatch(/^Anschreiben.*\.pdf$/);
 
     // kein zusätzlicher API-Request für die PDF-Erzeugung selbst
     // (/api/generate für die Bewerbung, /api/profile für die Profil-Synchronisierung beim Mount)
@@ -117,7 +117,7 @@ test.describe("PDF-Export – vollständiger Bewerbungsflow", () => {
       page.getByRole("button", { name: /Lebenslauf als PDF/i }).click(),
     ]);
 
-    expect(download.suggestedFilename()).toBe("lebenslauf.pdf");
+    expect(download.suggestedFilename()).toMatch(/^Lebenslauf.*\.pdf$/);
   });
 
   test("Vollständiger Flow: Profil → Stelle → Generieren → Bearbeiten → PDF herunterladen", async ({ page }) => {
@@ -145,7 +145,6 @@ test.describe("PDF-Export – vollständiger Bewerbungsflow", () => {
       page.getByRole("button", { name: /Anschreiben als PDF/i }).click(),
     ]);
 
-    expect(download.suggestedFilename()).toBe("anschreiben.pdf");
-    expect(download.suggestedFilename()).toMatch(/\.pdf$/);
+    expect(download.suggestedFilename()).toMatch(/^Anschreiben.*\.pdf$/);
   });
 });

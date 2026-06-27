@@ -82,9 +82,8 @@ jobs:
         run: npm run build
 
       - name: E2E-Tests (Playwright)
-        # Vorerst non-blocking: Die E2E-Suite hinkt dem Auth-Flow hinterher
-        # (Onboarding-Redirect, Dev-Mode-Form-Submit). Sanierung siehe #199.
-        # CI bleibt grün, damit Drift-Guard, Jest und Build verlässlich gaten.
+        # Auth-Flow-Fixes (#199) erledigt. Verbleibende pre-existing Failures:
+        # PDF-Dateinamen, Datenexport-Dialog, Dark-Mode-Timing, i18n en-Labels.
         continue-on-error: true
         run: npm run test:e2e
 

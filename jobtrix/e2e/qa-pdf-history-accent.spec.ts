@@ -64,7 +64,7 @@ function extractText(content: string): string {
 
 test.describe("Issue #39 – Akzentfarbe und CV-Stil in Bewerbungshistorie", () => {
   test("Re-Export aus der Bewerbungshistorie behält Akzentfarbe (Modern) und CV-Stil (amerikanisch) bei", async ({ page }) => {
-    const userId = await registerAndLogin(page, uniqueEmail("e2e-history-accent"), "correct-password");
+    const userId = await registerAndLogin(page, uniqueEmail("e2e-history-accent"), "Correct-1");
 
     const entry = await prisma.applicationHistoryEntry.create({
       data: {
@@ -117,7 +117,7 @@ test.describe("Issue #39 – Akzentfarbe und CV-Stil in Bewerbungshistorie", () 
   });
 
   test("Re-Export aus der Bewerbungshistorie-Übersicht (Liste) behält Akzentfarbe (Modern) bei", async ({ page }) => {
-    const userId = await registerAndLogin(page, uniqueEmail("e2e-history-list-accent"), "correct-password");
+    const userId = await registerAndLogin(page, uniqueEmail("e2e-history-list-accent"), "Correct-1");
 
     await prisma.applicationHistoryEntry.create({
       data: {

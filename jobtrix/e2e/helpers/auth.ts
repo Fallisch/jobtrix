@@ -10,7 +10,7 @@ export async function registerAndLogin(page: Page, email: string, password: stri
   await page.getByLabel("Passwort bestätigen").fill(password);
   await page.getByLabel(/AGB und die Datenschutzbestimmungen/).check();
   await page.getByRole("button", { name: "Registrieren" }).click();
-  await expect(page).toHaveURL(/\/de\/profile/);
+  await expect(page).toHaveURL(/\/de\/onboarding/);
 
   const sessionRes = await page.request.get("/api/auth/session");
   const session = await sessionRes.json();

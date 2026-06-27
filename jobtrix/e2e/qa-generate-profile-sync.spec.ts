@@ -5,7 +5,7 @@ test.describe("Bugfix – Profil-Synchronisierung zwischen /de/profile und /de/g
   test("Story: Berufserfahrung im Profil gespeichert -> auf /de/generate generieren -> Berufserfahrung wird an die KI übergeben", async ({
     page,
   }) => {
-    await registerAndLogin(page, uniqueEmail("e2e-generate-profile-sync"), "correct-password");
+    await registerAndLogin(page, uniqueEmail("e2e-generate-profile-sync"), "Correct-1");
 
     // Berufserfahrung über /de/profile anlegen (Postgres-backed via /api/profile)
     await page.goto("/de/profile");

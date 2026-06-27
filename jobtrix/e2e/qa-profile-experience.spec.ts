@@ -5,7 +5,7 @@ test.describe("Issue #34 – Berufserfahrungseinträge im Nutzerprofil", () => {
   test("Story: Berufserfahrung hinzufügen -> speichern -> neu laden -> Eintrag vorhanden", async ({
     page,
   }) => {
-    await registerAndLogin(page, uniqueEmail("e2e-profile-experience"), "correct-password");
+    await registerAndLogin(page, uniqueEmail("e2e-profile-experience"), "Correct-1");
 
     await page.goto("/de/profile");
 

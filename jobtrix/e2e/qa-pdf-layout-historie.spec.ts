@@ -18,7 +18,7 @@ async function registerAndLogin(page: Page, email: string, password: string): Pr
   await page.getByLabel("Passwort bestätigen").fill(password);
   await page.getByLabel(/AGB und die Datenschutzbestimmungen/).check();
   await page.getByRole("button", { name: "Registrieren" }).click();
-  await expect(page).toHaveURL(/\/de\/profile/);
+  await expect(page).toHaveURL(/\/de\/onboarding/);
 
   const sessionRes = await page.request.get("/api/auth/session");
   const session = await sessionRes.json();
@@ -30,7 +30,7 @@ test.describe("Issue #26 – PDF-Layout in Bewerbungshistorie speichern und beim
     test.setTimeout(300_000);
 
     const email = `e2e-pdf-layout-${Date.now()}@example.com`;
-    const userId = await registerAndLogin(page, email, "correct-password");
+    const userId = await registerAndLogin(page, email, "Correct-1");
     await prisma.access.create({ data: { userId, package: "lifetime" } });
 
     await page.goto("/de/generate");

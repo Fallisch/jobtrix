@@ -17,7 +17,7 @@ test.describe("Issue #18 – Passwort zurücksetzen per E-Mail", () => {
   test("Reset anfordern, neues Passwort setzen und damit einloggen", async ({ page }) => {
     const email = `e2e-reset-${Date.now()}@example.com`;
     const oldPassword = "altes-passwort";
-    const newPassword = "neues-passwort-123";
+    const newPassword = "Neues-Passwort-123";
 
     const passwordHash = await bcrypt.hash(oldPassword, 10);
     const user = await prisma.user.create({ data: { email, passwordHash } });
@@ -48,15 +48,15 @@ test.describe("Issue #18 – Passwort zurücksetzen per E-Mail", () => {
     await page.getByLabel("E-Mail").fill(email);
     await page.getByLabel("Passwort", { exact: true }).fill(newPassword);
     await page.getByRole("button", { name: "Anmelden" }).click();
-    await expect(page).toHaveURL(/\/de\/profile/);
+    await expect(page).toHaveURL(/\/de\/onboarding/);
 
     await prisma.user.deleteMany({ where: { email } });
   });
 
   test("Ungültiges Token zeigt verständliche Fehlermeldung mit Link zu /forgot-password", async ({ page }) => {
     await page.goto("/de/reset-password?token=ungueltiges-token");
-    await page.getByLabel("Neues Passwort").fill("irgendein-passwort");
-    await page.getByLabel("Passwort bestätigen").fill("irgendein-passwort");
+    await page.getByLabel("Neues Passwort").fill("Irgendein-Passwort1");
+    await page.getByLabel("Passwort bestätigen").fill("Irgendein-Passwort1");
     await page.getByRole("button", { name: "Passwort speichern" }).click();
 
     await expect(page.getByRole("heading", { name: "Link ungültig oder abgelaufen" })).toBeVisible();

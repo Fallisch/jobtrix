@@ -21,7 +21,7 @@ test.describe("Issue #31 – Detailansicht zeigt nur Anschreiben oder Lebenslauf
 
   test("Detailansicht zeigt standardmäßig nur das Anschreiben und wechselt per Tab zu Lebenslauf und E-Mail-Entwurf", async ({ page }) => {
     const email = uniqueEmail("e2e-history-tabs");
-    const userId = await registerAndLogin(page, email, "correct-password");
+    const userId = await registerAndLogin(page, email, "Correct-1");
 
     await prisma.applicationHistoryEntry.create({
       data: {

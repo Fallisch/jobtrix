@@ -27,7 +27,7 @@ async function registerAndLogin(page: Page, email: string, password: string): Pr
   await page.getByLabel("Passwort bestätigen").fill(password);
   await page.getByLabel(/AGB und die Datenschutzbestimmungen/).check();
   await page.getByRole("button", { name: "Registrieren" }).click();
-  await expect(page).toHaveURL(/\/de\/profile/);
+  await expect(page).toHaveURL(/\/de\/onboarding/);
 
   const sessionRes = await page.request.get("/api/auth/session");
   const session = await sessionRes.json();
@@ -41,7 +41,7 @@ test.describe("Issue #22 – Ablauf des zeitlich begrenzten Zugangs", () => {
 
   test("abgelaufener Zugang führt bei Generierungsversuch zu /pricing", async ({ page }) => {
     const email = `e2e-access-expired-${Date.now()}@example.com`;
-    const userId = await registerAndLogin(page, email, "correct-password");
+    const userId = await registerAndLogin(page, email, "Correct-1");
 
     const validUntil = new Date(Date.now() - 24 * 60 * 60 * 1000);
     await prisma.access.create({ data: { userId, freeGenerationUsed: true, package: "limited", validUntil } });
@@ -61,7 +61,7 @@ test.describe("Issue #22 – Ablauf des zeitlich begrenzten Zugangs", () => {
 
   test("gültiger zeitlich begrenzter Zugang zeigt Datum auf Profilseite und erlaubt Generierung", async ({ page }) => {
     const email = `e2e-access-valid-${Date.now()}@example.com`;
-    const userId = await registerAndLogin(page, email, "correct-password");
+    const userId = await registerAndLogin(page, email, "Correct-1");
 
     const validUntil = new Date("2099-12-31T00:00:00.000Z");
     await prisma.access.create({ data: { userId, freeGenerationUsed: true, package: "limited", validUntil } });

@@ -7,13 +7,13 @@ async function registerAndLogin(page: Page, email: string, password: string): Pr
   await page.getByLabel("Passwort bestätigen").fill(password);
   await page.getByLabel(/AGB und die Datenschutzbestimmungen/).check();
   await page.getByRole("button", { name: "Registrieren" }).click();
-  await expect(page).toHaveURL(/\/de\/profile/);
+  await expect(page).toHaveURL(/\/de\/onboarding/);
 }
 
 test.describe("Issue #27 – Übersetztes Label für Foto-Upload-Button im Profil", () => {
   test("Story: Foto-Upload-Button zeigt deutschen Text und Upload funktioniert weiterhin", async ({ page }) => {
     const email = `e2e-photo-button-${Date.now()}@example.com`;
-    await registerAndLogin(page, email, "correct-password");
+    await registerAndLogin(page, email, "Correct-1");
 
     await page.goto("/de/profile");
     await page.evaluate(() => localStorage.clear());
@@ -35,7 +35,7 @@ test.describe("Issue #27 – Übersetztes Label für Foto-Upload-Button im Profi
 
   test("Story: Foto-Upload-Button zeigt englischen Text", async ({ page }) => {
     const email = `e2e-photo-button-en-${Date.now()}@example.com`;
-    await registerAndLogin(page, email, "correct-password");
+    await registerAndLogin(page, email, "Correct-1");
 
     await page.goto("/en/profile");
 

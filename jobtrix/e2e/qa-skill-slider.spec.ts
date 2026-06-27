@@ -3,7 +3,7 @@ import { registerAndLogin, uniqueEmail } from "./helpers/auth";
 
 test.describe("Skill-Balken individuell anpassbar – QA (Issue #12)", () => {
   test.beforeEach(async ({ page }) => {
-    await registerAndLogin(page, uniqueEmail("e2e-skill-slider"), "correct-password");
+    await registerAndLogin(page, uniqueEmail("e2e-skill-slider"), "Correct-1");
   });
 
   test("Slider erscheint nach Hinzufügen einer Qualifikation", async ({ page }) => {

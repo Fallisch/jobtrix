@@ -38,7 +38,7 @@ const JOB_RESULTS = {
 
 test.describe("Issue #44 – Jobsuche über Arbeitsagentur-API", () => {
   test.beforeEach(async ({ page }) => {
-    await registerAndLogin(page, uniqueEmail("e2e-jobsuche"), "correct-password");
+    await registerAndLogin(page, uniqueEmail("e2e-jobsuche"), "Correct-1");
     await page.goto("/de/generate");
     await page.evaluate((p) => {
       localStorage.setItem("jobtrix_profile", JSON.stringify(p));

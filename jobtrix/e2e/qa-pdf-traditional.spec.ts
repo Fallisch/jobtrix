@@ -61,7 +61,7 @@ test.describe("Issue #37 – PDF-Layout 'Traditionell'", () => {
   test("Story: Layout Traditionell auswählen -> generieren -> Lebenslauf-PDF ist tabellarisch mit Foto, Anschreiben im Briefstil", async ({
     page,
   }) => {
-    await registerAndLogin(page, uniqueEmail("e2e-pdf-traditional"), "correct-password");
+    await registerAndLogin(page, uniqueEmail("e2e-pdf-traditional"), "Correct-1");
 
     await page.goto("/de/generate");
     await page.evaluate((p) => {

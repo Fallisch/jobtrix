@@ -44,7 +44,7 @@ test.describe("Issue #40 – Dark Mode: Theming-Infrastruktur, Umschalter & Pers
 
   test("Story: Manuelles Umschalten wird angemeldet im Nutzerkonto gespeichert und nach erneutem Login geräteübergreifend angewendet", async ({ browser }) => {
     const email = uniqueEmail("e2e-dark-mode");
-    const password = "correct-password";
+    const password = "Correct-1";
 
     const contextA = await browser.newContext({ colorScheme: "light" });
     const pageA = await contextA.newPage();
@@ -56,7 +56,7 @@ test.describe("Issue #40 – Dark Mode: Theming-Infrastruktur, Umschalter & Pers
     await pageA.getByLabel("Passwort bestätigen").fill(password);
     await pageA.getByLabel(/AGB und die Datenschutzbestimmungen/).check();
     await pageA.getByRole("button", { name: "Registrieren" }).click();
-    await expect(pageA).toHaveURL(/\/de\/profile/);
+    await expect(pageA).toHaveURL(/\/de\/onboarding/);
 
     await expect(pageA.locator("html")).not.toHaveClass(/dark/);
     await Promise.all([
@@ -78,7 +78,7 @@ test.describe("Issue #40 – Dark Mode: Theming-Infrastruktur, Umschalter & Pers
     await pageB.getByLabel("E-Mail").fill(email);
     await pageB.getByLabel("Passwort").fill(password);
     await pageB.getByRole("button", { name: "Anmelden" }).click();
-    await expect(pageB).toHaveURL(/\/de\/profile/);
+    await expect(pageB).toHaveURL(/\/de\/onboarding/);
 
     await expect(pageB.locator("html")).toHaveClass(/dark/);
 

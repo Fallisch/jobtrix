@@ -24,7 +24,7 @@ test.describe("Issue #35 – Berufserfahrung in KI-Generierungs-Prompt", () => {
   test("Story: Profil mit Berufserfahrung -> Bewerbung generieren -> Anschreiben referenziert Firma/Position aus der Berufserfahrung", async ({
     page,
   }) => {
-    await registerAndLogin(page, uniqueEmail("e2e-generate-experience"), "correct-password");
+    await registerAndLogin(page, uniqueEmail("e2e-generate-experience"), "Correct-1");
 
     await page.goto("/de/generate");
     await page.evaluate((p) => {
