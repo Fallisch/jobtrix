@@ -40,10 +40,10 @@ describe("ComparisonSection", () => {
     expect(screen.getByText("JobTRIX")).toBeInTheDocument();
   });
 
-  test("rendert alle 6 Feature-Zeilen", () => {
+  test("rendert alle 7 Feature-Zeilen", () => {
     const { container } = render(<ComparisonSection />);
     const rows = container.querySelectorAll("tbody tr");
-    expect(rows.length).toBe(6);
+    expect(rows.length).toBe(7);
   });
 
   test("hat visuell konsistentes Karten-Styling", () => {
@@ -53,11 +53,13 @@ describe("ComparisonSection", () => {
     expect(wrapper?.className).toMatch(/shadow-sm/);
   });
 
-  test("Häkchen und Kreuze sind visuell unterscheidbar (grün/rot oder grau)", () => {
+  test("Häkchen, Teilweise und Kreuze sind visuell unterscheidbar", () => {
     const { container } = render(<ComparisonSection />);
     const checks = container.querySelectorAll("[data-testid='check']");
+    const partials = container.querySelectorAll("[data-testid='partial']");
     const crosses = container.querySelectorAll("[data-testid='cross']");
     expect(checks.length).toBeGreaterThan(0);
+    expect(partials.length).toBeGreaterThan(0);
     expect(crosses.length).toBeGreaterThan(0);
   });
 

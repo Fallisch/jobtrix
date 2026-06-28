@@ -3,19 +3,30 @@
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 
-const rows = [
-  { key: "pdf", chatgpt: false, canva: true, jobtrix: true },
-  { key: "aiMatch", chatgpt: false, canva: false, jobtrix: true },
-  { key: "coverAndCv", chatgpt: false, canva: false, jobtrix: true },
-  { key: "email", chatgpt: false, canva: false, jobtrix: true },
-  { key: "jobSearch", chatgpt: false, canva: false, jobtrix: true },
-  { key: "oneClick", chatgpt: false, canva: false, jobtrix: true },
-] as const;
+type Status = "yes" | "no" | "partial";
+
+const rows: { key: string; chatgpt: Status; canva: Status; jobtrix: Status }[] = [
+  { key: "coverLetter", chatgpt: "yes", canva: "no", jobtrix: "yes" },
+  { key: "cv", chatgpt: "yes", canva: "yes", jobtrix: "yes" },
+  { key: "pdf", chatgpt: "partial", canva: "yes", jobtrix: "yes" },
+  { key: "aiMatch", chatgpt: "partial", canva: "no", jobtrix: "yes" },
+  { key: "email", chatgpt: "yes", canva: "no", jobtrix: "yes" },
+  { key: "jobSearch", chatgpt: "no", canva: "no", jobtrix: "yes" },
+  { key: "oneClick", chatgpt: "no", canva: "no", jobtrix: "yes" },
+];
 
 function Check() {
   return (
     <svg data-testid="check" width="20" height="20" viewBox="0 0 20 20" fill="none" className="text-green-500 mx-auto">
       <path d="M5 10l3 3 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function Partial() {
+  return (
+    <svg data-testid="partial" width="20" height="20" viewBox="0 0 20 20" fill="none" className="text-amber-400 mx-auto">
+      <path d="M10 4v7M10 14v1" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
     </svg>
   );
 }
@@ -26,6 +37,12 @@ function Cross() {
       <path d="M6 6l8 8M14 6l-8 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
+}
+
+function StatusIcon({ status }: { status: Status }) {
+  if (status === "yes") return <Check />;
+  if (status === "partial") return <Partial />;
+  return <Cross />;
 }
 
 export default function ComparisonSection() {
@@ -57,13 +74,16 @@ export default function ComparisonSection() {
               {rows.map((row) => (
                 <tr key={row.key} className="border-b last:border-b-0 border-gray-50 dark:border-gray-800/50">
                   <td className="px-4 py-3 text-text dark:text-white/80">{t(row.key)}</td>
-                  <td className="px-4 py-3 text-center">{row.chatgpt ? <Check /> : <Cross />}</td>
-                  <td className="px-4 py-3 text-center">{row.canva ? <Check /> : <Cross />}</td>
-                  <td className="px-4 py-3 text-center">{row.jobtrix ? <Check /> : <Cross />}</td>
+                  <td className="px-4 py-3 text-center"><StatusIcon status={row.chatgpt} /></td>
+                  <td className="px-4 py-3 text-center"><StatusIcon status={row.canva} /></td>
+                  <td className="px-4 py-3 text-center"><StatusIcon status={row.jobtrix} /></td>
                 </tr>
               ))}
             </tbody>
           </table>
+          <p className="px-4 py-3 text-xs text-text/50 dark:text-white/40 border-t border-gray-50 dark:border-gray-800/50">
+            {t("legend")}
+          </p>
         </motion.div>
       </div>
     </section>

@@ -579,11 +579,13 @@
   "comparison": {
     "title": "Why JobTRIX?",
     "feature": "Feature",
-    "pdf": "Ready-made PDF",
-    "aiMatch": "AI-tailored to the job",
-    "coverAndCv": "Cover letter + CV",
-    "email": "Application email",
+    "coverLetter": "Cover letter with AI",
+    "cv": "Create CV",
+    "pdf": "Automatic PDF export",
+    "aiMatch": "Tailored to each job listing",
+    "email": "Application email automatically",
     "jobSearch": "Integrated job search",
-    "oneClick": "All in one click"
+    "oneClick": "All in one click",
+    "legend": "✅ Fully supported · ⚠️ Possible, but with manual effort · ❌ Not available"
   }
 }

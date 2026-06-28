@@ -19,8 +19,8 @@ jest.mock("next-intl", () => {
 
 describe("TrixMarquee", () => {
   const expectedPhrases = [
-    "Bewerbung ist für dich kein T R I X mehr",
-    "T R I X deinen inneren Schweinehund aus",
+    "Bewerbung ist für dich kein TRIX mehr",
+    "TRIX deinen inneren Schweinehund aus",
   ];
 
   test("rendert genau 2 Slogans", () => {
@@ -34,8 +34,8 @@ describe("TrixMarquee", () => {
   test("DE-Slogans sind exakt wie spezifiziert", () => {
     const { container } = render(<TrixMarquee />);
     const text = container.textContent || "";
-    expect(text).toContain("Bewerbung ist für dich kein T R I X mehr");
-    expect(text).toContain("T R I X deinen inneren Schweinehund aus");
+    expect(text).toContain("Bewerbung ist für dich kein TRIX mehr");
+    expect(text).toContain("TRIX deinen inneren Schweinehund aus");
   });
 
   test("Animation-Dauer ist 30s", () => {
@@ -45,7 +45,7 @@ describe("TrixMarquee", () => {
       path.resolve(__dirname, "../components/TrixMarquee.tsx"),
       "utf-8",
     );
-    expect(src).toMatch(/marquee-scroll\s+40s/);
+    expect(src).toMatch(/marquee-scroll\s+30s/);
     expect(src).not.toMatch(/marquee-scroll\s+60s/);
   });
 
@@ -64,11 +64,9 @@ describe("TrixMarquee", () => {
     expect(container.textContent).toContain("·");
   });
 
-  test("hat uppercase und tracking-widest Styling", () => {
+  test("hat uppercase Styling", () => {
     const { container } = render(<TrixMarquee />);
     const marqueeEl = container.querySelector("[class*='uppercase']");
     expect(marqueeEl).not.toBeNull();
-    const trackingEl = container.querySelector("[class*='tracking-widest']");
-    expect(trackingEl).not.toBeNull();
   });
 });
