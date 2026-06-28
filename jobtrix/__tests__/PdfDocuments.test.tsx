@@ -827,3 +827,67 @@ describe("CvDocument – andere Templates bleiben unverändert", () => {
     fills.forEach((fill) => expect(fill).toHaveStyle({ backgroundColor: "#2F80ED" }));
   });
 });
+
+describe("CvDocument – Classic-Layout: strukturierte Daten", () => {
+  const profileMulti: ProfileData = {
+    ...profile,
+    education: [
+      { id: "1", institution: "HTW Berlin", degree: "B.Sc.", year: "2014" },
+      { id: "2", institution: "HU Berlin", degree: "M.Sc.", year: "2018" },
+    ],
+    experience: [
+      { id: "1", company: "Firma A", position: "Junior Entwickler", period: "2018 - 2020", tasks: "Aufgabe A\nAufgabe A2" },
+      { id: "2", company: "Firma B", position: "Senior Entwickler", period: "2020 - 2023", tasks: "Aufgabe B" },
+    ],
+  };
+
+  it("zeigt Berufserfahrung strukturiert mit Zeitraum, Position und Firma", () => {
+    render(<CvDocument cv="CV" profile={profileMulti} template="classic" />);
+    const entries = screen.getAllByTestId("classic-exp-entry");
+    expect(entries.length).toBe(2);
+    expect(entries[0]).toHaveTextContent("2018 - 2020");
+    expect(entries[0]).toHaveTextContent("Junior Entwickler");
+    expect(entries[0]).toHaveTextContent("Firma A");
+    expect(entries[0]).toHaveTextContent("Aufgabe A");
+  });
+
+  it("zeigt Ausbildung strukturiert mit Jahr, Abschluss und Institution", () => {
+    render(<CvDocument cv="CV" profile={profileMulti} template="classic" />);
+    const entries = screen.getAllByTestId("classic-edu-entry");
+    expect(entries.length).toBe(2);
+    expect(entries[0]).toHaveTextContent("2014");
+    expect(entries[0]).toHaveTextContent("B.Sc.");
+    expect(entries[0]).toHaveTextContent("HTW Berlin");
+  });
+
+  it("zeigt Qualifikationen und Interessen als Skill-Balken", () => {
+    render(<CvDocument cv="CV" profile={profileMulti} template="classic" />);
+    expect(screen.getByTestId("classic-cv-quals")).toBeInTheDocument();
+    expect(screen.getByTestId("classic-cv-interests")).toBeInTheDocument();
+    const fills = screen.getAllByTestId("skill-bar-fill");
+    expect(fills.length).toBe(profileMulti.qualifications.length + profileMulti.interests.length);
+  });
+
+  it("kehrt bei cvStyle american Berufserfahrung und Ausbildung jeweils eigenständig antichronologisch um", () => {
+    render(<CvDocument cv="CV" profile={profileMulti} template="classic" cvStyle="american" />);
+    const expEntries = screen.getAllByTestId("classic-exp-entry");
+    const eduEntries = screen.getAllByTestId("classic-edu-entry");
+    expect(expEntries[0]).toHaveTextContent("Firma B");
+    expect(eduEntries[0]).toHaveTextContent("2018");
+  });
+
+  it("behält bei cvStyle classic die chronologische Reihenfolge bei", () => {
+    render(<CvDocument cv="CV" profile={profileMulti} template="classic" cvStyle="classic" />);
+    const expEntries = screen.getAllByTestId("classic-exp-entry");
+    const eduEntries = screen.getAllByTestId("classic-edu-entry");
+    expect(expEntries[0]).toHaveTextContent("Firma A");
+    expect(eduEntries[0]).toHaveTextContent("2014");
+  });
+
+  it("bleibt eigenständig schlicht und klont nicht das moderne Spalten-Layout", () => {
+    render(<CvDocument cv="CV" profile={profileMulti} template="classic" />);
+    expect(screen.queryByTestId("modern-cv-header")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("modern-content")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("accent-banner")).not.toBeInTheDocument();
+  });
+});

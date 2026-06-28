@@ -62,6 +62,36 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
     marginBottom: 8,
   },
+  classicIntro: {
+    marginBottom: 6,
+  },
+  classicEntry: {
+    marginBottom: 9,
+  },
+  classicEntryPeriod: {
+    fontSize: 9,
+    color: "#6b7280",
+    marginBottom: 1,
+  },
+  classicEntryTitle: {
+    fontSize: 10.5,
+    fontFamily: "Helvetica-Bold",
+    color: "#1a1a1a",
+  },
+  classicEntrySubtitle: {
+    fontSize: 9.5,
+    color: "#374151",
+    marginBottom: 2,
+  },
+  classicEntryTask: {
+    fontSize: 9.5,
+    color: "#374151",
+    marginLeft: 8,
+    marginBottom: 1,
+  },
+  classicSkillBlock: {
+    marginTop: 2,
+  },
 
   // ── Cover Letter Modern (left dark sidebar) ────────────────────────────────
   modernPage: {
@@ -1487,6 +1517,8 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
     );
   }
 
+  const classicEducation = cvStyle === "american" ? [...profile.education].reverse() : profile.education;
+  const classicExperience = cvStyle === "american" ? [...profile.experience].reverse() : profile.experience;
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -1496,7 +1528,55 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
           <Text style={styles.name}>{profile.name}</Text>
           {profile.address ? <Text style={styles.meta}>{profile.address}</Text> : null}
         </View>
-        <View>{renderTextBlocks(stripPersonalData(cv, profile))}</View>
+
+        <View style={styles.classicIntro}>{renderTextBlocks(stripPersonalData(cv, profile))}</View>
+
+        {classicExperience?.length > 0 && (
+          <View {...{ "data-testid": "classic-cv-experience" }}>
+            <Text style={styles.sectionHeading} minPresenceAhead={40}>Berufserfahrung</Text>
+            {classicExperience.map((exp, i) => (
+              <View key={i} wrap={false} style={styles.classicEntry} {...{ "data-testid": "classic-exp-entry" }}>
+                <Text style={styles.classicEntryPeriod}>{exp.period}</Text>
+                <Text style={styles.classicEntryTitle}>{exp.position}</Text>
+                <Text style={styles.classicEntrySubtitle}>{exp.company}</Text>
+                {splitTasks(exp.tasks).map((line, j) => (
+                  <Text key={j} style={styles.classicEntryTask}>• {line}</Text>
+                ))}
+              </View>
+            ))}
+          </View>
+        )}
+
+        {classicEducation?.length > 0 && (
+          <View {...{ "data-testid": "classic-cv-education" }}>
+            <Text style={styles.sectionHeading} minPresenceAhead={40}>Ausbildung</Text>
+            {classicEducation.map((edu, i) => (
+              <View key={i} wrap={false} style={styles.classicEntry} {...{ "data-testid": "classic-edu-entry" }}>
+                <Text style={styles.classicEntryPeriod}>{edu.year}</Text>
+                <Text style={styles.classicEntryTitle}>{edu.degree}</Text>
+                <Text style={styles.classicEntrySubtitle}>{edu.institution}</Text>
+              </View>
+            ))}
+          </View>
+        )}
+
+        {profile.qualifications?.length > 0 && (
+          <View style={styles.classicSkillBlock} {...{ "data-testid": "classic-cv-quals" }}>
+            <Text style={styles.sectionHeading} minPresenceAhead={40}>Qualifikationen</Text>
+            {profile.qualifications.map((q, i) => (
+              <SkillBar key={i} label={q.label} value={q.value} />
+            ))}
+          </View>
+        )}
+
+        {profile.interests?.length > 0 && (
+          <View style={styles.classicSkillBlock} {...{ "data-testid": "classic-cv-interests" }}>
+            <Text style={styles.sectionHeading} minPresenceAhead={40}>Persönliche Interessen</Text>
+            {profile.interests.map((interest, i) => (
+              <SkillBar key={i} label={interest.label} value={interest.value} />
+            ))}
+          </View>
+        )}
       </Page>
     </Document>
   );
