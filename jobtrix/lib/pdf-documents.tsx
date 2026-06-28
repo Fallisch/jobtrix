@@ -790,13 +790,13 @@ function renderTextBlocks(text: string, variant: "classic" | "modern" | "traditi
   });
 }
 
-function SkillBar({ label, value }: SkillItem) {
+function SkillBar({ label, value, color }: SkillItem & { color?: string }) {
   return (
     <View style={styles.skillRow}>
       <Text style={styles.skillLabel}>{label}</Text>
       <View style={styles.skillBarBg}>
         <View
-          style={{ ...styles.skillBarFill, width: `${value}%` }}
+          style={{ ...styles.skillBarFill, width: `${value}%`, ...(color ? { backgroundColor: color } : {}) }}
           {...{ "data-testid": "skill-bar-fill" }}
         />
       </View>
@@ -859,16 +859,18 @@ function lightenColor(hex: string, amount: number): string {
 
 function AccentBanner({ profile, accentColor }: { profile: ProfileData; accentColor: string }) {
   const lightColor = lightenColor(accentColor, 0.65);
+  const hasPhoto = Boolean(profile.photo);
+  const bannerHeight = hasPhoto ? 130 : 48;
   return (
-    <View style={styles.accentBannerWrap} {...{ "data-testid": "accent-banner" }}>
-      <Svg style={styles.accentBannerSvg} viewBox="0 0 600 130">
+    <View style={{ ...styles.accentBannerWrap, height: bannerHeight }} {...{ "data-testid": "accent-banner" }}>
+      <Svg style={{ ...styles.accentBannerSvg, height: bannerHeight }} viewBox={`0 0 600 ${bannerHeight}`}>
         <Defs>
           <LinearGradient id="accentBannerGradient" x1="0" y1="0" x2="1" y2="1">
             <Stop offset="0" stopColor={lightColor} />
             <Stop offset="1" stopColor={accentColor} />
           </LinearGradient>
         </Defs>
-        <Rect x="0" y="0" width="600" height="130" fill="url(#accentBannerGradient)" />
+        <Rect x="0" y="0" width="600" height={bannerHeight} fill="url(#accentBannerGradient)" />
       </Svg>
       {profile.photo ? <Image src={profile.photo} style={styles.accentBannerPhoto} /> : null}
     </View>
@@ -1389,7 +1391,7 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
                 <View {...{ "data-testid": "accent-cv-quals" }}>
                   <Text style={{ ...styles.accentSectionHeading, color }}>Qualifikationen</Text>
                   {profile.qualifications.map((q, i) => (
-                    <SkillBar key={i} label={q.label} value={q.value} />
+                    <SkillBar key={i} label={q.label} value={q.value} color={color} />
                   ))}
                 </View>
               )}
@@ -1397,7 +1399,7 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
                 <View {...{ "data-testid": "accent-cv-interests" }}>
                   <Text style={{ ...styles.accentSectionHeading, color }}>Persönliche Interessen</Text>
                   {profile.interests.map((interest, i) => (
-                    <SkillBar key={i} label={interest.label} value={interest.value} />
+                    <SkillBar key={i} label={interest.label} value={interest.value} color={color} />
                   ))}
                 </View>
               )}

@@ -781,3 +781,49 @@ describe("CvDocument – Kreativ-Layout cvStyle", () => {
     expect(eduEntries[0]).toHaveTextContent("2018");
   });
 });
+
+describe("CvDocument – Accent-Layout: Skill-Bar-Farbe", () => {
+  it("färbt die Skill-Balken in der übergebenen Akzentfarbe statt fixem Blau", () => {
+    render(<CvDocument cv="CV" profile={profile} template="accent" accentColor="#5C1A1A" />);
+    const fills = screen.getAllByTestId("skill-bar-fill");
+    expect(fills.length).toBeGreaterThan(0);
+    fills.forEach((fill) => expect(fill).toHaveStyle({ backgroundColor: "#5C1A1A" }));
+  });
+
+  it("nutzt ohne übergebene Akzentfarbe die Default-Akzentfarbe des accent-Templates, nicht das generische Blau", () => {
+    render(<CvDocument cv="CV" profile={profile} template="accent" />);
+    const fills = screen.getAllByTestId("skill-bar-fill");
+    expect(fills.length).toBeGreaterThan(0);
+    fills.forEach((fill) => {
+      expect(fill).toHaveStyle({ backgroundColor: "#1E3A5F" });
+      expect(fill).not.toHaveStyle({ backgroundColor: "#2F80ED" });
+    });
+  });
+});
+
+describe("CvDocument – Accent-Layout: Foto-loses Banner", () => {
+  it("reduziert die Banner-Höhe ohne Foto, sodass kein voller Verlaufsblock leer bleibt", () => {
+    render(<CvDocument cv="CV" profile={{ ...profile, photo: null }} template="accent" />);
+    const banner = screen.getByTestId("accent-banner");
+    expect(banner).not.toHaveStyle({ height: "130px" });
+    expect(within(banner).queryByRole("img")).not.toBeInTheDocument();
+  });
+
+  it("behält mit Foto das volle Banner-Layout inklusive Foto bei", () => {
+    const profileWithPhoto = { ...profile, photo: "data:image/png;base64,abc123" };
+    render(<CvDocument cv="CV" profile={profileWithPhoto} template="accent" />);
+    const banner = screen.getByTestId("accent-banner");
+    expect(banner).toHaveStyle({ height: "130px" });
+    const img = within(banner).getByRole("img");
+    expect(img).toHaveAttribute("src", "data:image/png;base64,abc123");
+  });
+});
+
+describe("CvDocument – andere Templates bleiben unverändert", () => {
+  it("behält im modernen Template die generische blaue Skill-Bar-Farbe bei", () => {
+    render(<CvDocument cv="CV" profile={profile} template="modern" />);
+    const fills = screen.getAllByTestId("skill-bar-fill");
+    expect(fills.length).toBeGreaterThan(0);
+    fills.forEach((fill) => expect(fill).toHaveStyle({ backgroundColor: "#2F80ED" }));
+  });
+});
