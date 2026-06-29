@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import React from "react";
 import { useTranslations } from "next-intl";
+import { useParams } from "next/navigation";
 import { loadProfile } from "@/lib/profile-storage";
 import { openPdfPreview } from "@/components/PdfPreviewModal";
 import { CoverLetterDocument, CvDocument } from "@/lib/pdf-documents";
@@ -67,6 +68,7 @@ async function shareOrDownload(file: File): Promise<boolean> {
 
 export default function EmailDraft({ subject, body, coverLetter, cv, template, cvStyle, accentColor, documentsConfirmed, extractedEmail }: EmailDraftProps) {
   const t = useTranslations("generate");
+  const { locale } = useParams<{ locale: string }>();
   const [recipient, setRecipient] = useState(extractedEmail ?? "");
   const [showPreview, setShowPreview] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
@@ -104,8 +106,8 @@ export default function EmailDraft({ subject, body, coverLetter, cv, template, c
           React.createElement(CvDocument, { cv, profile, template, cvStyle, accentColor })
         );
         setGuidePdfs({
-          coverLetterFile: new File([clBlob], buildFilename("Anschreiben", profile.name), { type: "application/pdf" }),
-          cvFile: new File([cvBlob], buildFilename("Lebenslauf", profile.name), { type: "application/pdf" }),
+          coverLetterFile: new File([clBlob], buildFilename(locale === "en" ? "CoverLetter" : "Anschreiben", profile.name), { type: "application/pdf" }),
+          cvFile: new File([cvBlob], buildFilename(locale === "en" ? "CV" : "Lebenslauf", profile.name), { type: "application/pdf" }),
         });
       } catch { /* Guide zeigt trotzdem */ }
       setShowPreview(false);
@@ -114,8 +116,8 @@ export default function EmailDraft({ subject, body, coverLetter, cv, template, c
     }
 
     try {
-      await downloadCoverLetterPdf(coverLetter, profile, template, accentColor);
-      await downloadCvPdf(cv, profile, template, cvStyle, accentColor);
+      await downloadCoverLetterPdf(coverLetter, profile, template, accentColor, locale);
+      await downloadCvPdf(cv, profile, template, cvStyle, accentColor, locale);
     } finally {
       setShowPreview(false);
       setShowGuide(true);

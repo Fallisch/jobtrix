@@ -55,7 +55,8 @@
     "toggleToDark": "Switch to dark mode",
     "toggleToLight": "Switch to light mode",
     "modeLight": "Light",
-    "modeDark": "Dark"
+    "modeDark": "Dark",
+    "login": "Login"
   },
   "auth": {
     "register": {
@@ -195,7 +196,7 @@
     "sendEmailConfirmHint": "Please confirm the cover letter and CV above by checking the boxes first.",
     "sendEmailPreviewTitle": "Preview of your email",
     "sendEmailPreviewTo": "To",
-    "sendEmailPreviewAttachments": "Attachments: Anschreiben.pdf, Lebenslauf.pdf",
+    "sendEmailPreviewAttachments": "Attachments: CoverLetter.pdf, CV.pdf",
     "sendEmailPreviewCoverLetter": "Review cover letter",
     "sendEmailPreviewCv": "Review CV",
     "sendEmailPreviewCancel": "Cancel",
@@ -248,9 +249,9 @@
       "template": "Choose the layout that best fits your industry."
     },
     "sendGuideTitle": "Almost done!",
-    "sendGuideStep1": "Your application documents (Anschreiben.pdf, Lebenslauf.pdf) have just been downloaded",
+    "sendGuideStep1": "Your application documents (CoverLetter.pdf, CV.pdf) have just been downloaded",
     "sendGuideStep2": "Open your email app using the button below",
-    "sendGuideStep3": "Attach the downloaded files (Anschreiben.pdf, Lebenslauf.pdf) to the email",
+    "sendGuideStep3": "Attach the downloaded files (CoverLetter.pdf, CV.pdf) to the email",
     "sendGuideStep4": "Click Send — done!",
     "sendGuideHintAndroid": "Tap the paperclip icon to attach the PDFs",
     "sendGuideHintIOS": "Tap the attachment icon to attach the PDFs",

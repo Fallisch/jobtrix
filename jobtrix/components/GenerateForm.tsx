@@ -572,7 +572,7 @@ export default function GenerateForm() {
                       return;
                     }
                     const profile = loadProfile();
-                    if (profile) downloadCoverLetterPdf(editedCoverLetter, profile, selectedTemplate, accentColor);
+                    if (profile) downloadCoverLetterPdf(editedCoverLetter, profile, selectedTemplate, accentColor, locale);
                   }}
                   className={`inline-flex items-center gap-1.5 rounded-full border border-accent text-accent px-3.5 py-1.5 text-sm font-semibold hover:bg-accent hover:text-white transition ${!coverLetterAgreed ? "opacity-40" : ""}`}
                   aria-label={t("coverLetterPdfButton")}
@@ -632,7 +632,7 @@ export default function GenerateForm() {
                       return;
                     }
                     const profile = loadProfile();
-                    if (profile) downloadCvPdf(editedCv, profile, selectedTemplate, cvStyle, accentColor);
+                    if (profile) downloadCvPdf(editedCv, profile, selectedTemplate, cvStyle, accentColor, locale);
                   }}
                   className={`inline-flex items-center gap-1.5 rounded-full border border-accent text-accent px-3.5 py-1.5 text-sm font-semibold hover:bg-accent hover:text-white transition ${!cvAgreed ? "opacity-40" : ""}`}
                   aria-label={t("cvPdfButton")}

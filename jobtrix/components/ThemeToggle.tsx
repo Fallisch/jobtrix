@@ -49,7 +49,7 @@ export default function ThemeToggle() {
     <button
       onClick={toggleTheme}
       aria-label={label}
-      className="flex items-center gap-1.5 bg-white/10 rounded-full px-3 py-1 text-white/80 hover:text-white hover:bg-white/20 transition-colors"
+      className="flex items-center gap-1.5 bg-white/10 rounded-full p-2 sm:px-3 sm:py-1 text-white/80 hover:text-white hover:bg-white/20 transition-colors"
     >
       {isDark ? (
         <svg
@@ -73,7 +73,7 @@ export default function ThemeToggle() {
           <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
         </svg>
       )}
-      <span className="text-sm font-medium">{modeLabel}</span>
+      <span className="hidden sm:inline text-sm font-medium">{modeLabel}</span>
     </button>
   );
 }

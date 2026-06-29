@@ -8,6 +8,10 @@ jest.mock("next-intl", () => ({
   useTranslations: () => (key: string) => key,
 }));
 
+jest.mock("next/navigation", () => ({
+  useParams: () => ({ locale: "de" }),
+}));
+
 jest.mock("@/lib/navigate", () => ({ navigate: jest.fn() }));
 
 jest.mock("@/lib/pdf-blob", () => ({

@@ -30,16 +30,24 @@ async function triggerDownload(element: React.ReactElement, filename: string) {
   }, 500);
 }
 
-export async function downloadCoverLetterPdf(coverLetter: string, profile: ProfileData, template: "classic" | "modern" | "traditional" | "accent" | "creative" = "classic", accentColor?: string) {
+function coverLetterPrefix(locale?: string): string {
+  return locale === "en" ? "CoverLetter" : "Anschreiben";
+}
+
+function cvPrefix(locale?: string): string {
+  return locale === "en" ? "CV" : "Lebenslauf";
+}
+
+export async function downloadCoverLetterPdf(coverLetter: string, profile: ProfileData, template: "classic" | "modern" | "traditional" | "accent" | "creative" = "classic", accentColor?: string, locale?: string) {
   await triggerDownload(
     React.createElement(CoverLetterDocument, { coverLetter, profile, template, accentColor }),
-    buildFilename("Anschreiben", profile.name)
+    buildFilename(coverLetterPrefix(locale), profile.name)
   );
 }
 
-export async function downloadCvPdf(cv: string, profile: ProfileData, template: "classic" | "modern" | "traditional" | "accent" | "creative" = "classic", cvStyle: "classic" | "american" = "classic", accentColor?: string) {
+export async function downloadCvPdf(cv: string, profile: ProfileData, template: "classic" | "modern" | "traditional" | "accent" | "creative" = "classic", cvStyle: "classic" | "american" = "classic", accentColor?: string, locale?: string) {
   await triggerDownload(
     React.createElement(CvDocument, { cv, profile, template, cvStyle, accentColor }),
-    buildFilename("Lebenslauf", profile.name)
+    buildFilename(cvPrefix(locale), profile.name)
   );
 }

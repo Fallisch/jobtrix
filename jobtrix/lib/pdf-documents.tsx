@@ -1241,7 +1241,7 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
 
               {experience?.length > 0 && (
                 <>
-                  <Text style={styles.cvSectionHeading} minPresenceAhead={40}>Berufserfahrung</Text>
+                  <Text style={styles.cvSectionHeading} minPresenceAhead={80}>Berufserfahrung</Text>
                   {experience.map((exp, i) => (
                     <View key={i} wrap={false} style={styles.cvExpEntry} {...{ "data-testid": "modern-exp-entry" }}>
                       <Text style={styles.cvExpPeriod}>{exp.period}</Text>
@@ -1261,7 +1261,7 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
 
               {education?.length > 0 && (
                 <>
-                  <Text style={styles.cvSectionHeading} minPresenceAhead={40}>Ausbildung</Text>
+                  <Text style={styles.cvSectionHeading} minPresenceAhead={80}>Ausbildung</Text>
                   {education.map((edu, i) => (
                     <View key={i} wrap={false} style={styles.cvEduEntry} {...{ "data-testid": "modern-edu-entry" }}>
                       <Text style={styles.cvEduYear}>{edu.year}</Text>
@@ -1308,7 +1308,7 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
 
           {experience?.length > 0 && (
             <>
-              <Text style={styles.traditionalSectionHeading} minPresenceAhead={40}>Berufserfahrung</Text>
+              <Text style={styles.traditionalSectionHeading} minPresenceAhead={80}>Berufserfahrung</Text>
               <View style={styles.traditionalTable} {...{ "data-testid": "traditional-exp-table" }}>
                 {experience.map((exp, i) => (
                   <View key={i} wrap={false} style={styles.traditionalTableRow} {...{ "data-testid": "traditional-exp-row" }}>
@@ -1332,7 +1332,7 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
 
           {education?.length > 0 && (
             <>
-              <Text style={styles.traditionalSectionHeading} minPresenceAhead={40}>Ausbildung</Text>
+              <Text style={styles.traditionalSectionHeading} minPresenceAhead={80}>Ausbildung</Text>
               <View style={styles.traditionalTable} {...{ "data-testid": "traditional-edu-table" }}>
                 {education.map((edu, i) => (
                   <View key={i} wrap={false} style={styles.traditionalTableRow} {...{ "data-testid": "traditional-edu-row" }}>
@@ -1384,7 +1384,7 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
             <View style={styles.accentLeftCol} {...{ "data-testid": "accent-content" }}>
               {experience?.length > 0 && (
                 <>
-                  <Text style={{ ...styles.accentSectionHeading, color }} minPresenceAhead={40}>Berufserfahrung</Text>
+                  <Text style={{ ...styles.accentSectionHeading, color }} minPresenceAhead={80}>Berufserfahrung</Text>
                   {experience.map((exp, i) => (
                     <AccentTimelineEntry
                       key={i}
@@ -1401,7 +1401,7 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
 
               {education?.length > 0 && (
                 <>
-                  <Text style={{ ...styles.accentSectionHeading, color }} minPresenceAhead={40}>Ausbildung</Text>
+                  <Text style={{ ...styles.accentSectionHeading, color }} minPresenceAhead={80}>Ausbildung</Text>
                   {education.map((edu, i) => (
                     <AccentTimelineEntry
                       key={i}
@@ -1471,7 +1471,7 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
 
             {experience?.length > 0 && (
               <>
-                <View minPresenceAhead={40} style={styles.creativeSectionHeading}>
+                <View minPresenceAhead={80} style={styles.creativeSectionHeading}>
                   <View style={styles.creativeSectionHeadingIcon}>
                     <CreativeIcon kind="briefcase" color={color} size={14} />
                   </View>
@@ -1493,7 +1493,7 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
 
             {education?.length > 0 && (
               <>
-                <View minPresenceAhead={40} style={styles.creativeSectionHeading}>
+                <View minPresenceAhead={80} style={styles.creativeSectionHeading}>
                   <View style={styles.creativeSectionHeadingIcon}>
                     <CreativeIcon kind="graduation" color={color} size={14} />
                   </View>
@@ -1535,7 +1535,7 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
 
         {classicExperience?.length > 0 && (
           <View {...{ "data-testid": "classic-cv-experience" }}>
-            <Text style={styles.sectionHeading} minPresenceAhead={40}>Berufserfahrung</Text>
+            <Text style={styles.sectionHeading} minPresenceAhead={80}>Berufserfahrung</Text>
             {classicExperience.map((exp, i) => (
               <View key={i} wrap={false} style={styles.classicEntry} {...{ "data-testid": "classic-exp-entry" }}>
                 <Text style={styles.classicEntryPeriod}>{exp.period}</Text>
@@ -1551,7 +1551,7 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
 
         {classicEducation?.length > 0 && (
           <View {...{ "data-testid": "classic-cv-education" }}>
-            <Text style={styles.sectionHeading} minPresenceAhead={40}>Ausbildung</Text>
+            <Text style={styles.sectionHeading} minPresenceAhead={80}>Ausbildung</Text>
             {classicEducation.map((edu, i) => (
               <View key={i} wrap={false} style={styles.classicEntry} {...{ "data-testid": "classic-edu-entry" }}>
                 <Text style={styles.classicEntryPeriod}>{edu.year}</Text>
@@ -1563,8 +1563,8 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
         )}
 
         {profile.qualifications?.length > 0 && (
-          <View style={styles.classicSkillBlock} {...{ "data-testid": "classic-cv-quals" }}>
-            <Text style={styles.sectionHeading} minPresenceAhead={40}>Qualifikationen</Text>
+          <View wrap={false} style={styles.classicSkillBlock} {...{ "data-testid": "classic-cv-quals" }}>
+            <Text style={styles.sectionHeading}>Qualifikationen</Text>
             {profile.qualifications.map((q, i) => (
               <SkillBar key={i} label={q.label} value={q.value} />
             ))}
@@ -1572,8 +1572,8 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
         )}
 
         {profile.interests?.length > 0 && (
-          <View style={styles.classicSkillBlock} {...{ "data-testid": "classic-cv-interests" }}>
-            <Text style={styles.sectionHeading} minPresenceAhead={40}>Persönliche Interessen</Text>
+          <View wrap={false} style={styles.classicSkillBlock} {...{ "data-testid": "classic-cv-interests" }}>
+            <Text style={styles.sectionHeading}>Persönliche Interessen</Text>
             {profile.interests.map((interest, i) => (
               <SkillBar key={i} label={interest.label} value={interest.value} />
             ))}

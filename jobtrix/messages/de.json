@@ -55,7 +55,8 @@
     "toggleToDark": "Zu Dunkelmodus wechseln",
     "toggleToLight": "Zu Hellmodus wechseln",
     "modeLight": "Hell",
-    "modeDark": "Dunkel"
+    "modeDark": "Dunkel",
+    "login": "Anmelden"
   },
   "auth": {
     "register": {

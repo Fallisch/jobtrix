@@ -41,7 +41,7 @@ export default function Header({ locale }: { locale: string }) {
           onClick={() => setMenuOpen(false)}
           className="text-sm font-medium text-white/80 hover:text-white hover:scale-105 transition-all min-h-[44px] min-w-[44px] flex items-center"
         >
-          {locale === "de" ? "Profil" : "Profile"}
+          {t("profile")}
         </Link>
       )}
       {status === "authenticated" && (
@@ -88,7 +88,7 @@ export default function Header({ locale }: { locale: string }) {
           onClick={() => setMenuOpen(false)}
           className="text-sm font-medium text-white/80 hover:text-white hover:scale-105 transition-all min-h-[44px] min-w-[44px] flex items-center"
         >
-          {locale === "de" ? "Anmelden" : "Login"}
+          {t("login")}
         </Link>
       )}
       <button

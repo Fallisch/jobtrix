@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 
 export default function ThemeProvider({ children, nonce }: { children: ReactNode; nonce?: string }) {
   return (
-    <NextThemesProvider attribute="class" defaultTheme="light" enableSystem nonce={nonce}>
+    <NextThemesProvider attribute="class" defaultTheme="dark" enableSystem nonce={nonce}>
       {children}
     </NextThemesProvider>
   );
