@@ -155,9 +155,9 @@ export function PdfPreviewHost() {
       aria-label={t("pdfPreviewTitle")}
       data-testid="pdf-preview-modal"
     >
-      <div className="flex items-center justify-between gap-3 bg-white dark:bg-surface px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+      <div className="flex flex-wrap items-center justify-between gap-2 bg-white dark:bg-surface px-4 py-3 border-b border-gray-200 dark:border-gray-700">
         <h2 className="text-base font-semibold text-primary dark:text-accent">{t("pdfPreviewTitle")}</h2>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {url && (
             <>
               <button
@@ -177,7 +177,7 @@ export function PdfPreviewHost() {
                   triggerDownload(url, filename);
                 }}
                 data-testid="pdf-preview-download"
-                className="rounded-full border border-accent text-accent px-3.5 py-1.5 text-sm font-semibold hover:bg-accent hover:text-white transition min-h-[44px] inline-flex items-center"
+                className="rounded-full border border-accent text-accent px-3.5 py-1.5 text-xs sm:text-sm font-semibold hover:bg-accent hover:text-white transition min-h-[44px] inline-flex items-center justify-center whitespace-nowrap"
               >
                 {t("pdfPreviewDownload")}
               </button>
@@ -186,7 +186,7 @@ export function PdfPreviewHost() {
                 target="_blank"
                 rel="noopener noreferrer"
                 data-testid="pdf-preview-newtab"
-                className="rounded-full border border-gray-300 dark:border-gray-600 text-text/70 px-3.5 py-1.5 text-sm font-semibold hover:border-accent hover:text-accent transition min-h-[44px] inline-flex items-center"
+                className="rounded-full border border-gray-300 dark:border-gray-600 text-text/70 px-3.5 py-1.5 text-xs sm:text-sm font-semibold hover:border-accent hover:text-accent transition min-h-[44px] inline-flex items-center justify-center whitespace-nowrap"
               >
                 {t("pdfPreviewOpenNewTab")}
               </a>
@@ -197,7 +197,7 @@ export function PdfPreviewHost() {
             onClick={close}
             data-testid="pdf-preview-close"
             aria-label={t("pdfPreviewClose")}
-            className="rounded-full border border-gray-300 dark:border-gray-600 text-text/70 px-3.5 py-1.5 text-sm font-semibold hover:border-accent hover:text-accent transition min-h-[44px]"
+            className="rounded-full border border-gray-300 dark:border-gray-600 text-text/70 px-3.5 py-1.5 text-xs sm:text-sm font-semibold hover:border-accent hover:text-accent transition min-h-[44px] inline-flex items-center justify-center whitespace-nowrap"
           >
             {t("pdfPreviewClose")}
           </button>

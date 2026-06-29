@@ -158,7 +158,7 @@ export default function ApplicationHistoryList() {
               <div className="flex flex-wrap gap-3 pt-2">
                 <Link
                   href={`/${locale}/application-history/${entry.id}`}
-                  className="rounded-full px-4 py-2 text-sm font-semibold bg-accent text-white hover:bg-accent/90 transition"
+                  className="inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-semibold bg-accent text-white hover:bg-accent/90 transition"
                 >
                   {t("viewButton")}
                 </Link>
@@ -170,14 +170,14 @@ export default function ApplicationHistoryList() {
                     downloadCoverLetterPdf(entry.coverLetter, entry.profileSnapshot, entry.template, accentColor);
                     downloadCvPdf(entry.cv, entry.profileSnapshot, entry.template, cvStyle, accentColor);
                   }}
-                  className="rounded-full px-4 py-2 text-sm font-semibold border border-gray-200 dark:border-gray-700 text-text hover:border-accent hover:text-accent transition"
+                  className="inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-semibold border border-gray-200 dark:border-gray-700 text-text hover:border-accent hover:text-accent transition"
                 >
                   {t("pdfButton")}
                 </button>
                 <button
                   type="button"
                   onClick={() => handleDelete(entry.id)}
-                  className="rounded-full px-4 py-2 text-sm font-semibold border border-gray-200 dark:border-gray-700 text-red-600 dark:text-red-400 hover:border-red-600 dark:hover:border-red-500 hover:bg-red-50 dark:hover:bg-red-950/40 transition"
+                  className="inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-semibold border border-gray-200 dark:border-gray-700 text-red-600 dark:text-red-400 hover:border-red-600 dark:hover:border-red-500 hover:bg-red-50 dark:hover:bg-red-950/40 transition"
                 >
                   {t("deleteButton")}
                 </button>

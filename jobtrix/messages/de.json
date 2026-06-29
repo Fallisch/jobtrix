@@ -594,5 +594,9 @@
     "jobSearch": "Jobsuche integriert",
     "oneClick": "Alles in einem Klick",
     "legend": "✅ Voll unterstützt · ⚠️ Möglich, aber mit manuellem Aufwand · ❌ Nicht vorhanden"
+  },
+  "maintenance": {
+    "title": "Wartungsarbeiten",
+    "message": "Wir sind gleich wieder da. JobTRIX wird gerade aktualisiert."
   }
 }

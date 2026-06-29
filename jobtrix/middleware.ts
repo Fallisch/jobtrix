@@ -31,10 +31,12 @@ export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const { locale, path } = getLocaleAndPath(pathname);
 
-  if (process.env.MAINTENANCE_MODE === "true" && !isPublicPath(path)) {
-    const url = request.nextUrl.clone();
-    url.pathname = `/${locale}`;
-    return NextResponse.redirect(url);
+  if (process.env.MAINTENANCE_MODE === "true") {
+    if (path !== "/wartung" && !path.startsWith("/api")) {
+      const url = request.nextUrl.clone();
+      url.pathname = `/${locale}/wartung`;
+      return NextResponse.redirect(url);
+    }
   }
 
   if (isProtectedPath(path)) {

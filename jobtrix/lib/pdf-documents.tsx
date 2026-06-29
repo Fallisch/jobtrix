@@ -1529,7 +1529,9 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
           {profile.address ? <Text style={styles.meta}>{profile.address}</Text> : null}
         </View>
 
-        <View style={styles.classicIntro}>{renderTextBlocks(stripPersonalData(cv, profile))}</View>
+        {classicExperience?.length === 0 && classicEducation?.length === 0 && (
+          <View style={styles.classicIntro}>{renderTextBlocks(stripPersonalData(cv, profile))}</View>
+        )}
 
         {classicExperience?.length > 0 && (
           <View {...{ "data-testid": "classic-cv-experience" }}>

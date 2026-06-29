@@ -44,7 +44,7 @@ export default function TrixMarquee() {
         }
         @media (max-width: 640px) {
           .marquee-track {
-            animation-duration: 10s;
+            animation-duration: 20s;
           }
         }
         @media (prefers-reduced-motion: reduce) {
