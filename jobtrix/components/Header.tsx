@@ -11,7 +11,8 @@ import ThemeToggle from "@/components/ThemeToggle";
 export default function Header({ locale }: { locale: string }) {
   const router = useRouter();
   const pathname = usePathname();
-  const { status } = useSession();
+  const { status, data: session } = useSession();
+  const isAdmin = session?.user?.role === "admin";
   const t = useTranslations("nav");
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -61,6 +62,16 @@ export default function Header({ locale }: { locale: string }) {
           className="text-sm font-medium text-white/80 hover:text-white hover:scale-105 transition-all min-h-[44px] min-w-[44px] flex items-center"
         >
           {t("applicationHistory")}
+        </Link>
+      )}
+      {status === "authenticated" && isAdmin && (
+        <Link
+          href={`/${locale}/admin`}
+          prefetch={false}
+          onClick={() => setMenuOpen(false)}
+          className="text-sm font-medium text-white/80 hover:text-white hover:scale-105 transition-all min-h-[44px] min-w-[44px] flex items-center"
+        >
+          Admin
         </Link>
       )}
       {status === "authenticated" && (

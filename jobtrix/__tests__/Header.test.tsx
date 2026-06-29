@@ -138,6 +138,34 @@ describe("Header", () => {
     expect(screen.queryByRole("link", { name: "Anmelden" })).not.toBeInTheDocument();
   });
 
+  it("zeigt einen 'Admin'-Link für Nutzer mit role admin", () => {
+    mockedUseSession.mockReturnValue({
+      data: { user: { role: "admin" }, expires: "" },
+      status: "authenticated",
+      update: jest.fn(),
+    } as unknown as ReturnType<typeof useSession>);
+
+    render(<Header locale="de" />);
+    const links = screen.getAllByRole("link", { name: "Admin" });
+    expect(links[0]).toHaveAttribute("href", "/de/admin");
+  });
+
+  it("zeigt keinen 'Admin'-Link für normale angemeldete Nutzer", () => {
+    mockedUseSession.mockReturnValue({
+      data: { user: {}, expires: "" },
+      status: "authenticated",
+      update: jest.fn(),
+    } as unknown as ReturnType<typeof useSession>);
+
+    render(<Header locale="de" />);
+    expect(screen.queryByRole("link", { name: "Admin" })).not.toBeInTheDocument();
+  });
+
+  it("zeigt im abgemeldeten Zustand keinen 'Admin'-Link", () => {
+    render(<Header locale="de" />);
+    expect(screen.queryByRole("link", { name: "Admin" })).not.toBeInTheDocument();
+  });
+
   it("zeigt im angemeldeten Zustand Logout-Buttons", () => {
     mockedUseSession.mockReturnValue({
       data: { user: {}, expires: "" },

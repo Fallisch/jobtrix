@@ -1,9 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { signOut } from "next-auth/react";
+
+interface InvoiceItem {
+  id: string;
+  number: string | null;
+  amountPaid: number;
+  currency: string;
+  status: string | null;
+  created: number;
+  invoicePdf: string | null;
+  hostedInvoiceUrl: string | null;
+}
 
 export default function AccountSettings() {
   const t = useTranslations("account");
@@ -15,6 +26,62 @@ export default function AccountSettings() {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deletePassword, setDeletePassword] = useState("");
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [hasSubscription, setHasSubscription] = useState(false);
+  const [portalLoading, setPortalLoading] = useState(false);
+  const [invoices, setInvoices] = useState<InvoiceItem[]>([]);
+
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      try {
+        const res = await fetch("/api/access");
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!active) return;
+        setHasSubscription(data.package === "monthly" || data.package === "yearly");
+      } catch {
+        /* Abo-Status optional – UI bleibt nutzbar */
+      }
+    })();
+    (async () => {
+      try {
+        const res = await fetch("/api/invoices");
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!active) return;
+        if (Array.isArray(data.invoices)) setInvoices(data.invoices);
+      } catch {
+        /* Rechnungen optional */
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  async function handleManageSubscription() {
+    setPortalLoading(true);
+    try {
+      const res = await fetch("/api/billing-portal", { method: "POST" });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.url) {
+          window.location.href = data.url;
+          return;
+        }
+      }
+    } catch {
+      /* ignore */
+    } finally {
+      setPortalLoading(false);
+    }
+  }
+
+  function formatAmount(cents: number, currency: string): string {
+    return new Intl.NumberFormat(locale, { style: "currency", currency: currency.toUpperCase() }).format(
+      cents / 100
+    );
+  }
 
   async function handleExport() {
     try {
@@ -64,6 +131,50 @@ export default function AccountSettings() {
     <div className="max-w-2xl mx-auto px-4 pb-8 space-y-4">
       <h2 className="text-lg font-semibold text-primary dark:text-accent">{t("title")}</h2>
       {error && <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>}
+
+      {(hasSubscription || invoices.length > 0) && (
+        <section className="space-y-3" data-testid="subscription-section">
+          <h3 className="text-base font-semibold text-primary dark:text-accent">{t("subscriptionTitle")}</h3>
+          {hasSubscription && (
+            <>
+              <p className="text-sm text-text/70">{t("manageSubscriptionHint")}</p>
+              <button
+                type="button"
+                onClick={handleManageSubscription}
+                disabled={portalLoading}
+                className="rounded-full py-2 px-4 text-sm font-semibold bg-accent text-white hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                {t("manageSubscriptionButton")}
+              </button>
+            </>
+          )}
+          {invoices.length > 0 ? (
+            <ul className="divide-y divide-gray-200 dark:divide-gray-700 rounded-xl border border-gray-200 dark:border-gray-700">
+              {invoices.map((inv) => (
+                <li key={inv.id} className="flex items-center justify-between gap-3 px-4 py-2 text-sm">
+                  <span className="text-text/80">
+                    {new Date(inv.created * 1000).toLocaleDateString(locale)} ·{" "}
+                    {formatAmount(inv.amountPaid, inv.currency)}
+                  </span>
+                  {inv.invoicePdf || inv.hostedInvoiceUrl ? (
+                    <a
+                      href={(inv.invoicePdf ?? inv.hostedInvoiceUrl) as string}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-semibold text-accent hover:underline"
+                    >
+                      {t("invoiceDownload")}
+                    </a>
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            hasSubscription && <p className="text-sm text-text/60">{t("invoicesEmpty")}</p>
+          )}
+        </section>
+      )}
+
       <button
         type="button"
         onClick={() => setExportOpen((open) => !open)}

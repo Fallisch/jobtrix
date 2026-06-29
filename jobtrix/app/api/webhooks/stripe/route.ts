@@ -3,6 +3,12 @@ import Stripe from "stripe";
 import { prisma } from "@/lib/prisma";
 import { getPricingConfig } from "@/lib/pricing";
 import { logAudit } from "@/lib/audit";
+import { sendPaymentFailedEmail } from "@/lib/email";
+
+// Maximale Anzahl Zahlungserinnerungen pro fehlgeschlagenem Abrechnungszyklus.
+// Stripe zählt mit invoice.attempt_count die automatischen Wiederholungen hoch,
+// sodass wir ohne eigenen Zähler/DB-Feld pro Zyklus höchstens MAX Mails senden.
+const MAX_PAYMENT_FAILED_EMAILS = 3;
 
 interface InvoiceData {
   id: string;
@@ -12,6 +18,7 @@ interface InvoiceData {
   amount_paid: number;
   amount_due: number;
   currency: string;
+  attempt_count?: number;
 }
 
 export async function POST(request: NextRequest) {
@@ -224,6 +231,18 @@ async function handleInvoicePaymentFailed(event: Stripe.Event) {
     userId: user.id,
     detail: `invoice:${invoice.id}`,
   });
+
+  // Zahlungserinnerung senden – aber nur für die ersten MAX Versuche pro Zyklus,
+  // damit der Nutzer nicht bei jeder Stripe-Wiederholung erneut Spam erhält.
+  const attemptCount = invoice.attempt_count ?? 1;
+  if (user.email && attemptCount <= MAX_PAYMENT_FAILED_EMAILS) {
+    const baseUrl = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
+    await sendPaymentFailedEmail({ to: user.email, manageUrl: `${baseUrl}/profile` });
+    await logAudit("payment_failed_email_sent", {
+      userId: user.id,
+      detail: `invoice:${invoice.id} attempt:${attemptCount}`,
+    });
+  }
 }
 
 async function handleSubscriptionUpdated(event: Stripe.Event) {

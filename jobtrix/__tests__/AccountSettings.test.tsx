@@ -176,3 +176,79 @@ describe("AccountSettings", () => {
     });
   });
 });
+
+describe("AccountSettings – Abo & Rechnungen", () => {
+  function mockJsonFetch(routes: Record<string, { ok?: boolean; body?: unknown }>) {
+    global.fetch = jest.fn((url: string) => {
+      const r = routes[url];
+      return Promise.resolve({
+        ok: r ? r.ok ?? true : true,
+        status: 200,
+        json: async () => r?.body ?? {},
+        blob: async () => new Blob(),
+      } as Response);
+    }) as jest.Mock;
+  }
+
+  beforeEach(() => {
+    setLocale("de");
+    mockSignOut.mockReset();
+  });
+
+  it("zeigt 'Abo verwalten' für Nutzer mit aktivem Abo und startet das Billing-Portal", async () => {
+    mockJsonFetch({
+      "/api/access": { body: { package: "monthly", subscriptionStatus: "active" } },
+      "/api/invoices": { body: { invoices: [] } },
+      "/api/billing-portal": { body: { url: "https://billing.stripe.com/p/session" } },
+    });
+    const user = userEvent.setup();
+    render(<AccountSettings />);
+
+    const btn = await screen.findByRole("button", { name: /abo verwalten/i });
+    await user.click(btn);
+
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalledWith(
+        "/api/billing-portal",
+        expect.objectContaining({ method: "POST" })
+      );
+    });
+  });
+
+  it("zeigt keinen 'Abo verwalten'-Button ohne aktives Abo", async () => {
+    mockJsonFetch({
+      "/api/access": { body: { package: "none" } },
+      "/api/invoices": { body: { invoices: [] } },
+    });
+    render(<AccountSettings />);
+
+    await waitFor(() => expect(global.fetch).toHaveBeenCalledWith("/api/access"));
+    expect(screen.queryByRole("button", { name: /abo verwalten/i })).not.toBeInTheDocument();
+  });
+
+  it("listet Rechnungen mit Download-Link", async () => {
+    mockJsonFetch({
+      "/api/access": { body: { package: "monthly" } },
+      "/api/invoices": {
+        body: {
+          invoices: [
+            {
+              id: "in_1",
+              number: "INV-1",
+              amountPaid: 999,
+              currency: "eur",
+              status: "paid",
+              created: 1718000000,
+              invoicePdf: "https://stripe.com/inv_1.pdf",
+              hostedInvoiceUrl: null,
+            },
+          ],
+        },
+      },
+    });
+    render(<AccountSettings />);
+
+    const link = await screen.findByRole("link", { name: /rechnung herunterladen/i });
+    expect(link).toHaveAttribute("href", "https://stripe.com/inv_1.pdf");
+  });
+});

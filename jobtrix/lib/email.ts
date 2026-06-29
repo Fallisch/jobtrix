@@ -37,6 +37,38 @@ export async function sendPasswordResetEmail({ to, resetUrl }: SendPasswordReset
   });
 }
 
+interface SendPaymentFailedEmailParams {
+  to: string;
+  manageUrl: string;
+}
+
+export async function sendPaymentFailedEmail({ to, manageUrl }: SendPaymentFailedEmailParams): Promise<void> {
+  const { apiKey, from } = getConfig();
+  if (!apiKey) return;
+
+  await fetchWithTimeout(RESEND_API, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      from,
+      to,
+      subject: "JobTRIX – Zahlung fehlgeschlagen / Payment failed",
+      html: `
+        <h2>Deine Zahlung konnte nicht verarbeitet werden</h2>
+        <p>Wir konnten die letzte Zahlung für dein JobTRIX-Abo nicht einziehen. Bitte aktualisiere deine Zahlungsmethode, damit dein Zugang aktiv bleibt.</p>
+        <p><a href="${manageUrl}">Abo verwalten und Zahlungsmethode aktualisieren</a></p>
+        <hr />
+        <h2>We couldn't process your payment</h2>
+        <p>The latest payment for your JobTRIX subscription failed. Please update your payment method to keep your access active.</p>
+        <p><a href="${manageUrl}">Manage subscription and update payment method</a></p>
+      `,
+    }),
+  });
+}
+
 interface SendApplicationEmailParams {
   to: string;
   replyTo: string;

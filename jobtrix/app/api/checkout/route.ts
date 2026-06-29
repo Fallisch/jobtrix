@@ -100,6 +100,7 @@ export async function POST(request: NextRequest) {
   const checkoutSession = await stripe.checkout.sessions.create({
     mode: "payment",
     payment_method_types: ["card", "sepa_debit", "paypal"],
+    invoice_creation: { enabled: true },
     line_items: [
       {
         price_data: {

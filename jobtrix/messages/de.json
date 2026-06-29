@@ -334,7 +334,14 @@
     "deletePasswordLabel": "Aktuelles Passwort",
     "deleteConfirmButton": "Konto endgültig löschen",
     "deleteWrongPassword": "Das eingegebene Passwort ist falsch.",
-    "deleteGenericError": "Konto konnte nicht gelöscht werden. Bitte versuche es erneut."
+    "deleteGenericError": "Konto konnte nicht gelöscht werden. Bitte versuche es erneut.",
+    "subscriptionTitle": "Abo & Rechnungen",
+    "manageSubscriptionButton": "Abo verwalten",
+    "manageSubscriptionHint": "Abo kündigen, Zahlungsmethode ändern oder Rechnungen herunterladen.",
+    "invoicesTitle": "Rechnungen",
+    "invoicesEmpty": "Noch keine Rechnungen vorhanden.",
+    "invoiceDownload": "Rechnung herunterladen",
+    "invoicesError": "Rechnungen konnten nicht geladen werden."
   },
   "footer": {
     "impressumLink": "Impressum",

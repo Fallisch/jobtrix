@@ -61,6 +61,18 @@ describe("middleware Route-Schutz", () => {
     expect(res.headers.get("location")).toBe("http://localhost:3000/de/login");
   });
 
+  it("leitet bei /de/admin ohne Session zu /de/login weiter", async () => {
+    mockedGetToken.mockResolvedValue(null);
+    const res = await middleware(makeRequest("/de/admin"));
+    expect(res.headers.get("location")).toBe("http://localhost:3000/de/login");
+  });
+
+  it("lässt /de/admin mit gültiger Session durch (Rollenprüfung erfolgt serverseitig)", async () => {
+    mockedGetToken.mockResolvedValue({ id: "user-1" });
+    const res = await middleware(makeRequest("/de/admin"));
+    expect(res.headers.get("location")).toBeFalsy();
+  });
+
   it("lässt /de/profile mit gültiger Session durch", async () => {
     mockedGetToken.mockResolvedValue({ id: "user-1" });
     const res = await middleware(makeRequest("/de/profile"));

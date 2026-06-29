@@ -334,7 +334,14 @@
     "deletePasswordLabel": "Current password",
     "deleteConfirmButton": "Permanently delete account",
     "deleteWrongPassword": "The password you entered is incorrect.",
-    "deleteGenericError": "Could not delete your account. Please try again."
+    "deleteGenericError": "Could not delete your account. Please try again.",
+    "subscriptionTitle": "Subscription & invoices",
+    "manageSubscriptionButton": "Manage subscription",
+    "manageSubscriptionHint": "Cancel your subscription, update your payment method or download invoices.",
+    "invoicesTitle": "Invoices",
+    "invoicesEmpty": "No invoices yet.",
+    "invoiceDownload": "Download invoice",
+    "invoicesError": "Could not load invoices."
   },
   "footer": {
     "impressumLink": "Imprint",

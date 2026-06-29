@@ -6,7 +6,7 @@ import { buildCspHeader } from "@/lib/security-headers";
 
 const intlMiddleware = createMiddleware(routing);
 
-const protectedPaths = ["/profile", "/generate", "/application-history", "/onboarding"];
+const protectedPaths = ["/profile", "/generate", "/application-history", "/onboarding", "/admin"];
 
 const publicPaths = ["/", "/impressum", "/datenschutz", "/agb", "/hilfe", "/pricing"];
 

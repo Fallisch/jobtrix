@@ -17,7 +17,9 @@ export type AuditAction =
   | "subscription_created"
   | "subscription_updated"
   | "subscription_cancelled"
-  | "subscription_expired";
+  | "subscription_expired"
+  | "billing_portal_created"
+  | "payment_failed_email_sent";
 
 export async function logAudit(action: AuditAction, opts: { userId?: string; detail?: string; ip?: string } = {}): Promise<void> {
   try {
