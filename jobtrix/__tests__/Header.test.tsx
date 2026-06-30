@@ -192,6 +192,21 @@ describe("Header", () => {
     expect(mockedSignOut).toHaveBeenCalledWith({ callbackUrl: "/de" });
   });
 
+  it("Logout-Button entfernt alte Profil-/Generate-Entwürfe aus sessionStorage", async () => {
+    mockedUseSession.mockReturnValue({
+      data: { user: {}, expires: "" },
+      status: "authenticated",
+      update: jest.fn(),
+    } as unknown as ReturnType<typeof useSession>);
+    sessionStorage.setItem("profile-draft", JSON.stringify({ name: "Fremder Account" }));
+
+    render(<Header locale="de" />);
+    const buttons = screen.getAllByRole("button", { name: "Abmelden" });
+    await userEvent.click(buttons[0]);
+
+    expect(sessionStorage.getItem("profile-draft")).toBeNull();
+  });
+
   it("zeigt die aktive Sprache im Sprachumschalter an", () => {
     render(<Header locale="de" />);
     const buttons = screen.getAllByRole("button", { name: /english/i });

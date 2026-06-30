@@ -175,6 +175,21 @@ describe("AccountSettings", () => {
       expect(mockSignOut).toHaveBeenCalledWith({ callbackUrl: "/de" });
     });
   });
+
+  it("entfernt beim Konto-Löschen alte Profil-/Generate-Entwürfe aus sessionStorage", async () => {
+    const user = userEvent.setup();
+    mockDeleteFetch({ ok: true });
+    sessionStorage.setItem("profile-draft", JSON.stringify({ name: "Fremder Account" }));
+    render(<AccountSettings />);
+
+    await user.click(screen.getByRole("button", { name: /^konto löschen$/i }));
+    await user.type(screen.getByLabelText(/aktuelles passwort/i), "richtiges-passwort");
+    await user.click(screen.getByRole("button", { name: /konto endgültig löschen/i }));
+
+    await waitFor(() => {
+      expect(sessionStorage.getItem("profile-draft")).toBeNull();
+    });
+  });
 });
 
 describe("AccountSettings – Abo & Rechnungen", () => {

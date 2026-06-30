@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { signOut } from "next-auth/react";
+import { clearSessionDrafts } from "@/lib/session-drafts";
 
 interface InvoiceItem {
   id: string;
@@ -121,6 +122,7 @@ export default function AccountSettings() {
         setDeleteError(t("deleteWrongPassword"));
         return;
       }
+      clearSessionDrafts();
       await signOut({ callbackUrl: `/${locale}` });
     } catch {
       setDeleteError(t("deleteGenericError"));

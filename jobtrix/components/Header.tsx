@@ -7,6 +7,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import ThemeToggle from "@/components/ThemeToggle";
+import { clearSessionDrafts } from "@/lib/session-drafts";
 
 export default function Header({ locale }: { locale: string }) {
   const router = useRouter();
@@ -24,6 +25,7 @@ export default function Header({ locale }: { locale: string }) {
   }
 
   function handleLogout() {
+    clearSessionDrafts();
     signOut({ callbackUrl: `/${locale}` });
     setMenuOpen(false);
   }
