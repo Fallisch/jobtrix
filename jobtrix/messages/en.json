@@ -324,6 +324,33 @@
       "yearRangeOutOfBounds": "Year must be between 1950 and 2030"
     }
   },
+  "cvScore": {
+    "title": "Your CV Score",
+    "statusLow": "Needs work",
+    "statusHigh": "Strong",
+    "categoryCompleteness": "Completeness",
+    "categoryStructure": "Structure",
+    "categoryClarity": "Clarity",
+    "tipImpact": "+{impact}",
+    "tips": {
+      "missing-name": "Add your name",
+      "missing-contact": "Add an email or phone number",
+      "missing-address": "Add your address",
+      "missing-birthdate": "Add your date of birth",
+      "missing-photo": "Add a profile photo",
+      "missing-experience": "Add at least one work experience",
+      "missing-education": "Add at least one education entry",
+      "missing-qualifications": "Add at least one qualification",
+      "missing-tasks": "Add tasks to your experience entries",
+      "experience-missing-period": "Entry {index}: period is missing",
+      "experience-missing-tasks": "Entry {index}: tasks are missing",
+      "experience-single-task": "Entry {index}: split the tasks into several bullet points",
+      "education-missing-year": "Education {index}: year is missing",
+      "too-many-experiences": "Reduce the number of work experience entries",
+      "task-too-short": "Entry {index}: bullet point is too short, please describe in more detail",
+      "skill-empty-label": "Qualification {index}: label is missing"
+    }
+  },
   "account": {
     "title": "Account & Privacy",
     "exportButton": "Download my data",

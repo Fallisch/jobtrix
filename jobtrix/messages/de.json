@@ -324,6 +324,33 @@
       "yearRangeOutOfBounds": "Jahreszahl muss zwischen 1950 und 2030 liegen"
     }
   },
+  "cvScore": {
+    "title": "Dein CV-Score",
+    "statusLow": "Verbesserbar",
+    "statusHigh": "Stark",
+    "categoryCompleteness": "Vollständigkeit",
+    "categoryStructure": "Struktur",
+    "categoryClarity": "Klarheit",
+    "tipImpact": "+{impact}",
+    "tips": {
+      "missing-name": "Trage deinen Namen ein",
+      "missing-contact": "Füge E-Mail oder Telefonnummer hinzu",
+      "missing-address": "Ergänze deine Adresse",
+      "missing-birthdate": "Ergänze dein Geburtsdatum",
+      "missing-photo": "Füge ein Bewerbungsfoto hinzu",
+      "missing-experience": "Füge mindestens eine Berufserfahrung hinzu",
+      "missing-education": "Füge mindestens eine Ausbildung hinzu",
+      "missing-qualifications": "Füge mindestens eine Qualifikation hinzu",
+      "missing-tasks": "Ergänze Aufgaben zu deinen Stationen",
+      "experience-missing-period": "Station {index}: Zeitraum fehlt",
+      "experience-missing-tasks": "Station {index}: Aufgaben fehlen",
+      "experience-single-task": "Station {index}: Teile die Aufgaben in mehrere Stichpunkte auf",
+      "education-missing-year": "Ausbildung {index}: Jahr fehlt",
+      "too-many-experiences": "Reduziere die Anzahl der Erfahrungs-Stationen",
+      "task-too-short": "Station {index}: Stichpunkt zu kurz, bitte ausführlicher beschreiben",
+      "skill-empty-label": "Qualifikation {index}: Bezeichnung fehlt"
+    }
+  },
   "account": {
     "title": "Konto & Datenschutz",
     "exportButton": "Meine Daten herunterladen",
