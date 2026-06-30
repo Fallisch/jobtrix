@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { useRouter, useParams } from "next/navigation";
@@ -14,6 +14,8 @@ import {
 import { compressImage } from "@/lib/image-compress";
 import { validatePhone, validateLocation, validateYearRange } from "@/lib/validation";
 import InfoTooltip from "@/components/InfoTooltip";
+import { scoreProfile } from "@/lib/cv-score";
+import CvScoreCard from "@/components/CvScoreCard";
 
 function makeEduEntry(): EducationEntry {
   return { id: crypto.randomUUID(), institution: "", degree: "", year: "" };
@@ -59,6 +61,7 @@ export default function ProfileForm() {
   const photoInputRef = useRef<HTMLInputElement>(null);
   const tErr = useTranslations("profile.errors");
   const tHint = useTranslations("profile.hints");
+  const cvScore = useMemo(() => scoreProfile(data), [data]);
 
   useEffect(() => {
     const draft = sessionStorage.getItem("profile-draft");
@@ -208,6 +211,8 @@ export default function ProfileForm() {
   return (
     <form onSubmit={handleSubmit} className="max-w-2xl mx-auto px-4 py-8 space-y-6 text-base sm:px-6">
       <h1 className="text-2xl font-bold text-primary dark:text-accent">{t("title")}</h1>
+
+      <CvScoreCard result={cvScore} />
 
       {access?.package === "limited" && access.validUntil && (
         <p className="text-sm text-text/70 bg-surface border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2">

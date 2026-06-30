@@ -562,3 +562,33 @@ describe("ProfileForm", () => {
     });
   });
 });
+
+describe("ProfileForm – CV-Score Integration", () => {
+  it("zeigt die CV-Score-Karte mit niedrigem Score bei leerem Profil", async () => {
+    render(<ProfileForm />);
+    await waitFor(() => {
+      expect(screen.getByText("Dein CV-Score")).toBeInTheDocument();
+    });
+    await waitFor(() => {
+      const total = Number(screen.getByTestId("cv-score-total").textContent);
+      expect(total).toBeLessThan(40);
+    });
+  });
+
+  it("Score steigt live, wenn der Name eingetragen wird", async () => {
+    const user = userEvent.setup();
+    render(<ProfileForm />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId("cv-score-total")).toBeInTheDocument();
+    });
+    const initial = await waitFor(() => Number(screen.getByTestId("cv-score-total").textContent));
+
+    await user.type(screen.getByLabelText(/name/i), "Max Mustermann");
+
+    await waitFor(() => {
+      const updated = Number(screen.getByTestId("cv-score-total").textContent);
+      expect(updated).toBeGreaterThan(initial);
+    });
+  });
+});

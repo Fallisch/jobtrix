@@ -77,7 +77,7 @@ export default function CvScoreCard({ result }: { result: CvScoreResult }) {
             />
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-3xl font-bold text-text">{animatedTotal}</span>
+            <span className="text-3xl font-bold text-text" data-testid="cv-score-total">{animatedTotal}</span>
             <span className="text-xs font-medium" style={{ color }}>{t(statusKey)}</span>
           </div>
         </div>
