@@ -157,6 +157,14 @@ describe("ThemeToggle", () => {
     expect(screen.getByText("Hell")).toBeInTheDocument();
   });
 
+  it("streckt sich im Spalten-Layout (mobiles Menü) nicht über die volle Breite", () => {
+    render(<ThemeToggle />);
+    const button = screen.getByRole("button", { name: "Zu Dunkelmodus wechseln" });
+    // w-fit verhindert, dass align-items:stretch den Button im flex-col-Menü
+    // über die volle Breite zieht (#228).
+    expect(button.className).toContain("w-fit");
+  });
+
   it("zeigt im Dunkelmodus das sichtbare Textlabel 'Dunkel'", () => {
     mockedUseTheme.mockReturnValue({
       theme: "dark",
