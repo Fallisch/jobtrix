@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter, usePathname } from "@/i18n/navigation";
 import { useSession, signOut } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import ThemeToggle from "@/components/ThemeToggle";
@@ -18,9 +18,9 @@ export default function Header({ locale }: { locale: string }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   function switchLocale(next: string) {
-    const segments = pathname.split("/");
-    segments[1] = next;
-    router.push(segments.join("/") || "/");
+    // next-intl-Navigation setzt das Locale-Präfix selbst korrekt; pathname ist
+    // hier bereits ohne Präfix. Manueller Segment-Tausch griff nicht zuverlässig (#227).
+    router.replace(pathname, { locale: next });
     setMenuOpen(false);
   }
 
@@ -98,7 +98,7 @@ export default function Header({ locale }: { locale: string }) {
         className="text-sm font-medium text-white/50 hover:text-white transition-colors uppercase tracking-wide min-h-[44px] min-w-[44px] flex items-center"
         aria-label={`Switch to ${other === "de" ? "Deutsch" : "English"}`}
       >
-        {locale}
+        {other}
       </button>
       <ThemeToggle />
     </>

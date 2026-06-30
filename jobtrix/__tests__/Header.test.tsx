@@ -4,9 +4,11 @@ import Header from "@/components/Header";
 import { useSession, signOut } from "next-auth/react";
 import { useTheme } from "next-themes";
 
-jest.mock("next/navigation", () => ({
-  useRouter: () => ({ push: jest.fn() }),
-  usePathname: () => "/de",
+const mockReplace = jest.fn();
+
+jest.mock("@/i18n/navigation", () => ({
+  useRouter: () => ({ replace: mockReplace }),
+  usePathname: () => "/profile",
 }));
 
 jest.mock("next-themes", () => ({
@@ -40,6 +42,7 @@ const mockedUseTheme = jest.mocked(useTheme);
 
 describe("Header", () => {
   beforeEach(() => {
+    mockReplace.mockReset();
     mockedUseSession.mockReturnValue({
       data: null,
       status: "unauthenticated",
@@ -207,10 +210,20 @@ describe("Header", () => {
     expect(sessionStorage.getItem("profile-draft")).toBeNull();
   });
 
-  it("zeigt die aktive Sprache im Sprachumschalter an", () => {
+  it("zeigt die Zielsprache (nicht die aktive) im Sprachumschalter an", () => {
     render(<Header locale="de" />);
     const buttons = screen.getAllByRole("button", { name: /english/i });
-    expect(buttons[0]).toHaveTextContent("de");
+    expect(buttons[0]).toHaveTextContent("en");
+    expect(buttons[0]).not.toHaveTextContent("de");
+  });
+
+  it("wechselt beim Klick die Sprache über die next-intl-Navigation mit korrektem Locale", async () => {
+    render(<Header locale="de" />);
+    const buttons = screen.getAllByRole("button", { name: /english/i });
+
+    await userEvent.click(buttons[0]);
+
+    expect(mockReplace).toHaveBeenCalledWith("/profile", { locale: "en" });
   });
 
   it("zeigt den Dark-Mode-Umschalter an", () => {
