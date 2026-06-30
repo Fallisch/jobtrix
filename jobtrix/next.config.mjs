@@ -33,9 +33,16 @@ export default withNextIntl(
     disable: process.env.NODE_ENV === "development",
     extendDefaultRuntimeCaching: true,
     workboxOptions: {
+      // Alle /api/-Routen liefern nutzerspezifische, authentifizierte Daten.
+      // extendDefaultRuntimeCaching wuerde sie sonst per Default-NetworkFirst
+      // im SW cachen (Cache-Key = URL, nicht userId) — bei langsamem Mobilfunk
+      // faellt der Browser nach Timeout auf die gecachte Response zurueck und
+      // zeigt dem naechsten eingeloggten User das Profil des vorherigen
+      // Accounts auf demselben Geraet. Gleiche Bugklasse wie #133, dort war
+      // nur /api/auth/* abgedeckt.
       runtimeCaching: [
         {
-          urlPattern: /^https?:\/\/.*\/api\/auth\/.*/i,
+          urlPattern: /^https?:\/\/.*\/api\/.*/i,
           handler: "NetworkOnly",
         },
       ],
