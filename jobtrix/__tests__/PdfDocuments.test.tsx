@@ -44,9 +44,16 @@ describe("CvDocument – PDF-Layout", () => {
     expect(screen.getByText("Hauptstraße 5, 10115 Berlin")).toBeInTheDocument();
   });
 
-  it("enthält den Lebenslauf-Text", () => {
-    render(<CvDocument cv="Mein detaillierter Lebenslauf" profile={profile} />);
+  it("zeigt den KI-Freitext nur, wenn weder Erfahrung noch Ausbildung vorhanden sind", () => {
+    const noTimelineProfile = { ...profile, education: [], experience: [] };
+    render(<CvDocument cv="Mein detaillierter Lebenslauf" profile={noTimelineProfile} />);
     expect(screen.getByText("Mein detaillierter Lebenslauf")).toBeInTheDocument();
+  });
+
+  it("zeigt strukturierte Ausbildung statt Freitext, wenn Ausbildungseinträge vorhanden sind", () => {
+    render(<CvDocument cv="Mein detaillierter Lebenslauf" profile={profile} />);
+    expect(screen.queryByText("Mein detaillierter Lebenslauf")).not.toBeInTheDocument();
+    expect(screen.getByTestId("classic-cv-education")).toBeInTheDocument();
   });
 });
 
