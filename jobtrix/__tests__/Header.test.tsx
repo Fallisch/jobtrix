@@ -210,9 +210,16 @@ describe("Header", () => {
     expect(sessionStorage.getItem("profile-draft")).toBeNull();
   });
 
-  it("zeigt die Zielsprache (nicht die aktive) im Sprachumschalter an", () => {
+  it("zeigt die aktive Sprache (nicht die Zielsprache) im Sprachumschalter an (#238)", () => {
     render(<Header locale="de" />);
     const buttons = screen.getAllByRole("button", { name: /english/i });
+    expect(buttons[0]).toHaveTextContent("de");
+    expect(buttons[0]).not.toHaveTextContent("en");
+  });
+
+  it("zeigt im englischen Kontext 'en' als aktive Sprache an (#238)", () => {
+    render(<Header locale="en" />);
+    const buttons = screen.getAllByRole("button", { name: /deutsch/i });
     expect(buttons[0]).toHaveTextContent("en");
     expect(buttons[0]).not.toHaveTextContent("de");
   });

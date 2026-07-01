@@ -98,7 +98,9 @@ export default function Header({ locale }: { locale: string }) {
         className="text-sm font-medium text-white/50 hover:text-white transition-colors uppercase tracking-wide min-h-[44px] min-w-[44px] flex items-center"
         aria-label={`Switch to ${other === "de" ? "Deutsch" : "English"}`}
       >
-        {other}
+        {/* Zeigt die aktive Sprache an (de→"DE", en→"EN"); Klick wechselt zur
+            jeweils anderen Sprache, das aria-label beschreibt die Aktion (#238). */}
+        {locale}
       </button>
       <ThemeToggle />
     </>
