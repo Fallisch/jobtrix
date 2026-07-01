@@ -26,7 +26,7 @@ export default function InfoTooltip({ text }: InfoTooltipProps) {
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="w-4 h-4 rounded-full border border-accent text-accent text-[0.625rem] leading-none font-bold flex items-center justify-center hover:bg-accent hover:text-white transition"
+        className="w-4 h-4 min-w-0 min-h-0 rounded-full border border-accent text-accent text-[0.625rem] leading-none font-bold flex items-center justify-center hover:bg-accent hover:text-white transition"
         aria-label="Hilfe"
         data-testid="info-tooltip-trigger"
       >

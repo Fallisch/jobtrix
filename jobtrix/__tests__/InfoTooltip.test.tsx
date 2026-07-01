@@ -26,4 +26,14 @@ describe("InfoTooltip", () => {
     expect(trigger.className).not.toContain("w-5");
     expect(trigger.className).not.toContain("h-5");
   });
+
+  it("hebt die globale 44px-Mindestgröße für Buttons auf, damit w-4 real greift (#235)", () => {
+    render(<InfoTooltip text="Hilfetext" />);
+    const trigger = screen.getByTestId("info-tooltip-trigger");
+    // Ohne min-w-0/min-h-0 bläht die globale Regel `button { min-width:44px }`
+    // den Info-Kreis trotz w-4 auf 44px auf — das war der eigentliche Grund,
+    // warum das Icon weiterhin zu groß wirkte.
+    expect(trigger.className).toContain("min-w-0");
+    expect(trigger.className).toContain("min-h-0");
+  });
 });
