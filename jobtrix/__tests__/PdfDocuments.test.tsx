@@ -867,6 +867,25 @@ describe("CvDocument – Classic-Layout: strukturierte Daten", () => {
     expect(entries[0]).toHaveTextContent("HTW Berlin");
   });
 
+  it("hält die Ausbildungs-Überschrift mit dem ersten Eintrag zusammen (kein Waisen-Header, #230)", () => {
+    render(<CvDocument cv="CV" profile={profileMulti} template="classic" />);
+    const heading = screen.getByText("Ausbildung");
+    // Überschrift und erster Eintrag liegen im selben (nicht umbrechenden)
+    // Wrapper; nur der erste Eintrag ist mit der Überschrift gruppiert.
+    const group = heading.parentElement as HTMLElement;
+    const groupedEntries = within(group).getAllByTestId("classic-edu-entry");
+    expect(groupedEntries).toHaveLength(1);
+    expect(groupedEntries[0]).toHaveTextContent("2014");
+  });
+
+  it("hält die Berufserfahrungs-Überschrift mit dem ersten Eintrag zusammen (#230)", () => {
+    render(<CvDocument cv="CV" profile={profileMulti} template="classic" />);
+    const heading = screen.getByText("Berufserfahrung");
+    const group = heading.parentElement as HTMLElement;
+    const groupedEntries = within(group).getAllByTestId("classic-exp-entry");
+    expect(groupedEntries).toHaveLength(1);
+  });
+
   it("zeigt Qualifikationen und Interessen als Skill-Balken", () => {
     render(<CvDocument cv="CV" profile={profileMulti} template="classic" />);
     expect(screen.getByTestId("classic-cv-quals")).toBeInTheDocument();

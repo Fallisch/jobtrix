@@ -976,6 +976,32 @@ function splitTasks(tasks: string): string[] {
     .filter((line) => line.length > 0);
 }
 
+/**
+ * Bindet eine Abschnitts-Überschrift mit ihrem ersten Eintrag in einen
+ * gemeinsamen, nicht umbrechenden Block (#230). Dadurch bleibt die Überschrift
+ * (z. B. "Ausbildung") nie als Waise am Seitenende stehen, während der Inhalt
+ * erst auf der nächsten Seite beginnt. Die restlichen Einträge dürfen weiterhin
+ * normal über Seiten umbrechen.
+ */
+function SectionWithHeading({
+  heading,
+  entries,
+}: {
+  heading: React.ReactNode;
+  entries: React.ReactElement[];
+}) {
+  if (entries.length === 0) return null;
+  return (
+    <>
+      <View wrap={false}>
+        {heading}
+        {entries[0]}
+      </View>
+      {entries.slice(1)}
+    </>
+  );
+}
+
 type CreativeIconKind = "location" | "email" | "phone" | "star" | "heart" | "briefcase" | "graduation";
 
 const CREATIVE_ICON_CONFIG: Record<CreativeIconKind, { paths: string[]; rect?: { x: number; y: number; width: number; height: number; rx: number } }> = {
@@ -1240,9 +1266,9 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
               <Text style={styles.documentLabel}>Lebenslauf</Text>
 
               {experience?.length > 0 && (
-                <>
-                  <Text style={styles.cvSectionHeading} minPresenceAhead={80}>Berufserfahrung</Text>
-                  {experience.map((exp, i) => (
+                <SectionWithHeading
+                  heading={<Text style={styles.cvSectionHeading}>Berufserfahrung</Text>}
+                  entries={experience.map((exp, i) => (
                     <View key={i} wrap={false} style={styles.cvExpEntry} {...{ "data-testid": "modern-exp-entry" }}>
                       <Text style={styles.cvExpPeriod}>{exp.period}</Text>
                       <Text style={styles.cvExpPosition}>{exp.position}</Text>
@@ -1256,20 +1282,20 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
                         ))}
                     </View>
                   ))}
-                </>
+                />
               )}
 
               {education?.length > 0 && (
-                <>
-                  <Text style={styles.cvSectionHeading} minPresenceAhead={80}>Ausbildung</Text>
-                  {education.map((edu, i) => (
+                <SectionWithHeading
+                  heading={<Text style={styles.cvSectionHeading}>Ausbildung</Text>}
+                  entries={education.map((edu, i) => (
                     <View key={i} wrap={false} style={styles.cvEduEntry} {...{ "data-testid": "modern-edu-entry" }}>
                       <Text style={styles.cvEduYear}>{edu.year}</Text>
                       <Text style={styles.cvEduDegree}>{edu.degree}</Text>
                       <Text style={styles.cvEduInstitution}>{edu.institution}</Text>
                     </View>
                   ))}
-                </>
+                />
               )}
             </View>
 
@@ -1383,9 +1409,9 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
           <View style={styles.accentTwoColumns}>
             <View style={styles.accentLeftCol} {...{ "data-testid": "accent-content" }}>
               {experience?.length > 0 && (
-                <>
-                  <Text style={{ ...styles.accentSectionHeading, color }} minPresenceAhead={80}>Berufserfahrung</Text>
-                  {experience.map((exp, i) => (
+                <SectionWithHeading
+                  heading={<Text style={{ ...styles.accentSectionHeading, color }}>Berufserfahrung</Text>}
+                  entries={experience.map((exp, i) => (
                     <AccentTimelineEntry
                       key={i}
                       period={exp.period}
@@ -1396,13 +1422,13 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
                       testId="accent-exp-entry"
                     />
                   ))}
-                </>
+                />
               )}
 
               {education?.length > 0 && (
-                <>
-                  <Text style={{ ...styles.accentSectionHeading, color }} minPresenceAhead={80}>Ausbildung</Text>
-                  {education.map((edu, i) => (
+                <SectionWithHeading
+                  heading={<Text style={{ ...styles.accentSectionHeading, color }}>Ausbildung</Text>}
+                  entries={education.map((edu, i) => (
                     <AccentTimelineEntry
                       key={i}
                       period={edu.year}
@@ -1412,7 +1438,7 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
                       testId="accent-edu-entry"
                     />
                   ))}
-                </>
+                />
               )}
             </View>
 
@@ -1470,14 +1496,16 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
             <Text style={styles.creativeMainName}>{profile.name}</Text>
 
             {experience?.length > 0 && (
-              <>
-                <View minPresenceAhead={80} style={styles.creativeSectionHeading}>
-                  <View style={styles.creativeSectionHeadingIcon}>
-                    <CreativeIcon kind="briefcase" color={color} size={14} />
+              <SectionWithHeading
+                heading={
+                  <View style={styles.creativeSectionHeading}>
+                    <View style={styles.creativeSectionHeadingIcon}>
+                      <CreativeIcon kind="briefcase" color={color} size={14} />
+                    </View>
+                    <Text style={{ ...styles.creativeSectionHeadingText, color }}>Berufserfahrung</Text>
                   </View>
-                  <Text style={{ ...styles.creativeSectionHeadingText, color }}>Berufserfahrung</Text>
-                </View>
-                {experience.map((exp, i) => (
+                }
+                entries={experience.map((exp, i) => (
                   <CreativeTimelineEntry
                     key={i}
                     period={exp.period}
@@ -1488,18 +1516,20 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
                     testId="creative-exp-entry"
                   />
                 ))}
-              </>
+              />
             )}
 
             {education?.length > 0 && (
-              <>
-                <View minPresenceAhead={80} style={styles.creativeSectionHeading}>
-                  <View style={styles.creativeSectionHeadingIcon}>
-                    <CreativeIcon kind="graduation" color={color} size={14} />
+              <SectionWithHeading
+                heading={
+                  <View style={styles.creativeSectionHeading}>
+                    <View style={styles.creativeSectionHeadingIcon}>
+                      <CreativeIcon kind="graduation" color={color} size={14} />
+                    </View>
+                    <Text style={{ ...styles.creativeSectionHeadingText, color }}>Ausbildung</Text>
                   </View>
-                  <Text style={{ ...styles.creativeSectionHeadingText, color }}>Ausbildung</Text>
-                </View>
-                {education.map((edu, i) => (
+                }
+                entries={education.map((edu, i) => (
                   <CreativeTimelineEntry
                     key={i}
                     period={edu.year}
@@ -1509,7 +1539,7 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
                     testId="creative-edu-entry"
                   />
                 ))}
-              </>
+              />
             )}
           </View>
         </Page>
@@ -1535,30 +1565,34 @@ export function CvDocument({ cv, profile, template = "classic", cvStyle, accentC
 
         {classicExperience?.length > 0 && (
           <View {...{ "data-testid": "classic-cv-experience" }}>
-            <Text style={styles.sectionHeading} minPresenceAhead={80}>Berufserfahrung</Text>
-            {classicExperience.map((exp, i) => (
-              <View key={i} wrap={false} style={styles.classicEntry} {...{ "data-testid": "classic-exp-entry" }}>
-                <Text style={styles.classicEntryPeriod}>{exp.period}</Text>
-                <Text style={styles.classicEntryTitle}>{exp.position}</Text>
-                <Text style={styles.classicEntrySubtitle}>{exp.company}</Text>
-                {splitTasks(exp.tasks).map((line, j) => (
-                  <Text key={j} style={styles.classicEntryTask}>• {line}</Text>
-                ))}
-              </View>
-            ))}
+            <SectionWithHeading
+              heading={<Text style={styles.sectionHeading}>Berufserfahrung</Text>}
+              entries={classicExperience.map((exp, i) => (
+                <View key={i} wrap={false} style={styles.classicEntry} {...{ "data-testid": "classic-exp-entry" }}>
+                  <Text style={styles.classicEntryPeriod}>{exp.period}</Text>
+                  <Text style={styles.classicEntryTitle}>{exp.position}</Text>
+                  <Text style={styles.classicEntrySubtitle}>{exp.company}</Text>
+                  {splitTasks(exp.tasks).map((line, j) => (
+                    <Text key={j} style={styles.classicEntryTask}>• {line}</Text>
+                  ))}
+                </View>
+              ))}
+            />
           </View>
         )}
 
         {classicEducation?.length > 0 && (
           <View {...{ "data-testid": "classic-cv-education" }}>
-            <Text style={styles.sectionHeading} minPresenceAhead={80}>Ausbildung</Text>
-            {classicEducation.map((edu, i) => (
-              <View key={i} wrap={false} style={styles.classicEntry} {...{ "data-testid": "classic-edu-entry" }}>
-                <Text style={styles.classicEntryPeriod}>{edu.year}</Text>
-                <Text style={styles.classicEntryTitle}>{edu.degree}</Text>
-                <Text style={styles.classicEntrySubtitle}>{edu.institution}</Text>
-              </View>
-            ))}
+            <SectionWithHeading
+              heading={<Text style={styles.sectionHeading}>Ausbildung</Text>}
+              entries={classicEducation.map((edu, i) => (
+                <View key={i} wrap={false} style={styles.classicEntry} {...{ "data-testid": "classic-edu-entry" }}>
+                  <Text style={styles.classicEntryPeriod}>{edu.year}</Text>
+                  <Text style={styles.classicEntryTitle}>{edu.degree}</Text>
+                  <Text style={styles.classicEntrySubtitle}>{edu.institution}</Text>
+                </View>
+              ))}
+            />
           </View>
         )}
 
