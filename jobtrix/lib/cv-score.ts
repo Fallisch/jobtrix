@@ -140,6 +140,46 @@ function clamp(value: number): number {
   return Math.max(0, Math.min(100, value));
 }
 
+/**
+ * Skaliert die angezeigten Tipp-Impacts so, dass ihre Summe den noch
+ * erreichbaren Rest (100 − Gesamt-Score) nie überschreitet (#236). Ohne diese
+ * Deckelung summierten die frei gewählten Roh-Impacts auf Werte, die den Score
+ * rechnerisch über 100 heben würden (z. B. 85 + 56 = 141).
+ *
+ * Verteilt den verbleibenden Spielraum proportional zum Roh-Impact (jeder Tipp
+ * behält mindestens 1 Punkt) via Largest-Remainder-Rundung. Reicht der
+ * Spielraum nicht für jeden Tipp, werden nur die wirkungsvollsten angezeigt.
+ */
+function capTipImpacts(tips: CvScoreTip[], total: number): CvScoreTip[] {
+  const headroom = Math.max(0, 100 - total);
+  if (tips.length === 0) return tips;
+
+  const rawSum = tips.reduce((sum, t) => sum + t.impact, 0);
+  if (rawSum <= headroom) return tips;
+
+  if (headroom < tips.length) {
+    return tips.slice(0, headroom).map((t) => ({ ...t, impact: 1 }));
+  }
+
+  const extra = headroom - tips.length;
+  const ideals = tips.map((t) => (t.impact / rawSum) * extra);
+  const scaled = ideals.map((v) => Math.floor(v));
+  let remaining = extra - scaled.reduce((sum, v) => sum + v, 0);
+
+  const byFraction = tips
+    .map((_, i) => i)
+    .sort((a, b) => ideals[b] - Math.floor(ideals[b]) - (ideals[a] - Math.floor(ideals[a])));
+
+  for (let k = 0; k < byFraction.length && remaining > 0; k++) {
+    scaled[byFraction[k]] += 1;
+    remaining -= 1;
+  }
+
+  return tips
+    .map((t, i) => ({ ...t, impact: 1 + scaled[i] }))
+    .sort((a, b) => b.impact - a.impact);
+}
+
 export function scoreProfile(profile: ProfileData): CvScoreResult {
   const comp = scoreCompleteness(profile);
   const struct = scoreStructure(profile);
@@ -164,6 +204,6 @@ export function scoreProfile(profile: ProfileData): CvScoreResult {
       structure: struct.score,
       clarity: clarity.score,
     },
-    tips: allTips,
+    tips: capTipImpacts(allTips, total),
   };
 }

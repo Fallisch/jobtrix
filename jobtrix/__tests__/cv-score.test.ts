@@ -156,6 +156,57 @@ describe("scoreProfile", () => {
     });
   });
 
+  describe("Tipp-Impacts überschreiten nie den erreichbaren Rest (#236)", () => {
+    function highScoreManyTipsProfile(): ProfileData {
+      // Vollständige Kernfelder (hohe Completeness/Clarity), aber 8 Stationen
+      // mit nur einer Aufgaben-Zeile → viele Struktur-Tipps. Reproduziert den
+      // gemeldeten Fall: Score ~85, Summe der Tipps > 15.
+      const experience = Array.from({ length: 8 }, (_, i) => ({
+        id: `x${i}`,
+        company: `Firma ${i}`,
+        position: "Zerspanungsmechaniker",
+        period: "2015 – 2020",
+        tasks: "Bediente CNC-Maschinen im Schichtbetrieb",
+      }));
+      return {
+        name: "Falk Schieck",
+        address: "August-Bebel-Str. 5, 08340 Schwarzenberg",
+        email: "falk@example.com",
+        phone: "015234754970",
+        birthdate: "1985-09-10",
+        photo: "data:image/png;base64,abc",
+        education: [
+          { id: "e1", institution: "BSW Chemnitz", degree: "Facharbeiter", year: "2006" },
+        ],
+        experience,
+        qualifications: [
+          { label: "CNC", value: 90 },
+          { label: "Linux", value: 60 },
+        ],
+        interests: [],
+      };
+    }
+
+    it("Gesamt-Score + Summe aller Tipp-Impacts bleibt ≤ 100", () => {
+      const result = scoreProfile(highScoreManyTipsProfile());
+      const tipSum = result.tips.reduce((sum, t) => sum + t.impact, 0);
+      expect(result.total + tipSum).toBeLessThanOrEqual(100);
+    });
+
+    it("gilt auch für das leere Profil", () => {
+      const result = scoreProfile(emptyProfile());
+      const tipSum = result.tips.reduce((sum, t) => sum + t.impact, 0);
+      expect(result.total + tipSum).toBeLessThanOrEqual(100);
+    });
+
+    it("jeder angezeigte Tipp behält einen positiven Impact", () => {
+      const result = scoreProfile(highScoreManyTipsProfile());
+      for (const tip of result.tips) {
+        expect(tip.impact).toBeGreaterThan(0);
+      }
+    });
+  });
+
   describe("Determinismus", () => {
     it("gleiches Profil → exakt gleicher Score und Tipp-Reihenfolge", () => {
       const profile = fullProfile();
