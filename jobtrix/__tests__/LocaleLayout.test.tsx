@@ -1,8 +1,10 @@
 import { render, screen } from "@testing-library/react";
 import LocaleLayout from "@/app/[locale]/layout";
 
+const getMessagesMock = jest.fn().mockResolvedValue({});
+
 jest.mock("next-intl/server", () => ({
-  getMessages: jest.fn().mockResolvedValue({}),
+  getMessages: (...args: unknown[]) => getMessagesMock(...args),
 }));
 
 jest.mock("@/i18n/routing", () => ({
@@ -70,6 +72,19 @@ describe("LocaleLayout", () => {
     render(jsx);
 
     expect(providerProps.at(-1)?.locale).toBe("en");
+  });
+
+  it("lädt die Messages für den aktiven Locale, nicht die Default-Sprache (#237)", async () => {
+    getMessagesMock.mockClear();
+    const jsx = await LocaleLayout({
+      children: <div>Seiteninhalt</div>,
+      params: Promise.resolve({ locale: "en" }),
+    });
+    render(jsx);
+
+    // Ohne { locale: "en" } liefert getMessages die Default-Messages (de),
+    // wodurch alle Client-Komponenten auf /en deutsch blieben.
+    expect(getMessagesMock).toHaveBeenCalledWith({ locale: "en" });
   });
 
   it("rendert den Footer mit den Rechtlinks unterhalb von <main>", async () => {

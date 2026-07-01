@@ -46,7 +46,11 @@ export default async function LocaleLayout({
     notFound();
   }
 
-  const messages = await getMessages();
+  // Messages explizit für den URL-Locale laden. Ohne { locale } fällt
+  // getMessages auf die Default-Sprache (de) zurück, sodass alle über den
+  // NextIntlClientProvider versorgten Client-Komponenten (Menü, Marquee,
+  // CV-Score, Vergleichstabelle) auf /en deutsch blieben (#237).
+  const messages = await getMessages({ locale });
 
   return (
     // locale explizit übergeben: Ohne diese Prop kennt der Client-Kontext nach
