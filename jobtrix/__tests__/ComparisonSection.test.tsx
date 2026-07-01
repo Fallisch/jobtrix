@@ -67,4 +67,22 @@ describe("ComparisonSection", () => {
     const { container } = render(<ComparisonSection />);
     expect(container.querySelector("[data-testid='comparison']")).not.toBeNull();
   });
+
+  test("EN-Übersetzungen für die Vergleichstabelle sind vollständig und nicht deutsch (#232)", () => {
+    const de = require("@/messages/de.json").comparison as Record<string, string>;
+    const en = require("@/messages/en.json").comparison as Record<string, string>;
+
+    // Alle im DE vorhandenen Keys müssen auch im EN existieren …
+    for (const key of Object.keys(de)) {
+      expect(en[key]).toBeDefined();
+    }
+
+    // … und die textlichen Feature-/Titel-Keys müssen tatsächlich übersetzt sein
+    // (nicht identisch zum deutschen Wortlaut). "feature" ist bewusst in beiden
+    // Sprachen gleich ("Feature") und daher ausgenommen.
+    const translatableKeys = Object.keys(de).filter((k) => k !== "feature");
+    for (const key of translatableKeys) {
+      expect(en[key]).not.toBe(de[key]);
+    }
+  });
 });

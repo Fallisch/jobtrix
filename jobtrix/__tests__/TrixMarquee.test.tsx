@@ -59,6 +59,12 @@ describe("TrixMarquee", () => {
     }
   });
 
+  test("EN-Slogans sind exakt 'Unlock your JobTRIX' und 'Your Career, Your TRIX' (#231)", () => {
+    const en = require("@/messages/en.json");
+    expect(en.marquee.phrase0).toBe("Unlock your JobTRIX");
+    expect(en.marquee.phrase1).toBe("Your Career, Your TRIX");
+  });
+
   test("verwendet Trenner zwischen Sprüchen", () => {
     const { container } = render(<TrixMarquee />);
     expect(container.textContent).toContain("·");
