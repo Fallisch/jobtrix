@@ -9,11 +9,22 @@ jest.mock("@/i18n/routing", () => ({
   routing: { locales: ["de", "en"], defaultLocale: "de" },
 }));
 
+const providerProps: { locale?: string }[] = [];
+
 jest.mock("next-intl", () => {
   const de = require("@/messages/de.json");
 
   return {
-    NextIntlClientProvider: ({ children }: { children: React.ReactNode }) => children,
+    NextIntlClientProvider: ({
+      children,
+      locale,
+    }: {
+      children: React.ReactNode;
+      locale?: string;
+    }) => {
+      providerProps.push({ locale });
+      return children;
+    },
     useTranslations:
       (namespace: string) =>
       (key: string) => {
@@ -47,6 +58,20 @@ jest.mock("@/components/AuthSessionProvider", () => ({
 }));
 
 describe("LocaleLayout", () => {
+  beforeEach(() => {
+    providerProps.length = 0;
+  });
+
+  it("übergibt das aktive Locale an den NextIntlClientProvider (verhindert 404 beim erneuten Sprachwechsel, #233)", async () => {
+    const jsx = await LocaleLayout({
+      children: <div>Seiteninhalt</div>,
+      params: Promise.resolve({ locale: "en" }),
+    });
+    render(jsx);
+
+    expect(providerProps.at(-1)?.locale).toBe("en");
+  });
+
   it("rendert den Footer mit den Rechtlinks unterhalb von <main>", async () => {
     const jsx = await LocaleLayout({
       children: <div>Seiteninhalt</div>,

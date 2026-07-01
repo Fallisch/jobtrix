@@ -49,7 +49,12 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <NextIntlClientProvider messages={messages}>
+    // locale explizit übergeben: Ohne diese Prop kennt der Client-Kontext nach
+    // einer Soft-Navigation die aktive Sprache nicht zuverlässig, wodurch
+    // usePathname() das Locale-Präfix falsch strippt und ein erneuter
+    // Sprachwechsel eine doppelt präfixte URL (/de/en) und damit einen 404
+    // erzeugt (#233).
+    <NextIntlClientProvider locale={locale} messages={messages}>
       <AuthSessionProvider>
         <Header locale={locale} />
         <main className="flex-1">{children}</main>
