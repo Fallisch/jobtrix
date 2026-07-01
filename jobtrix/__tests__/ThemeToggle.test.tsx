@@ -157,6 +157,14 @@ describe("ThemeToggle", () => {
     expect(screen.getByText("Hell")).toBeInTheDocument();
   });
 
+  it("blendet das Textlabel auf Mobile nicht per 'hidden' aus (#234)", () => {
+    render(<ThemeToggle />);
+    const label = screen.getByText("Hell");
+    // Auf dem Handy erscheint der Toggle nur im Slide-Down-Menü; ein
+    // 'hidden sm:inline' würde die Beschriftung dort komplett verstecken.
+    expect(label.className).not.toContain("hidden");
+  });
+
   it("streckt sich im Spalten-Layout (mobiles Menü) nicht über die volle Breite", () => {
     render(<ThemeToggle />);
     const button = screen.getByRole("button", { name: "Zu Dunkelmodus wechseln" });

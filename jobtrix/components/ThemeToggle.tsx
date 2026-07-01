@@ -73,7 +73,7 @@ export default function ThemeToggle() {
           <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
         </svg>
       )}
-      <span className="hidden sm:inline text-sm font-medium">{modeLabel}</span>
+      <span className="text-sm font-medium">{modeLabel}</span>
     </button>
   );
 }
